@@ -1,0 +1,6 @@
+{
+  "name": "KNFG ATC Training Aid",
+  "description": "MCAS Camp Pendleton (Munn Field) Air Traffic Control Qualification Training, Radar Simulation, Airspace Diagrams & Study Tool",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
