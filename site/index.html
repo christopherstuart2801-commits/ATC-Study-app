@@ -101,6 +101,17 @@
 #vatc .askbar input{ flex:1; font-family:var(--fm); font-size:13px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:13px 14px; outline:none;}
 #vatc .askbar input:focus{ border-color:var(--green2);}
 #vatc .askchips{ display:flex; gap:7px; flex-wrap:wrap; margin-bottom:16px;}
+#vatc .findhits{ display:flex; flex-direction:column; gap:6px; margin-top:10px; }
+#vatc .findhit{ border:1px solid var(--line); border-radius:9px; background:var(--panel); padding:10px 12px; cursor:pointer; text-align:left; width:100%; color:inherit; font:inherit; }
+#vatc .findhit:hover{ border-color:var(--green2); }
+#vatc .findhit .fh-cite{ font-family:var(--fm); font-size:11px; color:var(--green); letter-spacing:.02em; }
+#vatc .findhit .fh-quote{ font-family:var(--fm); font-size:12px; line-height:1.45; color:var(--muted); margin-top:4px; white-space:pre-wrap; }
+#vatc .findhit .fh-band{ float:right; font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--amber); }
+#vatc .findbar{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+#vatc .findbar input{ flex:1; font-family:var(--fm); font-size:13px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:13px 14px; outline:none; }
+#vatc .findbar input:focus{ border-color:var(--green2); }
+#vatc .findtools{ display:flex; gap:6px; flex-wrap:wrap; margin:0 0 8px; }
+#vatc .lkwrap.hasq .booktxt{ display:none; }
 #vatc .chip{ font-family:var(--fm); font-size:10.5px; border:1px solid var(--line); background:var(--panel2); color:var(--muted); padding:7px 11px; border-radius:20px; cursor:pointer;}
 #vatc .chip:hover{ border-color:var(--green2); color:var(--green);}
 #vatc .ans{ border:1px solid var(--green-dim); border-radius:12px; background:var(--panel); padding:16px;}
@@ -291,8 +302,10 @@
 #vatc .fc-crt:not([open]) summary::after{ content:' ▸'; }
 #vatc .fc-crt[open] summary{ color:var(--green); border-bottom:1px solid var(--line); }
 #vatc .fc-crt .fc-chips{ margin:8px 10px 10px; }
+#vatc .lkwrap .skillchips{ display:none; }
 #vatc .skillchips{ display:flex; gap:7px; flex-wrap:wrap; margin:0 0 10px; }
 #vatc .skillchips .chip{ letter-spacing:.08em; text-transform:uppercase; font-size:9.5px; }
+#vatc .debrief .skillchips{ display:flex; }
 #vatc .debrief{ display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin:8px 0 4px; padding:6px 0 2px; border-top:1px dashed var(--line); }
 #vatc .debrief .dlbl{ font-family:var(--fd); font-size:9px; letter-spacing:.16em; color:var(--amber); margin-right:4px; }
 #vatc .saythis{ font-family:var(--fm); margin-bottom:12px; border:1px solid var(--green-dim); background:rgba(57,240,160,.06); border-radius:10px; padding:12px 14px; }
@@ -1653,30 +1666,92 @@
     return hits.slice(0,8);
   }
 
+  function shortQuote(text, max){
+    const t=String(text||'').replace(/\s+/g,' ').trim();
+    if(!t) return '';
+    max=max||220;
+    if(t.length<=max) return t;
+    return t.slice(0,max).replace(/\s+\S*$/,'')+'…';
+  }
+  function pubIdForDoc(doc){
+    const d=String(doc||'');
+    if(/FACMAN|NFG/i.test(d)) return 'facman';
+    if(/7110/.test(d)) return 'jo';
+    if(/3500\.39/i.test(d)) return 'orm';
+    if(/5100\.23/i.test(d)) return 'soh';
+    return null;
+  }
+  function findNeedleFromBook(b){
+    if(!b) return '';
+    const ph=phraseologyOf(b);
+    if(ph){
+      const line=ph.split(/\n/).map(s=>s.trim()).filter(Boolean)[0];
+      if(line&&line.length>12) return line.slice(0,80);
+    }
+    const raw=String(b.text||'').replace(/\s+/g,' ').trim();
+    const m=raw.match(/^[\dA-Z .\-–—]+\.\s*(.{20,90})/);
+    if(m) return m[1].trim();
+    return raw.slice(0,70);
+  }
+  function openFindHit(opts){
+    const pub=opts.pub || pubIdForDoc(opts.doc);
+    const needle=String(opts.needle||opts.q||'').trim();
+    const page=Math.max(1, parseInt(opts.page,10)||1);
+    if(!pub) return;
+    set({tab:(S.tab==='ask'||S.tab==='reference')?S.tab:'reference', pub, pubPage:page, pubQ:needle});
+  }
+
   function drawLookup(query){
     const box=document.getElementById('refhits'); if(!box) return;
     const q=(query||'').trim();
+    S.refQ=q;
     const dump=document.getElementById('refdump');
     if(dump) dump.hidden=!!q;
     const wrap=document.querySelector('#vatc .lkwrap');
     if(wrap) wrap.classList.toggle('hasq', !!q);
+    const toolsClear=document.querySelector('#vatc [data-action="findclear"]');
+    const toolsBack=document.querySelector('#vatc [data-action="findback"]');
+    if(toolsClear) toolsClear.hidden=!(q||S.pub);
+    if(toolsBack) toolsBack.hidden=!S.pub;
     if(!q){ box.innerHTML=''; return; }
-    const exact=bookResolve(q);
-    const pane=exact?`<div class="lkcard book">${bookBodyHTML(exact)}<div class="lkmeta"><span class="citation">${escTxt(bookCite(exact))}</span><span class="lkpill loc">BOOK</span></div></div>`:'';
-    const hits=siftLookup(q);
-    if(!hits.length && !exact){ box.innerHTML='<div class="lkempty">No hit in FACMAN / 7110.65 / strips. Try a paragraph number.</div>'; return; }
-    const rest=hits.map(h=>{
-      const e=h.e, src=e.src||{};
-      if(e.origin==='book' && e.book && exact && e.book.cite===exact.cite) return '';
-      if(e.origin==='book' && e.book){
-        return `<div class="lkcard book">${bookBodyHTML(e.book)}<div class="lkmeta"><span class="citation">${escTxt(bookCite(e.book))}</span><span class="lkpill loc">BOOK</span></div></div>`;
+    if(S.pub){
+      box.innerHTML='<div class="note">PDF open — ← HITS to return to results, CLEAR to reset.</div>';
+      return;
+    }
+    const hits=askHits(q);
+    if(!hits.length){
+      box.innerHTML='<div class="lkempty">No hit in FACMAN / 7110.65 pack. Try a paragraph number, or open a pub and Find in that PDF.</div>';
+      // kick a quiet cross-pub scan when possible
+      queueCrossPubFind(q);
+      return;
+    }
+    box.innerHTML=hits.map((h,i)=>{
+      const b=h.book||null;
+      if(b){
+        const cite=bookCite(b);
+        const quote=shortQuote(b.text||b.title||'', 240);
+        const pub=pubIdForDoc(b.doc);
+        const needle=escTxt(findNeedleFromBook(b)).replace(/"/g,'&quot;');
+        return `<button type="button" class="findhit" data-action="openfindhit" data-pub="${pub||''}" data-doc="${escTxt(b.doc||'')}" data-needle="${needle}" data-cite="${escTxt(b.cite||'')}">
+          <span class="fh-band">${escTxt(h.band||'HIT')}</span>
+          <div class="fh-cite">${escTxt(cite)}</div>
+          <div class="fh-quote">${escTxt(quote)}</div>
+        </button>`;
       }
-      const chip=`${src.doc||'—'} · ${src.pg||src.pa||'—'}`;
-      const pill=h.band==='OPERATIONAL'?'op':h.band==='LOCAL'?'loc':'bg';
-      const why=e.reason?`<div class="lkwhy">${e.reason}</div>`:'';
-      return `<div class="lkcard"><div class="lka">${escTxt(e.a)}</div><div class="lkmeta"><span class="citation">${escTxt(chip)}</span><span class="lkpill ${pill}">${h.band}</span></div>${why}</div>`;
+      if(h.e){
+        const e=h.e, src=e.src||{};
+        const cite=`${src.doc||'—'} · ${src.pg||src.pa||'—'}`;
+        const quote=shortQuote(e.a||e.q||'', 200);
+        const pub=pubIdForDoc(src.doc);
+        const needle=escTxt(shortQuote(e.a||'', 60)).replace(/"/g,'&quot;');
+        return `<button type="button" class="findhit" data-action="openfindhit" data-pub="${pub||''}" data-doc="${escTxt(src.doc||'')}" data-needle="${needle}">
+          <span class="fh-band">${escTxt(h.band||'HIT')}</span>
+          <div class="fh-cite">${escTxt(cite)}</div>
+          <div class="fh-quote">${escTxt(quote)}</div>
+        </button>`;
+      }
+      return '';
     }).join('');
-    box.innerHTML=pane+rest;
   }
   function onLookupInput(){
     const inp=document.getElementById('reflk'); if(!inp) return;
@@ -1700,11 +1775,14 @@
     if(inp){ inp.focus(); try{inp.select();}catch(_){} }
   }
   function lookupConsole(){
-    return `<div class="lkwrap">
-      <div class="qmeta"><span class="pill warn">LOOKUP · FACMAN / 7110.65 / STRIPS</span><span class="muted" style="font-size:11px">/ lookup · Ctrl/⌘F finds in the open pub · Esc · SAMPLE</span></div>
-      <div class="lkbar"><input id="reflk" placeholder="work speed, 2-4-8, pass a bay" autocomplete="off" spellcheck="false"></div>
-      <div class="skillchips">${skillChipHTML('skillchip')}</div>
-      <div class="lkhint">Operational first · local when the query is KNFG · background last · skill chips fill the box</div>
+    const q=escTxt(S.refQ||'');
+    return `<div class="lkwrap${(S.refQ||'').trim()?' hasq':''}">
+      <div class="qmeta"><span class="pill warn">FIND · PUBS</span><span class="muted" style="font-size:11px">Ctrl/⌘F · Esc back/clear · SAMPLE</span></div>
+      <div class="findbar"><input id="reflk" placeholder="type a phrase — pass a bay, work speed, 2-1-2" autocomplete="off" spellcheck="false" value="${q}"><button class="btn" data-action="findgo">FIND</button></div>
+      <div class="findtools">
+        <button class="btn-ghost" data-action="findback"${S.pub?'':' hidden'}>← HITS</button>
+        <button class="btn-ghost" data-action="findclear"${(S.refQ||'').trim()||S.pub?'':' hidden'}>CLEAR</button>
+      </div>
       <div id="refhits"></div>
     </div>`;
   }
@@ -1994,10 +2072,9 @@
       <div class="grp">Radar positions</div><div class="pgrid">${board('RADAR')}</div>
       ${quiz}`; }
 
-  function askView(){ return `<div class="qmeta"><span class="pill warn">ASK KNFG · source-anchored</span><span class="muted" style="font-size:11px">offline knowledge base</span></div>
-      <div class="askbar"><input id="askq" placeholder="Ask about KNFG — e.g. &quot;how to pass a bay&quot; or &quot;tower frequency&quot;" autocomplete="off"><button class="btn" data-action="asksubmit">ASK</button></div>
-      <div class="askchips">${ASK_CHIPS.map(q=>`<span class="chip" data-action="askchip" data-q="${q.replace(/"/g,'&quot;')}">${q}</span>`).join('')}</div>
-      <div id="askresults"></div>`; }
+  function askView(){
+    return lookupConsole()+pdfPaneHTML();
+  }
   function askMatch(query){ const q=(query||'').toLowerCase(); if(!q.trim())return null; const tok=q.split(/[^a-z0-9]+/).filter(Boolean);
     let best=null,bs=0; ASK.forEach(e=>{let s=0; e.kw.forEach(k=>{ if(q.includes(k))s+=2; else if(tok.includes(k))s+=1; }); if(s>bs){bs=s;best=e;}}); return bs>0?best:null; }
   function askHits(query){
@@ -2037,35 +2114,29 @@
     return hits.slice(0,8);
   }
   function askResultHTML(r,query){
-    const empty=`<div class="ans"><div class="at">${I.ask} No match in the current pack</div><div class="abody">I don\u2019t have a validated answer for that yet — this offline pack covers KNFG frequencies, runways, navaids, departures, approaches & missed approaches, separation, and positions. Try one of these:</div><div class="related">${ASK_CHIPS.map(q=>`<span class="chip" data-action="askchip" data-q="${q.replace(/"/g,'&quot;')}">${q}</span>`).join('')}</div><div class="note" style="margin-top:12px">Production note: the live app answers open-ended questions with an AI layer over the same validated, source-anchored content packs.</div></div>`;
+    const empty=`<div class="ans"><div class="at">${I.ask} No match in the current pack</div><div class="abody">No validated hit yet — try a paragraph number or a phrase from FACMAN / 7110.65.</div></div>`;
     if(!r) return empty;
-    // legacy single ASK object {t,a,src}
     if(!Array.isArray(r) && r.t && r.a && !r.book && !r.kind){
       const e=r;
-      const rel=ASK.filter(x=>x!==e).sort(()=>Math.random()-0.5).slice(0,3).map(x=>`<span class="chip" data-action="askchip" data-q="${x.t.replace(/"/g,'&quot;')}">${x.t}</span>`).join('');
       return `<div class="ans"><div class="at">${I.chk} ${e.t}</div><div class="abody">${e.a}</div>
-      ${e.rt?routeBox('Route',e.rt):''}${e.viz==='scope'?scopeMini():''}
-      <div><span class="citation">${I.ext} ${e.src.doc}${e.src.pg&&e.src.pg!=='—'?' · p.'+e.src.pg:''}</span></div>
-      <div class="related">${rel}</div></div>`;
+      <div><span class="citation">${I.ext} ${e.src.doc}${e.src.pg&&e.src.pg!=='—'?' · p.'+e.src.pg:''}</span></div></div>`;
     }
     const hits=Array.isArray(r)?r:(r?[r]:[]);
     if(!hits.length) return empty;
-    const rel=`<div class="related">${ASK_CHIPS.map(q=>`<span class="chip" data-action="askchip" data-q="${q.replace(/"/g,'&quot;')}">${q}</span>`).join('')}</div>`;
     return hits.map((h,i)=>{
       const cls=i?'ans rel':'ans';
-      const b=h.book || (h.kind==='book' && h.book) || null;
+      const b=h.book || null;
       if(b){
-        const ph=phraseologyOf(b);
-        const say=ph?`<div class="saythis"><span class="saylbl">SAY THIS</span><div class="saybody">${escTxt(ph)}</div></div>`:'';
-        const title=ph?'':`<div class="at">${I.chk} ${escTxt(b.title||b.pa||b.cite)}</div>`;
-        return `<div class="${cls}">${say}${title}<div class="abody">${bookBodyHTML(b)}</div>
-      <div><span class="citation">${I.ext} ${escTxt(bookCite(b))}</span></div>${i===0?rel:''}</div>`;
+        // Keep enough book text for source checks; UI views use compact drawLookup.
+        const quote=shortQuote(b.text||'', 320);
+        const body=b.text?('<div class="booktxt">'+escTxt(b.text)+'</div>'):escTxt(quote);
+        return `<div class="${cls}"><div class="at">${I.chk} ${escTxt(b.title||b.pa||b.cite)}</div><div class="abody">${body}</div>
+      <div><span class="citation">${I.ext} ${escTxt(bookCite(b))}</span></div></div>`;
       }
       if(h.e){
         const e=h.e, src=e.src||{};
-        const why=e.reason?`<div class="why">${e.reason}</div>`:'';
         return `<div class="${cls}"><div class="at">${I.chk} ${escTxt(e.q||'')}</div><div class="abody">${escTxt(e.a||'')}</div>
-      <div><span class="citation">${I.ext} ${escTxt((src.doc||'')+' · '+(src.pg||'')+' · '+(src.pa||''))}</span></div>${why}${i===0?rel:''}</div>`;
+      <div><span class="citation">${I.ext} ${escTxt((src.doc||'')+' · '+(src.pg||'')+' · '+(src.pa||''))}</span></div></div>`;
       }
       if(h.t && h.a){
         return `<div class="${cls}"><div class="at">${I.chk} ${h.t}</div><div class="abody">${h.a}</div>
@@ -2255,6 +2326,47 @@
       <div class="pdfstage"><canvas id="pdfcanvas"></canvas></div>
     </div>`;
   }
+  function queueCrossPubFind(q){
+    const query=String(q||'').trim();
+    if(!query || query.length<3) return;
+    const box=document.getElementById('refhits');
+    // Only when empty — append pub scan status without inventing answers
+    loadPdfJs().then(async lib=>{
+      if((S.refQ||'').trim()!==query) return;
+      const needle=query.toLowerCase();
+      const found=[];
+      for(const pub of PUBS){
+        try{
+          const doc=await lib.getDocument({url:pub.href}).promise;
+          const max=Math.min(doc.numPages, 40); // first pass cap — accuracy over exhaustiveness
+          for(let p=1;p<=max;p++){
+            const page=await doc.getPage(p);
+            const tc=await page.getTextContent();
+            const txt=tc.items.map(it=>it.str).join(' ').toLowerCase();
+            if(txt.indexOf(needle)>=0){
+              found.push({pub:pub.id, lab:pub.lab, page:p});
+              break;
+            }
+          }
+        }catch(_){}
+        if((S.refQ||'').trim()!==query) return;
+      }
+      if(!box || (S.refQ||'').trim()!==query || S.pub) return;
+      if(!found.length){
+        if(!box.innerHTML || /No hit/.test(box.innerHTML)){
+          box.innerHTML='<div class="lkempty">No hit in pack or first pages of pubs. Open a publication and Find there.</div>';
+        }
+        return;
+      }
+      const extra=found.map(f=>`<button type="button" class="findhit" data-action="openfindhit" data-pub="${f.pub}" data-needle="${escTxt(query).replace(/"/g,'&quot;')}" data-page="${f.page}">
+          <span class="fh-band">PDF</span>
+          <div class="fh-cite">${escTxt(f.lab)} · p.${f.page}</div>
+          <div class="fh-quote">Matched “${escTxt(query)}” in extracted PDF text</div>
+        </button>`).join('');
+      if(/No hit|lkempty/.test(box.innerHTML)) box.innerHTML=extra;
+      else box.innerHTML+=extra;
+    }).catch(()=>{});
+  }
   function loadPdfJs(){
     return new Promise((res,rej)=>{
       if(window.pdfjsLib){
@@ -2312,6 +2424,7 @@
         pdfDoc=await lib.getDocument({url:pub.href}).promise;
       }
       await pdfDraw();
+      if(S.pubQ) await pdfFind(S.pubQ, true);
     }catch(err){
       const stage=document.querySelector('#vatc .pdfstage');
       if(stage) stage.innerHTML=`<iframe class="pdfiframe" src="${pub.href}" title="${escTxt(pub.lab)}"></iframe><div class="note" style="padding:8px 10px">pdf.js unavailable — iframe of the same-origin PDF. Find still uses extracted text when pdf.js loads.</div>`;
@@ -2408,12 +2521,20 @@
     else if(S.tab==='train')inner=trainView(); else if(S.tab==='sim')inner=simView(); else if(S.tab==='reference')inner=refView();
     return topbar()+tabs()+trackbar()+vidsStrip()+`<div class="body">${inner}</div>`+statusbar()+(S.source!=null?modal():''); }
 
-  function doAsk(){ const inp=document.getElementById('askq'); if(!inp)return; const r=askHits(inp.value); const out=document.getElementById('askresults'); if(out)out.innerHTML=askResultHTML(r,inp.value); }
+  function doAsk(){
+    const inp=document.getElementById('reflk')||document.getElementById('askq');
+    if(!inp) return;
+    S.refQ=inp.value;
+    // Prefer shared find UI when present
+    if(document.getElementById('refhits')){ drawLookup(inp.value); return; }
+    const r=askHits(inp.value);
+    const out=document.getElementById('askresults');
+    if(out) out.innerHTML=askResultHTML(r,inp.value);
+  }
 
   function render(){ if(S.screen==='station'){root.innerHTML=stationScreen();return;} root.innerHTML=appScreen();
     if(S.tab==='sim'&&PSIM[S.pos]==='scope')Scope.mount();
-    if(S.tab==='ask'){ const inp=document.getElementById('askq'); if(inp){ inp.addEventListener('keydown',e=>{if(e.key==='Enter')doAsk();}); setTimeout(()=>inp.focus(),30); } }
-    if(S.tab==='reference'){ bindLookup(); bindPdf(); }
+    if(S.tab==='ask'||S.tab==='reference'){ bindLookup(); bindPdf(); if(S.tab==='ask'||S.lkFocus){ S.lkFocus=false; setTimeout(()=>focusLookup(),20); } if((S.refQ||'').trim()) drawLookup(S.refQ); }
     bindFcGroups(); }
 
   // ===== events =====
@@ -2423,8 +2544,14 @@
     if(a==='simspeed'){document.querySelectorAll('#vatc #spd button').forEach(b=>b.classList.remove('on'));el.classList.add('on');return;}
     if(a==='simac'){Scope.sel=+el.dataset.i;Scope.renderList();Scope.renderCmd();if(!Scope.running)Scope.draw();return;}
     if(a==='simcmd')return Scope.cmd(el.dataset.c,el.dataset.v);
-    if(a==='asksubmit')return doAsk();
-    if(a==='askchip'){const inp=document.getElementById('askq');if(inp){inp.value=el.dataset.q;doAsk();}return;}
+    if(a==='asksubmit'||a==='findgo')return doAsk();
+    if(a==='askchip'||a==='skillchip'){const inp=document.getElementById('reflk')||document.getElementById('askq');if(inp){inp.value=el.dataset.q;doAsk();}return;}
+    if(a==='findclear'){ S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null; return set({refQ:'',pub:null,pubPage:1,pubQ:''}); }
+    if(a==='findback'){ return set({pub:null,pubPage:1,pubQ:''}); }
+    if(a==='openfindhit'){
+      openFindHit({pub:el.dataset.pub, doc:el.dataset.doc, needle:el.dataset.needle, page:el.dataset.page, q:S.refQ});
+      return;
+    }
     if(a==='goscope')return set({tab:'sim',pos:(PSIM[S.pos]==='scope'?S.pos:'fin')});
     if(a==='stations')return set({screen:'station'});
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
@@ -2450,7 +2577,7 @@
     if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({gca:true},S.fcOpen||{}); o[g]=true; return set({tab:'train',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o});}
     if(a==='fcgrp'){ const g=el.dataset.g||'gca'; setTimeout(()=>{ const o=Object.assign({gca:false,local:false,radar:false,strips:false},S.fcOpen||{gca:true}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
     if(a==='openpub')return set({tab:'reference',pub:el.dataset.id,pubPage:1,pubQ:S.pub===el.dataset.id?S.pubQ:''});
-    if(a==='pdfclose')return set({pub:null,pubPage:1});
+    if(a==='pdfclose')return set({pub:null,pubPage:1,pubQ:''});
     if(a==='pdfprev'){ S.pubPage=Math.max(1,(S.pubPage||1)-1); pdfDraw(); return; }
     if(a==='pdfnext'){ S.pubPage=(S.pubPage||1)+1; pdfDraw(); return; }
     if(a==='pdffindgo'){ const inp=document.getElementById('pdffind'); const q=inp?inp.value:''; if(pdfHits.length && pdfHits._q===String(q||'').trim().toLowerCase()) return pdfFindNext(true); return pdfFind(q,true); }
@@ -2472,24 +2599,27 @@
     const typing=tag==='input'||tag==='textarea';
     if((e.key==='f'||e.key==='F')&&(e.ctrlKey||e.metaKey)){
       e.preventDefault();
-      if(S.tab==='reference' && S.pub){
+      if((S.tab==='reference'||S.tab==='ask') && S.pub){
         const pf=document.getElementById('pdffind');
         if(pf){ pf.focus(); try{pf.select();}catch(_){} return; }
       }
-      if(S.screen!=='app'||S.tab!=='reference') return set({screen:'app',tab:'reference',lkFocus:true});
+      if(S.screen!=='app'||(S.tab!=='reference'&&S.tab!=='ask')) return set({screen:'app',tab:'ask',lkFocus:true});
       return focusLookup();
     }
     if(e.key==='/' && !e.ctrlKey && !e.metaKey && !e.altKey && !typing){
       e.preventDefault();
-      if(S.screen!=='app'||S.tab!=='reference') return set({screen:'app',tab:'reference',lkFocus:true});
+      if(S.screen!=='app'||(S.tab!=='reference'&&S.tab!=='ask')) return set({screen:'app',tab:'ask',lkFocus:true});
       return focusLookup();
     }
     if(e.key==='Escape'){
-      if(S.tab==='reference' && S.pub && document.activeElement && document.activeElement.id==='pdffind'){
+      if((S.tab==='reference'||S.tab==='ask') && S.pub && document.activeElement && document.activeElement.id==='pdffind'){
         e.preventDefault(); document.activeElement.value=''; S.pubQ=''; pdfHits=[]; pdfHitI=0; const h=document.getElementById('pdfhits'); if(h)h.textContent=''; return;
       }
+      if((S.tab==='reference'||S.tab==='ask') && S.pub){
+        e.preventDefault(); return set({pub:null,pubPage:1,pubQ:''});
+      }
       const inp=document.getElementById('reflk');
-      if(inp && S.tab==='reference'){ e.preventDefault(); inp.value=''; S.refQ=''; drawLookup(''); inp.focus(); }
+      if(inp && (S.tab==='reference'||S.tab==='ask')){ e.preventDefault(); inp.value=''; S.refQ=''; drawLookup(''); inp.focus(); }
     }
   });
 
