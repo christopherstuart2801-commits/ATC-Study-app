@@ -40,6 +40,15 @@
 #vatc h2.sec{ font-family:var(--fd); font-size:12px; letter-spacing:.22em; color:var(--green); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
 #vatc .pill{ font-size:9px; letter-spacing:.14em; padding:3px 8px; border-radius:20px; border:1px solid var(--line); color:var(--muted); text-transform:uppercase; }
 #vatc .pill.warn{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.06);} #vatc .pill.ok{ color:var(--green); border-color:var(--green-dim);}
+#vatc .authbar{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:14px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:var(--panel2); }
+#vatc .authbar.signed{ justify-content:flex-start; }
+#vatc .authbar .auth-fields{ display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:200px; }
+#vatc .authbar label{ display:flex; flex-direction:column; gap:4px; font-family:var(--fd); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+#vatc .authbar input{ font-family:var(--fm); font-size:14px; background:#0a1412; border:1px solid var(--line); color:var(--text); border-radius:8px; padding:10px 12px; min-width:120px; max-width:220px; }
+#vatc .authbar input:focus{ outline:none; border-color:var(--green); }
+#vatc .auth-who{ font-family:var(--fd); letter-spacing:.08em; text-transform:uppercase; color:var(--text); font-size:13px; }
+#vatc .pill.sample{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.08); }
+
 /* tabs — Home/Ask/Learn primary (stand out); Train/Sim/Reference secondary but readable */
 #vatc .tabs{ display:flex; gap:4px; align-items:stretch; border-bottom:1px solid var(--line); padding:6px 10px 0; background:#0a1211; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 #vatc .tab{ font-family:var(--fd); letter-spacing:.12em; text-transform:uppercase; font-size:12px; color:#9aafA4; background:transparent; border:1px solid transparent; border-bottom:2px solid transparent; border-radius:8px 8px 0 0; padding:12px 12px; min-height:44px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:7px; flex:0 0 auto; }
@@ -1927,8 +1936,25 @@
 
   const S={ screen:'app', station:'KNFG', pos:'rfd', tab:'home', trainMode:'practice',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcRated:{},fcDeck:'pos',fcGrp:'gca',fcOpen:{gca:true},
-    lessonsDone:{}, simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', rfcTopic:0, rfcChk:{}, rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'' };
+    lessonsDone:{}, simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', rfcTopic:0, rfcChk:{}, rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', trainee:null };
   function set(o){ Scope.teardown(); Object.assign(S,o); render(); }
+  const TRAINEE_KEY='vatc.trainee';
+  function loadTrainee(){
+    try{
+      const raw=localStorage.getItem(TRAINEE_KEY);
+      if(!raw) return null;
+      const t=JSON.parse(raw);
+      if(!t||!t.name||!t.initials) return null;
+      return {name:String(t.name).trim(), initials:String(t.initials).trim().toUpperCase().slice(0,3)};
+    }catch(e){ return null; }
+  }
+  function saveTrainee(t){
+    try{
+      if(!t) localStorage.removeItem(TRAINEE_KEY);
+      else localStorage.setItem(TRAINEE_KEY, JSON.stringify({name:t.name, initials:t.initials}));
+    }catch(e){}
+  }
+
 
   // ===== phraseology =====
   const DIG=['zero','one','two','three','four','five','six','seven','eight','niner'],NUM=['','one','two','three','four','five','six','seven','eight','nine'];
@@ -2105,7 +2131,14 @@
     const quiz=S.posOpen?'':`<div class="grp">KNFG Quizlets</div>
       ${fcSetChipRow(false)}
       <div class="explain" style="margin-bottom:14px">Named FACMAN decks at KNFG level — idents / TWR FREQ stay GENERAL, not duplicated on every position. FLASHCARDS on a position opens that position’s deck.</div>`;
-    return `<div class="hero reveal"><div class="hk">KNFG</div><div class="hn">MCAS Camp Pendleton · Munn Field · Oceanside, CA</div>
+    const authStrip=()=>{
+      const t=S.trainee;
+      if(t){
+        return `<div class="authbar signed"><span class="auth-who">${escTxt(t.name)} · ${escTxt(t.initials)}</span><span class="pill sample">SAMPLE</span><button class="qabtn" data-action="signoff">SIGN OFF</button></div>`;
+      }
+      return `<div class="authbar"><div class="auth-fields"><label>Name<input id="vatc-tr-name" maxlength="40" placeholder="Last name" autocomplete="nickname"></label><label>Operating initials<input id="vatc-tr-ini" maxlength="3" placeholder="CS" autocomplete="off"></label></div><button class="btn" data-action="signon">SIGN ON</button><span class="pill sample">BUILD</span></div>`;
+    };
+    return `${authStrip()}<div class="hero reveal"><div class="hk">KNFG</div><div class="hn">MCAS Camp Pendleton · Munn Field · Oceanside, CA</div>
         <div class="hstats"><div><b>RWY 21</b><span>Primary</span></div><div><b>78 ft</b><span>Field Elev</span></div><div><b>3 / 21</b><span>Runways</span></div><div><b>Ch 55</b><span>NFG TACAN</span></div><div><b>${POS.length}</b><span>Positions</span></div></div>
         <div class="qa"><button class="qabtn" data-action="tab" data-t="ask">${I.ask} Ask a question</button><button class="qabtn" data-action="tab" data-t="reference">${I.file} Charts & routes</button><button class="qabtn" data-action="goscope">${I.sim} Run the scope</button><button class="qabtn" data-action="acads">${I.grad} Academics</button></div></div>
       <div class="grp">Tower positions</div><div class="pgrid">${board('TOWER')}</div>
@@ -2605,6 +2638,16 @@
     if(a==='goscope')return set({tab:'sim',pos:(PSIM[S.pos]==='scope'?S.pos:'fin')});
     if(a==='stations')return set({screen:'station'});
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
+    if(a==='signon'){
+      const name=((document.getElementById('vatc-tr-name')||{}).value||'').trim();
+      const initials=((document.getElementById('vatc-tr-ini')||{}).value||'').trim().toUpperCase().slice(0,3);
+      if(!name||!initials) return;
+      const trainee={name, initials};
+      saveTrainee(trainee);
+      return set({trainee});
+    }
+    if(a==='signoff'){ saveTrainee(null); return set({trainee:null}); }
+
     if(a==='tab')return set({tab:el.dataset.t});
     if(a==='pos')return set({pos:el.dataset.p,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='posfocus'){const k=el.dataset.p; return set({pos:k,posOpen:k===S.posOpen?null:k,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});}
@@ -2673,6 +2716,7 @@
     }
   });
 
+  S.trainee=loadTrainee();
   render();
 })();
 </script>
