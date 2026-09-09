@@ -46,33 +46,30 @@
 #vatc .tab:hover{ color:var(--text); border-color:var(--green-dim); }
 #vatc .tab.on{ color:var(--green); border-color:rgba(57,240,160,.45); border-bottom-color:var(--green); background:rgba(57,240,160,.10); box-shadow:0 0 10px rgba(57,240,160,.15); }
 #vatc .tab svg{ width:15px; height:15px; flex:none; }
-/* primary nav: Home / Ask / Learn */
-#vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"]{
+/* top nav: all tabs same standout style */
+#vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
+#vatc .tab[data-t="train"], #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{
   font-size:13px; font-weight:600; letter-spacing:.14em; color:#c5ddd3;
   border:1px solid rgba(57,240,160,.42); border-bottom:2px solid transparent;
   padding:13px 15px; min-height:46px;
   background:rgba(57,240,160,.06);
   box-shadow:0 0 0 1px rgba(57,240,160,.08) inset, 0 0 12px rgba(57,240,160,.12);
 }
-#vatc .tab[data-t="home"]:hover, #vatc .tab[data-t="ask"]:hover, #vatc .tab[data-t="learn"]:hover{
+#vatc .tab[data-t="home"]:hover, #vatc .tab[data-t="ask"]:hover, #vatc .tab[data-t="learn"]:hover,
+#vatc .tab[data-t="train"]:hover, #vatc .tab[data-t="sim"]:hover, #vatc .tab[data-t="reference"]:hover{
   color:var(--green); border-color:var(--green); background:rgba(57,240,160,.12);
 }
-#vatc .tab[data-t="home"].on, #vatc .tab[data-t="ask"].on, #vatc .tab[data-t="learn"].on{
+#vatc .tab[data-t="home"].on, #vatc .tab[data-t="ask"].on, #vatc .tab[data-t="learn"].on,
+#vatc .tab[data-t="train"].on, #vatc .tab[data-t="sim"].on, #vatc .tab[data-t="reference"].on{
   color:#04150d; background:var(--green); border-color:var(--green); border-bottom-color:var(--green);
   box-shadow:0 0 16px rgba(57,240,160,.4);
 }
-/* secondary: Train / Sim / Reference — readable, quieter */
-#vatc .tab[data-t="train"], #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{
-  font-size:11px; color:var(--muted); opacity:.92; padding:11px 10px; min-height:42px;
-}
-#vatc .tab[data-t="train"].on, #vatc .tab[data-t="sim"].on, #vatc .tab[data-t="reference"].on{
-  opacity:1; color:var(--green); border-color:rgba(57,240,160,.35); border-bottom-color:var(--green);
-  background:rgba(57,240,160,.08);
-}
 @media(max-width:640px){
   #vatc .tabs{ gap:3px; padding:4px 6px 0; }
-  #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"]{ font-size:12px; padding:12px 11px; letter-spacing:.1em; min-height:44px; }
-  #vatc .tab[data-t="train"], #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{ font-size:10.5px; padding:10px 8px; min-height:40px; }
+  #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
+  #vatc .tab[data-t="train"], #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{
+    font-size:12px; padding:12px 11px; letter-spacing:.1em; min-height:44px;
+  }
 }
 /* trackbar */
 #vatc .trackbar{ display:flex; align-items:center; gap:6px; padding:10px 18px; border-bottom:1px solid var(--line); background:#0b1413; flex-wrap:wrap; }
