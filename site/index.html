@@ -378,6 +378,102 @@
 #vatc .fps-arr{ grid-template-columns:1.2fr .85fr .8fr 1.4fr 1.3fr .7fr; grid-template-areas:"cs cd et al rc ap" "ty pf ai al rc it" "ty cf ib al rc by"; }
 #vatc .fps-arr .fps-cs{grid-area:cs;} #vatc .fps-arr .fps-ty{grid-area:ty;} #vatc .fps-arr .fps-cd{grid-area:cd;} #vatc .fps-arr .fps-pf{grid-area:pf;} #vatc .fps-arr .fps-cf{grid-area:cf;} #vatc .fps-arr .fps-et{grid-area:et;} #vatc .fps-arr .fps-ai{grid-area:ai;} #vatc .fps-arr .fps-ib{grid-area:ib;} #vatc .fps-arr .fps-al{grid-area:al;} #vatc .fps-arr .fps-rc{grid-area:rc;} #vatc .fps-arr .fps-ap{grid-area:ap;} #vatc .fps-arr .fps-it{grid-area:it;} #vatc .fps-arr .fps-by{grid-area:by;}
 
+
+/* phone-orderly-home — centered, less edge-hug (@media max-width:640px) */
+@media(max-width:640px){
+  #vatc{ border-radius:0; border-left:none; border-right:none; min-height:100dvh; max-width:100%; }
+  #vatc .top{
+    flex-direction:column; align-items:center; justify-content:center;
+    gap:10px; padding:12px 14px; text-align:center;
+  }
+  #vatc .brand{ justify-content:center; }
+  #vatc .brand h1{ font-size:17px; letter-spacing:.14em; }
+  #vatc .brand .sub{ letter-spacing:.22em; }
+  #vatc .stnchip{
+    flex-direction:column; align-items:center; gap:8px; width:100%;
+  }
+  #vatc .stnchip > div{ text-align:center !important; width:100%; }
+  #vatc .stnchip .btn-ghost{ padding:8px 14px; min-height:40px; }
+
+  #vatc .tabs{
+    justify-content:center; gap:4px; padding:6px 8px 0;
+    scrollbar-width:none;
+  }
+  #vatc .tabs::-webkit-scrollbar{ display:none; }
+  #vatc .tab{
+    flex:1 1 0; justify-content:center; min-width:0;
+    padding:11px 6px; font-size:11px; letter-spacing:.08em; min-height:44px;
+  }
+  #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
+  #vatc .tab[data-t="train"], #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{
+    font-size:11px; padding:11px 6px; letter-spacing:.08em; min-height:44px;
+  }
+  #vatc .tab svg{ width:14px; height:14px; }
+
+  #vatc .trackbar{
+    justify-content:center; gap:6px 8px; padding:10px 12px;
+  }
+  #vatc .grplbl{
+    flex:0 0 100%; margin:4px 0 0; text-align:center;
+    font-size:9px; letter-spacing:.22em; color:var(--amber);
+  }
+  #vatc .grplbl:first-child{ margin-top:0; }
+  #vatc .tk{ padding:7px 12px; min-height:34px; display:inline-flex; align-items:center; }
+
+  #vatc .vids{
+    display:grid; grid-template-columns:1fr 1fr; overflow:visible;
+  }
+  #vatc .vids .cell{
+    border-right:none; border-bottom:1px solid var(--line);
+    padding:8px 12px; white-space:normal;
+  }
+  #vatc .vids .cell:nth-child(odd){ border-right:1px solid var(--line); }
+  #vatc .vids .metar{
+    grid-column:1 / -1; min-width:0; border-right:none; border-bottom:none;
+  }
+  #vatc .vids .metar .cv{ white-space:normal; word-break:break-word; }
+
+  #vatc .body{ padding:14px 14px 22px; }
+  #vatc .authbar{
+    flex-direction:column; align-items:stretch; gap:10px;
+    padding:12px; text-align:center;
+  }
+  #vatc .authbar .auth-fields{
+    flex-direction:column; min-width:0; width:100%; gap:8px;
+  }
+  #vatc .authbar input{ max-width:none; width:100%; min-width:0; }
+  #vatc .authbar .btn{ width:100%; justify-content:center; min-height:44px; }
+  #vatc .authbar.signed{
+    flex-direction:row; flex-wrap:wrap; justify-content:center; align-items:center;
+  }
+  #vatc .authbar.signed .btn, #vatc .authbar.signed .qabtn{ width:auto; }
+
+  #vatc .hero{ text-align:center; padding:16px 14px; margin-bottom:16px; }
+  #vatc .hero .hk{ font-size:32px; }
+  #vatc .hero .hn{ margin-top:6px; line-height:1.45; }
+  #vatc .hero .hstats{
+    justify-content:center; gap:12px 18px; margin-top:16px;
+  }
+  #vatc .hero .hstats div{ min-width:72px; }
+  #vatc .hero .qa{
+    display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px;
+  }
+  #vatc .hero .qabtn{
+    justify-content:center; text-align:center; padding:13px 10px; min-height:46px;
+    font-size:10.5px; letter-spacing:.06em;
+  }
+
+  #vatc .grp{ text-align:center; margin:18px 0 10px; }
+  #vatc .pgrid{ gap:12px; }
+  #vatc .pcard{ padding:14px; }
+  #vatc .pcard .pn{ text-align:left; }
+  #vatc .pos-acts .qabtn{ justify-content:center; min-height:44px; width:100%; }
+
+  #vatc .status{
+    flex-direction:column; align-items:center; gap:4px;
+    text-align:center; padding:8px 12px;
+  }
+}
 </style>
 
 <div id="vatc"><div class="grid-bg"></div><div class="wrap"><div id="app"></div></div></div>
@@ -2219,9 +2315,10 @@
     }).join('');
   }
 
-  function learnView(){ if((SYLLABUS[S.pos]||[]).length) return rfcLearn(); const ls=LESSONS[S.pos]||[];
+  function learnView(){ const fcDoor=`<div class="pos-acts"><button class="qabtn" data-action="poscards" data-p="${S.pos}">FLASHCARDS</button></div>`;
+    if((SYLLABUS[S.pos]||[]).length) return fcDoor+rfcLearn(); const ls=LESSONS[S.pos]||[];
     const cards=ls.map(L=>{const done=!!S.lessonsDone[L.id]; return `<div class="lesson ${done?'done':''}"><div class="lh"><div class="lt">${L.ic} ${L.t}</div><button class="mc ${done?'on':''}" data-action="lesson" data-id="${L.id}">${done?I.chk+' Done':'Mark complete'}</button></div><ul>${L.pts.map(p=>`<li>${p}</li>`).join('')}</ul>${L.scope?scopeDiagram():''}</div>`;}).join('');
-    return `<div class="qmeta"><span class="pill warn">PLAYBOOK · ${PN[S.pos].toUpperCase()}</span><span class="muted" style="font-size:11px">${ls.filter(L=>S.lessonsDone[L.id]).length}/${ls.length} complete</span></div>${cards}
+    return fcDoor+`<div class="qmeta"><span class="pill warn">PLAYBOOK · ${PN[S.pos].toUpperCase()}</span><span class="muted" style="font-size:11px">${ls.filter(L=>S.lessonsDone[L.id]).length}/${ls.length} complete</span></div>${cards}
       <div class="explain" style="margin-top:4px">Plain-language for the position. In the live app each point links to the exact FACMAN/NATOPS paragraph — verify against current pubs, then drill it in <b class="grn">Train</b> and <b class="grn">Sim</b>.</div>`; }
   function scopeDiagram(){ return `<svg viewBox="0 0 360 160" style="width:100%;max-width:360px;margin-top:10px;border:1px solid var(--line);border-radius:10px;background:radial-gradient(circle at 35% 50%,#0e2150,#081334)">
     <circle cx="110" cy="80" r="56" fill="none" stroke="rgba(150,180,225,.4)"/><circle cx="110" cy="80" r="30" fill="none" stroke="rgba(150,180,225,.4)"/>
