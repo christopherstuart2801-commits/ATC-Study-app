@@ -101,16 +101,20 @@
 #vatc .askbar input{ flex:1; font-family:var(--fm); font-size:13px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:13px 14px; outline:none;}
 #vatc .askbar input:focus{ border-color:var(--green2);}
 #vatc .askchips{ display:flex; gap:7px; flex-wrap:wrap; margin-bottom:16px;}
-#vatc .findhits{ display:flex; flex-direction:column; gap:6px; margin-top:10px; }
-#vatc .findhit{ border:1px solid var(--line); border-radius:9px; background:var(--panel); padding:10px 12px; cursor:pointer; text-align:left; width:100%; color:inherit; font:inherit; }
-#vatc .findhit:hover{ border-color:var(--green2); }
-#vatc .findhit .fh-cite{ font-family:var(--fm); font-size:11px; color:var(--green); letter-spacing:.02em; }
-#vatc .findhit .fh-quote{ font-family:var(--fm); font-size:12px; line-height:1.45; color:var(--muted); margin-top:4px; white-space:pre-wrap; }
-#vatc .findhit .fh-band{ float:right; font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--amber); }
-#vatc .findbar{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-#vatc .findbar input{ flex:1; font-family:var(--fm); font-size:13px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:13px 14px; outline:none; }
+#vatc .findhits{ display:flex; flex-direction:column; gap:5px; margin-top:8px; }
+#vatc .findhit{ border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:9px 11px; cursor:pointer; text-align:left; width:100%; color:inherit; font:inherit; transition:border-color .12s ease; }
+#vatc .findhit:hover{ border-color:var(--green2); background:var(--panel2); }
+#vatc .findhit:active{ border-color:var(--green); }
+#vatc .findhit .fh-cite{ font-family:var(--fm); font-size:11px; color:var(--green); letter-spacing:.03em; font-weight:600; }
+#vatc .findhit .fh-quote{ font-family:var(--fm); font-size:12px; line-height:1.4; color:var(--muted); margin-top:3px; white-space:pre-wrap; }
+#vatc .findhit .fh-band{ float:right; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin-left:8px; }
+#vatc .findbar{ display:flex; gap:7px; align-items:center; margin-bottom:6px; }
+#vatc .findbar input{ flex:1; font-family:var(--fm); font-size:13px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:8px; padding:11px 12px; outline:none; }
 #vatc .findbar input:focus{ border-color:var(--green2); }
-#vatc .findtools{ display:flex; gap:6px; flex-wrap:wrap; margin:0 0 8px; }
+#vatc .findtools{ display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin:0 0 6px; position:sticky; top:0; z-index:6; padding:6px 0; background:linear-gradient(180deg, var(--bg) 70%, transparent); }
+#vatc .findtools .btn-back{ font-family:var(--fm); background:var(--panel2); border:1px solid var(--green2); color:var(--green); padding:8px 14px; border-radius:8px; cursor:pointer; font-size:11px; letter-spacing:.12em; font-weight:600; min-height:36px; }
+#vatc .findtools .btn-back:hover{ background:var(--green-dim); color:var(--green); }
+#vatc .findtools .btn-back[hidden],#vatc .findtools .btn-ghost[hidden]{ display:none !important; }
 #vatc .lkwrap.hasq .booktxt{ display:none; }
 #vatc .chip{ font-family:var(--fm); font-size:10.5px; border:1px solid var(--line); background:var(--panel2); color:var(--muted); padding:7px 11px; border-radius:20px; cursor:pointer;}
 #vatc .chip:hover{ border-color:var(--green2); color:var(--green);}
@@ -244,7 +248,9 @@
 #vatc .ov{ position:absolute; inset:0; z-index:40; background:rgba(3,8,7,.85); display:grid; place-items:center; text-align:center; padding:24px;} #vatc .ov h3{font-family:var(--fd);letter-spacing:.14em;font-size:24px;color:var(--green);text-transform:uppercase;margin-bottom:6px;} #vatc .ov p{font-size:12px;color:var(--muted);margin-bottom:16px;}
 
 /* lookup console */
-#vatc .lkwrap{ margin-bottom:16px; }
+#vatc .lkwrap{ margin-bottom:12px; }
+#vatc .lkwrap .qmeta{ margin-bottom:8px; }
+#vatc .lkwrap .qmeta .muted{ letter-spacing:.02em; }
 #vatc .lkbar{ display:flex; gap:8px; }
 #vatc .lkbar input{ flex:1; font-family:var(--fm); font-size:15px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:16px 16px; outline:none; width:100%; }
 #vatc .lkbar input:focus{ border-color:var(--green); box-shadow:0 0 0 1px var(--green-dim); }
@@ -257,7 +263,8 @@
 #vatc .lkpill.loc{ color:var(--amber); border:1px solid #5a431d; background:rgba(255,178,77,.06); }
 #vatc .lkpill.bg{ color:var(--muted); border:1px solid var(--line); }
 #vatc .lkwhy{ font-size:11px; color:var(--muted); margin-top:6px; line-height:1.45; }
-#vatc .lkempty{ color:var(--muted); font-size:12px; padding:14px 0 6px; }
+#vatc .lkempty{ color:var(--muted); font-size:12px; padding:10px 2px 4px; line-height:1.45; }
+#vatc .lkwrap .note{ font-size:11px; color:var(--muted); padding:6px 2px 2px; letter-spacing:.02em; }
 /* RFC acad */
 #vatc .rfc-topic{ display:flex; align-items:baseline; gap:12px; border:1px solid var(--line); border-radius:10px; padding:14px 16px; background:var(--panel); margin-bottom:8px; cursor:pointer; }
 #vatc .rfc-topic:hover{ border-color:var(--red); }
@@ -285,11 +292,12 @@
 #vatc .fc-chip-groups{ display:flex; flex-direction:column; gap:6px; }
 #vatc .pcard.chip{ padding:10px 12px; }
 #vatc .pcard.chip .pd, #vatc .pcard.chip .pt{ display:none; }
-#vatc .pdfbox{ border:1px solid var(--line); border-radius:10px; background:#0a1211; margin:0 0 14px; overflow:hidden; }
-#vatc .pdfbar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:8px 10px; background:var(--panel2); border-bottom:1px solid var(--line); }
-#vatc .pdfbar input{ flex:1; min-width:140px; font-family:var(--fm); font-size:12px; background:var(--bg); border:1px solid var(--line); color:var(--text); border-radius:7px; padding:7px 10px; outline:none; }
+#vatc .pdfbox{ border:1px solid var(--line); border-radius:8px; background:#0a1211; margin:0 0 12px; overflow:hidden; }
+#vatc .pdfbar{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:7px 9px; background:var(--panel2); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+#vatc .pdfbar .btn-back{ font-family:var(--fm); background:var(--bg); border:1px solid var(--green2); color:var(--green); padding:7px 12px; border-radius:7px; cursor:pointer; font-size:11px; letter-spacing:.12em; font-weight:600; min-height:32px; }
+#vatc .pdfbar input{ flex:1; min-width:140px; font-family:var(--fm); font-size:12px; background:var(--bg); border:1px solid var(--line); color:var(--text); border-radius:7px; padding:7px 9px; outline:none; }
 #vatc .pdfbar input:focus{ border-color:var(--green2); }
-#vatc .pdfpg{ font-family:var(--fm); font-size:11px; color:var(--green); min-width:72px; text-align:center; }
+#vatc .pdfpg{ font-family:var(--fm); font-size:11px; color:var(--green); min-width:64px; text-align:center; letter-spacing:.04em; }
 #vatc .pdfstage{ background:#070d0c; overflow:auto; max-height:72vh; }
 #vatc .pdfstage canvas{ display:block; width:100%; height:auto; }
 #vatc .pdfiframe{ width:100%; height:72vh; border:0; background:#fff; }
@@ -1712,10 +1720,10 @@
     const toolsClear=document.querySelector('#vatc [data-action="findclear"]');
     const toolsBack=document.querySelector('#vatc [data-action="findback"]');
     if(toolsClear) toolsClear.hidden=!(q||S.pub);
-    if(toolsBack) toolsBack.hidden=!S.pub;
+    if(toolsBack) toolsBack.hidden=!(q||S.pub);
     if(!q){ box.innerHTML=''; return; }
     if(S.pub){
-      box.innerHTML='<div class="note">PDF open — ← HITS to return to results, CLEAR to reset.</div>';
+      box.innerHTML='<div class="note">PDF open — ← BACK returns to hits · CLEAR resets.</div>';
       return;
     }
     const hits=askHits(q);
@@ -1725,7 +1733,7 @@
       queueCrossPubFind(q);
       return;
     }
-    box.innerHTML=hits.map((h,i)=>{
+    box.innerHTML='<div class="findhits">'+hits.map((h,i)=>{
       const b=h.book||null;
       if(b){
         const cite=bookCite(b);
@@ -1751,7 +1759,7 @@
         </button>`;
       }
       return '';
-    }).join('');
+    }).join('')+'</div>';
   }
   function onLookupInput(){
     const inp=document.getElementById('reflk'); if(!inp) return;
@@ -1765,7 +1773,11 @@
     inp.addEventListener('input', onLookupInput);
     inp.addEventListener('keydown', e=>{
       if(e.key==='Enter'){ e.preventDefault(); clearTimeout(lkTimer); drawLookup(inp.value); }
-      if(e.key==='Escape'){ e.preventDefault(); inp.value=''; S.refQ=''; drawLookup(''); }
+      if(e.key==='Escape'){
+        e.preventDefault();
+        if(S.pub){ set({pub:null,pubPage:1,pubQ:''}); return; }
+        inp.value=''; S.refQ=''; drawLookup('');
+      }
     });
     if(S.refQ) drawLookup(S.refQ);
     if(S.lkFocus){ S.lkFocus=false; setTimeout(()=>{ inp.focus(); try{inp.select();}catch(_){} },20); }
@@ -1776,13 +1788,14 @@
   }
   function lookupConsole(){
     const q=escTxt(S.refQ||'');
-    return `<div class="lkwrap${(S.refQ||'').trim()?' hasq':''}">
-      <div class="qmeta"><span class="pill warn">FIND · PUBS</span><span class="muted" style="font-size:11px">Ctrl/⌘F · Esc back/clear · SAMPLE</span></div>
-      <div class="findbar"><input id="reflk" placeholder="type a phrase — pass a bay, work speed, 2-1-2" autocomplete="off" spellcheck="false" value="${q}"><button class="btn" data-action="findgo">FIND</button></div>
+    const deep=(S.refQ||'').trim()||S.pub;
+    return `<div class="lkwrap${(S.refQ||'').trim()?' hasq':''}${S.pub?' haspdf':''}">
+      <div class="qmeta"><span class="pill warn">FIND · PUBS</span><span class="muted" style="font-size:11px">Ctrl/⌘F · Esc steps back · SAMPLE</span></div>
       <div class="findtools">
-        <button class="btn-ghost" data-action="findback"${S.pub?'':' hidden'}>← HITS</button>
-        <button class="btn-ghost" data-action="findclear"${(S.refQ||'').trim()||S.pub?'':' hidden'}>CLEAR</button>
+        <button type="button" class="btn-back" data-action="findback"${deep?'':' hidden'} title="Back one level">← BACK</button>
+        <button type="button" class="btn-ghost" data-action="findclear"${deep?'':' hidden'}>CLEAR</button>
       </div>
+      <div class="findbar"><input id="reflk" placeholder="type a phrase — pass a bay, work speed, 2-1-2" autocomplete="off" spellcheck="false" value="${q}"><button class="btn" data-action="findgo">FIND</button></div>
       <div id="refhits"></div>
     </div>`;
   }
@@ -2314,6 +2327,7 @@
     const p=PUBS.find(x=>x.id===S.pub)||PUBS[0];
     return `<div class="pdfbox">
       <div class="pdfbar">
+        <button type="button" class="btn-back" data-action="findback" title="Back to hits">← BACK</button>
         <span class="pill ok">${escTxt(p.lab)}</span>
         <button class="btn-ghost" data-action="pdfprev">PREV</button>
         <span class="pdfpg" id="pdfpglbl">—</span>
@@ -2363,8 +2377,12 @@
           <div class="fh-cite">${escTxt(f.lab)} · p.${f.page}</div>
           <div class="fh-quote">Matched “${escTxt(query)}” in extracted PDF text</div>
         </button>`).join('');
-      if(/No hit|lkempty/.test(box.innerHTML)) box.innerHTML=extra;
-      else box.innerHTML+=extra;
+      if(/No hit|lkempty/.test(box.innerHTML)) box.innerHTML='<div class="findhits">'+extra+'</div>';
+      else {
+        const wrap=box.querySelector('.findhits');
+        if(wrap) wrap.insertAdjacentHTML('beforeend', extra);
+        else box.innerHTML=(box.innerHTML||'')+'<div class="findhits">'+extra+'</div>';
+      }
     }).catch(()=>{});
   }
   function loadPdfJs(){
@@ -2547,7 +2565,12 @@
     if(a==='asksubmit'||a==='findgo')return doAsk();
     if(a==='askchip'||a==='skillchip'){const inp=document.getElementById('reflk')||document.getElementById('askq');if(inp){inp.value=el.dataset.q;doAsk();}return;}
     if(a==='findclear'){ S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null; return set({refQ:'',pub:null,pubPage:1,pubQ:''}); }
-    if(a==='findback'){ return set({pub:null,pubPage:1,pubQ:''}); }
+    if(a==='findback'){
+      if(S.pub){ return set({pub:null,pubPage:1,pubQ:''}); }
+      S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null;
+      const inp=document.getElementById('reflk'); if(inp) inp.value='';
+      return set({refQ:'',pub:null,pubPage:1,pubQ:''});
+    }
     if(a==='openfindhit'){
       openFindHit({pub:el.dataset.pub, doc:el.dataset.doc, needle:el.dataset.needle, page:el.dataset.page, q:S.refQ});
       return;
