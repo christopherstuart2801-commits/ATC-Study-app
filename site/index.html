@@ -1819,6 +1819,9 @@
     if(/7110/.test(d)) return 'jo';
     if(/3500\.39/i.test(d)) return 'orm';
     if(/5100\.23/i.test(d)) return 'soh';
+    // Soft guesses for local/playbook cites that still belong in the FACMAN/JO pack
+    if(/FACILITY|AOM|LOA|CRAFT|playbook|technique|strips|KNFG/i.test(d)) return 'facman';
+    if(/FLIP|plate|TACAN|RNAV|VOR/i.test(d)) return 'jo';
     return null;
   }
   function findNeedleFromBook(b){
@@ -1834,11 +1837,17 @@
     return raw.slice(0,70);
   }
   function openFindHit(opts){
-    const pub=opts.pub || pubIdForDoc(opts.doc);
+    opts=opts||{};
+    let pub=String(opts.pub||'').trim() || pubIdForDoc(opts.doc);
     const needle=String(opts.needle||opts.q||'').trim();
     const page=Math.max(1, parseInt(opts.page,10)||1);
-    if(!pub) return;
-    set({tab:(S.tab==='ask'||S.tab==='reference')?S.tab:'reference', pub, pubPage:page, pubQ:needle});
+    let guessNote='';
+    if(!pub){
+      // Last-resort: open FACMAN so the click never silently no-ops; Find uses needle when present.
+      pub='facman';
+      guessNote='Opened FACMAN (best guess) — cite had no mapped pub.';
+    }
+    set({tab:(S.tab==='ask'||S.tab==='reference')?S.tab:'reference', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote});
   }
 
   function drawLookup(query){
@@ -2468,7 +2477,22 @@
   }
 
 
+    function appBase(){
+    let p='/';
+    try{ if(typeof location!=='undefined' && location && location.pathname) p=String(location.pathname); }catch(_){}
+    // Strip trailing filename (index.html etc.); treat no-extension path as a directory (Pages often omits trailing /).
+    if(/\/[^/]+\.[A-Za-z0-9]+$/.test(p)) p=p.replace(/\/[^/]+$/,'/');
+    else if(!p.endsWith('/')) p=p+'/';
+    return p || '/';
+  }
+  function assetUrl(rel){
+    const r=String(rel||'').replace(/^\.\//,'');
+    if(!r) return appBase();
+    if(/^(https?:|data:|blob:)/i.test(r)) return r;
+    return appBase()+r.replace(/^\//,'');
+  }
   const PUBS=[
+
     {id:'facman', href:'docs/NFG-FACMAN-July-2025.pdf', lab:'NFG FACMAN July 2025'},
     {id:'jo', href:'docs/JO-7110.65BB.pdf', lab:'JO 7110.65BB'},
     {id:'orm', href:'docs/OPNAVINST-3500.39D.pdf', lab:'OPNAVINST 3500.39D'},
@@ -2482,7 +2506,8 @@
   function pdfPaneHTML(){
     if(!S.pub) return '';
     const p=PUBS.find(x=>x.id===S.pub)||PUBS[0];
-    return `<div class="pdfbox">
+    const guess=(S.pubGuessNote?`<div class="note">${escTxt(S.pubGuessNote)}</div>`:'');
+    return `<div class="pdfbox">${guess}
       <div class="pdfbar">
         <button type="button" class="btn-back" data-action="findback" title="Back to hits">← BACK</button>
         <span class="pill ok">${escTxt(p.lab)}</span>
@@ -2508,7 +2533,7 @@
       const found=[];
       for(const pub of PUBS){
         try{
-          const doc=await lib.getDocument({url:pub.href}).promise;
+          const doc=await lib.getDocument({url:assetUrl(pub.href)}).promise;
           const max=Math.min(doc.numPages, 40); // first pass cap — accuracy over exhaustiveness
           for(let p=1;p<=max;p++){
             const page=await doc.getPage(p);
@@ -2544,15 +2569,16 @@
   }
   function loadPdfJs(){
     return new Promise((res,rej)=>{
+      const worker=assetUrl('vendor/pdfjs/pdf.worker.min.js');
       if(window.pdfjsLib){
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc='vendor/pdfjs/pdf.worker.min.js';
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc=worker;
         return res(window.pdfjsLib);
       }
       const s=document.createElement('script');
-      s.src='vendor/pdfjs/pdf.min.js';
+      s.src=assetUrl('vendor/pdfjs/pdf.min.js');
       s.onload=()=>{
         if(!window.pdfjsLib) return rej(new Error('pdfjs'));
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc='vendor/pdfjs/pdf.worker.min.js';
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc=worker;
         res(window.pdfjsLib);
       };
       s.onerror=()=>rej(new Error('pdfjs load'));
@@ -2594,15 +2620,16 @@
     }
     try{
       const lib=await loadPdfJs();
-      if(pdfSrc!==pub.href){
-        pdfSrc=pub.href; pdfHits=[]; pdfHitI=0; pdfTextIndex=null;
-        pdfDoc=await lib.getDocument({url:pub.href}).promise;
+      const pdfUrl=assetUrl(pub.href);
+      if(pdfSrc!==pdfUrl){
+        pdfSrc=pdfUrl; pdfHits=[]; pdfHitI=0; pdfTextIndex=null;
+        pdfDoc=await lib.getDocument({url:pdfUrl}).promise;
       }
       await pdfDraw();
       if(S.pubQ) await pdfFind(S.pubQ, true);
     }catch(err){
       const stage=document.querySelector('#vatc .pdfstage');
-      if(stage) stage.innerHTML=`<iframe class="pdfiframe" src="${pub.href}" title="${escTxt(pub.lab)}"></iframe><div class="note" style="padding:8px 10px">pdf.js unavailable — iframe of the same-origin PDF. Find still uses extracted text when pdf.js loads.</div>`;
+      if(stage) stage.innerHTML=`<iframe class="pdfiframe" src="${assetUrl(pub.href)}" title="${escTxt(pub.lab)}"></iframe><div class="note" style="padding:8px 10px">pdf.js unavailable — iframe of the same-origin PDF. Find still uses extracted text when pdf.js loads.</div>`;
     }
   }
   async function pdfFind(q, fwd){
@@ -2721,12 +2748,12 @@
     if(a==='simcmd')return Scope.cmd(el.dataset.c,el.dataset.v);
     if(a==='asksubmit'||a==='findgo')return doAsk();
     if(a==='askchip'||a==='skillchip'){const inp=document.getElementById('reflk')||document.getElementById('askq');if(inp){inp.value=el.dataset.q;doAsk();}return;}
-    if(a==='findclear'){ S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null; return set({refQ:'',pub:null,pubPage:1,pubQ:''}); }
+    if(a==='findclear'){ S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null; return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:''}); }
     if(a==='findback'){
-      if(S.pub){ return set({pub:null,pubPage:1,pubQ:''}); }
-      S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null;
+      if(S.pub){ return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:''}); }
+      S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null;
       const inp=document.getElementById('reflk'); if(inp) inp.value='';
-      return set({refQ:'',pub:null,pubPage:1,pubQ:''});
+      return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:''});
     }
     if(a==='openfindhit'){
       openFindHit({pub:el.dataset.pub, doc:el.dataset.doc, needle:el.dataset.needle, page:el.dataset.page, q:S.refQ});
@@ -2766,8 +2793,8 @@
     if(a==='src')return set({source:+el.dataset.i});
     if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({gca:true},S.fcOpen||{}); o[g]=true; return set({tab:'train',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o});}
     if(a==='fcgrp'){ const g=el.dataset.g||'gca'; setTimeout(()=>{ const o=Object.assign({gca:false,local:false,radar:false,strips:false},S.fcOpen||{gca:true}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
-    if(a==='openpub')return set({tab:'reference',pub:el.dataset.id,pubPage:1,pubQ:S.pub===el.dataset.id?S.pubQ:''});
-    if(a==='pdfclose')return set({pub:null,pubPage:1,pubQ:''});
+    if(a==='openpub')return set({tab:'reference',pub:el.dataset.id,pubPage:1,pubQ:S.pub===el.dataset.id?S.pubQ:'',pubGuessNote:''});
+    if(a==='pdfclose')return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:''});
     if(a==='pdfprev'){ S.pubPage=Math.max(1,(S.pubPage||1)-1); pdfDraw(); return; }
     if(a==='pdfnext'){ S.pubPage=(S.pubPage||1)+1; pdfDraw(); return; }
     if(a==='pdffindgo'){ const inp=document.getElementById('pdffind'); const q=inp?inp.value:''; if(pdfHits.length && pdfHits._q===String(q||'').trim().toLowerCase()) return pdfFindNext(true); return pdfFind(q,true); }
@@ -2806,7 +2833,7 @@
         e.preventDefault(); document.activeElement.value=''; S.pubQ=''; pdfHits=[]; pdfHitI=0; const h=document.getElementById('pdfhits'); if(h)h.textContent=''; return;
       }
       if((S.tab==='reference'||S.tab==='ask') && S.pub){
-        e.preventDefault(); return set({pub:null,pubPage:1,pubQ:''});
+        e.preventDefault(); return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:''});
       }
       const inp=document.getElementById('reflk');
       if(inp && (S.tab==='reference'||S.tab==='ask')){ e.preventDefault(); inp.value=''; S.refQ=''; drawLookup(''); inp.focus(); }
