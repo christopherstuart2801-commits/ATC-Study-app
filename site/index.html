@@ -40,10 +40,40 @@
 #vatc h2.sec{ font-family:var(--fd); font-size:12px; letter-spacing:.22em; color:var(--green); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
 #vatc .pill{ font-size:9px; letter-spacing:.14em; padding:3px 8px; border-radius:20px; border:1px solid var(--line); color:var(--muted); text-transform:uppercase; }
 #vatc .pill.warn{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.06);} #vatc .pill.ok{ color:var(--green); border-color:var(--green-dim);}
-/* tabs */
-#vatc .tabs{ display:flex; gap:2px; border-bottom:1px solid var(--line); padding:0 12px; background:#0a1211; overflow-x:auto; }
-#vatc .tab{ font-family:var(--fd); letter-spacing:.13em; text-transform:uppercase; font-size:11px; color:var(--muted); background:transparent; border:none; border-bottom:2px solid transparent; padding:13px 12px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:7px; }
-#vatc .tab:hover{color:var(--text);} #vatc .tab.on{color:var(--green); border-bottom-color:var(--green);} #vatc .tab svg{width:14px;height:14px;}
+/* tabs — Home/Ask/Learn primary (stand out); Train/Sim/Reference secondary but readable */
+#vatc .tabs{ display:flex; gap:4px; align-items:stretch; border-bottom:1px solid var(--line); padding:6px 10px 0; background:#0a1211; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+#vatc .tab{ font-family:var(--fd); letter-spacing:.12em; text-transform:uppercase; font-size:12px; color:#9aafA4; background:transparent; border:1px solid transparent; border-bottom:2px solid transparent; border-radius:8px 8px 0 0; padding:12px 12px; min-height:44px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:7px; flex:0 0 auto; }
+#vatc .tab:hover{ color:var(--text); border-color:var(--green-dim); }
+#vatc .tab.on{ color:var(--green); border-color:rgba(57,240,160,.45); border-bottom-color:var(--green); background:rgba(57,240,160,.10); box-shadow:0 0 10px rgba(57,240,160,.15); }
+#vatc .tab svg{ width:15px; height:15px; flex:none; }
+/* primary nav: Home / Ask / Learn */
+#vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"]{
+  font-size:13px; font-weight:600; letter-spacing:.14em; color:#c5ddd3;
+  border:1px solid rgba(57,240,160,.42); border-bottom:2px solid transparent;
+  padding:13px 15px; min-height:46px;
+  background:rgba(57,240,160,.06);
+  box-shadow:0 0 0 1px rgba(57,240,160,.08) inset, 0 0 12px rgba(57,240,160,.12);
+}
+#vatc .tab[data-t="home"]:hover, #vatc .tab[data-t="ask"]:hover, #vatc .tab[data-t="learn"]:hover{
+  color:var(--green); border-color:var(--green); background:rgba(57,240,160,.12);
+}
+#vatc .tab[data-t="home"].on, #vatc .tab[data-t="ask"].on, #vatc .tab[data-t="learn"].on{
+  color:#04150d; background:var(--green); border-color:var(--green); border-bottom-color:var(--green);
+  box-shadow:0 0 16px rgba(57,240,160,.4);
+}
+/* secondary: Train / Sim / Reference — readable, quieter */
+#vatc .tab[data-t="train"], #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{
+  font-size:11px; color:var(--muted); opacity:.92; padding:11px 10px; min-height:42px;
+}
+#vatc .tab[data-t="train"].on, #vatc .tab[data-t="sim"].on, #vatc .tab[data-t="reference"].on{
+  opacity:1; color:var(--green); border-color:rgba(57,240,160,.35); border-bottom-color:var(--green);
+  background:rgba(57,240,160,.08);
+}
+@media(max-width:640px){
+  #vatc .tabs{ gap:3px; padding:4px 6px 0; }
+  #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"]{ font-size:12px; padding:12px 11px; letter-spacing:.1em; min-height:44px; }
+  #vatc .tab[data-t="train"], #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{ font-size:10.5px; padding:10px 8px; min-height:40px; }
+}
 /* trackbar */
 #vatc .trackbar{ display:flex; align-items:center; gap:6px; padding:10px 18px; border-bottom:1px solid var(--line); background:#0b1413; flex-wrap:wrap; }
 #vatc .grplbl{ font-size:8px; letter-spacing:.18em; color:var(--amber); text-transform:uppercase; margin:0 2px 0 8px;}
