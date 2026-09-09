@@ -2039,8 +2039,8 @@
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
   function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.3</span></div>`; }
-  function tabs(){ const t=(k,ic,l)=>`<button class="tab ${S.tab===k?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;
-    return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('train',I.grad,'Train')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
+  function tabs(){ const t=(k,ic,l)=>{const on=S.tab===k||(k==='learn'&&S.tab==='train'); return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
+    return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
   function trackbar(){ let out='<span class="grplbl">TWR</span>'; let g='TOWER';
     out+=POS.filter(p=>p.g==='TOWER').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
     out+='<span class="grplbl">RDR</span>'+POS.filter(p=>p.g==='RADAR').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
