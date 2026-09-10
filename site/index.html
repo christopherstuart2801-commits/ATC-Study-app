@@ -40,16 +40,9 @@
 #vatc h2.sec{ font-family:var(--fd); font-size:12px; letter-spacing:.22em; color:var(--green); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
 #vatc .pill{ font-size:9px; letter-spacing:.14em; padding:3px 8px; border-radius:20px; border:1px solid var(--line); color:var(--muted); text-transform:uppercase; }
 #vatc .pill.warn{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.06);} #vatc .pill.ok{ color:var(--green); border-color:var(--green-dim);}
-#vatc .authbar{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:14px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:var(--panel2); }
-#vatc .authbar.signed{ justify-content:flex-start; }
-#vatc .authbar .auth-fields{ display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:200px; }
-#vatc .authbar label{ display:flex; flex-direction:column; gap:4px; font-family:var(--fd); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
-#vatc .authbar input{ font-family:var(--fm); font-size:14px; background:#0a1412; border:1px solid var(--line); color:var(--text); border-radius:8px; padding:10px 12px; min-width:120px; max-width:220px; }
-#vatc .authbar input:focus{ outline:none; border-color:var(--green); }
-#vatc .auth-who{ font-family:var(--fd); letter-spacing:.08em; text-transform:uppercase; color:var(--text); font-size:13px; }
 #vatc .pill.sample{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.08); }
 
-/* tabs — Home/Ask/Learn primary (stand out); Train/Sim/Reference secondary but readable */
+/* tabs — Home/Ask/Learn/Sim/Reference standout (no Train in top row) */
 #vatc .tabs{ display:flex; gap:4px; align-items:stretch; border-bottom:1px solid var(--line); padding:6px 10px 0; background:#0a1211; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 #vatc .tab{ font-family:var(--fd); letter-spacing:.12em; text-transform:uppercase; font-size:12px; color:#9aafA4; background:transparent; border:1px solid transparent; border-bottom:2px solid transparent; border-radius:8px 8px 0 0; padding:12px 12px; min-height:44px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:7px; flex:0 0 auto; }
 #vatc .tab:hover{ color:var(--text); border-color:var(--green-dim); }
@@ -57,7 +50,7 @@
 #vatc .tab svg{ width:15px; height:15px; flex:none; }
 /* top nav: all tabs same standout style */
 #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
-#vatc .tab[data-t="train"], #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{
+#vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{
   font-size:13px; font-weight:600; letter-spacing:.14em; color:#c5ddd3;
   border:1px solid rgba(57,240,160,.42); border-bottom:2px solid transparent;
   padding:13px 15px; min-height:46px;
@@ -65,18 +58,18 @@
   box-shadow:0 0 0 1px rgba(57,240,160,.08) inset, 0 0 12px rgba(57,240,160,.12);
 }
 #vatc .tab[data-t="home"]:hover, #vatc .tab[data-t="ask"]:hover, #vatc .tab[data-t="learn"]:hover,
-#vatc .tab[data-t="train"]:hover, #vatc .tab[data-t="sim"]:hover, #vatc .tab[data-t="reference"]:hover{
+#vatc .tab[data-t="sim"]:hover, #vatc .tab[data-t="reference"]:hover{
   color:var(--green); border-color:var(--green); background:rgba(57,240,160,.12);
 }
 #vatc .tab[data-t="home"].on, #vatc .tab[data-t="ask"].on, #vatc .tab[data-t="learn"].on,
-#vatc .tab[data-t="train"].on, #vatc .tab[data-t="sim"].on, #vatc .tab[data-t="reference"].on{
+#vatc .tab[data-t="sim"].on, #vatc .tab[data-t="reference"].on{
   color:#04150d; background:var(--green); border-color:var(--green); border-bottom-color:var(--green);
   box-shadow:0 0 16px rgba(57,240,160,.4);
 }
 @media(max-width:640px){
   #vatc .tabs{ gap:3px; padding:4px 6px 0; }
   #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
-  #vatc .tab[data-t="train"], #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{
+  #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{
     font-size:12px; padding:12px 11px; letter-spacing:.1em; min-height:44px;
   }
 }
@@ -379,101 +372,6 @@
 #vatc .fps-arr .fps-cs{grid-area:cs;} #vatc .fps-arr .fps-ty{grid-area:ty;} #vatc .fps-arr .fps-cd{grid-area:cd;} #vatc .fps-arr .fps-pf{grid-area:pf;} #vatc .fps-arr .fps-cf{grid-area:cf;} #vatc .fps-arr .fps-et{grid-area:et;} #vatc .fps-arr .fps-ai{grid-area:ai;} #vatc .fps-arr .fps-ib{grid-area:ib;} #vatc .fps-arr .fps-al{grid-area:al;} #vatc .fps-arr .fps-rc{grid-area:rc;} #vatc .fps-arr .fps-ap{grid-area:ap;} #vatc .fps-arr .fps-it{grid-area:it;} #vatc .fps-arr .fps-by{grid-area:by;}
 
 
-/* phone-orderly-home — centered, less edge-hug (@media max-width:640px) */
-@media(max-width:640px){
-  #vatc{ border-radius:0; border-left:none; border-right:none; min-height:100dvh; max-width:100%; }
-  #vatc .top{
-    flex-direction:column; align-items:center; justify-content:center;
-    gap:10px; padding:12px 14px; text-align:center;
-  }
-  #vatc .brand{ justify-content:center; }
-  #vatc .brand h1{ font-size:17px; letter-spacing:.14em; }
-  #vatc .brand .sub{ letter-spacing:.22em; }
-  #vatc .stnchip{
-    flex-direction:column; align-items:center; gap:8px; width:100%;
-  }
-  #vatc .stnchip > div{ text-align:center !important; width:100%; }
-  #vatc .stnchip .btn-ghost{ padding:8px 14px; min-height:40px; }
-
-  #vatc .tabs{
-    justify-content:center; gap:4px; padding:6px 8px 0;
-    scrollbar-width:none;
-  }
-  #vatc .tabs::-webkit-scrollbar{ display:none; }
-  #vatc .tab{
-    flex:1 1 0; justify-content:center; min-width:0;
-    padding:11px 6px; font-size:11px; letter-spacing:.08em; min-height:44px;
-  }
-  #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
-  #vatc .tab[data-t="train"], #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{
-    font-size:11px; padding:11px 6px; letter-spacing:.08em; min-height:44px;
-  }
-  #vatc .tab svg{ width:14px; height:14px; }
-
-  #vatc .trackbar{
-    justify-content:center; gap:6px 8px; padding:10px 12px;
-  }
-  #vatc .grplbl{
-    flex:0 0 100%; margin:4px 0 0; text-align:center;
-    font-size:9px; letter-spacing:.22em; color:var(--amber);
-  }
-  #vatc .grplbl:first-child{ margin-top:0; }
-  #vatc .tk{ padding:7px 12px; min-height:34px; display:inline-flex; align-items:center; }
-
-  #vatc .vids{
-    display:grid; grid-template-columns:1fr 1fr; overflow:visible;
-  }
-  #vatc .vids .cell{
-    border-right:none; border-bottom:1px solid var(--line);
-    padding:8px 12px; white-space:normal;
-  }
-  #vatc .vids .cell:nth-child(odd){ border-right:1px solid var(--line); }
-  #vatc .vids .metar{
-    grid-column:1 / -1; min-width:0; border-right:none; border-bottom:none;
-  }
-  #vatc .vids .metar .cv{ white-space:normal; word-break:break-word; }
-
-  #vatc .body{ padding:14px 14px 22px; }
-  #vatc .authbar{
-    flex-direction:column; align-items:stretch; gap:10px;
-    padding:12px; text-align:center;
-  }
-  #vatc .authbar .auth-fields{
-    flex-direction:column; min-width:0; width:100%; gap:8px;
-  }
-  #vatc .authbar input{ max-width:none; width:100%; min-width:0; }
-  #vatc .authbar .btn{ width:100%; justify-content:center; min-height:44px; }
-  #vatc .authbar.signed{
-    flex-direction:row; flex-wrap:wrap; justify-content:center; align-items:center;
-  }
-  #vatc .authbar.signed .btn, #vatc .authbar.signed .qabtn{ width:auto; }
-
-  #vatc .hero{ text-align:center; padding:16px 14px; margin-bottom:16px; }
-  #vatc .hero .hk{ font-size:32px; }
-  #vatc .hero .hn{ margin-top:6px; line-height:1.45; }
-  #vatc .hero .hstats{
-    justify-content:center; gap:12px 18px; margin-top:16px;
-  }
-  #vatc .hero .hstats div{ min-width:72px; }
-  #vatc .hero .qa{
-    display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px;
-  }
-  #vatc .hero .qabtn{
-    justify-content:center; text-align:center; padding:13px 10px; min-height:46px;
-    font-size:10.5px; letter-spacing:.06em;
-  }
-
-  #vatc .grp{ text-align:center; margin:18px 0 10px; }
-  #vatc .pgrid{ gap:12px; }
-  #vatc .pcard{ padding:14px; }
-  #vatc .pcard .pn{ text-align:left; }
-  #vatc .pos-acts .qabtn{ justify-content:center; min-height:44px; width:100%; }
-
-  #vatc .status{
-    flex-direction:column; align-items:center; gap:4px;
-    text-align:center; padding:8px 12px;
-  }
-}
 </style>
 
 <div id="vatc"><div class="grid-bg"></div><div class="wrap"><div id="app"></div></div></div>
@@ -2041,7 +1939,7 @@
 
   const S={ screen:'app', station:'KNFG', pos:'rfd', tab:'home', trainMode:'practice',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcRated:{},fcDeck:'pos',fcGrp:'gca',fcOpen:{gca:true},
-    lessonsDone:{}, simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', rfcTopic:0, rfcChk:{}, rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', trainee:null };
+    lessonsDone:{}, simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', rfcTopic:0, rfcChk:{}, rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'' };
   function set(o){ Scope.teardown(); Object.assign(S,o); render(); }
   const TRAINEE_KEY='vatc.trainee';
   function loadTrainee(){
@@ -2236,14 +2134,7 @@
     const quiz=S.posOpen?'':`<div class="grp">KNFG Quizlets</div>
       ${fcSetChipRow(false)}
       <div class="explain" style="margin-bottom:14px">Named FACMAN decks at KNFG level — idents / TWR FREQ stay GENERAL, not duplicated on every position. FLASHCARDS on a position opens that position’s deck.</div>`;
-    const authStrip=()=>{
-      const t=S.trainee;
-      if(t){
-        return `<div class="authbar signed"><span class="auth-who">${escTxt(t.name)} · ${escTxt(t.initials)}</span><span class="pill sample">SAMPLE</span><button class="qabtn" data-action="signoff">SIGN OFF</button></div>`;
-      }
-      return `<div class="authbar"><div class="auth-fields"><label>Name<input id="vatc-tr-name" maxlength="40" placeholder="Last name" autocomplete="nickname"></label><label>Operating initials<input id="vatc-tr-ini" maxlength="3" placeholder="CS" autocomplete="off"></label></div><button class="btn" data-action="signon">SIGN ON</button><span class="pill sample">BUILD</span></div>`;
-    };
-    return `${authStrip()}<div class="hero reveal"><div class="hk">KNFG</div><div class="hn">MCAS Camp Pendleton · Munn Field · Oceanside, CA</div>
+    return `<div class="hero reveal"><div class="hk">KNFG</div><div class="hn">MCAS Camp Pendleton · Munn Field · Oceanside, CA</div>
         <div class="hstats"><div><b>RWY 21</b><span>Primary</span></div><div><b>78 ft</b><span>Field Elev</span></div><div><b>3 / 21</b><span>Runways</span></div><div><b>Ch 55</b><span>NFG TACAN</span></div><div><b>${POS.length}</b><span>Positions</span></div></div>
         <div class="qa"><button class="qabtn" data-action="tab" data-t="ask">${I.ask} Ask a question</button><button class="qabtn" data-action="tab" data-t="reference">${I.file} Charts & routes</button><button class="qabtn" data-action="goscope">${I.sim} Run the scope</button><button class="qabtn" data-action="acads">${I.grad} Academics</button></div></div>
       <div class="grp">Tower positions</div><div class="pgrid">${board('TOWER')}</div>
@@ -2501,7 +2392,21 @@
   let pdfDoc=null, pdfSrc='', pdfHits=[], pdfHitI=0, pdfTextIndex=null, pdfDrawGen=0;
   function pubShelfHTML(){
     const rows=PUBS.map(p=>`<div class="rfc-topic ${S.pub===p.id?'on':''}" data-action="openpub" data-id="${p.id}"><span class="rfc-tt">${p.lab}</span></div>`).join('');
-    return `<details class="pos-acads"${S.pub?'':' open'}><summary>PUBLICATIONS</summary>${rows}</details>`;
+    return `<details class="pos-acads"${S.pub?'':' open'}><summary>PUBLICATIONS</summary>${rows}</details>`+pubSectionsHTML();
+  }
+  /* PDF page jumps verified Sep 2026 — App D skipped (listed ~p27 is not Appendix D; actual App D ~p155). Arrival uses verified p97 (listed ~p91 was still GCA). */
+  function pubSectionsHTML(){
+    const row=(pub,lab,page)=>`<div class="rfc-topic ${S.pub===pub&&S.pubPage===page?'on':''}" data-action="openpub" data-id="${pub}" data-page="${page}"><span class="rfc-tt">${lab}</span><span class="muted" style="font-size:10px;margin-left:8px">p.${page}</span></div>`;
+    const fac=[
+      ['Ch1 Facility Intro',19],['Ch2 Administration',23],['Ch3 Safety',40],['Ch4 Training Plan',43],
+      ['Ch5 Tower',51],['Ch6 Radar',80],['Ch6-2 GCA / Final',87],['Ch6-4 Arrival / Departure',97],
+      ['Ch6-5 Radar Supervisor',105],['Ch7 Facility Watch Officer',109],['Ch8 Equipment',111]
+    ].map(([lab,p])=>row('facman',lab,p)).join('');
+    const jo=[
+      ['Ch1 General',25],['Ch2 General Control',37],['Ch3 Airport Traffic Control',121],['Ch4 IFR',213],
+      ['Ch5 Radar',279],['Ch6 Nonradar',379],['Ch7 Visual',411],['Ch8 Offshore/Oceanic',443]
+    ].map(([lab,p])=>row('jo',lab,p)).join('');
+    return `<details class="pos-acads"><summary>SECTIONS · FACMAN</summary>${fac}</details><details class="pos-acads"><summary>SECTIONS · 7110.65</summary>${jo}</details>`;
   }
   function pdfPaneHTML(){
     if(!S.pub) return '';
@@ -2762,16 +2667,6 @@
     if(a==='goscope')return set({tab:'sim',pos:(PSIM[S.pos]==='scope'?S.pos:'fin')});
     if(a==='stations')return set({screen:'station'});
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
-    if(a==='signon'){
-      const name=((document.getElementById('vatc-tr-name')||{}).value||'').trim();
-      const initials=((document.getElementById('vatc-tr-ini')||{}).value||'').trim().toUpperCase().slice(0,3);
-      if(!name||!initials) return;
-      const trainee={name, initials};
-      saveTrainee(trainee);
-      return set({trainee});
-    }
-    if(a==='signoff'){ saveTrainee(null); return set({trainee:null}); }
-
     if(a==='tab')return set({tab:el.dataset.t});
     if(a==='pos')return set({pos:el.dataset.p,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='posfocus'){const k=el.dataset.p; return set({pos:k,posOpen:k===S.posOpen?null:k,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});}
@@ -2793,7 +2688,7 @@
     if(a==='src')return set({source:+el.dataset.i});
     if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({gca:true},S.fcOpen||{}); o[g]=true; return set({tab:'train',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o});}
     if(a==='fcgrp'){ const g=el.dataset.g||'gca'; setTimeout(()=>{ const o=Object.assign({gca:false,local:false,radar:false,strips:false},S.fcOpen||{gca:true}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
-    if(a==='openpub')return set({tab:'reference',pub:el.dataset.id,pubPage:1,pubQ:S.pub===el.dataset.id?S.pubQ:'',pubGuessNote:''});
+    if(a==='openpub'){const page=Math.max(1,parseInt(el.dataset.page,10)||1);return set({tab:'reference',pub:el.dataset.id,pubPage:page,pubQ:S.pub===el.dataset.id?S.pubQ:'',pubGuessNote:''});}
     if(a==='pdfclose')return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:''});
     if(a==='pdfprev'){ S.pubPage=Math.max(1,(S.pubPage||1)-1); pdfDraw(); return; }
     if(a==='pdfnext'){ S.pubPage=(S.pubPage||1)+1; pdfDraw(); return; }
@@ -2840,7 +2735,6 @@
     }
   });
 
-  S.trainee=loadTrainee();
   render();
 })();
 </script>
