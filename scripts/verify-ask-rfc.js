@@ -490,6 +490,8 @@ ok('D-4/D-5 strip block still present', /function facmanStripBlock\(\)/.test(htm
 
 ok('Academics action or acad handler', /data-action="acads"/.test(html) || /if\(a==='acad'\)/.test(html));
 ok('acads jumps to fin learn', /if\(a==='acads'\)return set\(\{pos:'fin',tab:'learn',rfcTopic:0\}\)/.test(html));
+ok('syllabusFor helper', /function\s+syllabusFor\s*\(/.test(html));
+ok('default pos is fin', /const S=\{ screen:'app', station:'KNFG', pos:'fin'/.test(html));
 ok('poslearn opens Learn', /if\(a==='poslearn'\)return set\(\{pos:el\.dataset\.p,tab:'learn'/.test(html));
 ok('home hides trackbar', /S\.tab==='home'\?'':trackbar\(\)/.test(html));
 ok('home cards tap poslearn', /class="pcard[\s\S]{0,80}data-action="poslearn"/.test(html));
@@ -538,7 +540,7 @@ if (sm) {
   let code = sm[1];
   code = code.replace(
     /document\.getElementById\('vatc'\)\.addEventListener\('click'[\s\S]*render\(\);\s*\}\)\(\);/,
-    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,FC_POS,posDeck,posProgress,rfcTrain,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcSetChipRow};\n})();'
+    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,FC_POS,posDeck,posProgress,rfcTrain,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcSetChipRow};\n})();'
   );
   try {
     eval(code);
@@ -617,9 +619,14 @@ if (sm) {
       const home = typeof V.homeView === 'function' ? V.homeView() : '';
       ok('homeView pcard percent', /pcpct/.test(home) && /%/.test(home));
       ok('home cards go Learn', /data-action="poslearn"/.test(home) && /tap → Learn/.test(home));
-      ok('empty syllabus pending sentence', /ACAD packet pending — paper not in yet\./.test(home));
+      ok('empty positions demo Final ACADs', /SAMPLE uses R\/Final ACADs/.test(home));
       const learn = typeof V.learnView === 'function' ? (V.S.pos='fin', V.learnView()) : '';
       ok('Learn lists ACAD-0520', /ACAD-0520/.test(learn), 'learn len=' + (learn&&learn.length));
+      const gndPack = typeof V.syllabusFor === 'function' ? V.syllabusFor('gnd') : null;
+      ok('Ground demos Final packet', !!(gndPack && gndPack.demo && gndPack.list && gndPack.list.length), gndPack && JSON.stringify({demo:gndPack.demo,n:(gndPack.list||[]).length}));
+      const finPack = typeof V.syllabusFor === 'function' ? V.syllabusFor('fin') : null;
+      ok('Final is not demo', !!(finPack && !finPack.demo && finPack.list && finPack.list.length));
+
       ok('FC_POS.fin exists', !!(V.FC_POS && Array.isArray(V.FC_POS.fin) && V.FC_POS.fin.length));
       ok('FC_POS.lcl exists', !!(V.FC_POS && Array.isArray(V.FC_POS.lcl) && V.FC_POS.lcl.length));
       const finDeck = (V.posDeck && V.posDeck('fin')) || (V.FC_POS && V.FC_POS.fin) || [];

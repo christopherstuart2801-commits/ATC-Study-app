@@ -2203,14 +2203,17 @@
     }).join('')}</div>`;
   }
   function rfcLearn(){
-    const RFC=SYLLABUS[S.pos]||[];
+    const pack=syllabusFor(S.pos); const RFC=pack.list;
+    const demoBanner=pack.demo?`<div class="pill warn" style="margin:0 0 10px">SAMPLE · ${PN[S.pos]||S.pos} — showing Radar Final ACADs until this position’s paper lands</div>`:'';
     const T=RFC.find(t=>t.n===S.rfcTopic);
     if(!T){
       const cards=RFC.map(t=>{
         const codes=(t.ids||[t.id]).map(id=>`<span class="rfc-acad">${id}</span>`).join(' ');
         return `<div class="rfc-topic" data-action="acad" data-n="${t.n}"><span class="rfc-n">${t.n}</span>${codes}<span class="rfc-tt">${t.t}</span></div>`;
       }).join('');
-      return `${acadChipRow()}<div class="qmeta"><span class="pill warn">RFC ACAD · RADAR FINAL</span><span class="muted" style="font-size:11px">NAVMC 3500.94 · SAMPLE</span></div>
+      const posLab=(PN[S.pos]||'POSITION').toUpperCase();
+      const pill=pack.demo?`RFC ACAD · ${posLab} (FINAL SAMPLE)`:`RFC ACAD · ${posLab}`;
+      return `${demoBanner}${acadChipRow()}<div class="qmeta"><span class="pill warn">${pill}</span><span class="muted" style="font-size:11px">NAVMC 3500.94 · ${pack.demo?'DEMO STAND-IN':'SAMPLE'}</span></div>
         <div class="brief" style="margin-bottom:14px"><b>Lesson Topic list</b> matches the paper: red topic numbers, red underlined ACAD codes. Click a topic for the 7110.65 / FACMAN checklist, then run that topic’s Test Exercise in Train. Position FLASHCARDS on Home open this position’s deck — KNFG Quizlets stay on Home / Train.</div>
         ${cards}`;
     }
@@ -2220,7 +2223,7 @@
       return `<div class="rfc-item ${on?'on':''}" data-action="rfcref" data-cite="${r[0]}" data-title="${escTxt(r[1]||'').replace(/"/g,'&quot;')}" data-k="${k}"><span class="rfc-mark">${on?'viewed':''}</span> <span class="rfc-pg">${r[0]}</span> <span class="rfc-pt">${r[1]}</span></div>`;
     }).join('');
     const done=T.refs.filter(r=>S.rfcChk[T.n+':'+r[0]]).length;
-    return `<div class="qmeta"><span class="pill warn">LESSON TOPIC ${T.n}</span><span class="muted" style="font-size:11px">${done}/${T.refs.length} viewed</span></div>
+    return `${demoBanner}<div class="qmeta"><span class="pill warn">LESSON TOPIC ${T.n}</span><span class="muted" style="font-size:11px">${done}/${T.refs.length} viewed</span></div>
       ${acadChipRow()}<div class="lesson"><div class="lh"><div class="lt"><span class="rfc-n">${T.n}</span> <span class="rfc-acad">${T.id}</span></div><button class="mc" data-action="rfclist">Topic list</button></div>
         <div class="rfc-tt" style="margin-bottom:8px">${T.full}</div>
         <div class="note">${T.req}</div>
@@ -2233,7 +2236,7 @@
   function rfcTrain(){
     const rfcSeg=`<div class="seg"><button class="${S.trainMode!=='cards'?'on':''}" data-action="train" data-m="rfc">TEST EXERCISE</button><button class="${S.trainMode==='cards'?'on':''}" data-action="train" data-m="cards">FLASHCARDS</button></div>`;
     if(S.trainMode==='cards') return rfcSeg+fcBody();
-    const RFC=SYLLABUS[S.pos]||[];
+    const pack=syllabusFor(S.pos); const RFC=pack.list;
     const n=S.rfcTopic||1; const T=RFC.find(t=>t.n===n)||RFC[0];
     const qs=T.test, i=Math.min(S.rfcQi, qs.length-1), item=qs[i];
     const pct=Math.round(i/qs.length*100);
@@ -2250,7 +2253,7 @@
   }
 
 
-  const S={ screen:'app', station:'KNFG', pos:'rfd', tab:'home', trainMode:'practice',
+  const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcRated:{},fcDeck:'pos',fcGrp:'gca',fcOpen:{gca:true},
     lessonsDone:{}, simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', rfcTopic:0, rfcChk:{}, rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null };
   function set(o){ Scope.teardown(); Object.assign(S,o); render(); }
@@ -2396,6 +2399,14 @@
     <div class="cell metar"><span class="cl">METAR (sample)</span><span class="cv">VRB05KT 10SM BKN023 20/14 A3004</span></div></div>`; }
 
   // ===== readiness =====
+  /** Own packet if present; else Radar Final as SAMPLE stand-in (demo until paper). */
+  function syllabusFor(k){
+    const own=SYLLABUS[k]||[];
+    if(own.length) return {list:own, demo:false, src:k};
+    const fin=SYLLABUS.fin||[];
+    if(fin.length) return {list:fin, demo:true, src:'fin'};
+    return {list:[], demo:false, src:k};
+  }
   function posProgress(k){
     const parts=[];
     const deck=posDeck(k);
@@ -2403,10 +2414,10 @@
     const fcTot=deck.length;
     const fcPct=fcTot?Math.round(fcDone/fcTot*100):0;
     if(fcTot) parts.push(fcDone/fcTot);
-    const syl=SYLLABUS[k]||[];
+    const sylPack=syllabusFor(k); const syl=sylPack.list;
     let learnDone=0, learnTot=0, learnLabel='Lessons';
     if(syl.length){
-      learnLabel='ACADs';
+      learnLabel=sylPack.demo?'ACADs (demo)':'ACADs';
       syl.forEach(T=> (T.refs||[]).forEach(r=>{ learnTot++; if(S.rfcChk[T.n+':'+r[0]]) learnDone++; }));
       if(learnTot) parts.push(learnDone/learnTot);
     } else {
@@ -2428,10 +2439,11 @@
   function homeView(){
     const board=g=>POS.filter(p=>p.g===g).map(p=>{
       const P=posProgress(p.k);
-      const pending=!(SYLLABUS[p.k]||[]).length;
+      const pack=syllabusFor(p.k);
+      const demoTag=pack.demo?' · SAMPLE uses R/Final ACADs':'';
       return `<div class="pcard ${S.pos===p.k?'on':''}" data-action="poslearn" data-p="${p.k}">
         <div class="pcard-hd"><span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div></div>
-        <div class="pos-body"><div class="pos-prog">${pending?'ACAD packet pending — paper not in yet.':`${P.learnLabel} ${P.learnDone}/${P.learnTot} · Cards ${P.fcDone}/${P.fcTot}`} · tap → Learn</div>
+        <div class="pos-body"><div class="pos-prog">${P.learnLabel} ${P.learnDone}/${P.learnTot} · Cards ${P.fcDone}/${P.fcTot}${demoTag} · tap → Learn</div>
           <div class="pos-acts"><button class="qabtn" data-action="poscards" data-p="${p.k}">FLASHCARDS</button><button class="qabtn" data-action="poslearn" data-p="${p.k}">LEARN</button></div>
         </div></div>`;
     }).join('');
@@ -2520,7 +2532,7 @@
   }
 
   function learnView(){ const fcDoor=`<div class="pos-acts"><button class="qabtn" data-action="poscards" data-p="${S.pos}">FLASHCARDS</button></div>`;
-    if((SYLLABUS[S.pos]||[]).length) return fcDoor+rfcLearn(); const ls=LESSONS[S.pos]||[];
+    if(syllabusFor(S.pos).list.length) return fcDoor+rfcLearn(); const ls=LESSONS[S.pos]||[];
     const cards=ls.map(L=>{const done=!!S.lessonsDone[L.id]; return `<div class="lesson ${done?'done':''}"><div class="lh"><div class="lt">${L.ic} ${L.t}</div><button class="mc ${done?'on':''}" data-action="lesson" data-id="${L.id}">${done?I.chk+' Done':'Mark complete'}</button></div><ul>${L.pts.map(p=>`<li>${p}</li>`).join('')}</ul>${L.scope?scopeDiagram():''}</div>`;}).join('');
     return fcDoor+`<div class="qmeta"><span class="pill warn">PLAYBOOK · ${PN[S.pos].toUpperCase()}</span><span class="muted" style="font-size:11px">${ls.filter(L=>S.lessonsDone[L.id]).length}/${ls.length} complete</span></div>${cards}
       <div class="explain" style="margin-top:4px">Plain-language for the position. In the live app each point links to the exact FACMAN/NATOPS paragraph — verify against current pubs, then drill it in <b class="grn">Train</b> and <b class="grn">Sim</b>.</div>`; }
@@ -2532,7 +2544,7 @@
     <text x="200" y="44" class="lbl2">◄ leader line (heading)</text><text x="200" y="60" class="lbl2">◄ callsign</text><text x="200" y="70" class="lbl2">◄ altitude(×100) / groundspeed</text>
     <text x="200" y="104" class="lbl2">◄ blue history trail</text><text x="200" y="118" class="lbl2">◄ range rings 5/10/15 NM</text></svg>`; }
 
-  function trainView(){ if((SYLLABUS[S.pos]||[]).length) return rfcTrain(); const seg=`<div class="seg"><button class="${S.trainMode==='practice'?'on':''}" data-action="train" data-m="practice">Practice</button><button class="${S.trainMode==='quiz'?'on':''}" data-action="train" data-m="quiz">Quiz</button><button class="${S.trainMode==='cards'?'on':''}" data-action="train" data-m="cards">Flashcards</button></div>`;
+  function trainView(){ if(syllabusFor(S.pos).list.length) return rfcTrain(); const seg=`<div class="seg"><button class="${S.trainMode==='practice'?'on':''}" data-action="train" data-m="practice">Practice</button><button class="${S.trainMode==='quiz'?'on':''}" data-action="train" data-m="quiz">Quiz</button><button class="${S.trainMode==='cards'?'on':''}" data-action="train" data-m="cards">Flashcards</button></div>`;
     return seg+(S.trainMode==='practice'?practiceBody():S.trainMode==='quiz'?quizBody():fcBody()); }
   function practiceBody(){ const q=Q[S.pIdx],pct=Math.round(S.pIdx/Q.length*100);
     const choices=q.c.map((c,i)=>{let cls='ch',dis='';if(S.pAns){dis='disabled';if(i===q.a)cls='ch correct';else if(i===S.pSel)cls='ch wrong';}else if(S.pSel===i)cls='ch sel';return `<button class="${cls}" ${dis} data-action="pchoose" data-i="${i}"><span class="key">${String.fromCharCode(65+i)}</span>${c}</button>`;}).join('');
