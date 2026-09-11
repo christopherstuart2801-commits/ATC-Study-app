@@ -383,6 +383,8 @@
 #vatc .fps-arr .fps-cs{grid-area:cs;} #vatc .fps-arr .fps-ty{grid-area:ty;} #vatc .fps-arr .fps-cd{grid-area:cd;} #vatc .fps-arr .fps-pf{grid-area:pf;} #vatc .fps-arr .fps-cf{grid-area:cf;} #vatc .fps-arr .fps-et{grid-area:et;} #vatc .fps-arr .fps-ai{grid-area:ai;} #vatc .fps-arr .fps-ib{grid-area:ib;} #vatc .fps-arr .fps-al{grid-area:al;} #vatc .fps-arr .fps-rc{grid-area:rc;} #vatc .fps-arr .fps-ap{grid-area:ap;} #vatc .fps-arr .fps-it{grid-area:it;} #vatc .fps-arr .fps-by{grid-area:by;}
 
 
+#vatc .citestep{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+#vatc .citestep .btn-ghost:disabled{opacity:.35;pointer-events:none}
 </style>
 
 <div id="vatc"><div class="grid-bg"></div><div class="wrap"><div id="app"></div></div></div>
@@ -1985,10 +1987,31 @@
     const ban=citeBannerFromBook(info.book, cite, opts.title);
     let guessNote='';
     if(!info.pub){ guessNote='Opened '+(pub==='jo'?'7110.65':'FACMAN')+' (best guess) — refine with Find if needed.'; }
-    const lr={pos:S.pos, rfcTopic:S.rfcTopic};
+    const lr={pos:S.pos, rfcTopic:S.rfcTopic, cite:String(cite||'')};
     // Every checklist cite click: clear stale Find hits / in-flight scan so 2nd+ cites re-jump.
     resetCitePdfFind();
     set({tab:'reference', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:ban.lab, pubCiteQuote:ban.quote, pubPreferPage:page, pubCiteSec:info.sec||'', learnReturn:lr, lkFocus:false, refQ:''});
+  }
+  function acadTopicRefs(pos, topicN){
+    const pack=syllabusFor(pos);
+    const T=(pack.list||[]).find(t=>t.n===topicN);
+    return T && T.refs && T.refs.length ? {T, refs:T.refs, pack} : null;
+  }
+  function stepLearnCite(delta){
+    const lr=S.learnReturn;
+    if(!lr) return;
+    const pack=acadTopicRefs(lr.pos, lr.rfcTopic);
+    if(!pack) return;
+    const cite=String(lr.cite||'');
+    let i=pack.refs.findIndex(r=>String(r[0])===cite);
+    if(i<0) i=0;
+    const n=i+delta;
+    if(n<0 || n>=pack.refs.length) return;
+    const r=pack.refs[n];
+    const k=pack.T.n+':'+r[0];
+    const d=Object.assign({},S.rfcChk); d[k]=true; S.rfcChk=d;
+    S.pos=lr.pos; S.rfcTopic=lr.rfcTopic;
+    openLearnCite(r[0], {title:r[1]||''});
   }
   function leavePdfToLearn(){
     const lr=S.learnReturn;
@@ -2399,13 +2422,10 @@
     <div class="cell metar"><span class="cl">METAR (sample)</span><span class="cv">VRB05KT 10SM BKN023 20/14 A3004</span></div></div>`; }
 
   // ===== readiness =====
-  /** Own packet if present; else Radar Final as SAMPLE stand-in (demo until paper). */
+  /** Position ACAD packet only — empty until paper uploaded (no stand-in). */
   function syllabusFor(k){
     const own=SYLLABUS[k]||[];
-    if(own.length) return {list:own, demo:false, src:k};
-    const fin=SYLLABUS.fin||[];
-    if(fin.length) return {list:fin, demo:true, src:'fin'};
-    return {list:[], demo:false, src:k};
+    return {list:own, demo:false, src:k};
   }
   function posProgress(k){
     const parts=[];
@@ -2417,7 +2437,7 @@
     const sylPack=syllabusFor(k); const syl=sylPack.list;
     let learnDone=0, learnTot=0, learnLabel='Lessons';
     if(syl.length){
-      learnLabel=sylPack.demo?'ACADs (demo)':'ACADs';
+      learnLabel='ACADs';
       syl.forEach(T=> (T.refs||[]).forEach(r=>{ learnTot++; if(S.rfcChk[T.n+':'+r[0]]) learnDone++; }));
       if(learnTot) parts.push(learnDone/learnTot);
     } else {
@@ -2440,10 +2460,10 @@
     const board=g=>POS.filter(p=>p.g===g).map(p=>{
       const P=posProgress(p.k);
       const pack=syllabusFor(p.k);
-      const demoTag=pack.demo?' · SAMPLE uses R/Final ACADs':'';
+      const pending=!pack.list.length;
       return `<div class="pcard ${S.pos===p.k?'on':''}" data-action="poslearn" data-p="${p.k}">
         <div class="pcard-hd"><span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div></div>
-        <div class="pos-body"><div class="pos-prog">${P.learnLabel} ${P.learnDone}/${P.learnTot} · Cards ${P.fcDone}/${P.fcTot}${demoTag} · tap → Learn</div>
+        <div class="pos-body"><div class="pos-prog">${pending?'ACAD packet pending — paper not in yet.':`${P.learnLabel} ${P.learnDone}/${P.learnTot} · Cards ${P.fcDone}/${P.fcTot}`} · tap → Learn</div>
           <div class="pos-acts"><button class="qabtn" data-action="poscards" data-p="${p.k}">FLASHCARDS</button><button class="qabtn" data-action="poslearn" data-p="${p.k}">LEARN</button></div>
         </div></div>`;
     }).join('');
@@ -2732,13 +2752,26 @@
     const citeBan=hasCite?`<div class="pdfcite"><div class="pc-lab">${escTxt(S.pubCiteLab||'CITE')}</div><div class="pc-q" id="pdfciteq">${escTxt(S.pubCiteQuote||'')}</div></div>`:'';
     const markBar=hasCite?`<div class="studymark"><button type="button" class="btn-ghost" data-action="markhl" title="Highlight selection or whole cite excerpt">Highlight</button><button type="button" class="btn-ghost" data-action="markul" title="Underline selection or whole cite excerpt">Underline</button><span class="muted">select cite text · SAMPLE</span></div>`:'';
     const backTitle=S.learnReturn?'Back to Learn checklist':'Back to hits';
-    return `<div class="pdfbox">${guess}${citeBan}${markBar}
+    let citeStep='';
+    if(S.learnReturn){
+      const pack=acadTopicRefs(S.learnReturn.pos, S.learnReturn.rfcTopic);
+      if(pack){
+        const cite=String(S.learnReturn.cite||'');
+        let i=pack.refs.findIndex(r=>String(r[0])===cite);
+        if(i<0) i=0;
+        const at=i+1, tot=pack.refs.length;
+        const prevDis=i<=0?' disabled':'';
+        const nextDis=i>=tot-1?' disabled':'';
+        citeStep=`<div class="citestep"><button type="button" class="btn-ghost" data-action="citeprev"${prevDis}>PREV SECTION</button><span class="muted">Section ${at} / ${tot}</span><button type="button" class="btn-ghost" data-action="citenext"${nextDis}>NEXT SECTION</button></div>`;
+      }
+    }
+    return `<div class="pdfbox">${guess}${citeBan}${markBar}${citeStep}
       <div class="pdfbar">
         <button type="button" class="btn-back" data-action="findback" title="${backTitle}">← BACK</button>
         <span class="pill ok">${escTxt(p.lab)}</span>
-        <button class="btn-ghost" data-action="pdfprev">PREV</button>
+        <button class="btn-ghost" data-action="pdfprev">PREV PAGE</button>
         <span class="pdfpg" id="pdfpglbl">—</span>
-        <button class="btn-ghost" data-action="pdfnext">NEXT</button>
+        <button class="btn-ghost" data-action="pdfnext">NEXT PAGE</button>
         <input id="pdffind" placeholder="Find in this pub (Enter / Shift+Enter)" autocomplete="off" spellcheck="false">
         <button class="btn-ghost" data-action="pdffindgo">FIND</button>
         <span class="muted" id="pdfhits"></span>
@@ -3055,6 +3088,8 @@
     }
     if(a==='markhl'){ toggleStudyMark('hl'); return; }
     if(a==='markul'){ toggleStudyMark('ul'); return; }
+    if(a==='citeprev'){ stepLearnCite(-1); return; }
+    if(a==='citenext'){ stepLearnCite(1); return; }
     if(a==='goscope')return set({tab:'sim',pos:(PSIM[S.pos]==='scope'?S.pos:'fin')});
     if(a==='stations')return set({screen:'station'});
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
