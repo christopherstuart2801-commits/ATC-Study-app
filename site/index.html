@@ -2596,14 +2596,15 @@
     // ACAD cite open: PDF only — no FIND / pub shelf / text overview (those stay on Reference)
     if(S.pub && S.learnReturn) return pdfPaneHTML();
     const hasAcad=!!syllabusFor(S.pos).list.length;
-    let mode=S.learnMode||'cards';
-    if(mode==='overview') mode=hasAcad?'acad':'cards';
-    if(mode==='acad' && !hasAcad) mode='cards';
-    if(mode!=='acad' && mode!=='cards') mode='cards';
-    const seg=`<div class="seg">`+
-      (hasAcad?`<button type="button" class="${mode==='acad'?'on':''}" data-action="learnmode" data-m="acad">ACADs</button>`:'')+
+    let mode=S.learnMode||'acad';
+    if(mode!=='acad' && mode!=='cards') mode='acad';
+    const seg=`<div class="seg"><button type="button" class="${mode==='acad'?'on':''}" data-action="learnmode" data-m="acad">ACADs</button>`+
       `<button type="button" class="${mode==='cards'?'on':''}" data-action="learnmode" data-m="cards">FLASHCARDS</button></div>`;
     if(mode==='cards') return seg+fcBody();
+    if(!hasAcad){
+      return seg+`<div class="qmeta"><span class="pill warn">ACADs · ${(PN[S.pos]||S.pos).toUpperCase()}</span></div>`+
+        `<div class="explain">ACAD packet pending — paper not in yet. FLASHCARDS still available for sourced decks.</div>`;
+    }
     if(S.trainMode==='rfc') return seg+rfcExerciseBody();
     return seg+rfcLearn();
   }
@@ -2779,7 +2780,7 @@
   let pdfDoc=null, pdfSrc='', pdfHits=[], pdfHitI=0, pdfTextIndex=null, pdfDrawGen=0, pdfFindGen=0;
   function pubShelfHTML(){
     const rows=PUBS.map(p=>`<div class="rfc-topic ${S.pub===p.id?'on':''}" data-action="openpub" data-id="${p.id}"><span class="rfc-tt">${p.lab}</span></div>`).join('');
-    return `<details class="pos-acads"${S.pub?'':' open'}><summary>PUBLICATIONS</summary>${rows}</details>`+pubSectionsHTML();
+    return `<details class="pos-acads"><summary>PUBLICATIONS</summary>${rows}</details>`+pubSectionsHTML();
   }
   /* PDF page jumps verified Sep 2026 — App D skipped (listed ~p27 is not Appendix D; actual App D ~p155). Arrival uses verified p97 (listed ~p91 was still GCA). */
   function pubSectionsHTML(){
@@ -3148,7 +3149,7 @@
     if(a==='pos')return set({pos:el.dataset.p,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='posfocus'){const k=el.dataset.p; return set({pos:k,tab:'learn',rfcTopic:0,posOpen:k,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});}
     if(a==='poscards')return set({pos:el.dataset.p,tab:'learn',learnMode:'cards',trainMode:'cards',fcIdx:0,fcFlip:false,posOpen:el.dataset.p,fcDeck:'pos'});
-    if(a==='poslearn'){const k=el.dataset.p; return set({pos:k,tab:'learn',learnMode:'cards',trainMode:'cards',rfcTopic:0,posOpen:k,fcDeck:'pos',fcIdx:0,fcFlip:false});}
+    if(a==='poslearn'){const k=el.dataset.p; return set({pos:k,tab:'learn',learnMode:'acad',trainMode:'practice',rfcTopic:0,posOpen:k});}
     if(a==='train'){const m=el.dataset.m; if(m==='cards') return set({tab:'learn',learnMode:'cards',trainMode:'cards'}); if(m==='rfc') return set({tab:'learn',learnMode:'acad',trainMode:'rfc'}); return set({trainMode:m});}
     if(a==='lesson'){const id=el.dataset.id,d=Object.assign({},S.lessonsDone);if(d[id])delete d[id];else d[id]=true;return set({lessonsDone:d});}
     if(a==='pchoose'&&!S.pAns)return set({pSel:+el.dataset.i,pAns:true});
