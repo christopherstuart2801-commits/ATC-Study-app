@@ -1928,6 +1928,37 @@
     const m=t.match(/\b\d{1,2}\s*[\-−–—]\s*\d{1,2}(?:\s*[\-−–—]\s*\d{1,3}[A-Za-z]?)?/g);
     return !!(m && m.length>=8);
   }
+  /** Prefer real section headings (2-1-23. BIRD…) over mid-paragraph REFERENCE cites. */
+  function pageHeadingNeedleScore(text, needle, sec){
+    const t=String(text||'').toLowerCase();
+    const n=String(needle||'').toLowerCase().trim();
+    if(!t || !n || t.indexOf(n)<0) return 0;
+    const esc=n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    // Canonical JO/FACMAN heading: N-N-N. HEADING WORDS
+    const headRe=new RegExp('\\b\\d{1,2}\\s*[\\-−–—]\\s*\\d{1,2}\\s*[\\-−–—]\\s*\\d{1,3}[a-z]?\\s*\\.\\s*'+esc);
+    if(headRe.test(t)) return 2500;
+    if(sec){
+      const parts=String(sec).replace(/[−–—]/g,'-').replace(/^(?:TBL|FIG)\s+/i,'').split('-').filter(Boolean);
+      if(parts.length>=2){
+        const secEsc=parts.map(x=>String(x).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('[\\s\\-−–—]+');
+        const secHead=new RegExp('\\b'+secEsc+'[a-z]?\\s*\\.\\s*'+esc);
+        if(secHead.test(t)) return 3000;
+      }
+    }
+    // All occurrences look like cross-refs (REFERENCE— … heading words)
+    let from=0, hits=0, refish=0;
+    while(true){
+      const i=t.indexOf(n, from);
+      if(i<0) break;
+      hits++;
+      const before=t.slice(Math.max(0,i-70), i);
+      if(/reference/.test(before) || /jo\s*7110/.test(before) || (/facman/.test(before) && /\d{1,2}\s*[\-−–—]/.test(before))) refish++;
+      from=i+Math.max(1,n.length);
+    }
+    if(hits && refish>=hits) return -900;
+    if(refish>0) return -300;
+    return 0;
+  }
   function choosePdfHit(hits, opts){
     opts=opts||{};
     if(!hits || !hits.length) return {idx:0, page:null};
@@ -1937,10 +1968,12 @@
     const pages=opts.pageTexts||null;
     let pool=hits.filter(p=>p>=floor);
     if(!pool.length) pool=hits.slice();
+    const needle=String(opts.needle||'').toLowerCase().trim();
     const score=p=>{
       let sc=0;
       const txt=pages && pages[p];
       if(sec && txt && pageTextHasSec(txt, sec)) sc+=1000;
+      if(txt && needle) sc+=pageHeadingNeedleScore(txt, needle, sec);
       if(txt && pageLooksLikeToc(txt)) sc-=600;
       if(prefer>0) sc-=Math.abs(p-prefer);
       // Slightly prefer later body pages over chapter-open TOC when distances tie
@@ -2964,7 +2997,7 @@
     if(fwd===false && hits.length && !preferPage){
       pdfHitI=hits.length-1;
     } else {
-      const picked=choosePdfHit(hits, {preferPage:preferPage||floor, floor, sec:secHint, pageTexts:pdfTextIndex.pages});
+      const picked=choosePdfHit(hits, {preferPage:preferPage||floor, floor, sec:secHint, pageTexts:pdfTextIndex.pages, needle:query});
       pdfHitI=Math.max(0, picked.idx);
     }
     S.pubPage=pdfHits[pdfHitI];

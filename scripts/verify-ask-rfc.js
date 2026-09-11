@@ -13,6 +13,7 @@ ok('headingNeedleFromBook shared helper', /function\s+headingNeedleFromBook\s*\(
 ok('resolveCiteNeedle shared helper', /function\s+resolveCiteNeedle\s*\(/.test(html));
 ok('needleForCite avoids bare sec fallback', /Do not put bare 2-4-3/.test(html) || /never bare section numbers/.test(html) || /Keep mapped page only/.test(html));
 ok('pdfFindAuto fallback path', /function\s+pdfFindAuto\s*\(/.test(html));
+ok('Find prefers heading over REFERENCE cite', /function\s+pageHeadingNeedleScore\s*\(/.test(html) && /needle:query/.test(html));
 ok('pdfChapterFloor prefer body pages', /function\s+pdfChapterFloor\s*\(/.test(html));
 ok('choosePdfHit ranks by floor/sec', /function\s+choosePdfHit\s*\(/.test(html) && /pageTextHasSec/.test(html));
 ok('resetCitePdfFind clears hits per cite', /function\s+resetCitePdfFind\s*\(/.test(html) && /pdfFindGen\+\+/.test(html));
