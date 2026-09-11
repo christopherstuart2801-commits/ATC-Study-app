@@ -2426,27 +2426,18 @@
 
   // ===== views =====
   function homeView(){
-    const posAcadsHTML=k=>{
-      const syl=SYLLABUS[k]||[];
-      if(!syl.length) return `<div class="pos-acads-pending">ACAD packet pending — paper not in yet.</div>`;
-      return syl.map(t=>{
-        const codes=(t.ids||[t.id]).map(id=>`<span class="rfc-acad">${id}</span>`).join(' ');
-        return `<div class="rfc-topic" data-action="acad" data-n="${t.n}" data-p="${k}"><span class="rfc-n">${t.n}</span>${codes}<span class="rfc-tt">${t.t}</span></div>`;
-      }).join('');
-    };
     const board=g=>POS.filter(p=>p.g===g).map(p=>{
-      const P=posProgress(p.k); const open=S.posOpen===p.k;
-      const compact=!!S.posOpen && !open;
-      return `<div class="pcard ${S.pos===p.k?'on':''}${open?' open':''}${compact?' chip':''}" data-p="${p.k}">
-        <div class="pcard-hd" data-action="posfocus" data-p="${p.k}"><span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div></div>
-        <div class="pos-body"><div class="pos-prog">Flashcards ${P.fcDone}/${P.fcTot} · ${P.learnLabel} ${P.learnDone}/${P.learnTot}</div>
-          <details class="pos-acads"><summary>ACADs</summary>${posAcadsHTML(p.k)}</details>
+      const P=posProgress(p.k);
+      const pending=!(SYLLABUS[p.k]||[]).length;
+      return `<div class="pcard ${S.pos===p.k?'on':''}" data-action="poslearn" data-p="${p.k}">
+        <div class="pcard-hd"><span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div></div>
+        <div class="pos-body"><div class="pos-prog">${pending?'ACAD packet pending':`${P.learnLabel} ${P.learnDone}/${P.learnTot} · Cards ${P.fcDone}/${P.fcTot}`} · tap → Learn</div>
           <div class="pos-acts"><button class="qabtn" data-action="poscards" data-p="${p.k}">FLASHCARDS</button><button class="qabtn" data-action="poslearn" data-p="${p.k}">LEARN</button></div>
         </div></div>`;
     }).join('');
-    const quiz=S.posOpen?'':`<div class="grp">KNFG Quizlets</div>
+    const quiz=`<div class="grp">KNFG Quizlets</div>
       ${fcSetChipRow(false)}
-      <div class="explain" style="margin-bottom:14px">Named FACMAN decks at KNFG level — idents / TWR FREQ stay GENERAL, not duplicated on every position. FLASHCARDS on a position opens that position’s deck.</div>`;
+      <div class="explain" style="margin-bottom:14px">Named FACMAN decks at KNFG level — idents / TWR FREQ stay GENERAL, not duplicated on every position. FLASHCARDS on a position opens that position’s deck. Tap a position card to open Learn.</div>`;
     return `<div class="hero reveal"><div class="hk">KNFG</div><div class="hn">MCAS Camp Pendleton · Munn Field · Oceanside, CA</div>
         <div class="hstats"><div><b>RWY 21</b><span>Primary</span></div><div><b>78 ft</b><span>Field Elev</span></div><div><b>3 / 21</b><span>Runways</span></div><div><b>Ch 55</b><span>NFG TACAN</span></div><div><b>${POS.length}</b><span>Positions</span></div></div>
         <div class="qa"><button class="qabtn" data-action="tab" data-t="ask">${I.ask} Ask a question</button><button class="qabtn" data-action="tab" data-t="reference">${I.file} Charts & routes</button><button class="qabtn" data-action="goscope">${I.sim} Run the scope</button><button class="qabtn" data-action="acads">${I.grad} Academics</button></div></div>
@@ -3011,7 +3002,7 @@
   function appScreen(){ let inner='';
     if(S.tab==='home')inner=homeView(); else if(S.tab==='ask')inner=askView(); else if(S.tab==='learn')inner=learnView();
     else if(S.tab==='train')inner=trainView(); else if(S.tab==='sim')inner=simView(); else if(S.tab==='reference')inner=refView();
-    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${trackbar()}${vidsStrip()}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
+    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${S.tab==='home'?'':trackbar()}${vidsStrip()}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
 
   function doAsk(){
     const inp=document.getElementById('reflk')||document.getElementById('askq');
@@ -3057,7 +3048,7 @@
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
     if(a==='tab')return set({tab:el.dataset.t});
     if(a==='pos')return set({pos:el.dataset.p,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
-    if(a==='posfocus'){const k=el.dataset.p; return set({pos:k,posOpen:k===S.posOpen?null:k,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});}
+    if(a==='posfocus'){const k=el.dataset.p; return set({pos:k,tab:'learn',rfcTopic:0,posOpen:k,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});}
     if(a==='poscards')return set({pos:el.dataset.p,tab:'train',trainMode:'cards',fcIdx:0,fcFlip:false,posOpen:el.dataset.p,fcDeck:'pos'});
     if(a==='poslearn')return set({pos:el.dataset.p,tab:'learn',rfcTopic:0,posOpen:el.dataset.p});
     if(a==='train')return set({trainMode:el.dataset.m});
@@ -3082,7 +3073,7 @@
     if(a==='pdfnext'){ S.pubPage=(S.pubPage||1)+1; pdfDraw(); return; }
     if(a==='pdffindgo'){ const inp=document.getElementById('pdffind'); const q=inp?inp.value:''; if(pdfHits.length && pdfHits._q===String(q||'').trim().toLowerCase()) return pdfFindNext(true); return pdfFind(q,true); }
     if(a==='srcclose')return set({source:null});
-    if(a==='acads')return set({pos:'fin',tab:'learn',rfcTopic:0});
+    if(a==='acads')return set({pos:S.pos||'fin',tab:'learn',rfcTopic:0});
     if(a==='acad'){const n=+el.dataset.n; const k=el.dataset.p||'fin'; if(S.tab==='train') return set({pos:k,tab:'train',rfcTopic:n,rfcQi:0,rfcReveal:false,posOpen:k}); return set({pos:k,tab:'learn',rfcTopic:n,posOpen:k});}
     if(a==='skillchip'){const q=el.dataset.q||''; if(S.tab==='reference'&&document.getElementById('reflk')){const inp=document.getElementById('reflk'); inp.value=q; S.refQ=q; drawLookup(q); return;} return set({tab:'reference',refQ:q,lkFocus:true});}
     if(a==='rfctopic')return set({rfcTopic:+el.dataset.n,tab:'learn'});
