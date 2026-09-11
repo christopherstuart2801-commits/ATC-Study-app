@@ -2761,10 +2761,7 @@
     if(!S.pub) return '';
     const p=PUBS.find(x=>x.id===S.pub)||PUBS[0];
     const guess=(S.pubGuessNote?`<div class="note">${escTxt(S.pubGuessNote)}</div>`:'');
-    const hasCite=!!(S.pubCiteLab||S.pubCiteQuote);
-    // No visible text overview — PDF is the book. Keep hidden quote node for Highlight/Underline.
-    const citeBan=hasCite?`<div class="pdfcite pdfcite-hidden" aria-hidden="true"><div class="pc-lab">${escTxt(S.pubCiteLab||'CITE')}</div><div class="pc-q" id="pdfciteq">${escTxt(S.pubCiteQuote||'')}</div></div>`:'';
-    const markBar=hasCite?`<div class="studymark"><button type="button" class="btn-ghost" data-action="markhl" title="Highlight selection or whole cite excerpt">Highlight</button><button type="button" class="btn-ghost" data-action="markul" title="Underline selection or whole cite excerpt">Underline</button><span class="muted">marks on cite · SAMPLE</span></div>`:'';
+    // No excerpt overview / Highlight-Underline bar — PDF is the book section.
     const backTitle=S.learnReturn?'Back to Learn checklist':'Back to hits';
     let citeStep='';
     if(S.learnReturn){
@@ -2779,7 +2776,7 @@
         citeStep=`<div class="citestep"><button type="button" class="btn-ghost" data-action="citeprev"${prevDis}>PREV SECTION</button><span class="muted">Section ${at} / ${tot}</span><button type="button" class="btn-ghost" data-action="citenext"${nextDis}>NEXT SECTION</button></div>`;
       }
     }
-    return `<div class="pdfbox">${guess}${citeBan}${markBar}${citeStep}
+    return `<div class="pdfbox">${guess}${citeStep}
       <div class="pdfbar">
         <button type="button" class="btn-back" data-action="findback" title="${backTitle}">← BACK</button>
         <span class="pill ok">${escTxt(p.lab)}</span>

@@ -505,7 +505,7 @@ ok('posProgress function', /function\s+posProgress\s*\(/.test(html));
 ok('rfcTrain FLASHCARDS seg', /function rfcExerciseBody\(\)/.test(html) && /function rfcTrain\(\)/.test(html));
 ok('no Learn TEST EXERCISE toggle', !/TEST EXERCISE/.test(html));
 ok('Learn cite PDF hides shelf', /if\(S\.pub && S\.learnReturn\) return pdfPaneHTML\(\)/.test(html));
-ok('cite overview hidden', /pdfcite-hidden/.test(html));
+ok('cite overview removed from pdf pane', /No excerpt overview/.test(html) && !/<div class="pdfcite">/.test(html));
 ok('Learn has FLASHCARDS mode', /data-action="learnmode"/.test(html) && /learnMode:'cards'/.test(html) && /data-m="acad">ACADs/.test(html));
 ok('poscards opens Learn flashcards', /if\(a==='poscards'\)return set\(\{pos:el\.dataset\.p,tab:'learn',learnMode:'cards'/.test(html));
 ok('SYLLABUS other positions empty', /cd:\[\],gnd:\[\],lcl:\[\],rfd:\[\],arr:\[\]/.test(html));
