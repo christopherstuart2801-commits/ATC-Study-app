@@ -1844,7 +1844,10 @@
       guessNote='Opened FACMAN (best guess) — cite had no mapped pub.';
     }
     const ban=citeBannerFromBook(resolved.book, opts.cite||'', opts.title||'');
-    set({tab:(S.tab==='ask'||S.tab==='reference')?S.tab:'reference', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:ban.lab, pubCiteQuote:ban.quote, learnReturn:null});
+    const sec=(info && info.sec)||'';
+    // Mapped chapter/section page wins first; Find must not jump to early TOC/cover hits.
+    resetCitePdfFind();
+    set({tab:(S.tab==='ask'||S.tab==='reference')?S.tab:'reference', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:ban.lab, pubCiteQuote:ban.quote, pubPreferPage:page, pubCiteSec:sec, learnReturn:null});
   }
 
   /* Chapter PDF page jumps (same as SECTIONS dropdowns) — section → best start page */
@@ -1887,6 +1890,68 @@
     if(map[ch]!=null) return map[ch];
     return 1;
   }
+  /* PDF Find page preference: chapter map / preferPage first; skip front-matter TOC hits. */
+  function pdfChapterFloor(pub, preferPage){
+    const map=PUB_CH_PAGES[pub]||{};
+    const pref=Math.max(1, parseInt(preferPage,10)||0);
+    const chStarts=Object.keys(map).filter(k=>/^\d+$/.test(k)).map(Number).sort((a,b)=>a-b);
+    // Body starts at Ch1 when known — pages before that are cover/TOC front matter
+    let floor=map[1]!=null?map[1]:1;
+    if(pref>0){
+      let best=floor;
+      for(const ch of chStarts){
+        const p=map[ch];
+        if(p!=null && p<=pref) best=p;
+      }
+      floor=best;
+    }
+    return Math.max(1, floor|0);
+  }
+  function pageTextHasSec(text, sec){
+    const s=String(sec||'').replace(/[−–—]/g,'-').trim();
+    if(!s || !text) return false;
+    const parts=s.replace(/^(?:TBL|FIG)\s+/i,'').split('-').filter(Boolean);
+    if(parts.length<2) return false;
+    const esc=p=>String(p).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    const re=new RegExp('\\b'+parts.map(esc).join('[\\s\\-−–—]+')+'[A-Za-z]?\\.?\\b','i');
+    return re.test(String(text));
+  }
+  function pageLooksLikeToc(text){
+    const t=String(text||'');
+    const m=t.match(/\b\d{1,2}\s*[\-−–—]\s*\d{1,2}(?:\s*[\-−–—]\s*\d{1,3}[A-Za-z]?)?/g);
+    return !!(m && m.length>=8);
+  }
+  function choosePdfHit(hits, opts){
+    opts=opts||{};
+    if(!hits || !hits.length) return {idx:0, page:null};
+    const prefer=Math.max(1, parseInt(opts.preferPage,10)||0);
+    const floor=Math.max(1, parseInt(opts.floor,10)||1);
+    const sec=String(opts.sec||'').trim();
+    const pages=opts.pageTexts||null;
+    let pool=hits.filter(p=>p>=floor);
+    if(!pool.length) pool=hits.slice();
+    const score=p=>{
+      let sc=0;
+      const txt=pages && pages[p];
+      if(sec && txt && pageTextHasSec(txt, sec)) sc+=1000;
+      if(txt && pageLooksLikeToc(txt)) sc-=600;
+      if(prefer>0) sc-=Math.abs(p-prefer);
+      // Slightly prefer later body pages over chapter-open TOC when distances tie
+      sc+=Math.min(p, prefer>0?prefer+40:p)*0.001;
+      return sc;
+    };
+    let best=pool[0], bestS=score(best);
+    for(let i=1;i<pool.length;i++){
+      const p=pool[i], sc=score(p);
+      if(sc>bestS){ best=p; bestS=sc; }
+    }
+    return {idx:hits.indexOf(best), page:best};
+  }
+  function resetCitePdfFind(){
+    // Invalidate in-flight Find and drop prior hit list so the next cite fully re-resolves
+    pdfFindGen++;
+    pdfHits=[]; pdfHitI=0;
+  }
   function needleForCite(cite, titleHint){
     const info=citePubAndSec(cite);
     const b=info.book;
@@ -1914,18 +1979,21 @@
     opts=opts||{};
     const info=citePubAndSec(cite);
     let pub=info.pub||'facman';
+    // Always re-resolve mapped page from chapter/section map (BOOK.pg is section id; PUB_CH_PAGES is PDF page).
     const page=pageForCite(pub, info.sec);
     const needle=resolveCiteNeedle({cite, book:info.book, title:opts.title, needle:needleForCite(cite, opts.title)}).needle || needleForCite(cite, opts.title);
     const ban=citeBannerFromBook(info.book, cite, opts.title);
     let guessNote='';
     if(!info.pub){ guessNote='Opened '+(pub==='jo'?'7110.65':'FACMAN')+' (best guess) — refine with Find if needed.'; }
     const lr={pos:S.pos, rfcTopic:S.rfcTopic};
-    set({tab:'reference', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:ban.lab, pubCiteQuote:ban.quote, learnReturn:lr, lkFocus:false, refQ:''});
+    // Every checklist cite click: clear stale Find hits / in-flight scan so 2nd+ cites re-jump.
+    resetCitePdfFind();
+    set({tab:'reference', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:ban.lab, pubCiteQuote:ban.quote, pubPreferPage:page, pubCiteSec:info.sec||'', learnReturn:lr, lkFocus:false, refQ:''});
   }
   function leavePdfToLearn(){
     const lr=S.learnReturn;
-    pdfHits=[]; pdfHitI=0;
-    return set({tab:'learn', pos:lr.pos, rfcTopic:lr.rfcTopic, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, refQ:''});
+    resetCitePdfFind();
+    return set({tab:'learn', pos:lr.pos, rfcTopic:lr.rfcTopic, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', pubPreferPage:0, pubCiteSec:'', learnReturn:null, refQ:''});
   }
 
   const STUDY_MARKS_KEY='vatc.studymarks';
@@ -2634,7 +2702,7 @@
     {id:'orm', href:'docs/OPNAVINST-3500.39D.pdf', lab:'OPNAVINST 3500.39D'},
     {id:'soh', href:'docs/OPNAV-M-5100.23.pdf', lab:'OPNAV M-5100.23'}
   ];
-  let pdfDoc=null, pdfSrc='', pdfHits=[], pdfHitI=0, pdfTextIndex=null, pdfDrawGen=0;
+  let pdfDoc=null, pdfSrc='', pdfHits=[], pdfHitI=0, pdfTextIndex=null, pdfDrawGen=0, pdfFindGen=0;
   function pubShelfHTML(){
     const rows=PUBS.map(p=>`<div class="rfc-topic ${S.pub===p.id?'on':''}" data-action="openpub" data-id="${p.id}"><span class="rfc-tt">${p.lab}</span></div>`).join('');
     return `<details class="pos-acads"${S.pub?'':' open'}><summary>PUBLICATIONS</summary>${rows}</details>`+pubSectionsHTML();
@@ -2779,28 +2847,43 @@
       if(pdfSrc!==pdfUrl){
         pdfSrc=pdfUrl; pdfHits=[]; pdfHitI=0; pdfTextIndex=null;
         pdfDoc=await lib.getDocument({url:pdfUrl}).promise;
+      } else {
+        // Same pub, new cite: drop prior hits so Find re-ranks for this section
+        pdfHits=[]; pdfHitI=0;
       }
+      // Draw mapped chapter/section page first (before Find); do not let cover hits flash in.
+      if(S.pubPreferPage>0) S.pubPage=S.pubPreferPage;
       await pdfDraw();
-      if(S.pubQ) await pdfFindAuto(S.pubQ);
+      if(S.pubQ) await pdfFindAuto(S.pubQ, {preferPage:S.pubPreferPage||S.pubPage, sec:S.pubCiteSec||'', force:true});
     }catch(err){
       const stage=document.querySelector('#vatc .pdfstage');
       if(stage) stage.innerHTML=`<iframe class="pdfiframe" src="${assetUrl(pub.href)}" title="${escTxt(pub.lab)}"></iframe><div class="note" style="padding:8px 10px">pdf.js unavailable — iframe of the same-origin PDF. Find still uses extracted text when pdf.js loads.</div>`;
     }
   }
-  async function pdfFind(q, fwd){
+  async function pdfFind(q, fwd, opts){
+    opts=opts||{};
     const query=String(q||'').trim();
     S.pubQ=query;
     const hitsEl=document.getElementById('pdfhits');
     if(!query||!pdfDoc){ if(hitsEl) hitsEl.textContent=''; return; }
     const needle=query.toLowerCase();
-    if(pdfHits.length && pdfHits._q===needle){ return pdfFindNext(fwd!==false); }
+    const preferPage=Math.max(1, parseInt(opts.preferPage!=null?opts.preferPage:S.pubPreferPage,10)||0);
+    const secHint=String(opts.sec!=null?opts.sec:S.pubCiteSec||'').trim();
+    const floor=pdfChapterFloor(S.pub, preferPage||S.pubPage||1);
+    const force=!!opts.force;
+    // Reuse hit list only for manual next/prev — cite opens pass force and must re-rank
+    if(!force && pdfHits.length && pdfHits._q===needle && pdfHits._floor===floor && pdfHits._sec===secHint){
+      return pdfFindNext(fwd!==false);
+    }
+    const gen=++pdfFindGen;
     if(hitsEl) hitsEl.textContent='searching…';
     if(!pdfTextIndex || pdfTextIndex._src!==pdfSrc){
       pdfTextIndex={_src:pdfSrc, pages:new Array(pdfDoc.numPages+1)};
     }
     const hits=[];
-    let jumped=false;
+    let early=0;
     for(let i=1;i<=pdfDoc.numPages;i++){
+      if(gen!==pdfFindGen) return; // newer cite/Find superseded this scan
       if(!pdfTextIndex.pages[i]){
         const page=await pdfDoc.getPage(i);
         const tc=await page.getTextContent();
@@ -2808,25 +2891,40 @@
       }
       if(pdfTextIndex.pages[i].indexOf(needle)>=0){
         hits.push(i);
-        if(!jumped){
-          jumped=true;
-          S.pubPage=i;
-          pdfDraw();
+        // Prefer body hits ≥ chapter floor — do not jump to cover/TOC first lexical hit
+        if(!early && i>=floor){
+          early=i;
+          // Keep mapped preferPage visible until full rank if we already have one
+          if(!(preferPage>0 && S.pubPage===preferPage)){
+            S.pubPage=i;
+            pdfDraw();
+          }
           if(hitsEl) hitsEl.textContent='p.'+i+' · scanning…';
         }
       }
     }
+    if(gen!==pdfFindGen) return;
     pdfHits=hits; pdfHitI=0;
     pdfHits._q=needle;
+    pdfHits._floor=floor;
+    pdfHits._sec=secHint;
     if(!hits.length){ if(hitsEl) hitsEl.textContent='0 hits'; return; }
-    if(fwd===false && hits.length){
+    if(fwd===false && hits.length && !preferPage){
       pdfHitI=hits.length-1;
+    } else {
+      const picked=choosePdfHit(hits, {preferPage:preferPage||floor, floor, sec:secHint, pageTexts:pdfTextIndex.pages});
+      pdfHitI=Math.max(0, picked.idx);
     }
-    S.pubPage=hits[pdfHitI];
+    S.pubPage=pdfHits[pdfHitI];
     if(hitsEl) hitsEl.textContent=(pdfHitI+1)+'/'+hits.length+' · p.'+S.pubPage;
     await pdfDraw();
   }
-  async function pdfFindAuto(q){
+  async function pdfFindAuto(q, opts){
+    opts=opts||{};
+    const preferPage=Math.max(1, parseInt(opts.preferPage!=null?opts.preferPage:S.pubPreferPage,10)||S.pubPage||0);
+    const sec=String(opts.sec!=null?opts.sec:S.pubCiteSec||'').trim();
+    // Always start from mapped chapter/section page; Find ranks within body afterward
+    if(preferPage>0){ S.pubPage=preferPage; S.pubPreferPage=preferPage; }
     const attempts=needleFallbacks(q);
     if(!attempts.length){
       // No usable wording needle — stay on mapped page, leave Find empty
@@ -2835,10 +2933,11 @@
       if(find) find.value='';
       const hitsEl=document.getElementById('pdfhits');
       if(hitsEl) hitsEl.textContent='';
+      await pdfDraw();
       return;
     }
     for(let i=0;i<attempts.length;i++){
-      await pdfFind(attempts[i], true);
+      await pdfFind(attempts[i], true, {preferPage, sec, force:true});
       if(pdfHits.length){
         const find=document.getElementById('pdffind');
         if(find) find.value=attempts[i];
@@ -2853,11 +2952,13 @@
       if(find) find.value='';
       const hitsEl=document.getElementById('pdfhits');
       if(hitsEl) hitsEl.textContent='';
+      if(preferPage>0){ S.pubPage=preferPage; await pdfDraw(); }
     } else {
       // Keep the primary heading in the box so the user can tweak Find
       const find=document.getElementById('pdffind');
       if(find) find.value=attempts[0];
       S.pubQ=attempts[0];
+      if(preferPage>0){ S.pubPage=preferPage; await pdfDraw(); }
     }
   }
   function pdfFindNext(fwd){
@@ -2937,13 +3038,13 @@
     if(a==='simcmd')return Scope.cmd(el.dataset.c,el.dataset.v);
     if(a==='asksubmit'||a==='findgo')return doAsk();
     if(a==='askchip'||a==='skillchip'){const inp=document.getElementById('reflk')||document.getElementById('askq');if(inp){inp.value=el.dataset.q;doAsk();}return;}
-    if(a==='findclear'){ S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.learnReturn=null; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null; return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',learnReturn:null}); }
+    if(a==='findclear'){ S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.pubPreferPage=0; S.pubCiteSec=''; S.learnReturn=null; resetCitePdfFind(); pdfDoc=null; pdfSrc=''; pdfTextIndex=null; return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null}); }
     if(a==='findback'){
       if(S.learnReturn && S.pub){ return leavePdfToLearn(); }
-      if(S.pub){ return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:''}); }
-      S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.learnReturn=null; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null;
+      if(S.pub){ resetCitePdfFind(); return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:''}); }
+      S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.pubPreferPage=0; S.pubCiteSec=''; S.learnReturn=null; resetCitePdfFind(); pdfDoc=null; pdfSrc=''; pdfTextIndex=null;
       const inp=document.getElementById('reflk'); if(inp) inp.value='';
-      return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',learnReturn:null});
+      return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null});
     }
     if(a==='openfindhit'){
       openFindHit({pub:el.dataset.pub, doc:el.dataset.doc, needle:el.dataset.needle, page:el.dataset.page, cite:el.dataset.cite, title:el.dataset.title||'', q:S.refQ});
@@ -2975,8 +3076,8 @@
     if(a==='src')return set({source:+el.dataset.i});
     if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({gca:true},S.fcOpen||{}); o[g]=true; return set({tab:'train',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o});}
     if(a==='fcgrp'){ const g=el.dataset.g||'gca'; setTimeout(()=>{ const o=Object.assign({gca:false,local:false,radar:false,strips:false},S.fcOpen||{gca:true}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
-    if(a==='openpub'){const page=Math.max(1,parseInt(el.dataset.page,10)||1);return set({tab:'reference',pub:el.dataset.id,pubPage:page,pubQ:S.pub===el.dataset.id?S.pubQ:'',pubGuessNote:''});}
-    if(a==='pdfclose'){ if(S.learnReturn) return leavePdfToLearn(); return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:''}); }
+    if(a==='openpub'){const page=Math.max(1,parseInt(el.dataset.page,10)||1);const same=S.pub===el.dataset.id; if(!same){resetCitePdfFind();} return set({tab:'reference',pub:el.dataset.id,pubPage:page,pubQ:same?S.pubQ:'',pubGuessNote:'',pubPreferPage:page,pubCiteSec:same?S.pubCiteSec:''});}
+    if(a==='pdfclose'){ if(S.learnReturn) return leavePdfToLearn(); resetCitePdfFind(); return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:''}); }
     if(a==='pdfprev'){ S.pubPage=Math.max(1,(S.pubPage||1)-1); pdfDraw(); return; }
     if(a==='pdfnext'){ S.pubPage=(S.pubPage||1)+1; pdfDraw(); return; }
     if(a==='pdffindgo'){ const inp=document.getElementById('pdffind'); const q=inp?inp.value:''; if(pdfHits.length && pdfHits._q===String(q||'').trim().toLowerCase()) return pdfFindNext(true); return pdfFind(q,true); }
@@ -3017,7 +3118,8 @@
       if((S.tab==='reference'||S.tab==='ask') && S.pub){
         e.preventDefault();
         if(S.learnReturn) return leavePdfToLearn();
-        return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:''});
+        resetCitePdfFind();
+        return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:''});
       }
       const inp=document.getElementById('reflk');
       if(inp && (S.tab==='reference'||S.tab==='ask')){ e.preventDefault(); inp.value=''; S.refQ=''; drawLookup(''); inp.focus(); }
