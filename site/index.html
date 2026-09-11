@@ -1990,7 +1990,7 @@
     const lr={pos:S.pos, rfcTopic:S.rfcTopic, cite:String(cite||'')};
     // Every checklist cite click: clear stale Find hits / in-flight scan so 2nd+ cites re-jump.
     resetCitePdfFind();
-    set({tab:'reference', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:ban.lab, pubCiteQuote:ban.quote, pubPreferPage:page, pubCiteSec:info.sec||'', learnReturn:lr, lkFocus:false, refQ:''});
+    set({tab:'learn', learnMode:'acad', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:ban.lab, pubCiteQuote:ban.quote, pubPreferPage:page, pubCiteSec:info.sec||'', learnReturn:lr, lkFocus:false, refQ:''});
   }
   function acadTopicRefs(pos, topicN){
     const pack=syllabusFor(pos);
@@ -2555,6 +2555,8 @@
   }
 
   function learnView(){
+    // ACAD cite open: PDF only — no FIND / pub shelf / text overview (those stay on Reference)
+    if(S.pub && S.learnReturn) return pdfPaneHTML();
     const hasAcad=!!syllabusFor(S.pos).list.length;
     let mode=S.learnMode||'cards';
     if(mode==='overview') mode=hasAcad?'acad':'cards';
@@ -2760,8 +2762,9 @@
     const p=PUBS.find(x=>x.id===S.pub)||PUBS[0];
     const guess=(S.pubGuessNote?`<div class="note">${escTxt(S.pubGuessNote)}</div>`:'');
     const hasCite=!!(S.pubCiteLab||S.pubCiteQuote);
-    const citeBan=hasCite?`<div class="pdfcite"><div class="pc-lab">${escTxt(S.pubCiteLab||'CITE')}</div><div class="pc-q" id="pdfciteq">${escTxt(S.pubCiteQuote||'')}</div></div>`:'';
-    const markBar=hasCite?`<div class="studymark"><button type="button" class="btn-ghost" data-action="markhl" title="Highlight selection or whole cite excerpt">Highlight</button><button type="button" class="btn-ghost" data-action="markul" title="Underline selection or whole cite excerpt">Underline</button><span class="muted">select cite text · SAMPLE</span></div>`:'';
+    // No visible text overview — PDF is the book. Keep hidden quote node for Highlight/Underline.
+    const citeBan=hasCite?`<div class="pdfcite pdfcite-hidden" aria-hidden="true"><div class="pc-lab">${escTxt(S.pubCiteLab||'CITE')}</div><div class="pc-q" id="pdfciteq">${escTxt(S.pubCiteQuote||'')}</div></div>`:'';
+    const markBar=hasCite?`<div class="studymark"><button type="button" class="btn-ghost" data-action="markhl" title="Highlight selection or whole cite excerpt">Highlight</button><button type="button" class="btn-ghost" data-action="markul" title="Underline selection or whole cite excerpt">Underline</button><span class="muted">marks on cite · SAMPLE</span></div>`:'';
     const backTitle=S.learnReturn?'Back to Learn checklist':'Back to hits';
     let citeStep='';
     if(S.learnReturn){
@@ -3028,7 +3031,7 @@
     });
   }
 
-  function refView(){ const lk=lookupConsole(); const f=KNFG.freqs.map(x=>`<div class="freqrow"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join('');
+  function refView(){ if(S.learnReturn && S.pub) return pdfPaneHTML(); const lk=lookupConsole(); const f=KNFG.freqs.map(x=>`<div class="freqrow"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join('');
     const n=KNFG.navaids.map(x=>`<div class="freqrow"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join('');
     const fl=KNFG.field.map(x=>`<div class="freqrow"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join('');
     const dp=KNFG.deps.map((d,i)=>`<li><div class="nm2">${d.nm}</div><div class="ds">${d.ds}</div>${routeBox('Route',d.rt)}</li>`).join('');
@@ -3074,6 +3077,7 @@
   function render(){ if(S.screen==='station'){root.innerHTML=stationScreen();return;} root.innerHTML=appScreen();
     if(S.tab==='sim'&&PSIM[S.pos]==='scope')Scope.mount();
     if(S.tab==='ask'||S.tab==='reference'){ bindLookup(); bindPdf(); if(S.tab==='ask'||S.lkFocus){ S.lkFocus=false; setTimeout(()=>focusLookup(),20); } if((S.refQ||'').trim()) drawLookup(S.refQ); }
+    if(S.tab==='learn'&&S.pub&&S.learnReturn){ bindPdf(); }
     bindFcGroups(); }
 
   // ===== events =====
@@ -3105,7 +3109,7 @@
     if(a==='stations')return set({screen:'station'});
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
     if(a==='tab')return set({tab:el.dataset.t});
-    if(a==='learnmode'){const m=el.dataset.m; return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false});}
+    if(a==='learnmode'){const m=el.dataset.m; if(S.pub&&S.learnReturn){ resetCitePdfFind(); return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false,pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null}); } return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false});}
     if(a==='pos')return set({pos:el.dataset.p,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='posfocus'){const k=el.dataset.p; return set({pos:k,tab:'learn',rfcTopic:0,posOpen:k,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});}
     if(a==='poscards')return set({pos:el.dataset.p,tab:'learn',learnMode:'cards',trainMode:'cards',fcIdx:0,fcFlip:false,posOpen:el.dataset.p,fcDeck:'pos'});
