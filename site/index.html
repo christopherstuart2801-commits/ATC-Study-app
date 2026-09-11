@@ -16,10 +16,14 @@
   --fd:'Oswald','Arial Narrow',sans-serif; --fm:'JetBrains Mono',ui-monospace,Menlo,monospace;
   font-family:var(--fm); color:var(--text); max-width:980px; margin:0 auto; background:var(--bg);
   border:1px solid var(--line); border-radius:16px; overflow:hidden; position:relative; min-height:700px; box-shadow:0 30px 80px rgba(0,0,0,.55);
+  max-height:100vh; max-height:100dvh; display:flex; flex-direction:column;
 }
 #vatc::after{ content:''; position:absolute; inset:0; pointer-events:none; z-index:55; opacity:.45; background:repeating-linear-gradient(0deg, rgba(57,240,160,.03) 0 1px, transparent 1px 3px); mix-blend-mode:screen; }
 #vatc .grid-bg{ position:absolute; inset:0; pointer-events:none; opacity:.45; background-image:linear-gradient(rgba(31,156,102,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(31,156,102,.06) 1px,transparent 1px); background-size:34px 34px; }
-#vatc .wrap{ position:relative; z-index:2; }
+#vatc .wrap{ position:relative; z-index:2; display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden; }
+#vatc #app{ display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden; }
+#vatc .stickhead{ flex:none; z-index:40; background:linear-gradient(180deg,#0c1614,#0a1211); box-shadow:0 10px 24px rgba(0,0,0,.45); border-bottom:1px solid var(--line); }
+#vatc .scrollmain{ flex:1; min-height:0; overflow:auto; -webkit-overflow-scrolling:touch; }
 #vatc .dsp{ font-family:var(--fd); letter-spacing:.06em; text-transform:uppercase; }
 #vatc .muted{color:var(--muted);}#vatc .grn{color:var(--green);}#vatc .amb{color:var(--amber);}#vatc .red{color:var(--red);}#vatc .sky{color:var(--sky);}
 #vatc .top{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 18px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,#0c1614,#0a1211); }
@@ -43,7 +47,7 @@
 #vatc .pill.sample{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.08); }
 
 /* tabs — Home/Ask/Learn/Sim/Reference standout (no Train in top row) */
-#vatc .tabs{ display:flex; gap:4px; align-items:stretch; border-bottom:1px solid var(--line); padding:6px 10px 0; background:#0a1211; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+#vatc .tabs{ display:flex; gap:4px; align-items:stretch; border-bottom:1px solid var(--line); padding:6px 10px 0; background:#0a1211; overflow-x:auto; -webkit-overflow-scrolling:touch; position:sticky; top:0; z-index:41; box-shadow:0 0 18px rgba(57,240,160,.08); }
 #vatc .tab{ font-family:var(--fd); letter-spacing:.12em; text-transform:uppercase; font-size:12px; color:#9aafA4; background:transparent; border:1px solid transparent; border-bottom:2px solid transparent; border-radius:8px 8px 0 0; padding:12px 12px; min-height:44px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:7px; flex:0 0 auto; }
 #vatc .tab:hover{ color:var(--text); border-color:var(--green-dim); }
 #vatc .tab.on{ color:var(--green); border-color:rgba(57,240,160,.45); border-bottom-color:var(--green); background:rgba(57,240,160,.10); box-shadow:0 0 10px rgba(57,240,160,.15); }
@@ -94,10 +98,10 @@
 #vatc .hero .hstats div span{ font-size:8.5px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase;}
 #vatc .grp{ font-family:var(--fd); letter-spacing:.2em; font-size:10px; color:var(--amber); text-transform:uppercase; margin:16px 0 8px;}
 #vatc .pgrid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px;} @media(max-width:640px){#vatc .pgrid{grid-template-columns:1fr;}}
-#vatc .pcard{ border:1px solid var(--line); border-radius:11px; padding:13px; background:var(--panel); cursor:default; transition:.15s; position:relative;}
-#vatc .pcard:hover{ border-color:var(--green); transform:translateY(-2px);} #vatc .pcard.on{ border-color:var(--green); box-shadow:0 0 0 1px var(--green) inset;}
-#vatc .pcard .pn{ font-family:var(--fd); letter-spacing:.04em; font-size:14px;} #vatc .pcard .pd{ font-size:10.5px; color:var(--muted); margin-top:4px; line-height:1.4;} #vatc .pcard .pt{ font-size:8px; letter-spacing:.14em; text-transform:uppercase; color:var(--green2); margin-top:8px;}
-#vatc .pcard .pn{ padding-right:46px;}
+#vatc .pcard{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--panel); cursor:default; transition:.15s; position:relative;}
+#vatc .pcard:hover{ border-color:var(--green); transform:translateY(-1px);} #vatc .pcard.on{ border-color:var(--green); box-shadow:0 0 0 1px var(--green) inset;}
+#vatc .pcard .pn{ font-family:var(--fd); letter-spacing:.04em; font-size:14px; padding-right:46px;}
+#vatc .pcard .pd, #vatc .pcard .pt{ display:none; }
 #vatc .pcpct{ position:absolute; top:10px; right:12px; font-family:var(--fm); font-size:13px; font-weight:700; color:var(--green); letter-spacing:.04em; }
 #vatc .pcard-hd{ cursor:pointer; position:relative; }
 #vatc .pcard.open{ border-color:var(--green); box-shadow:0 0 0 1px var(--green) inset; transform:none; grid-column:1/-1; }
@@ -323,6 +327,9 @@
 #vatc .pcard.chip .pd, #vatc .pcard.chip .pt{ display:none; }
 #vatc .pdfbox{ border:1px solid var(--line); border-radius:8px; background:#0a1211; margin:0 0 12px; overflow:hidden; }
 #vatc .pdfbar{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:7px 9px; background:var(--panel2); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+#vatc .pdfcite{ padding:8px 12px; border-bottom:1px solid var(--line); background:rgba(57,240,160,.06); font-size:12px; line-height:1.45; color:var(--text); }
+#vatc .pdfcite .pc-lab{ font-family:var(--fd); letter-spacing:.1em; text-transform:uppercase; font-size:10px; color:var(--green); margin-bottom:4px; }
+#vatc .pdfcite .pc-q{ font-family:var(--fm); color:var(--text); white-space:pre-wrap; }
 #vatc .pdfbar .btn-back{ font-family:var(--fm); background:var(--bg); border:1px solid var(--green2); color:var(--green); padding:7px 12px; border-radius:7px; cursor:pointer; font-size:11px; letter-spacing:.12em; font-weight:600; min-height:32px; }
 #vatc .pdfbar input{ flex:1; min-width:140px; font-family:var(--fm); font-size:12px; background:var(--bg); border:1px solid var(--line); color:var(--text); border-radius:7px; padding:7px 9px; outline:none; }
 #vatc .pdfbar input:focus{ border-color:var(--green2); }
@@ -1745,7 +1752,92 @@
       pub='facman';
       guessNote='Opened FACMAN (best guess) — cite had no mapped pub.';
     }
-    set({tab:(S.tab==='ask'||S.tab==='reference')?S.tab:'reference', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote});
+    set({tab:(S.tab==='ask'||S.tab==='reference')?S.tab:'reference', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:'', pubCiteQuote:'', learnReturn:null});
+  }
+
+  /* Chapter PDF page jumps (same as SECTIONS dropdowns) — section → best start page */
+  const PUB_CH_PAGES={
+    facman:{1:19,2:23,3:40,4:43,5:51,6:80,7:109,8:111,'6-2':87,'6-4':97,'6-5':105},
+    jo:{1:25,2:37,3:121,4:213,5:279,6:379,7:411,8:443}
+  };
+  function citePubAndSec(cite){
+    const raw=String(cite||'').trim().replace(/[−–—]/g,'-');
+    let pub=null;
+    if(/^FACMAN\b/i.test(raw) || /^NFG\b/i.test(raw)) pub='facman';
+    else if(/7110/.test(raw) || /^JO\b/i.test(raw)) pub='jo';
+    else if(/3500\.39/i.test(raw)) pub='orm';
+    else if(/5100\.23/i.test(raw)) pub='soh';
+    const b=bookResolve(raw);
+    if(!pub && b) pub=pubIdForDoc(b.doc);
+    // Soft: bare X-Y-Z — prefer BOOK doc; else JO for 7110-style chapters in syllabus
+    const secM=raw.match(/(\d+)\s*-\s*(\d+)(?:\s*-\s*(\d+[A-Za-z]?))?/i) || raw.match(/\bTBL\s*([A-Z]?-?\d+(?:-\d+)*)/i) || raw.match(/\bFIG\s*([A-Z]?-?\d+(?:-\d+)*)/i);
+    let sec='';
+    if(secM){
+      if(/TBL|FIG/i.test(raw)) sec=raw.replace(/^.*?\b((?:TBL|FIG)\s*[A-Z]?-?\d+(?:-\d+)*)\b.*/i,'$1').replace(/\s+/g,' ').trim();
+      else sec=[secM[1],secM[2]].concat(secM[3]?[secM[3]]:[]).join('-');
+    }
+    if(!pub){
+      if(b && /FACMAN|NFG/i.test(b.doc||'')) pub='facman';
+      else if(b && /7110/.test(b.doc||'')) pub='jo';
+      else if(/^\d+-\d+/.test(raw) && !/^FACMAN/i.test(raw)) pub='jo'; // syllabus JO cites often bare
+    }
+    return {raw, pub, sec, book:b};
+  }
+  function pageForCite(pub, sec){
+    const map=PUB_CH_PAGES[pub]||{};
+    let s=String(sec||'').replace(/[−–—]/g,'-').trim();
+    if(!s) return 1;
+    // Strip TBL/FIG prefix so chapter map still works
+    s=s.replace(/^(?:TBL|FIG)\s+/i,'');
+    const keys=Object.keys(map).map(String).sort((a,b)=>b.length-a.length);
+    for(const k of keys){ if(s===k || s.indexOf(k+'-')===0) return map[k]; }
+    const ch=parseInt(s.split('-')[0],10);
+    if(map[ch]!=null) return map[ch];
+    return 1;
+  }
+  function needleForCite(cite, titleHint){
+    const info=citePubAndSec(cite);
+    const b=info.book;
+    // Prefer para heading line from BOOK (section # + title) — lands Find on the real page
+    if(b && b.text){
+      const line=String(b.text).split(/\n/)[0].replace(/\s+/g,' ').trim();
+      if(line.length>8) return line.slice(0,72);
+    }
+    if(b){
+      const n=findNeedleFromBook(b);
+      if(n) return n;
+      if(b.pa) return String(b.pa).slice(0,80);
+      if(b.title) return String(b.title).slice(0,80);
+    }
+    const hint=String(titleHint||'').trim();
+    if(hint) return hint.slice(0,80);
+    if(info.sec) return info.sec.replace(/-/g,'−');
+    return String(cite||'').trim().slice(0,80);
+  }
+  function citeBannerFromBook(b, cite, titleHint){
+    const lab=b?bookCite(b):(String(cite||'')+(titleHint?' · '+titleHint:''));
+    let quote='';
+    if(b){
+      quote=shortQuote(b.text||b.title||b.pa||'', 320);
+    } else if(titleHint) quote=String(titleHint);
+    return {lab, quote};
+  }
+  function openLearnCite(cite, opts){
+    opts=opts||{};
+    const info=citePubAndSec(cite);
+    let pub=info.pub||'facman';
+    const page=pageForCite(pub, info.sec);
+    const needle=needleForCite(cite, opts.title);
+    const ban=citeBannerFromBook(info.book, cite, opts.title);
+    let guessNote='';
+    if(!info.pub){ guessNote='Opened '+(pub==='jo'?'7110.65':'FACMAN')+' (best guess) — refine with Find if needed.'; }
+    const lr={pos:S.pos, rfcTopic:S.rfcTopic};
+    set({tab:'reference', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:ban.lab, pubCiteQuote:ban.quote, learnReturn:lr, lkFocus:false, refQ:''});
+  }
+  function leavePdfToLearn(){
+    const lr=S.learnReturn;
+    pdfHits=[]; pdfHitI=0;
+    return set({tab:'learn', pos:lr.pos, rfcTopic:lr.rfcTopic, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, refQ:''});
   }
 
   function drawLookup(query){
@@ -1904,7 +1996,7 @@
     const mid=Math.ceil(T.refs.length/2);
     const col=arr=>arr.map(r=>{
       const k=T.n+':'+r[0]; const on=!!S.rfcChk[k];
-      return `<div class="rfc-item ${on?'on':''}" data-action="rfcref" data-cite="${r[0]}" data-k="${k}"><span class="rfc-mark">${on?'viewed':''}</span> <span class="rfc-pg">${r[0]}</span> <span class="rfc-pt">${r[1]}</span></div>`;
+      return `<div class="rfc-item ${on?'on':''}" data-action="rfcref" data-cite="${r[0]}" data-title="${escTxt(r[1]||'').replace(/"/g,'&quot;')}" data-k="${k}"><span class="rfc-mark">${on?'viewed':''}</span> <span class="rfc-pg">${r[0]}</span> <span class="rfc-pt">${r[1]}</span></div>`;
     }).join('');
     const done=T.refs.filter(r=>S.rfcChk[T.n+':'+r[0]]).length;
     return `<div class="qmeta"><span class="pill warn">LESSON TOPIC ${T.n}</span><span class="muted" style="font-size:11px">${done}/${T.refs.length} viewed</span></div>
@@ -1939,7 +2031,7 @@
 
   const S={ screen:'app', station:'KNFG', pos:'rfd', tab:'home', trainMode:'practice',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcRated:{},fcDeck:'pos',fcGrp:'gca',fcOpen:{gca:true},
-    lessonsDone:{}, simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', rfcTopic:0, rfcChk:{}, rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'' };
+    lessonsDone:{}, simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', rfcTopic:0, rfcChk:{}, rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null };
   function set(o){ Scope.teardown(); Object.assign(S,o); render(); }
   const TRAINEE_KEY='vatc.trainee';
   function loadTrainee(){
@@ -2125,9 +2217,9 @@
       const P=posProgress(p.k); const open=S.posOpen===p.k;
       const compact=!!S.posOpen && !open;
       return `<div class="pcard ${S.pos===p.k?'on':''}${open?' open':''}${compact?' chip':''}" data-p="${p.k}">
-        <div class="pcard-hd" data-action="posfocus" data-p="${p.k}"><span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div><div class="pd">${p.d}</div><div class="pt">${p.sim==='scope'?'Radar scope sim':'Scenario sim'} · Learn · Ref</div></div>
+        <div class="pcard-hd" data-action="posfocus" data-p="${p.k}"><span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div></div>
         <div class="pos-body"><div class="pos-prog">Flashcards ${P.fcDone}/${P.fcTot} · ${P.learnLabel} ${P.learnDone}/${P.learnTot}</div>
-          <details class="pos-acads" open><summary>ACADs</summary>${posAcadsHTML(p.k)}</details>
+          <details class="pos-acads"><summary>ACADs</summary>${posAcadsHTML(p.k)}</details>
           <div class="pos-acts"><button class="qabtn" data-action="poscards" data-p="${p.k}">FLASHCARDS</button><button class="qabtn" data-action="poslearn" data-p="${p.k}">LEARN</button></div>
         </div></div>`;
     }).join('');
@@ -2412,9 +2504,11 @@
     if(!S.pub) return '';
     const p=PUBS.find(x=>x.id===S.pub)||PUBS[0];
     const guess=(S.pubGuessNote?`<div class="note">${escTxt(S.pubGuessNote)}</div>`:'');
-    return `<div class="pdfbox">${guess}
+    const citeBan=(S.pubCiteLab||S.pubCiteQuote)?`<div class="pdfcite"><div class="pc-lab">${escTxt(S.pubCiteLab||'CITE')}</div><div class="pc-q">${escTxt(S.pubCiteQuote||'')}</div></div>`:'';
+    const backTitle=S.learnReturn?'Back to Learn checklist':'Back to hits';
+    return `<div class="pdfbox">${guess}${citeBan}
       <div class="pdfbar">
-        <button type="button" class="btn-back" data-action="findback" title="Back to hits">← BACK</button>
+        <button type="button" class="btn-back" data-action="findback" title="${backTitle}">← BACK</button>
         <span class="pill ok">${escTxt(p.lab)}</span>
         <button class="btn-ghost" data-action="pdfprev">PREV</button>
         <span class="pdfpg" id="pdfpglbl">—</span>
@@ -2626,7 +2720,7 @@
   function appScreen(){ let inner='';
     if(S.tab==='home')inner=homeView(); else if(S.tab==='ask')inner=askView(); else if(S.tab==='learn')inner=learnView();
     else if(S.tab==='train')inner=trainView(); else if(S.tab==='sim')inner=simView(); else if(S.tab==='reference')inner=refView();
-    return topbar()+tabs()+trackbar()+vidsStrip()+`<div class="body">${inner}</div>`+statusbar()+(S.source!=null?modal():''); }
+    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${trackbar()}${vidsStrip()}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
 
   function doAsk(){
     const inp=document.getElementById('reflk')||document.getElementById('askq');
@@ -2653,12 +2747,13 @@
     if(a==='simcmd')return Scope.cmd(el.dataset.c,el.dataset.v);
     if(a==='asksubmit'||a==='findgo')return doAsk();
     if(a==='askchip'||a==='skillchip'){const inp=document.getElementById('reflk')||document.getElementById('askq');if(inp){inp.value=el.dataset.q;doAsk();}return;}
-    if(a==='findclear'){ S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null; return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:''}); }
+    if(a==='findclear'){ S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.learnReturn=null; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null; return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',learnReturn:null}); }
     if(a==='findback'){
-      if(S.pub){ return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:''}); }
-      S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null;
+      if(S.learnReturn && S.pub){ return leavePdfToLearn(); }
+      if(S.pub){ return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:''}); }
+      S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.learnReturn=null; pdfHits=[]; pdfHitI=0; pdfDoc=null; pdfSrc=''; pdfTextIndex=null;
       const inp=document.getElementById('reflk'); if(inp) inp.value='';
-      return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:''});
+      return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',learnReturn:null});
     }
     if(a==='openfindhit'){
       openFindHit({pub:el.dataset.pub, doc:el.dataset.doc, needle:el.dataset.needle, page:el.dataset.page, q:S.refQ});
@@ -2689,7 +2784,7 @@
     if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({gca:true},S.fcOpen||{}); o[g]=true; return set({tab:'train',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o});}
     if(a==='fcgrp'){ const g=el.dataset.g||'gca'; setTimeout(()=>{ const o=Object.assign({gca:false,local:false,radar:false,strips:false},S.fcOpen||{gca:true}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
     if(a==='openpub'){const page=Math.max(1,parseInt(el.dataset.page,10)||1);return set({tab:'reference',pub:el.dataset.id,pubPage:page,pubQ:S.pub===el.dataset.id?S.pubQ:'',pubGuessNote:''});}
-    if(a==='pdfclose')return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:''});
+    if(a==='pdfclose'){ if(S.learnReturn) return leavePdfToLearn(); return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:''}); }
     if(a==='pdfprev'){ S.pubPage=Math.max(1,(S.pubPage||1)-1); pdfDraw(); return; }
     if(a==='pdfnext'){ S.pubPage=(S.pubPage||1)+1; pdfDraw(); return; }
     if(a==='pdffindgo'){ const inp=document.getElementById('pdffind'); const q=inp?inp.value:''; if(pdfHits.length && pdfHits._q===String(q||'').trim().toLowerCase()) return pdfFindNext(true); return pdfFind(q,true); }
@@ -2699,7 +2794,7 @@
     if(a==='skillchip'){const q=el.dataset.q||''; if(S.tab==='reference'&&document.getElementById('reflk')){const inp=document.getElementById('reflk'); inp.value=q; S.refQ=q; drawLookup(q); return;} return set({tab:'reference',refQ:q,lkFocus:true});}
     if(a==='rfctopic')return set({rfcTopic:+el.dataset.n,tab:'learn'});
     if(a==='rfclist')return set({rfcTopic:0,tab:'learn'});
-    if(a==='rfcref'){const cite=el.dataset.cite||''; const d=Object.assign({},S.rfcChk); d[el.dataset.k]=true; return set({tab:'reference',refQ:cite,rfcChk:d,lkFocus:true});}
+    if(a==='rfcref'){const cite=el.dataset.cite||''; const d=Object.assign({},S.rfcChk); d[el.dataset.k]=true; S.rfcChk=d; openLearnCite(cite,{title:el.dataset.title||''}); return;}
     if(a==='rfctest')return set({rfcTopic:+(el.dataset.n||S.rfcTopic||1),tab:'train',rfcQi:0,rfcReveal:false});
     if(a==='rfcreveal')return set({rfcReveal:true});
     if(a==='rfcnext')return set({rfcQi:S.rfcQi+1,rfcReveal:false});
@@ -2728,7 +2823,9 @@
         e.preventDefault(); document.activeElement.value=''; S.pubQ=''; pdfHits=[]; pdfHitI=0; const h=document.getElementById('pdfhits'); if(h)h.textContent=''; return;
       }
       if((S.tab==='reference'||S.tab==='ask') && S.pub){
-        e.preventDefault(); return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:''});
+        e.preventDefault();
+        if(S.learnReturn) return leavePdfToLearn();
+        return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:''});
       }
       const inp=document.getElementById('reflk');
       if(inp && (S.tab==='reference'||S.tab==='ask')){ e.preventDefault(); inp.value=''; S.refQ=''; drawLookup(''); inp.focus(); }
