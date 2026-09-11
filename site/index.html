@@ -330,6 +330,10 @@
 #vatc .pdfcite{ padding:8px 12px; border-bottom:1px solid var(--line); background:rgba(57,240,160,.06); font-size:12px; line-height:1.45; color:var(--text); }
 #vatc .pdfcite .pc-lab{ font-family:var(--fd); letter-spacing:.1em; text-transform:uppercase; font-size:10px; color:var(--green); margin-bottom:4px; }
 #vatc .pdfcite .pc-q{ font-family:var(--fm); color:var(--text); white-space:pre-wrap; }
+#vatc .studymark{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:6px 12px; border-bottom:1px solid var(--line); background:var(--bg); position:sticky; top:0; z-index:4; }
+#vatc .studymark .btn-ghost{ padding:5px 10px; font-size:11px; }
+#vatc .sm-hl{ background:rgba(255,214,10,.35); color:inherit; border-radius:2px; }
+#vatc .sm-ul{ text-decoration:underline; text-decoration-color:var(--green); text-underline-offset:3px; }
 #vatc .pdfbar .btn-back{ font-family:var(--fm); background:var(--bg); border:1px solid var(--green2); color:var(--green); padding:7px 12px; border-radius:7px; cursor:pointer; font-size:11px; letter-spacing:.12em; font-weight:600; min-height:32px; }
 #vatc .pdfbar input{ flex:1; min-width:140px; font-family:var(--fm); font-size:12px; background:var(--bg); border:1px solid var(--line); color:var(--text); border-radius:7px; padding:7px 9px; outline:none; }
 #vatc .pdfbar input:focus{ border-color:var(--green2); }
@@ -1729,30 +1733,118 @@
     if(/FLIP|plate|TACAN|RNAV|VOR/i.test(d)) return 'jo';
     return null;
   }
+  /* PDF Find / Ctrl+F needle — SHARED path for Learn cites, Ask hits, and ALL future ACAD packets.
+     Prefer BOOK.pa / heading phrase / title wording that exists in the pub OCR text.
+     Never drive Find with bare section numbers (2-4-3 / 2-4-3.). Section # + SECTIONS/BOOK.pg still set pubPage only.
+     Future ACAD cite opens MUST call headingNeedleFromBook / needleForCite / findNeedleFromBook — do not invent a parallel needle. */
+  function stripSecPrefix(s){
+    return String(s||'')
+      .replace(/^\s*(?:TBL|FIG)\s+[A-Z]?-?\d+(?:[-\u2212–—]\d+)*\.?\s*/i,'')
+      .replace(/^\s*\d+(?:\s*[-\u2212–—]\s*\d+[A-Za-z]?)+\.?\s*/,'')
+      .trim();
+  }
+  function cleanNeedleSlice(s, max){
+    max=max||72;
+    s=String(s||'').replace(/\s+/g,' ').trim();
+    if(!s) return '';
+    if(s.length<=max) return s;
+    let cut=s.slice(0,max);
+    const br=cut.match(/^(.*[\s\/\-–,;:])\S*$/);
+    if(br && br[1].replace(/\s+/g,'').length>=8) return br[1].trim();
+    const w=cut.replace(/\s+\S*$/,'').trim();
+    return w.length>=8?w:cut.trim();
+  }
+  function isBareSecNeedle(s){
+    return /^\d+(?:\s*[-\u2212–—]\s*\d+[A-Za-z]?)+\.?$/.test(String(s||'').trim());
+  }
+  function headingNeedleFromBook(b, titleHint){
+    const cands=[];
+    const push=v=>{
+      let h=stripSecPrefix(String(v||'')).replace(/\s+/g,' ').trim();
+      if(!h || isBareSecNeedle(h)) return;
+      h=cleanNeedleSlice(h, 72);
+      if(h.length>=4) cands.push(h);
+    };
+    // Prefer official PA (matches JO/FACMAN caps heading) over title (spelling can drift)
+    if(b){
+      if(b.pa) push(b.pa);
+      if(b.text){
+        const line=String(b.text).split(/\n/)[0].replace(/\s+/g,' ').trim();
+        push(line);
+      }
+      if(b.title) push(b.title);
+    }
+    if(titleHint) push(titleHint);
+    return cands[0]||'';
+  }
+  function needleFallbacks(q){
+    const n=String(q||'').replace(/\s+/g,' ').trim();
+    if(!n || isBareSecNeedle(n)) return [];
+    const out=[];
+    const add=s=>{
+      s=stripSecPrefix(String(s||'')).replace(/\s+/g,' ').trim();
+      if(s.length<6 || isBareSecNeedle(s)) return;
+      s=cleanNeedleSlice(s, 72);
+      if(s.length>=6 && out.indexOf(s)<0) out.push(s);
+    };
+    add(n);
+    n.split(/\s*\/\s*/).forEach(add);
+    add(n.replace(/\s*[\(\[].*$/,''));
+    const words=n.replace(/\//g,' ').split(/\s+/).filter(Boolean);
+    if(words.length>=3) add(words.slice(0,3).join(' '));
+    if(words.length>=2) add(words.slice(0,2).join(' '));
+    return out;
+  }
   function findNeedleFromBook(b){
     if(!b) return '';
+    const heading=headingNeedleFromBook(b, '');
+    if(heading) return heading;
     const ph=phraseologyOf(b);
     if(ph){
       const line=ph.split(/\n/).map(s=>s.trim()).filter(Boolean)[0];
-      if(line&&line.length>12) return line.slice(0,80);
+      if(line&&line.length>12) return cleanNeedleSlice(stripSecPrefix(line), 80);
     }
-    const raw=String(b.text||'').replace(/\s+/g,' ').trim();
-    const m=raw.match(/^[\dA-Z .\-–—]+\.\s*(.{20,90})/);
-    if(m) return m[1].trim();
-    return raw.slice(0,70);
+    const raw=stripSecPrefix(String(b.text||'').replace(/\s+/g,' ').trim());
+    return cleanNeedleSlice(raw, 70);
+  }
+  function resolveCiteNeedle(opts){
+    /* Shared by openLearnCite / openFindHit / future ACAD opens */
+    opts=opts||{};
+    const cite=opts.cite||opts.key||'';
+    const b=opts.book || bookResolve(cite) || null;
+    let needle=String(opts.needle||'').trim();
+    if(!needle || isBareSecNeedle(needle) || /^\d+[\s.\-\u2212–—]/.test(needle)){
+      needle=headingNeedleFromBook(b, opts.title||'') || findNeedleFromBook(b) || '';
+    } else {
+      const stripped=stripSecPrefix(needle);
+      if(stripped && !isBareSecNeedle(stripped)) needle=cleanNeedleSlice(stripped, 72);
+    }
+    if(isBareSecNeedle(needle)) needle='';
+    return {book:b, needle, cite};
   }
   function openFindHit(opts){
     opts=opts||{};
     let pub=String(opts.pub||'').trim() || pubIdForDoc(opts.doc);
-    const needle=String(opts.needle||opts.q||'').trim();
-    const page=Math.max(1, parseInt(opts.page,10)||1);
+    const resolved=resolveCiteNeedle({cite:opts.cite, needle:opts.needle, title:opts.title, book:opts.book});
+    let needle=resolved.needle;
+    if(!needle && opts.q){
+      const qn=stripSecPrefix(opts.q);
+      if(qn && !isBareSecNeedle(qn)) needle=cleanNeedleSlice(qn, 72);
+    }
+    let page=Math.max(1, parseInt(opts.page,10)||0);
+    const info=citePubAndSec(opts.cite||(resolved.book&&resolved.book.cite)||'');
+    if(!pub) pub=info.pub || pubIdForDoc((resolved.book&&resolved.book.doc)||opts.doc);
+    if(!page){
+      page=pageForCite(pub||info.pub||'facman', info.sec);
+    }
+    page=Math.max(1, page||1);
     let guessNote='';
     if(!pub){
-      // Last-resort: open FACMAN so the click never silently no-ops; Find uses needle when present.
       pub='facman';
       guessNote='Opened FACMAN (best guess) — cite had no mapped pub.';
     }
-    set({tab:(S.tab==='ask'||S.tab==='reference')?S.tab:'reference', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:'', pubCiteQuote:'', learnReturn:null});
+    const ban=citeBannerFromBook(resolved.book, opts.cite||'', opts.title||'');
+    set({tab:(S.tab==='ask'||S.tab==='reference')?S.tab:'reference', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:ban.lab, pubCiteQuote:ban.quote, learnReturn:null});
   }
 
   /* Chapter PDF page jumps (same as SECTIONS dropdowns) — section → best start page */
@@ -1798,21 +1890,17 @@
   function needleForCite(cite, titleHint){
     const info=citePubAndSec(cite);
     const b=info.book;
-    // Prefer para heading line from BOOK (section # + title) — lands Find on the real page
-    if(b && b.text){
-      const line=String(b.text).split(/\n/)[0].replace(/\s+/g,' ').trim();
-      if(line.length>8) return line.slice(0,72);
-    }
+    // Heading / PA / title wording for PDF Find — section # only drives pubPage via pageForCite
+    const heading=headingNeedleFromBook(b, titleHint);
+    if(heading) return heading;
     if(b){
       const n=findNeedleFromBook(b);
-      if(n) return n;
-      if(b.pa) return String(b.pa).slice(0,80);
-      if(b.title) return String(b.title).slice(0,80);
+      if(n && !isBareSecNeedle(n)) return n;
     }
-    const hint=String(titleHint||'').trim();
-    if(hint) return hint.slice(0,80);
-    if(info.sec) return info.sec.replace(/-/g,'−');
-    return String(cite||'').trim().slice(0,80);
+    const hint=cleanNeedleSlice(stripSecPrefix(titleHint||''), 80);
+    if(hint && !isBareSecNeedle(hint)) return hint;
+    // Do not put bare 2-4-3 / 2-4-3. into Find (0 hits + wrong jump). Keep mapped page only.
+    return '';
   }
   function citeBannerFromBook(b, cite, titleHint){
     const lab=b?bookCite(b):(String(cite||'')+(titleHint?' · '+titleHint:''));
@@ -1827,7 +1915,7 @@
     const info=citePubAndSec(cite);
     let pub=info.pub||'facman';
     const page=pageForCite(pub, info.sec);
-    const needle=needleForCite(cite, opts.title);
+    const needle=resolveCiteNeedle({cite, book:info.book, title:opts.title, needle:needleForCite(cite, opts.title)}).needle || needleForCite(cite, opts.title);
     const ban=citeBannerFromBook(info.book, cite, opts.title);
     let guessNote='';
     if(!info.pub){ guessNote='Opened '+(pub==='jo'?'7110.65':'FACMAN')+' (best guess) — refine with Find if needed.'; }
@@ -1838,6 +1926,71 @@
     const lr=S.learnReturn;
     pdfHits=[]; pdfHitI=0;
     return set({tab:'learn', pos:lr.pos, rfcTopic:lr.rfcTopic, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, refQ:''});
+  }
+
+  const STUDY_MARKS_KEY='vatc.studymarks';
+  function studyMarkKey(){
+    const lab=String(S.pubCiteLab||'').trim();
+    if(lab) return lab.slice(0,160);
+    return String(S.pub||'pub')+'#p'+String(S.pubPage||1);
+  }
+  function loadStudyMarks(){
+    try{ return JSON.parse(localStorage.getItem(STUDY_MARKS_KEY)||'{}')||{}; }catch(_){ return {}; }
+  }
+  function saveStudyMarks(all){
+    try{ localStorage.setItem(STUDY_MARKS_KEY, JSON.stringify(all)); }catch(_){}
+  }
+  function getStudyMarkEntry(){
+    const all=loadStudyMarks();
+    const k=studyMarkKey();
+    const e=all[k]||{hl:[],ul:[]};
+    if(!Array.isArray(e.hl)) e.hl=[];
+    if(!Array.isArray(e.ul)) e.ul=[];
+    return {all, k, e};
+  }
+  function paintStudyMarks(){
+    const el=document.getElementById('pdfciteq');
+    if(!el) return;
+    const raw=String(S.pubCiteQuote||'');
+    const {e}=getStudyMarkEntry();
+    // Apply underline then highlight on escaped text via placeholder tokens (less is more)
+    let s=escTxt(raw);
+    const apply=(arr, cls)=>{
+      (arr||[]).slice().sort((a,b)=>b.length-a.length).forEach(snip=>{
+        const t=escTxt(String(snip||'').trim());
+        if(t.length<3) return;
+        const i=s.indexOf(t);
+        if(i<0) return;
+        s=s.slice(0,i)+'<span class="'+cls+'">'+t+'</span>'+s.slice(i+t.length);
+      });
+    };
+    apply(e.ul, 'sm-ul');
+    apply(e.hl, 'sm-hl');
+    el.innerHTML=s;
+  }
+  function toggleStudyMark(kind){
+    kind=(kind==='ul')?'ul':'hl';
+    const qel=document.getElementById('pdfciteq');
+    if(!qel) return;
+    let snippet='';
+    const sel=window.getSelection && window.getSelection();
+    if(sel && !sel.isCollapsed && qel.contains(sel.anchorNode)){
+      snippet=String(sel.toString()||'').replace(/\s+/g,' ').trim();
+    }
+    if(!snippet){
+      snippet=String(S.pubCiteQuote||qel.textContent||'').replace(/\s+/g,' ').trim();
+      if(snippet.length>240) snippet=snippet.slice(0,240).replace(/\s+\S*$/,'');
+    }
+    if(snippet.length<3) return;
+    const {all,k,e}=getStudyMarkEntry();
+    const arr=e[kind];
+    const ix=arr.indexOf(snippet);
+    if(ix>=0) arr.splice(ix,1); else arr.push(snippet);
+    e[kind]=arr;
+    all[k]=e;
+    saveStudyMarks(all);
+    paintStudyMarks();
+    try{ sel && sel.removeAllRanges && sel.removeAllRanges(); }catch(_){}
   }
 
   function drawLookup(query){
@@ -2504,9 +2657,11 @@
     if(!S.pub) return '';
     const p=PUBS.find(x=>x.id===S.pub)||PUBS[0];
     const guess=(S.pubGuessNote?`<div class="note">${escTxt(S.pubGuessNote)}</div>`:'');
-    const citeBan=(S.pubCiteLab||S.pubCiteQuote)?`<div class="pdfcite"><div class="pc-lab">${escTxt(S.pubCiteLab||'CITE')}</div><div class="pc-q">${escTxt(S.pubCiteQuote||'')}</div></div>`:'';
+    const hasCite=!!(S.pubCiteLab||S.pubCiteQuote);
+    const citeBan=hasCite?`<div class="pdfcite"><div class="pc-lab">${escTxt(S.pubCiteLab||'CITE')}</div><div class="pc-q" id="pdfciteq">${escTxt(S.pubCiteQuote||'')}</div></div>`:'';
+    const markBar=hasCite?`<div class="studymark"><button type="button" class="btn-ghost" data-action="markhl" title="Highlight selection or whole cite excerpt">Highlight</button><button type="button" class="btn-ghost" data-action="markul" title="Underline selection or whole cite excerpt">Underline</button><span class="muted">select cite text · SAMPLE</span></div>`:'';
     const backTitle=S.learnReturn?'Back to Learn checklist':'Back to hits';
-    return `<div class="pdfbox">${guess}${citeBan}
+    return `<div class="pdfbox">${guess}${citeBan}${markBar}
       <div class="pdfbar">
         <button type="button" class="btn-back" data-action="findback" title="${backTitle}">← BACK</button>
         <span class="pill ok">${escTxt(p.lab)}</span>
@@ -2607,6 +2762,7 @@
     if(lab) lab.textContent=S.pubPage+' / '+n;
   }
   async function bindPdf(){
+    paintStudyMarks();
     const canvas=document.getElementById('pdfcanvas');
     if(!canvas||!S.pub) return;
     const pub=PUBS.find(x=>x.id===S.pub); if(!pub) return;
@@ -2625,7 +2781,7 @@
         pdfDoc=await lib.getDocument({url:pdfUrl}).promise;
       }
       await pdfDraw();
-      if(S.pubQ) await pdfFind(S.pubQ, true);
+      if(S.pubQ) await pdfFindAuto(S.pubQ);
     }catch(err){
       const stage=document.querySelector('#vatc .pdfstage');
       if(stage) stage.innerHTML=`<iframe class="pdfiframe" src="${assetUrl(pub.href)}" title="${escTxt(pub.lab)}"></iframe><div class="note" style="padding:8px 10px">pdf.js unavailable — iframe of the same-origin PDF. Find still uses extracted text when pdf.js loads.</div>`;
@@ -2669,6 +2825,40 @@
     S.pubPage=hits[pdfHitI];
     if(hitsEl) hitsEl.textContent=(pdfHitI+1)+'/'+hits.length+' · p.'+S.pubPage;
     await pdfDraw();
+  }
+  async function pdfFindAuto(q){
+    const attempts=needleFallbacks(q);
+    if(!attempts.length){
+      // No usable wording needle — stay on mapped page, leave Find empty
+      S.pubQ='';
+      const find=document.getElementById('pdffind');
+      if(find) find.value='';
+      const hitsEl=document.getElementById('pdfhits');
+      if(hitsEl) hitsEl.textContent='';
+      return;
+    }
+    for(let i=0;i<attempts.length;i++){
+      await pdfFind(attempts[i], true);
+      if(pdfHits.length){
+        const find=document.getElementById('pdffind');
+        if(find) find.value=attempts[i];
+        S.pubQ=attempts[i];
+        return;
+      }
+    }
+    // Heading variants miss — keep chapter/section page from map; drop numbered needles only
+    if(isBareSecNeedle(q) || /^\d+[\s.\-\u2212–—]/.test(String(q||'').trim())){
+      S.pubQ='';
+      const find=document.getElementById('pdffind');
+      if(find) find.value='';
+      const hitsEl=document.getElementById('pdfhits');
+      if(hitsEl) hitsEl.textContent='';
+    } else {
+      // Keep the primary heading in the box so the user can tweak Find
+      const find=document.getElementById('pdffind');
+      if(find) find.value=attempts[0];
+      S.pubQ=attempts[0];
+    }
   }
   function pdfFindNext(fwd){
     if(!pdfHits.length) return pdfFind((document.getElementById('pdffind')||{}).value, fwd);
@@ -2756,9 +2946,11 @@
       return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',learnReturn:null});
     }
     if(a==='openfindhit'){
-      openFindHit({pub:el.dataset.pub, doc:el.dataset.doc, needle:el.dataset.needle, page:el.dataset.page, q:S.refQ});
+      openFindHit({pub:el.dataset.pub, doc:el.dataset.doc, needle:el.dataset.needle, page:el.dataset.page, cite:el.dataset.cite, title:el.dataset.title||'', q:S.refQ});
       return;
     }
+    if(a==='markhl'){ toggleStudyMark('hl'); return; }
+    if(a==='markul'){ toggleStudyMark('ul'); return; }
     if(a==='goscope')return set({tab:'sim',pos:(PSIM[S.pos]==='scope'?S.pos:'fin')});
     if(a==='stations')return set({screen:'station'});
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
