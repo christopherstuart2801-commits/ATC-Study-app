@@ -497,6 +497,7 @@ ok('syllabusFor helper', /function\s+syllabusFor\s*\(/.test(html));
 ok('acadChipRow uses syllabusFor', /function acadChipRow\(\)\{[\s\S]{0,120}syllabusFor\(S\.pos\)/.test(html));
 ok('syllabusFor no Final stand-in', /return \{list:own, demo:false, src:k\}/.test(html) && !/Radar Final as SAMPLE stand-in/.test(html));
 ok('default pos is fin', /const S=\{ screen:'app', station:'KNFG', pos:'fin'/.test(html));
+ok('default learnMode acad', /learnMode:'acad'/.test(html));
 ok('poslearn opens Learn', /if\(a==='poslearn'\)\{const k=el\.dataset\.p/.test(html) && /tab:'learn'/.test(html) && /learnMode:'acad'/.test(html));
 ok('home hides trackbar', /S\.tab==='home'\?'':trackbar\(\)/.test(html));
 ok('home cards tap poslearn', /class="pcard[\s\S]{0,80}data-action="poslearn"/.test(html));
