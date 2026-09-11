@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VECTOR ATC — KNFG</title>
 </head>
@@ -327,6 +330,8 @@
 #vatc .pcard.chip .pd, #vatc .pcard.chip .pt{ display:none; }
 #vatc .pdfbox{ border:1px solid var(--line); border-radius:8px; background:#0a1211; margin:0 0 12px; overflow:hidden; }
 #vatc .pdfbar{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:7px 9px; background:var(--panel2); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+/* shell: never show cite excerpt chrome */
+#vatc .pdfcite,#vatc .studymark{ display:none !important; }
 #vatc .pdfcite{ padding:8px 12px; border-bottom:1px solid var(--line); background:rgba(57,240,160,.06); font-size:12px; line-height:1.45; color:var(--text); }
 #vatc .pdfcite .pc-lab{ font-family:var(--fd); letter-spacing:.1em; text-transform:uppercase; font-size:10px; color:var(--green); margin-bottom:4px; }
 #vatc .pdfcite .pc-q{ font-family:var(--fm); color:var(--text); white-space:pre-wrap; }
@@ -2409,7 +2414,7 @@
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.3</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.4 · shell</span></div>`; }
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
   function trackbar(){ let out='<span class="grplbl">TWR</span>'; let g='TOWER';
