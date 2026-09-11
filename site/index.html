@@ -2219,7 +2219,7 @@
     </div>`;
   }
   function acadChipRow(){
-    const RFC=SYLLABUS.fin||[];
+    const RFC=syllabusFor(S.pos).list;
     return `<div class="acad-chips">${RFC.map(t=>{
       const lab=(t.ids&&t.ids.length>1)?(t.ids[0]+'-'+String(t.ids[t.ids.length-1]).replace(/^ACAD-/,'')):t.id;
       return `<span class="chip acadchip ${S.rfcTopic===t.n?'on':''}" data-action="acad" data-n="${t.n}">${lab}</span>`;

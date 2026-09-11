@@ -19,7 +19,7 @@ ok('resetCitePdfFind clears hits per cite', /function\s+resetCitePdfFind\s*\(/.t
 ok('openLearnCite sets pubPreferPage', /openLearnCite[\s\S]*?pubPreferPage:page/.test(html));
 ok('bindPdf forces Find with preferPage', /pdfFindAuto\(S\.pubQ,\s*\{preferPage:/.test(html));
 ok('pdfFind skips front-matter first jump', /i>=floor/.test(html) && /do not jump to cover\/TOC first lexical hit/.test(html));
-ok('study mark Highlight/Underline', /data-action="markhl"/.test(html) && /data-action="markul"/.test(html) && /vatc\.studymarks/.test(html));
+ok('study mark chrome removed (PDF is book)', !/data-action="markhl"/.test(html) && !/<div class="pdfcite">/.test(html));
 ok('ACAD packets use shared needle path comment', /Future ACAD cite opens MUST/.test(html));
 
 ok('askHits function exists', /function\s+askHits\s*\(/.test(html));
@@ -493,6 +493,7 @@ ok('acads jumps to fin learn', /if\(a==='acads'\)return set\(\{pos:'fin',tab:'le
 ok('cite step next/prev', /function\s+stepLearnCite\s*\(/.test(html) && /data-action="citenext"/.test(html) && /data-action="citeprev"/.test(html));
 ok('learnReturn stores cite', /learnReturn:\{pos:S\.pos, rfcTopic:S\.rfcTopic, cite:/.test(html) || /cite:String\(cite\|\|''\)/.test(html));
 ok('syllabusFor helper', /function\s+syllabusFor\s*\(/.test(html));
+ok('acadChipRow uses syllabusFor', /function acadChipRow\(\)\{[\s\S]{0,120}syllabusFor\(S\.pos\)/.test(html));
 ok('syllabusFor no Final stand-in', /return \{list:own, demo:false, src:k\}/.test(html) && !/Radar Final as SAMPLE stand-in/.test(html));
 ok('default pos is fin', /const S=\{ screen:'app', station:'KNFG', pos:'fin'/.test(html));
 ok('poslearn opens Learn', /if\(a==='poslearn'\)\{const k=el\.dataset\.p/.test(html) && /tab:'learn'/.test(html) && /learnMode:'cards'/.test(html));
