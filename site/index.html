@@ -2256,9 +2256,7 @@
         <div class="navrow"><span></span><button class="btn" data-action="rfctest" data-n="${T.n}">TEST ${T.n} EXERCISE ${I.arrow}</button></div>
       </div>`;
   }
-  function rfcTrain(){
-    const rfcSeg=`<div class="seg"><button class="${S.trainMode!=='cards'?'on':''}" data-action="train" data-m="rfc">TEST EXERCISE</button><button class="${S.trainMode==='cards'?'on':''}" data-action="train" data-m="cards">FLASHCARDS</button></div>`;
-    if(S.trainMode==='cards') return rfcSeg+fcBody();
+  function rfcExerciseBody(){
     const pack=syllabusFor(S.pos); const RFC=pack.list;
     const n=S.rfcTopic||1; const T=RFC.find(t=>t.n===n)||RFC[0];
     const qs=T.test, i=Math.min(S.rfcQi, qs.length-1), item=qs[i];
@@ -2267,16 +2265,21 @@
       <div><span class="citation">${I.ext} ${item.src.doc} · ${item.src.pg} · ${item.src.pa}</span></div>
       ${item.reason?`<div class="lkwhy" style="margin-top:8px">${item.reason}</div>`:''}</div>`:'';
     const nav=S.rfcReveal?`<button class="btn" data-action="${i<qs.length-1?'rfcnext':'rfcrestart'}">${i<qs.length-1?'NEXT':'RESTART'} ${I.arrow}</button>`:`<button class="btn" data-action="rfcreveal">REVEAL ${I.arrow}</button>`;
-    return rfcSeg+`${acadChipRow()}<div class="qmeta"><span class="pill warn">TEST ${T.n} EXERCISE · ${T.id}</span><span class="muted" style="font-size:11px">${i+1}/${qs.length} · fill-in · SAMPLE</span></div>
+    return `${acadChipRow()}<div class="qmeta"><span class="pill warn">TEST ${T.n} EXERCISE · ${T.id}</span><span class="muted" style="font-size:11px">${i+1}/${qs.length} · fill-in · SAMPLE</span></div>
       <div class="progressbar"><i style="width:${pct}%"></i></div>
       <div class="qstem reveal">${item.q}</div>
       <textarea class="fillbox" id="rfcans" placeholder="Short answer — then reveal" ${S.rfcReveal?'disabled':''}></textarea>
       ${after}
-      <div class="navrow"><button class="btn sec" data-action="tab" data-t="learn">CHECKLIST</button>${nav}</div>`;
+      <div class="navrow"><button class="btn sec" data-action="learnmode" data-m="acad">CHECKLIST</button>${nav}</div>`;
+  }
+
+  function rfcTrain(){
+    if(S.trainMode==='cards') return fcBody();
+    return rfcExerciseBody();
   }
 
 
-  const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'acad',
+  const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'cards',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcRated:{},fcDeck:'pos',fcGrp:'gca',fcOpen:{gca:true},
     lessonsDone:{}, simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', rfcTopic:0, rfcChk:{}, rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null };
   function set(o){ Scope.teardown(); Object.assign(S,o); render(); }
@@ -2407,7 +2410,7 @@
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
   function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.3</span></div>`; }
-  function tabs(){ const t=(k,ic,l)=>{const on=S.tab===k||(k==='learn'&&S.tab==='train'); return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
+  function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
   function trackbar(){ let out='<span class="grplbl">TWR</span>'; let g='TOWER';
     out+=POS.filter(p=>p.g==='TOWER').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
@@ -2553,23 +2556,15 @@
 
   function learnView(){
     const hasAcad=!!syllabusFor(S.pos).list.length;
-    const ls=LESSONS[S.pos]||[];
-    let mode=S.learnMode||'acad';
+    let mode=S.learnMode||'cards';
+    if(mode==='overview') mode=hasAcad?'acad':'cards';
     if(mode==='acad' && !hasAcad) mode='cards';
-    if(mode==='overview' && !ls.length) mode=hasAcad?'acad':'cards';
+    if(mode!=='acad' && mode!=='cards') mode='cards';
     const seg=`<div class="seg">`+
-      (hasAcad?`<button class="${mode==='acad'?'on':''}" data-action="learnmode" data-m="acad">ACADs</button>`:'')+
-      `<button class="${mode==='cards'?'on':''}" data-action="learnmode" data-m="cards">FLASHCARDS</button>`+
-      (ls.length?`<button class="${mode==='overview'?'on':''}" data-action="learnmode" data-m="overview">OVERVIEW</button>`:'')+
-      `</div>`;
-    if(mode==='cards'){
-      return seg+`<div class="explain" style="margin-bottom:12px">Sourced flashcard decks for memorization — position deck plus KNFG Quizlets. Flip, rate, then jump a cite from the card source when you need the pub.</div>`+fcBody();
-    }
-    if(mode==='overview'){
-      const cards=ls.map(L=>{const done=!!S.lessonsDone[L.id]; return `<div class="lesson ${done?'done':''}"><div class="lh"><div class="lt">${L.ic} ${L.t}</div><button class="mc ${done?'on':''}" data-action="lesson" data-id="${L.id}">${done?I.chk+' Done':'Mark complete'}</button></div><ul>${L.pts.map(pt=>`<li>${pt}</li>`).join('')}</ul>${L.scope?scopeDiagram():''}</div>`;}).join('');
-      return seg+`<div class="qmeta"><span class="pill warn">OVERVIEW · ${PN[S.pos].toUpperCase()}</span><span class="muted" style="font-size:11px">${ls.filter(L=>S.lessonsDone[L.id]).length}/${ls.length} · skim then drill FLASHCARDS</span></div>${cards}
-      <div class="explain" style="margin-top:4px">Plain-language orientation only. Use <b class="grn">FLASHCARDS</b> for memorization and <b class="grn">ACADs</b> for pub checklists when the packet is loaded.</div>`;
-    }
+      (hasAcad?`<button type="button" class="${mode==='acad'?'on':''}" data-action="learnmode" data-m="acad">ACADs</button>`:'')+
+      `<button type="button" class="${mode==='cards'?'on':''}" data-action="learnmode" data-m="cards">FLASHCARDS</button></div>`;
+    if(mode==='cards') return seg+fcBody();
+    if(S.trainMode==='rfc') return seg+rfcExerciseBody();
     return seg+rfcLearn();
   }
   function scopeDiagram(){ return `<svg viewBox="0 0 360 160" style="width:100%;max-width:360px;margin-top:10px;border:1px solid var(--line);border-radius:10px;background:radial-gradient(circle at 35% 50%,#0e2150,#081334)">
@@ -3061,8 +3056,8 @@
   function modal(){ const q=Q[S.source]; return `<div class="overlay" data-action="srcclose"><div class="modal" onclick="event.stopPropagation()"><h3>${I.ext} JUMP TO SOURCE</h3><div class="docframe"><div class="pg">${q.src.doc.toUpperCase()} — PAGE ${q.src.pg} · ¶ ${q.src.pa}</div><div class="hl">${q.src.hl}</div></div><div class="note">In the live app this opens your locally-imported document to this page and highlights the passage. Controlled publications are never bundled — you import your own authorized copy on-device.</div><div class="navrow" style="margin-top:14px"><span></span><button class="btn" data-action="srcclose">CLOSE</button></div></div></div>`; }
 
   function appScreen(){ let inner='';
-    if(S.tab==='home')inner=homeView(); else if(S.tab==='ask')inner=askView(); else if(S.tab==='learn')inner=learnView();
-    else if(S.tab==='train')inner=trainView(); else if(S.tab==='sim')inner=simView(); else if(S.tab==='reference')inner=refView();
+    if(S.tab==='home')inner=homeView(); else if(S.tab==='ask')inner=askView(); else if(S.tab==='learn'||S.tab==='train')inner=learnView();
+    else if(S.tab==='sim')inner=simView(); else if(S.tab==='reference')inner=refView();
     return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${S.tab==='home'?'':trackbar()}${vidsStrip()}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
 
   function doAsk(){
@@ -3110,12 +3105,12 @@
     if(a==='stations')return set({screen:'station'});
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
     if(a==='tab')return set({tab:el.dataset.t});
-    if(a==='learnmode')return set({learnMode:el.dataset.m,fcIdx:0,fcFlip:false});
+    if(a==='learnmode'){const m=el.dataset.m; return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false});}
     if(a==='pos')return set({pos:el.dataset.p,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='posfocus'){const k=el.dataset.p; return set({pos:k,tab:'learn',rfcTopic:0,posOpen:k,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});}
     if(a==='poscards')return set({pos:el.dataset.p,tab:'learn',learnMode:'cards',trainMode:'cards',fcIdx:0,fcFlip:false,posOpen:el.dataset.p,fcDeck:'pos'});
-    if(a==='poslearn'){const k=el.dataset.p; const has=!!(syllabusFor(k).list.length); return set({pos:k,tab:'learn',learnMode:has?'acad':'cards',rfcTopic:0,posOpen:k});}
-    if(a==='train')return set({trainMode:el.dataset.m});
+    if(a==='poslearn'){const k=el.dataset.p; return set({pos:k,tab:'learn',learnMode:'cards',trainMode:'cards',rfcTopic:0,posOpen:k,fcDeck:'pos',fcIdx:0,fcFlip:false});}
+    if(a==='train'){const m=el.dataset.m; if(m==='cards') return set({tab:'learn',learnMode:'cards',trainMode:'cards'}); if(m==='rfc') return set({tab:'learn',learnMode:'acad',trainMode:'rfc'}); return set({trainMode:m});}
     if(a==='lesson'){const id=el.dataset.id,d=Object.assign({},S.lessonsDone);if(d[id])delete d[id];else d[id]=true;return set({lessonsDone:d});}
     if(a==='pchoose'&&!S.pAns)return set({pSel:+el.dataset.i,pAns:true});
     if(a==='pnext')return set({pIdx:S.pIdx+1,pSel:null,pAns:false});
@@ -3137,13 +3132,13 @@
     if(a==='pdfnext'){ S.pubPage=(S.pubPage||1)+1; pdfDraw(); return; }
     if(a==='pdffindgo'){ const inp=document.getElementById('pdffind'); const q=inp?inp.value:''; if(pdfHits.length && pdfHits._q===String(q||'').trim().toLowerCase()) return pdfFindNext(true); return pdfFind(q,true); }
     if(a==='srcclose')return set({source:null});
-    if(a==='acads')return set({pos:'fin',tab:'learn',learnMode:'acad',rfcTopic:0});
-    if(a==='acad'){const n=+el.dataset.n; const k=el.dataset.p||'fin'; if(S.tab==='train') return set({pos:k,tab:'train',rfcTopic:n,rfcQi:0,rfcReveal:false,posOpen:k}); return set({pos:k,tab:'learn',rfcTopic:n,posOpen:k});}
+    if(a==='acads')return set({pos:'fin',tab:'learn',learnMode:'acad',trainMode:'practice',rfcTopic:0});
+    if(a==='acad'){const n=+el.dataset.n; const k=el.dataset.p||'fin'; return set({pos:k,tab:'learn',learnMode:'acad',trainMode:'practice',rfcTopic:n,rfcQi:0,rfcReveal:false,posOpen:k});}
     if(a==='skillchip'){const q=el.dataset.q||''; if(S.tab==='reference'&&document.getElementById('reflk')){const inp=document.getElementById('reflk'); inp.value=q; S.refQ=q; drawLookup(q); return;} return set({tab:'reference',refQ:q,lkFocus:true});}
     if(a==='rfctopic')return set({rfcTopic:+el.dataset.n,tab:'learn'});
     if(a==='rfclist')return set({rfcTopic:0,tab:'learn'});
     if(a==='rfcref'){const cite=el.dataset.cite||''; const d=Object.assign({},S.rfcChk); d[el.dataset.k]=true; S.rfcChk=d; openLearnCite(cite,{title:el.dataset.title||''}); return;}
-    if(a==='rfctest')return set({rfcTopic:+(el.dataset.n||S.rfcTopic||1),tab:'train',rfcQi:0,rfcReveal:false});
+    if(a==='rfctest')return set({rfcTopic:+(el.dataset.n||S.rfcTopic||1),tab:'learn',learnMode:'acad',trainMode:'rfc',rfcQi:0,rfcReveal:false});
     if(a==='rfcreveal')return set({rfcReveal:true});
     if(a==='rfcnext')return set({rfcQi:S.rfcQi+1,rfcReveal:false});
     if(a==='rfcrestart')return set({rfcQi:0,rfcReveal:false});

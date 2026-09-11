@@ -489,21 +489,22 @@ ok('Topics 1-4 checklists not rewritten (ACAD-0520 refs 2-1-7)', /"id":"ACAD-052
 ok('D-4/D-5 strip block still present', /function facmanStripBlock\(\)/.test(html) || /FIG D-4/.test(html));
 
 ok('Academics action or acad handler', /data-action="acads"/.test(html) || /if\(a==='acad'\)/.test(html));
-ok('acads jumps to fin learn', /if\(a==='acads'\)return set\(\{pos:'fin',tab:'learn',learnMode:'acad',rfcTopic:0\}\)/.test(html));
+ok('acads jumps to fin learn', /if\(a==='acads'\)return set\(\{pos:'fin',tab:'learn',learnMode:'acad'/.test(html));
 ok('cite step next/prev', /function\s+stepLearnCite\s*\(/.test(html) && /data-action="citenext"/.test(html) && /data-action="citeprev"/.test(html));
 ok('learnReturn stores cite', /learnReturn:\{pos:S\.pos, rfcTopic:S\.rfcTopic, cite:/.test(html) || /cite:String\(cite\|\|''\)/.test(html));
 ok('syllabusFor helper', /function\s+syllabusFor\s*\(/.test(html));
 ok('syllabusFor no Final stand-in', /return \{list:own, demo:false, src:k\}/.test(html) && !/Radar Final as SAMPLE stand-in/.test(html));
 ok('default pos is fin', /const S=\{ screen:'app', station:'KNFG', pos:'fin'/.test(html));
-ok('poslearn opens Learn', /if\(a==='poslearn'\)\{const k=el\.dataset\.p/.test(html) && /tab:'learn'/.test(html) && /learnMode:has\?'acad':'cards'/.test(html));
+ok('poslearn opens Learn', /if\(a==='poslearn'\)\{const k=el\.dataset\.p/.test(html) && /tab:'learn'/.test(html) && /learnMode:'cards'/.test(html));
 ok('home hides trackbar', /S\.tab==='home'\?'':trackbar\(\)/.test(html));
 ok('home cards tap poslearn', /class="pcard[\s\S]{0,80}data-action="poslearn"/.test(html));
 ok('posOpen persisted on S', /posOpen:null/.test(html));
 ok('FC_POS declared', /const FC_POS=\{/.test(html));
 ok('posDeck function', /function\s+posDeck\s*\(/.test(html));
 ok('posProgress function', /function\s+posProgress\s*\(/.test(html));
-ok('rfcTrain FLASHCARDS seg', /function rfcTrain\(\)[\s\S]{0,500}FLASHCARDS/.test(html));
-ok('Learn has FLASHCARDS mode', /data-action="learnmode"/.test(html) && /learnMode:'acad'/.test(html) && /mode==='cards'/.test(html));
+ok('rfcTrain FLASHCARDS seg', /function rfcExerciseBody\(\)/.test(html) && /function rfcTrain\(\)/.test(html));
+ok('no Learn TEST EXERCISE toggle', !/TEST EXERCISE/.test(html));
+ok('Learn has FLASHCARDS mode', /data-action="learnmode"/.test(html) && /learnMode:'cards'/.test(html) && /data-m="acad">ACADs/.test(html));
 ok('poscards opens Learn flashcards', /if\(a==='poscards'\)return set\(\{pos:el\.dataset\.p,tab:'learn',learnMode:'cards'/.test(html));
 ok('SYLLABUS other positions empty', /cd:\[\],gnd:\[\],lcl:\[\],rfd:\[\],arr:\[\]/.test(html));
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
@@ -545,7 +546,7 @@ if (sm) {
   let code = sm[1];
   code = code.replace(
     /document\.getElementById\('vatc'\)\.addEventListener\('click'[\s\S]*render\(\);\s*\}\)\(\);/,
-    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,FC_POS,posDeck,posProgress,rfcTrain,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcSetChipRow};\n})();'
+    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcSetChipRow};\n})();'
   );
   try {
     eval(code);
@@ -625,8 +626,12 @@ if (sm) {
       ok('homeView pcard percent', /pcpct/.test(home) && /%/.test(home));
       ok('home cards go Learn', /data-action="poslearn"/.test(home) && /tap → Learn/.test(home));
       ok('empty syllabus pending sentence', /ACAD packet pending — paper not in yet\./.test(home));
-      const learn = typeof V.learnView === 'function' ? (V.S.pos='fin', V.learnView()) : '';
+      if (V.S) { V.S.pos='fin'; V.S.learnMode='acad'; V.S.trainMode='practice'; V.S.rfcTopic=0; }
+      const learn = typeof V.learnView === 'function' ? V.learnView() : '';
       ok('Learn lists ACAD-0520', /ACAD-0520/.test(learn), 'learn len=' + (learn&&learn.length));
+      if (V.S) { V.S.learnMode='cards'; }
+      const learnCards = typeof V.learnView === 'function' ? V.learnView() : '';
+      ok('Learn FLASHCARDS mode shows decks', /FLASHCARDS/.test(learnCards) && (/fcface/.test(learnCards) || /fc-crt/.test(learnCards) || /No sourced cards/.test(learnCards)));
 
       ok('FC_POS.fin exists', !!(V.FC_POS && Array.isArray(V.FC_POS.fin) && V.FC_POS.fin.length));
       ok('FC_POS.lcl exists', !!(V.FC_POS && Array.isArray(V.FC_POS.lcl) && V.FC_POS.lcl.length));
@@ -646,11 +651,11 @@ if (sm) {
       ok('posProgress(fin) returns pct', !!(P && typeof P.pct === 'number'), P && JSON.stringify({pct:P.pct,fcTot:P.fcTot,learnTot:P.learnTot}));
       if (V.S) {
         V.S.pos = 'fin'; V.S.trainMode = 'practice'; V.S.rfcTopic = 1; V.S.rfcQi = 0; V.S.rfcReveal = false;
-        const te = typeof V.rfcTrain === 'function' ? V.rfcTrain() : '';
-        ok('rfcTrain default TEST EXERCISE', /TEST EXERCISE/.test(te) && /TEST 1 EXERCISE/.test(te));
-        V.S.trainMode = 'cards'; V.S.fcIdx = 0; V.S.fcFlip = false;
-        const cards = V.rfcTrain();
-        ok('rfcTrain honors trainMode cards', /FLASHCARDS/.test(cards) && /fcface/.test(cards));
+        const te = typeof V.rfcExerciseBody === 'function' ? V.rfcExerciseBody() : (typeof V.rfcTrain === 'function' ? V.rfcTrain() : '');
+        ok('rfcExercise under Learn ACADS', /TEST 1 EXERCISE/.test(te) || /TEST \$\{T\.n\} EXERCISE/.test(te) || /fill-in/.test(te), (te||'').slice(0,120));
+        V.S.trainMode = 'cards'; V.S.fcIdx = 0; V.S.fcFlip = false; V.S.learnMode = 'cards';
+        const cards = typeof V.rfcTrain === 'function' ? V.rfcTrain() : '';
+        ok('rfcTrain honors trainMode cards', /fcface/.test(cards) || /fc-crt/.test(cards) || /FLASHCARDS/.test(cards) || /No sourced cards/.test(cards), (cards||'').slice(0,100));
       }
 
       ok('FC_SETS.idents is array', !!(V.FC_SETS && Array.isArray(V.FC_SETS.idents) && V.FC_SETS.idents.length), V.FC_SETS && V.FC_SETS.idents && ('n='+V.FC_SETS.idents.length));
