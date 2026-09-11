@@ -489,13 +489,13 @@ ok('Topics 1-4 checklists not rewritten (ACAD-0520 refs 2-1-7)', /"id":"ACAD-052
 ok('D-4/D-5 strip block still present', /function facmanStripBlock\(\)/.test(html) || /FIG D-4/.test(html));
 
 ok('Academics action or acad handler', /data-action="acads"/.test(html) || /if\(a==='acad'\)/.test(html));
-ok('acads jumps to fin learn', /if\(a==='acads'\)return set\(\{pos:'fin',tab:'learn',rfcTopic:0\}\)/.test(html));
+ok('acads jumps to fin learn', /if\(a==='acads'\)return set\(\{pos:'fin',tab:'learn',learnMode:'acad',rfcTopic:0\}\)/.test(html));
 ok('cite step next/prev', /function\s+stepLearnCite\s*\(/.test(html) && /data-action="citenext"/.test(html) && /data-action="citeprev"/.test(html));
 ok('learnReturn stores cite', /learnReturn:\{pos:S\.pos, rfcTopic:S\.rfcTopic, cite:/.test(html) || /cite:String\(cite\|\|''\)/.test(html));
 ok('syllabusFor helper', /function\s+syllabusFor\s*\(/.test(html));
 ok('syllabusFor no Final stand-in', /return \{list:own, demo:false, src:k\}/.test(html) && !/Radar Final as SAMPLE stand-in/.test(html));
 ok('default pos is fin', /const S=\{ screen:'app', station:'KNFG', pos:'fin'/.test(html));
-ok('poslearn opens Learn', /if\(a==='poslearn'\)return set\(\{pos:el\.dataset\.p,tab:'learn'/.test(html));
+ok('poslearn opens Learn', /if\(a==='poslearn'\)\{const k=el\.dataset\.p/.test(html) && /tab:'learn'/.test(html) && /learnMode:has\?'acad':'cards'/.test(html));
 ok('home hides trackbar', /S\.tab==='home'\?'':trackbar\(\)/.test(html));
 ok('home cards tap poslearn', /class="pcard[\s\S]{0,80}data-action="poslearn"/.test(html));
 ok('posOpen persisted on S', /posOpen:null/.test(html));
@@ -503,6 +503,8 @@ ok('FC_POS declared', /const FC_POS=\{/.test(html));
 ok('posDeck function', /function\s+posDeck\s*\(/.test(html));
 ok('posProgress function', /function\s+posProgress\s*\(/.test(html));
 ok('rfcTrain FLASHCARDS seg', /function rfcTrain\(\)[\s\S]{0,500}FLASHCARDS/.test(html));
+ok('Learn has FLASHCARDS mode', /data-action="learnmode"/.test(html) && /learnMode:'acad'/.test(html) && /mode==='cards'/.test(html));
+ok('poscards opens Learn flashcards', /if\(a==='poscards'\)return set\(\{pos:el\.dataset\.p,tab:'learn',learnMode:'cards'/.test(html));
 ok('SYLLABUS other positions empty', /cd:\[\],gnd:\[\],lcl:\[\],rfd:\[\],arr:\[\]/.test(html));
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522']);

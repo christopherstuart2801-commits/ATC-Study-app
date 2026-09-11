@@ -2237,7 +2237,7 @@
       const posLab=(PN[S.pos]||'POSITION').toUpperCase();
       const pill=pack.demo?`RFC ACAD · ${posLab} (FINAL SAMPLE)`:`RFC ACAD · ${posLab}`;
       return `${demoBanner}${acadChipRow()}<div class="qmeta"><span class="pill warn">${pill}</span><span class="muted" style="font-size:11px">NAVMC 3500.94 · ${pack.demo?'DEMO STAND-IN':'SAMPLE'}</span></div>
-        <div class="brief" style="margin-bottom:14px"><b>Lesson Topic list</b> matches the paper: red topic numbers, red underlined ACAD codes. Click a topic for the 7110.65 / FACMAN checklist, then run that topic’s Test Exercise in Train. Position FLASHCARDS on Home open this position’s deck — KNFG Quizlets stay on Home / Train.</div>
+        <div class="brief" style="margin-bottom:14px"><b>Lesson Topic list</b> matches the paper: red topic numbers, red underlined ACAD codes. Click a topic for the 7110.65 / FACMAN checklist. Use FLASHCARDS (same Learn tab) for sourced memorization decks. Test Exercise stays on the topic when you open it.</div>
         ${cards}`;
     }
     const mid=Math.ceil(T.refs.length/2);
@@ -2276,7 +2276,7 @@
   }
 
 
-  const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice',
+  const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'acad',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcRated:{},fcDeck:'pos',fcGrp:'gca',fcOpen:{gca:true},
     lessonsDone:{}, simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', rfcTopic:0, rfcChk:{}, rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null };
   function set(o){ Scope.teardown(); Object.assign(S,o); render(); }
@@ -2469,7 +2469,7 @@
     }).join('');
     const quiz=`<div class="grp">KNFG Quizlets</div>
       ${fcSetChipRow(false)}
-      <div class="explain" style="margin-bottom:14px">Named FACMAN decks at KNFG level — idents / TWR FREQ stay GENERAL, not duplicated on every position. FLASHCARDS on a position opens that position’s deck. Tap a position card to open Learn.</div>`;
+      <div class="explain" style="margin-bottom:14px">Named FACMAN decks at KNFG level — idents / TWR FREQ stay GENERAL. Tap FLASHCARDS on a position (or Learn → FLASHCARDS) for the sourced deck. Tap the card for Learn / ACADs.</div>`;
     return `<div class="hero reveal"><div class="hk">KNFG</div><div class="hn">MCAS Camp Pendleton · Munn Field · Oceanside, CA</div>
         <div class="hstats"><div><b>RWY 21</b><span>Primary</span></div><div><b>78 ft</b><span>Field Elev</span></div><div><b>3 / 21</b><span>Runways</span></div><div><b>Ch 55</b><span>NFG TACAN</span></div><div><b>${POS.length}</b><span>Positions</span></div></div>
         <div class="qa"><button class="qabtn" data-action="tab" data-t="ask">${I.ask} Ask a question</button><button class="qabtn" data-action="tab" data-t="reference">${I.file} Charts & routes</button><button class="qabtn" data-action="goscope">${I.sim} Run the scope</button><button class="qabtn" data-action="acads">${I.grad} Academics</button></div></div>
@@ -2551,11 +2551,27 @@
     }).join('');
   }
 
-  function learnView(){ const fcDoor=`<div class="pos-acts"><button class="qabtn" data-action="poscards" data-p="${S.pos}">FLASHCARDS</button></div>`;
-    if(syllabusFor(S.pos).list.length) return fcDoor+rfcLearn(); const ls=LESSONS[S.pos]||[];
-    const cards=ls.map(L=>{const done=!!S.lessonsDone[L.id]; return `<div class="lesson ${done?'done':''}"><div class="lh"><div class="lt">${L.ic} ${L.t}</div><button class="mc ${done?'on':''}" data-action="lesson" data-id="${L.id}">${done?I.chk+' Done':'Mark complete'}</button></div><ul>${L.pts.map(p=>`<li>${p}</li>`).join('')}</ul>${L.scope?scopeDiagram():''}</div>`;}).join('');
-    return fcDoor+`<div class="qmeta"><span class="pill warn">PLAYBOOK · ${PN[S.pos].toUpperCase()}</span><span class="muted" style="font-size:11px">${ls.filter(L=>S.lessonsDone[L.id]).length}/${ls.length} complete</span></div>${cards}
-      <div class="explain" style="margin-top:4px">Plain-language for the position. In the live app each point links to the exact FACMAN/NATOPS paragraph — verify against current pubs, then drill it in <b class="grn">Train</b> and <b class="grn">Sim</b>.</div>`; }
+  function learnView(){
+    const hasAcad=!!syllabusFor(S.pos).list.length;
+    const ls=LESSONS[S.pos]||[];
+    let mode=S.learnMode||'acad';
+    if(mode==='acad' && !hasAcad) mode='cards';
+    if(mode==='overview' && !ls.length) mode=hasAcad?'acad':'cards';
+    const seg=`<div class="seg">`+
+      (hasAcad?`<button class="${mode==='acad'?'on':''}" data-action="learnmode" data-m="acad">ACADs</button>`:'')+
+      `<button class="${mode==='cards'?'on':''}" data-action="learnmode" data-m="cards">FLASHCARDS</button>`+
+      (ls.length?`<button class="${mode==='overview'?'on':''}" data-action="learnmode" data-m="overview">OVERVIEW</button>`:'')+
+      `</div>`;
+    if(mode==='cards'){
+      return seg+`<div class="explain" style="margin-bottom:12px">Sourced flashcard decks for memorization — position deck plus KNFG Quizlets. Flip, rate, then jump a cite from the card source when you need the pub.</div>`+fcBody();
+    }
+    if(mode==='overview'){
+      const cards=ls.map(L=>{const done=!!S.lessonsDone[L.id]; return `<div class="lesson ${done?'done':''}"><div class="lh"><div class="lt">${L.ic} ${L.t}</div><button class="mc ${done?'on':''}" data-action="lesson" data-id="${L.id}">${done?I.chk+' Done':'Mark complete'}</button></div><ul>${L.pts.map(pt=>`<li>${pt}</li>`).join('')}</ul>${L.scope?scopeDiagram():''}</div>`;}).join('');
+      return seg+`<div class="qmeta"><span class="pill warn">OVERVIEW · ${PN[S.pos].toUpperCase()}</span><span class="muted" style="font-size:11px">${ls.filter(L=>S.lessonsDone[L.id]).length}/${ls.length} · skim then drill FLASHCARDS</span></div>${cards}
+      <div class="explain" style="margin-top:4px">Plain-language orientation only. Use <b class="grn">FLASHCARDS</b> for memorization and <b class="grn">ACADs</b> for pub checklists when the packet is loaded.</div>`;
+    }
+    return seg+rfcLearn();
+  }
   function scopeDiagram(){ return `<svg viewBox="0 0 360 160" style="width:100%;max-width:360px;margin-top:10px;border:1px solid var(--line);border-radius:10px;background:radial-gradient(circle at 35% 50%,#0e2150,#081334)">
     <circle cx="110" cy="80" r="56" fill="none" stroke="rgba(150,180,225,.4)"/><circle cx="110" cy="80" r="30" fill="none" stroke="rgba(150,180,225,.4)"/>
     <rect x="132" y="54" width="7" height="7" fill="#39f0a0"/><line x1="135" y1="57" x2="150" y2="44" stroke="#39f0a0"/>
@@ -3094,10 +3110,11 @@
     if(a==='stations')return set({screen:'station'});
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
     if(a==='tab')return set({tab:el.dataset.t});
+    if(a==='learnmode')return set({learnMode:el.dataset.m,fcIdx:0,fcFlip:false});
     if(a==='pos')return set({pos:el.dataset.p,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='posfocus'){const k=el.dataset.p; return set({pos:k,tab:'learn',rfcTopic:0,posOpen:k,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});}
-    if(a==='poscards')return set({pos:el.dataset.p,tab:'train',trainMode:'cards',fcIdx:0,fcFlip:false,posOpen:el.dataset.p,fcDeck:'pos'});
-    if(a==='poslearn')return set({pos:el.dataset.p,tab:'learn',rfcTopic:0,posOpen:el.dataset.p});
+    if(a==='poscards')return set({pos:el.dataset.p,tab:'learn',learnMode:'cards',trainMode:'cards',fcIdx:0,fcFlip:false,posOpen:el.dataset.p,fcDeck:'pos'});
+    if(a==='poslearn'){const k=el.dataset.p; const has=!!(syllabusFor(k).list.length); return set({pos:k,tab:'learn',learnMode:has?'acad':'cards',rfcTopic:0,posOpen:k});}
     if(a==='train')return set({trainMode:el.dataset.m});
     if(a==='lesson'){const id=el.dataset.id,d=Object.assign({},S.lessonsDone);if(d[id])delete d[id];else d[id]=true;return set({lessonsDone:d});}
     if(a==='pchoose'&&!S.pAns)return set({pSel:+el.dataset.i,pAns:true});
@@ -3112,7 +3129,7 @@
     if(a==='scnnext')return set({scnIdx:S.scnIdx+1,scnAns:false,scnSel:null});
     if(a==='scnrestart')return set({scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='src')return set({source:+el.dataset.i});
-    if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({gca:true},S.fcOpen||{}); o[g]=true; return set({tab:'train',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o});}
+    if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({gca:true},S.fcOpen||{}); o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o});}
     if(a==='fcgrp'){ const g=el.dataset.g||'gca'; setTimeout(()=>{ const o=Object.assign({gca:false,local:false,radar:false,strips:false},S.fcOpen||{gca:true}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
     if(a==='openpub'){const page=Math.max(1,parseInt(el.dataset.page,10)||1);const same=S.pub===el.dataset.id; if(!same){resetCitePdfFind();} return set({tab:'reference',pub:el.dataset.id,pubPage:page,pubQ:same?S.pubQ:'',pubGuessNote:'',pubPreferPage:page,pubCiteSec:same?S.pubCiteSec:''});}
     if(a==='pdfclose'){ if(S.learnReturn) return leavePdfToLearn(); resetCitePdfFind(); return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:''}); }
@@ -3120,7 +3137,7 @@
     if(a==='pdfnext'){ S.pubPage=(S.pubPage||1)+1; pdfDraw(); return; }
     if(a==='pdffindgo'){ const inp=document.getElementById('pdffind'); const q=inp?inp.value:''; if(pdfHits.length && pdfHits._q===String(q||'').trim().toLowerCase()) return pdfFindNext(true); return pdfFind(q,true); }
     if(a==='srcclose')return set({source:null});
-    if(a==='acads')return set({pos:'fin',tab:'learn',rfcTopic:0});
+    if(a==='acads')return set({pos:'fin',tab:'learn',learnMode:'acad',rfcTopic:0});
     if(a==='acad'){const n=+el.dataset.n; const k=el.dataset.p||'fin'; if(S.tab==='train') return set({pos:k,tab:'train',rfcTopic:n,rfcQi:0,rfcReveal:false,posOpen:k}); return set({pos:k,tab:'learn',rfcTopic:n,posOpen:k});}
     if(a==='skillchip'){const q=el.dataset.q||''; if(S.tab==='reference'&&document.getElementById('reflk')){const inp=document.getElementById('reflk'); inp.value=q; S.refQ=q; drawLookup(q); return;} return set({tab:'reference',refQ:q,lkFocus:true});}
     if(a==='rfctopic')return set({rfcTopic:+el.dataset.n,tab:'learn'});
