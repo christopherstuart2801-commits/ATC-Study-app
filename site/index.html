@@ -328,6 +328,12 @@
 #vatc .rfc-grid-dense .rfc-mark{ min-width:40px; font-size:8px; }
 #vatc .fps-slash{ text-decoration:line-through; text-decoration-thickness:1.5px; }
 #vatc .acad-chips{ margin:0 0 8px; gap:5px; }
+#vatc .rfc-topic-slim{ padding:10px 12px; margin-bottom:6px; gap:8px; }
+#vatc .rfc-topic-body{ flex:1; display:flex; align-items:center; gap:6px; flex-wrap:wrap; cursor:pointer; }
+#vatc .rfc-prog{ font-size:10px; margin-left:auto; }
+#vatc .sref-rule-slim{ margin-top:8px; padding:6px 10px; font-size:10px; line-height:1.4; }
+#vatc .lesson .lh .lt{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+#vatc .fps-acad > summary{ font-size:11px; }
 
 #vatc .acad-chips .chip.on{ color:#fff; background:var(--red); border-color:var(--red); }
 #vatc .fc-chips{ display:flex; gap:6px; flex-wrap:wrap; margin:0 0 12px; }
@@ -554,7 +560,7 @@
       fcCard('pending-strips','Pending strips','Pending departure and arrival strips go on the inactive board. FACMAN 6-3-4.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'6-3-4',pa:'POSTING FLIGHT STRIPS',hl:'Pending departure and arrival strips'}),
       fcCard('fdio-radar','FDIO — Radar','NFG Radar = NF1A, NF1D. FACMAN 5-1-11.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'5-1-11',pa:'FDIO',hl:'NFG Radar = NF1A, NF1D'}),
       fcCard('fig-d4-dep','FIG D-4 radar departure','ATLAS40 · H/H1/P · 4774 · P1900 · 50 · NFG · BLDG2 VISTA V458 BONDO / NKX / ↑40 · circled R · 1900/02/B/04. Altitude in Blk9 when handwritten.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-4 Radar Departure Strips'}),
-      fcCard('fig-d4-otp','FIG D-4 VFR-on-Top radar dep','Vista OTP ATLAS22 · H/H1/P · 7252 · P2300 · 40 · NFG · BLDG2 VISTA · ↑OTP/40 · 2303/05/B/05. CORRI OTP STI26 · 4543 · P1815 · OTP/38 · CORRI3 · ↑OTP/38 · 2303/03/DEPT 05 (no CLNC B on figure). Also RWY3 ATLAS22 CORRI3. Altitude in Blk9 when handwritten.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-4 Radar Departure Strips'}),
+      fcCard('fig-d4-otp','FIG D-4 VFR-on-Top radar dep','Vista OTP ATLAS22 · H/H1/P · 7252 · P2300 · 40 · NFG · BLDG2 VISTA · ↑OTP/40 · 2303/05/B/05. CORRI RWY21 STI26 · 4543 · P1815 · OTP/38 · CORRI3 · ↑OTP/38 · 2303/03/—/05 (no CLNC B). CORRI RWY3 ATLAS22 · 4540 · P2300 · OTP/38 · CORRI3 · ↑OTP/38 · 2303/05/—/05 (no CLNC B). Altitude in Blk9 when handwritten.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-4 Radar Departure Strips'}),
       fcCard('fig-d6-ovf','FIG D-6 overflight','N23485 · PA34 · 0252 · TANNR · 1745 · TANNR-CRQ · 45 · large V · circled R · handoff RIV @ 1756.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-6 Other Radar Strips'}),
       fcCard('fig-d6-ptout','FIG D-6 point out','N4282M · SR22 · 0255 · OCN · 2022 · OKB–F70 · 45 · large V · PSCT · EXIT 2030.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-6 Other Radar Strips'}),
       fcCard('fig-d6-fallbrook','FIG D-6 Fallbrook','N234WC · 2/AV8 · 5646 · P1800 · 60 · L18 · ROBNN OCN V23 LAX V299 VTU VTU299R SBA · V<1810 · DEP 1811 · EXIT LIMA 1812.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-6 Other Radar Strips'}),
@@ -566,7 +572,7 @@
       fcCard('viscom-ots','VISCOM OTS','Interphone. 7/6 NM: position, callsign/type, intentions. 4/3 NM: Local for clearance / continue / wave off. FACMAN 6-2-8.','GCA','fin',{doc:'NFG FACMAN July 2025',pg:'6-2-8',pa:'GCA – TOWER COORDINATION WITHOUT VISCOM'}),
       fcCard('fig-d5-arr','FIG D-5 radar arrival','STMPD19 · I/B350/L · 2252 · SXC · OCN · 1745 · I · ✓ · 50/40 struck → 24 · C7 · circled R · TZ✓ / FS / bay 1. Checkmark TYPE APCH once cleared.','Strip','fin',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-5 Radar Arrival Strips'}),
       fcCard('fig-d5-multi-gca','FIG D-5 multiple GCA','ATLAS40 · H/H1/P · 4534 · RADAR ID FIX L18 3N · 2022 · I · ✓ · alts 28/28/28 · 32/20/24 · 24 · C3 · circled R rows · APCH PA/LAR/1 · PA/LAR/2 · SA/LAZ/1. C around frequency once checks in.','Strip','fin',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-5 Radar Arrival Strips'}),
-      fcCard('fig-d5-nonradar','FIG D-5 non-radar arrival','ATLAS40 · H/H1/P · 4534 · FREQ circled 4 · L18 3N · 2022 · ✓ inbound · alts 50/40 struck → 28 · optional Blk9 nonradar marks (CU/42 · 1910/1915) · PA struck → TZ · FS · bay 1.','Strip','fin',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-5 Radar Arrival Strips'}),
+      fcCard('fig-d5-nonradar','FIG D-5 non-radar arrival','ATLAS40 · H/H1/P · 4534 · FREQ circled 4 · L18 3N · 2022 · I · ✓ inbound · alts 50/40 struck → 28 · optional Blk9 (CU/42 · 1910/1915 · R struck) · PA struck → TZ · FS · bay 1.','Strip','fin',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-5 Radar Arrival Strips'}),
       fcCard('fac-arr-fill','6-1-10 practice / IFR arrival','Blk7 coord fix; Blk8 time + ✓ inbound (I if IMC); Blk9 alt/SFA/R; Blk10–12 type/intent/bay. Do not combine IFR arrivals with VFR practice.','Strip','fin',{doc:'NFG FACMAN July 2025',pg:'6-1-10',pa:'FLIGHT PROGRESS STRIPS'}),
       fcCard('strip-510','5-1-10 strip marking','Examples in Appendix D. Departure TBL 5-3; VFR-on-Top TBL 5-4; SVFR TBL 5-5. Write clearly — official record.','Strip','fin',{doc:'NFG FACMAN July 2025',pg:'5-1-10',pa:'STRIP MARKING PROCEDURES'})
     ],
@@ -2339,10 +2345,10 @@
       cell('fps-pf','FREQ',circ('4')),
       cell('fps-cf','RADAR ID FIX','L18 3N'),
       cell('fps-et','TIME','2022'),
-      cell('fps-ai','ACTUAL IFR','—'),
+      cell('fps-ai','ACTUAL IFR','I'),
       cell('fps-ib','INBOUND PASSED','✓'),
       cell('fps-al','ALTITUDE / STATUS','<s>50</s> <s>40</s> 28<br><span style="font-size:9px;color:var(--muted)">optional CU/42 · 1910/1915</span>'),
-      cell('fps-rc','RADAR / NON-RDR','—'),
+      cell('fps-rc','RADAR / NON-RDR','<span class="fps-slash">Ⓡ</span>'),
       cell('fps-ap','TYPE APCH','<span class="fps-slash">PA</span> TZ'),
       cell('fps-it','INTENT','FS'),
       cell('fps-by','BAY','1')
@@ -2371,7 +2377,7 @@
   }
   function rfcLearn(){
     const pack=syllabusFor(S.pos); const RFC=pack.list;
-    const demoBanner=pack.demo?`<div class="pill warn" style="margin:0 0 10px">SAMPLE · ${PN[S.pos]||S.pos} — showing Radar Final ACADs until this position’s paper lands</div>`:'';
+    const demoBanner=pack.demo?`<div class="pill warn" style="margin:0 0 8px">SAMPLE · ${PN[S.pos]||S.pos} — Final ACADs until this position’s paper lands</div>`:'';
     const T=RFC.find(t=>t.n===S.rfcTopic);
     if(!T){
       const cards=RFC.map(t=>{
@@ -2380,28 +2386,29 @@
         const ton=!!S.rfcChk[tk];
         const refDone=(t.refs||[]).filter(r=>S.rfcChk[t.n+':'+r[0]]).length;
         const refTot=(t.refs||[]).length;
-        return `<div class="rfc-topic"><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button><div data-action="acad" data-n="${t.n}" style="flex:1;display:flex;align-items:center;gap:6px;flex-wrap:wrap;cursor:pointer"><span class="rfc-n">${t.n}</span>${codes}<span class="rfc-tt">${t.t}</span><span class="muted" style="font-size:10px;margin-left:8px">${refDone}/${refTot}</span></div></div>`;
+        return `<div class="rfc-topic rfc-topic-slim"><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button><div data-action="acad" data-n="${t.n}" class="rfc-topic-body"><span class="rfc-n">${t.n}</span>${codes}<span class="rfc-tt">${t.t}</span><span class="muted rfc-prog">${refDone}/${refTot}</span></div></div>`;
       }).join('');
       const posLab=(PN[S.pos]||'POSITION').toUpperCase();
-      const pill=pack.demo?`RFC ACAD · ${posLab} (FINAL SAMPLE)`:`RFC ACAD · ${posLab}`;
-      return `${demoBanner}${acadChipRow()}<div class="qmeta"><span class="pill warn">${pill}</span><span class="muted" style="font-size:11px">${pack.demo?'DEMO · NAVMC SAMPLE':'ACADs · check off · tap topic'}</span></div>
+      const pill=pack.demo?`ACAD · ${posLab} (SAMPLE)`:`ACAD · ${posLab}`;
+      return `${demoBanner}<div class="qmeta"><span class="pill warn">${pill}</span><span class="muted" style="font-size:10px">Topics → checklist → PDF cite</span></div>
+        ${acadChipRow()}
         ${cards}`;
     }
     const mid=Math.ceil(T.refs.length/2);
     const col=arr=>arr.map(r=>{
       const k=T.n+':'+r[0]; const on=!!S.rfcChk[k];
-      return `<div class="rfc-item ${on?'on':''}" data-action="rfcref" data-cite="${r[0]}" data-title="${escTxt(r[1]||'').replace(/"/g,'&quot;')}" data-k="${k}"><button type="button" class="rfc-check ${on?'on':''}" data-action="acadcheck" data-k="${k}" title="Check off">${on?'✓':''}</button> <span class="rfc-mark">${on?'checked':''}</span> <span class="rfc-pg">${r[0]}</span> <span class="rfc-pt">${r[1]}</span></div>`;
+      return `<div class="rfc-item ${on?'on':''}" data-action="rfcref" data-cite="${r[0]}" data-title="${escTxt(r[1]||'').replace(/"/g,'&quot;')}" data-k="${k}"><button type="button" class="rfc-check ${on?'on':''}" data-action="acadcheck" data-k="${k}" title="Check off">${on?'✓':''}</button> <span class="rfc-mark">${on?'✓':''}</span> <span class="rfc-pg">${r[0]}</span> <span class="rfc-pt">${r[1]}</span></div>`;
     }).join('');
     const done=T.refs.filter(r=>S.rfcChk[T.n+':'+r[0]]).length;
     const tk='topic:'+S.pos+':'+T.n; const ton=!!S.rfcChk[tk];
-    return `${demoBanner}<div class="qmeta"><span class="pill warn">LESSON TOPIC ${T.n}</span><span class="muted" style="font-size:11px">${done}/${T.refs.length} checked</span><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done" style="margin-left:8px">${ton?'✓':''}</button></div>
-      ${acadChipRow()}<div class="lesson"><div class="lh"><div class="lt"><span class="rfc-n">${T.n}</span> <span class="rfc-acad">${T.id}</span></div><button class="mc" data-action="rfclist">Topic list</button></div>
+    /* Topic detail: no duplicate acadChipRow — Topic list button is enough */
+    return `${demoBanner}<div class="lesson"><div class="lh"><div class="lt"><span class="rfc-n">${T.n}</span> <span class="rfc-acad">${T.id}</span><span class="muted rfc-prog">${done}/${T.refs.length}</span><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button></div><button class="mc" data-action="rfclist">Topics</button></div>
         <div class="rfc-tt rfc-tt-slim">${T.full}</div>
         <div class="note note-slim">${T.req}</div>
         <div class="rfc-grid rfc-grid-dense"><div>${col(T.refs.slice(0,mid))}</div><div>${col(T.refs.slice(mid))}</div></div>
-        ${T.n===4?`<details class="pos-acads fps-acad"><summary>FIG D-4 / D-5 strip examples</summary>${facmanStripBlock()}</details>`:''}
-        <div class="sref-rule"><b>PERF STD:</b> Pass written exam · JO 7110.65 · 00-80T-114 · NFG FACMAN.</div>
-        <div class="navrow"><span></span><button class="btn" data-action="rfctest" data-n="${T.n}">TEST ${T.n} EXERCISE ${I.arrow}</button></div>
+        ${T.n===4?`<details class="pos-acads fps-acad"><summary>FIG D-4 / D-5 strips</summary>${facmanStripBlock()}</details>`:''}
+        <div class="sref-rule sref-rule-slim"><b>PERF:</b> written exam · 7110.65 · FACMAN</div>
+        <div class="navrow"><span></span><button class="btn" data-action="rfctest" data-n="${T.n}">TEST ${T.n} ${I.arrow}</button></div>
       </div>`;
   }
 
@@ -2891,12 +2898,15 @@ function vidsStrip(){
       <div class="sref-label">SAMPLE · STI26 IFR VFR-ON-TOP RWY21 — CORRI (FIG D-4)</div>
       <div class="sref-mock"><div class="sref-row">${heads(depH)}</div>
         <div class="sref-row" style="margin-top:1px">${scell('STI26')}${scell('H/H1/P','sky')}${scell('4543','pur')}${scell('P1815','amb')}${scell('OTP/38','amb')}${scell('NFG')}${scell('CORRI3 CORRI · ↑OTP/38 · ✓/')}${scell('2303')}${scell('03')}${scell('—')}${scell('05','amb')}</div></div>
+      <div class="sref-label">SAMPLE · ATLAS22 IFR VFR-ON-TOP RWY3 — CORRI (FIG D-4)</div>
+      <div class="sref-mock"><div class="sref-row">${heads(depH)}</div>
+        <div class="sref-row" style="margin-top:1px">${scell('ATLAS22')}${scell('H/H1/P','sky')}${scell('4540','pur')}${scell('P2300','amb')}${scell('OTP/38','amb')}${scell('NFG')}${scell('CORRI3 CORRI · ↑OTP/38 · ✓/')}${scell('2303')}${scell('05')}${scell('—')}${scell('05','amb')}</div></div>
       <div class="sref-label">SAMPLE · ATLAS40 IFR MULTIPLE GCA ARRIVAL (FIG D-5)</div>
       <div class="sref-mock"><div class="sref-row">${heads(arrH)}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4534','pur')}${scell('—')}${scell('L18 3N')}${scell('2022','amb')}${scell('I','sky')}${scell('✓')}${scell('28/28/28 · 32/20/24 · 24 · C3 · Ⓡ/Ⓡ/R','amb')}${scell('PA<br>PA<br>SA')}${scell('LAR<br>LAR<br>LAZ')}${scell('1<br>2<br>1')}</div></div>
       <div class="sref-label">SAMPLE · ATLAS40 NON-RADAR ARRIVAL (FIG D-5)</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','FREQ','RADAR ID FIX','TIME','INBD','ALT / STATUS','APCH','INTENT','BAY'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4534','pur')}${scell('Ⓒ4','sky')}${scell('L18 3N')}${scell('2022','amb')}${scell('✓')}${scell('<s>50</s> <s>40</s> 28 · CU/42 · 1910/1915','amb')}${scell('<s>PA</s> TZ')}${scell('FS')}${scell('1')}</div></div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','FREQ','RADAR ID FIX','TIME','IFR','INBD','ALT / STATUS','APCH','INTENT','BAY'])}</div>
+        <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4534','pur')}${scell('Ⓒ4','sky')}${scell('L18 3N')}${scell('2022','amb')}${scell('I','sky')}${scell('✓')}${scell('<s>50</s> <s>40</s> 28 · CU/42 · 1910/1915 · <span class="fps-slash">Ⓡ</span>','amb')}${scell('<s>PA</s> TZ')}${scell('FS')}${scell('1')}</div></div>
       <div class="sref-label">SAMPLE · ATLAS40 IFR DEPARTURE (FIG D-1)</div>
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT','ROUTE / REMARKS','REQ RLS','RLS','CLNC','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/UH1Y/P','sky')}${scell('4774','pur')}${scell('P1900','amb')}${scell('60','amb')}${scell('NFG')}${scell('NFG QUNTN1 QUNTN SKATE NZY · ↑30')}${scell('1900')}${scell('02')}${scell('B','sky')}${scell('04','amb')}${scell('CA')}</div></div>
@@ -2918,9 +2928,6 @@ function vidsStrip(){
       <div class="sref-label">SAMPLE · SWIFT22 IFR LIMA VFR-ON-TOP RWY3 — CORRI (FIG D-1)</div>
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT','ROUTE / REMARKS','REQ RLS','RLS','CLNC','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('SWIFT22')}${scell('G/V22/I','sky')}${scell('4543','pur')}${scell('P1730','amb')}${scell('OTP/38','amb')}${scell('NFG')}${scell('NFG CORRI3 CORRI · ↑OTP/38')}${scell('1732')}${scell('35')}${scell('B','sky')}${scell('37','amb')}${scell('RP')}</div></div>
-      <div class="sref-label">SAMPLE · ATLAS22 IFR VFR-ON-TOP RWY3 — CORRI (FIG D-4)</div>
-      <div class="sref-mock"><div class="sref-row">${heads(depH)}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('ATLAS22')}${scell('H/H1/P','sky')}${scell('4540','pur')}${scell('P2300','amb')}${scell('OTP/38','amb')}${scell('NFG')}${scell('CORRI3 CORRI · ↑OTP/38 · ✓/')}${scell('2303')}${scell('05')}${scell('—')}${scell('05','amb')}</div></div>
       <div class="sref-label">SAMPLE · N23485 OVERFLIGHT (FIG D-6)</div>
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','CODE','RADAR ID FIX','TIME','ROUTE / ALT / RDR','HANDOFF FAC','HANDOFF TIME'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('N23485')}${scell('PA34','sky')}${scell('0252','pur')}${scell('TANNR')}${scell('1745','amb')}${scell('TANNR-CRQ · <b>V</b> · Ⓡ · 45','amb')}${scell('RIV','sky')}${scell('1756','amb')}</div></div>
