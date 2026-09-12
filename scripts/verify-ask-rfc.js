@@ -508,7 +508,16 @@ ok('posProgress function', /function\s+posProgress\s*\(/.test(html));
 ok('rfcTrain FLASHCARDS seg', /function rfcExerciseBody\(\)/.test(html) && /function rfcTrain\(\)/.test(html));
 ok('no Learn TEST EXERCISE toggle', !/TEST EXERCISE/.test(html));
 ok('Learn cite PDF hides shelf', /if\(S\.pub && S\.learnReturn\) return pdfPaneHTML\(\)/.test(html));
-ok('Reference PUBLICATIONS closed by default', /function pubShelfHTML\(\)[\s\S]{0,280}<details class="pos-acads"><summary>PUBLICATIONS<\/summary>/.test(html) && !/pos-acads"\$\{S\.pub\?'':' open'\}/.test(html));
+ok('Reference PUBLICATIONS closed by default', /function pubShelfHTML\(\)[\s\S]{0,900}<details class="pos-acads"><summary>PUBLICATIONS<\/summary>/.test(html) && !/pos-acads"\$\{S\.pub\?'':' open'\}/.test(html));
+ok('no standalone SECTIONS · FACMAN dropdown', !/<summary>SECTIONS · FACMAN<\/summary>/.test(html) && !/<summary>SECTIONS · 7110\.65<\/summary>/.test(html));
+ok('pub sections nested under each PUBLICATION', /function pubSectionsFor\(/.test(html) && /pub-nest/.test(html));
+ok('fcdeck list Quizlet-style', /fcdeck-list/.test(html) && /data-action="fcjump"/.test(html));
+ok('fc chips gray counts', /fc-n/.test(html) && /countOf/.test(html));
+ok('clickable TBL refs', /function linkifyTblRefs\(/.test(html) && /data-action="jumptbl"/.test(html) && /function jumpTblRef\(/.test(html));
+ok('slim Reference STRIPS MORE SAMPLES', /MORE SAMPLES/.test(html) && /Open Appendix D/.test(html));
+ok('Home NOAA METAR KNFG', /fetchKnfgMetar/.test(html) && /aviationweather\.gov\/api\/data\/metar/.test(html) && /SAMPLE · offline/.test(html));
+ok('ACAD checkboxes persist localStorage', /vatc\.rfcChk/.test(html) && /data-action="acadcheck"/.test(html) && /loadRfcChk/.test(html));
+ok('statusbar v0.6 dry-run', /v0\.6 · dry-run/.test(html));
 ok('cite overview removed from pdf pane', /No excerpt overview/.test(html) && !/<div class="pdfcite">/.test(html));
 ok('Learn ACADS toggle always present', /data-m="acad">ACADs/.test(html) && !/hasAcad\?`<button[^>]*data-m="acad"/.test(html));
 ok('Learn has FLASHCARDS mode', /data-action="learnmode"/.test(html) && /learnMode:'cards'/.test(html) && /data-m="acad">ACADs/.test(html));
@@ -553,7 +562,7 @@ if (sm) {
   let code = sm[1];
   code = code.replace(
     /document\.getElementById\('vatc'\)\.addEventListener\('click'[\s\S]*render\(\);\s*\}\)\(\);/,
-    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcSetChipRow};\n})();'
+    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcSetChipRow,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES};\n})();'
   );
   try {
     eval(code);
