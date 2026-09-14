@@ -572,7 +572,7 @@
       fcCard('viscom-ots','VISCOM OTS','Interphone. 7/6 NM: position, callsign/type, intentions. 4/3 NM: Local for clearance / continue / wave off. FACMAN 6-2-8.','GCA','fin',{doc:'NFG FACMAN July 2025',pg:'6-2-8',pa:'GCA – TOWER COORDINATION WITHOUT VISCOM'}),
       fcCard('fig-d5-arr','FIG D-5 radar arrival','STMPD19 · I/B350/L · 2252 · SXC · OCN · 1745 · I · ✓ · 50/40 struck → 24 · C7 · circled R · TZ✓ / FS / bay 1. Checkmark TYPE APCH once cleared.','Strip','fin',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-5 Radar Arrival Strips'}),
       fcCard('fig-d5-multi-gca','FIG D-5 multiple GCA','ATLAS40 · H/H1/P · 4534 · RADAR ID FIX L18 3N · 2022 · I · ✓ · alts 28/28/28 · 32 struck/20/24 · 24 · C3 · circled R rows · APCH PA/LAR/1 · PA/LAR/2 · SA/LAZ/1. C around frequency once checks in.','Strip','fin',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-5 Radar Arrival Strips'}),
-      fcCard('fig-d5-nonradar','FIG D-5 non-radar arrival','ATLAS40 · H/H1/P · 4534 · FREQ circled 4 · L18 3N · 2022 · I · ✓ inbound · alts 50/40 struck → 28 · optional Blk9 (CU/42 · 1910/1915 · R struck) · PA struck → TZ · FS · bay 1.','Strip','fin',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-5 Radar Arrival Strips'}),
+      fcCard('fig-d5-nonradar','FIG D-5 non-radar arrival','ATLAS40 · H/H1/P · 4534 · FREQ circled 4 · L18 3N · 2022 · ACTUAL IFR blank · ✓ inbound · alts 50/40 struck → 28 · optional Blk9 (CU/42 · 1910/1915 · R struck) · PA struck → TZ · FS · bay 1.','Strip','fin',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-5 Radar Arrival Strips'}),
       fcCard('fac-arr-fill','6-1-10 practice / IFR arrival','Blk7 coord fix; Blk8 time + ✓ inbound (I if IMC); Blk9 alt/SFA/R; Blk10–12 type/intent/bay. Do not combine IFR arrivals with VFR practice.','Strip','fin',{doc:'NFG FACMAN July 2025',pg:'6-1-10',pa:'FLIGHT PROGRESS STRIPS'}),
       fcCard('strip-510','5-1-10 strip marking','Examples in Appendix D. Departure TBL 5-3; VFR-on-Top TBL 5-4; SVFR TBL 5-5. Write clearly — official record.','Strip','fin',{doc:'NFG FACMAN July 2025',pg:'5-1-10',pa:'STRIP MARKING PROCEDURES'})
     ],
@@ -2323,49 +2323,15 @@
       cell('fps-it','INTENT','FS'),
       cell('fps-by','BAY','1')
     ].join('');
-    const multi=[
-      cell('fps-cs','CALLSIGN','ATLAS40'),
-      cell('fps-ty','TYPE / EQPT','H/H1/P'),
-      cell('fps-cd','CODE','4534'),
-      cell('fps-pf','PREVIOUS FIX','—'),
-      cell('fps-cf','RADAR ID FIX','L18 3N'),
-      cell('fps-et','TIME','2022'),
-      cell('fps-ai','ACTUAL IFR','I'),
-      cell('fps-ib','INBOUND PASSED','✓'),
-      cell('fps-al','ALTITUDE / SFA','28/28/28<br><s>32</s>/20/24<br>24 · '+circ('C')+'3'),
-      cell('fps-rc','RADAR CONTACT',circ('R')+' / '+circ('R')+' / R'),
-      cell('fps-ap','TYPE APCH','PA<br>PA<br>SA'),
-      cell('fps-it','INTENT','LAR<br>LAR<br>LAZ'),
-      cell('fps-by','BAY','1<br>2<br>1')
-    ].join('');
-    const nonr=[
-      cell('fps-cs','CALLSIGN','ATLAS40'),
-      cell('fps-ty','TYPE / EQPT','H/H1/P'),
-      cell('fps-cd','CODE','4534'),
-      cell('fps-pf','FREQ',circ('4')),
-      cell('fps-cf','RADAR ID FIX','L18 3N'),
-      cell('fps-et','TIME','2022'),
-      cell('fps-ai','ACTUAL IFR','I'),
-      cell('fps-ib','INBOUND PASSED','✓'),
-      cell('fps-al','ALTITUDE / STATUS','<s>50</s> <s>40</s> 28<br><span style="font-size:9px;color:var(--muted)">optional CU/42 · 1910/1915</span>'),
-      cell('fps-rc','RADAR / NON-RDR','<span class="fps-slash">Ⓡ</span>'),
-      cell('fps-ap','TYPE APCH','<span class="fps-slash">PA</span> TZ'),
-      cell('fps-it','INTENT','FS'),
-      cell('fps-by','BAY','1')
-    ].join('');
     return `<div class="fps-block">
       <div class="fps-h">Strips from FACMAN</div>
-      <div class="fps-cite">FACMAN App D · FIG D-4 / D-5. Fill rules 6-1-10 / 5-1-10. Tower D-1…D-3 · D-4 OTP · D-6 → Reference STRIPS.</div>
-      <div class="fps-sub">Radar departure · FIG D-4 · App D-5</div>
+      <div class="fps-cite">FACMAN App D · FIG D-4 / D-5 primary. Fill rules 6-1-10 / 5-1-10. OTP · multi-GCA · non-radar · tower D-1…D-3 · D-6 → Reference STRIPS.</div>
+      <div class="fps-sub">Radar departure · FIG D-4</div>
       <div class="fps-wrap"><div class="fps fps-dep">${dep}</div></div>
-      <div class="fps-note">NOTE (FIG D-4): altitude in Blk9 when handwritten. Vista/CORRI OTP samples (ATLAS22 / STI26) are in Reference → STRIPS.</div>
-      <div class="fps-sub">Radar arrival · FIG D-5 · App D-6</div>
+      <div class="fps-note">NOTE (FIG D-4): altitude in Blk9 when handwritten.</div>
+      <div class="fps-sub">Radar arrival · FIG D-5</div>
       <div class="fps-wrap"><div class="fps fps-arr">${arr}</div></div>
-      <div class="fps-sub">Multiple GCA · FIG D-5</div>
-      <div class="fps-wrap"><div class="fps fps-arr">${multi}</div></div>
-      <div class="fps-sub">Non-radar arrival · FIG D-5</div>
-      <div class="fps-wrap"><div class="fps fps-arr">${nonr}</div></div>
-      <div class="fps-note">FIG D-5: checkmark TYPE APCH once cleared; I in box 8 for IFR; C around frequency/SFA once checked in. Multi-GCA uses multi-row APCH/INTENT/BAY. Non-radar Blk9 control markings optional.</div>
+      <div class="fps-note">FIG D-5: checkmark TYPE APCH once cleared; I in box 8 for IFR; C around SFA once checked in. Multi-GCA / non-radar samples (non-radar ACTUAL IFR blank on figure) live under Reference → STRIPS.</div>
     </div>`;
   }
   function acadChipRow(){
@@ -2406,7 +2372,7 @@
         <div class="rfc-tt rfc-tt-slim">${T.full}</div>
         <div class="note note-slim">${T.req}</div>
         <div class="rfc-grid rfc-grid-dense"><div>${col(T.refs.slice(0,mid))}</div><div>${col(T.refs.slice(mid))}</div></div>
-        ${T.n===4?`<details class="pos-acads fps-acad"><summary>FIG D-4 / D-5 strips</summary>${facmanStripBlock()}</details>`:''}
+        ${T.n===4?`<details class="pos-acads fps-acad"><summary>FIG D-4 / D-5 primary strips</summary>${facmanStripBlock()}</details>`:''}
         <div class="sref-rule sref-rule-slim"><b>PERF:</b> written exam · 7110.65 · FACMAN</div>
         <div class="navrow"><span></span><button class="btn" data-action="rfctest" data-n="${T.n}">TEST ${T.n} ${I.arrow}</button></div>
       </div>`;
@@ -2906,7 +2872,7 @@ function vidsStrip(){
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4534','pur')}${scell('—')}${scell('L18 3N')}${scell('2022','amb')}${scell('I','sky')}${scell('✓')}${scell('28/28/28 · <s>32</s>/20/24 · 24 · C3 · Ⓡ/Ⓡ/R','amb')}${scell('PA<br>PA<br>SA')}${scell('LAR<br>LAR<br>LAZ')}${scell('1<br>2<br>1')}</div></div>
       <div class="sref-label">SAMPLE · ATLAS40 NON-RADAR ARRIVAL (FIG D-5)</div>
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','FREQ','RADAR ID FIX','TIME','IFR','INBD','ALT / STATUS','APCH','INTENT','BAY'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4534','pur')}${scell('Ⓒ4','sky')}${scell('L18 3N')}${scell('2022','amb')}${scell('I','sky')}${scell('✓')}${scell('<s>50</s> <s>40</s> 28 · CU/42 · 1910/1915 · <span class="fps-slash">Ⓡ</span>','amb')}${scell('<s>PA</s> TZ')}${scell('FS')}${scell('1')}</div></div>
+        <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4534','pur')}${scell('Ⓒ4','sky')}${scell('L18 3N')}${scell('2022','amb')}${scell('—')}${scell('✓')}${scell('<s>50</s> <s>40</s> 28 · CU/42 · 1910/1915 · <span class="fps-slash">Ⓡ</span>','amb')}${scell('<s>PA</s> TZ')}${scell('FS')}${scell('1')}</div></div>
       <div class="sref-label">SAMPLE · ATLAS40 IFR DEPARTURE (FIG D-1)</div>
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT','ROUTE / REMARKS','REQ RLS','RLS','CLNC','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/UH1Y/P','sky')}${scell('4774','pur')}${scell('P1900','amb')}${scell('60','amb')}${scell('NFG')}${scell('NFG QUNTN1 QUNTN SKATE NZY · ↑30')}${scell('1900')}${scell('02')}${scell('B','sky')}${scell('04','amb')}${scell('CA')}</div></div>
@@ -2971,7 +2937,17 @@ function vidsStrip(){
         ${row('ALTITUDE / SFA / RDR','amb','Blk9: altitude (hundreds), strike old values; SFA button with C once checked in; circled R for radar contact.','50→40→24 · C7 · circled R',ftag('req','6-1-10'))}
         ${row('TYPE APCH / INTENT / BAY','','Blk10 type apch (checkmark through once cleared); Blk11 intentions; Blk12 bay.','TZ✓ · FS · 1',ftag('ann','FIG D-5'))}
       </table>
-      <div class="sref-rule"><b>FIG D-5:</b> Checkmark TYPE APCH once cleared; I in box 8 for IFR; C around frequency/SFA once checked in. Pass-a-bay coordination prefers FACMAN 6-3-4 / 6-3-6 / 6-3-7 + <span class="grn">TBL 6-4</span>.</div>
+      <div class="sref-rule"><b>FIG D-5:</b> Checkmark TYPE APCH once cleared; I in box 8 for IFR arrivals (IFR + multi-GCA); C around frequency/SFA once checked in. Non-radar sample leaves ACTUAL IFR blank. Pass-a-bay coordination prefers FACMAN 6-3-4 / 6-3-6 / 6-3-7 + <span class="grn">TBL 6-4</span>.</div>
+
+      <div class="sref-hr"></div>
+      <div class="sref-pos rfd"><span class="sdot"></span>STRIP ABBREVS — TBL 5-3 / 5-4 / 5-5 (5-1-10)</div>
+      <div class="note" style="margin-bottom:8px">FACMAN 5-1-10 points here for departure / VFR-on-Top / SVFR strip marks. App D-8 (Tower VFR abbreviations) is listed in the TOC but not in the July 2025 PDF body.</div>
+      <table class="sref-table"><tr><th>TABLE</th><th>ABBREVIATIONS (as printed)</th><th>TAG</th></tr>
+        ${row('TBL 5-3 Departure procedures','','Quentin → QUNTN# · Corri → CORRI# · Bulldog → BLDG# · Munn → MUNN#.','',ftag('req','5-1-10'))}
+        ${row('TBL 5-4 VFR-on-Top limits','amb','VISTA → BLDG# · CORRI (helo) → CORRI# · QUENTIN → QUNTN#.','',ftag('req','5-1-10'))}
+        ${row('TBL 5-5 SVFR routes','sky','Intersection → NW · LCAC → SW · VORTAC → SW · North Initial → NE · Point Canyon → N · Pattern → circled W.','',ftag('ann','5-1-10'))}
+      </table>
+      <div style="margin:8px 0 4px"><button type="button" class="btn-ghost" data-action="openpub" data-id="facman" data-page="57">Open TBL 5-3…5-5 · FACMAN p.57</button></div>
 
       ${more}
 
