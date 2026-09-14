@@ -1,0 +1,164 @@
+FACMAN Appendix D — Flight Strips (sourced notes)
+=================================================
+Source PDF: docs/NFG-FACMAN-July-2025.pdf
+Page images: docs/facman-pages/p-155.png … p-161.png  (= Appendix D-1 … D-7)
+Text extract: docs/NFG-FACMAN-July-2025.txt ~L5749; docs/FACMAN-ch5-6-app.txt App D + §6-1-10 / §5-1-10
+Pub header on App D pages shows "MARCH 2024" in the raster; facility edition is July 2025.
+Do not invent callsigns, freqs, SIDs, or other-position packets beyond what figures/text show.
+
+Cross-refs
+----------
+[SRC 5-1-10] STRIP MARKING PROCEDURES — Examples in Appendix D; usage also JO 7110.65 Ch.2 Sec.3 + local.
+  a. Departure strip marking → Table 5-3
+  b. VFR-on-Top clearance limits / DPs → Table 5-4
+  c. SVFR route abbreviations → Table 5-5
+[SRC 6-1-10] FLIGHT PROGRESS STRIPS — block numbering FIG 6-1; examples in Appendix D.
+  Standard: Blk1 callsign; Blk2 blank; Blk3 number/type/eqpt + CWT; Blk4 blank; Blk5 beacon.
+  Practice / IFR arrivals: Blk7 coord fix or radar-contact position; Blk8 time of radar contact + ✓ inbound to tower; "I" in Blk8 for IMC approaches.
+  Blk9: altitude (hundreds); SFA button number with "C" once comms up; radar contact status; remarks.
+  Blk10 type apch (13/16 subsequent); Blk11 intentions (14/17); Blk12 bay (15/18 subsequent).
+  IFR arrivals: Blk6 previous fix (or inbound airway if handwritten); same 1–5 and 7–12 as practice.
+  Tower arrival: Blk15 arrival time; Blk18 flight planning initials.
+  IFR departures: Blk2 revision; Blk4 CID; Blk6 P-time; Blk7 req alt; Blk8 dept airport if other than NFG;
+    Blk9 clearance limit/route/altitude/remarks + radar contact/handoff; Blk12 "B" when clearance broadcast;
+    Blk13 release requested; Blk14 actual release; Blk15 departure time.
+  Fallbrook: Blk9 void time as V< time; Blk14 airborne; Blk15 exit Lima.
+  Overflight/point-out: Blk9 altitude/remarks/route + large "V" if VFR; Blk17 handoff/pointout facility; Blk18 time.
+NOTE (6-1-10): IFR arrivals and VFR practice approaches will not be combined on one strip.
+
+==============================================================================
+[SRC App D-1 / p-155] Appendix D. FLIGHT STRIPS
+==============================================================================
+1. Control Tower Flight Strips
+2. Radar Flight Strips
+
+==============================================================================
+[SRC FIG D-1 / App D-2 / p-156] Tower IFR Flight Strips
+==============================================================================
+IFR DEPARTURE template fields (tower):
+  CALLSIGN | TYPE/EQPT | CODE | P-TIME | REQ ALT | DEPT POINT |
+  CLEARANCE LIMIT, ROUTE OF FLIGHT / REMARKS (+ REQ RLS, RLS TIME; DEPARTURE FREQ IF OTHER THAN PUBLISHED) |
+  CLNC ISSUED | DEPT TIME | FLT PLNG
+
+Examples transcribed from figure:
+1) ATLAS40 · H/UH1Y/P · 4774 · P1900 · 60 · NFG
+   Route: NFG QUNTN1 QUNTN SKATE NZY · ↑30
+   REQ RLS 1900 · RLS TIME 02 · CLNC ISSUED B · DEPT TIME 04 · FLT PLNG CA
+2) ATLAS22 · H/SUCO/P · 7252 · P2300 · OTP/40 · NFG
+   Route: NFG BLDG2 VISTA · ↑ OTP/40
+   REQ RLS 2303 · RLS TIME 05 · CLNC ISSUED B · DEPT TIME 05 · FLT PLNG RP
+   Label: IFR EAST LOCAL VFR-ON-TOP STRIP - VISTA
+3) SWIFT13 · G/V22/I · 4540 · P1600 · OTP/38 · NFG
+   Route: NFG CORRI3 CORRI · ↑ OTP/38
+   REQ RLS 1558 · RLS TIME 1601 · CLNC ISSUED B · DEPT TIME 02 · FLT PLNG RP
+   Label: IFR LIMA VFR-ON-TOP STRIP RWY 21 - CORRI
+4) SWIFT22 · G/V22/I · 4543 · P1730 · OTP/38 · NFG
+   Route: NFG CORRI3 CORRI · ↑ OTP/38
+   REQ RLS 1732 · RLS TIME 35 · CLNC ISSUED B · DEPT TIME 37 · FLT PLNG RP
+   Label: IFR LIMA VFR-ON-TOP STRIP RWY 3 - CORRI
+
+IFR ARRIVAL template (tower):
+  CALLSIGN | TYPE/EQPT | CODE | PREVIOUS FIX | COORD FIX | ETA AT COORD FIX |
+  INTENTIONS / REMARKS | ARR TIME | FLT PLNG
+Example: STMPD19 · H/B350/L · 2252 · JLI · OCN · 1745 · intentions PAFS · ARR 1812 · FLT PLNG RP
+
+==============================================================================
+[SRC FIG D-2 / App D-3 / p-157] Tower VFR Flight Strip
+==============================================================================
+VFR DEPARTURE template: CALLSIGN | TYPE | P-TIME | REMARKS | DEST | TYPE STRIP | DEPT TIME | FLT PLNG
+Example: STI76 · AH1 · P1900 · DEST RIV · TYPE STRIP V/D · DEPT TIME 1906 · FLT PLNG CA
+
+==============================================================================
+[SRC FIG D-3 / App D-4 / p-158] Tower Special VFR Flight Strips
+==============================================================================
+SVFR DEPARTURE: CALLSIGN | TYPE | DEPARTURE ROUTE / ALTITUDE RESTRICTIONS / REMARKS |
+  CLNC ISSUED | INITIAL CONTACT | EXIT CLASS D
+Example: STI76 · H/SUCO · (sw symbol + ↓15) · B · 1752 · 1759
+
+SVFR ARRIVAL: CALLSIGN | TYPE | ENTRY ROUTE / ALTITUDE RESTRICTIONS / REMARKS |
+  CLNC ISSUED | INITIAL CONTACT | ARR TIME
+Example: ATL40 · H/UH1Y · (sw symbol + ↓15) · B · 1936 · 1945
+  Soft note: page image shows NE/entry arrow with SW text under the circle — keep as SW symbol + ↓15; do not invent glyphs.
+
+SVFR PATTERN: CALLSIGN | TYPE | LOCAL SVFR SYMBOL / ALTITUDE RESTRICTIONS |
+  CLNC ISSUED | INITIAL CONTACT | ARR TIME
+Example: ATL40 · H/UH1Y · (circled W + ↓15) · B · 1658 · 1741
+
+==============================================================================
+[SRC FIG D-4 / App D-5 / p-159] Radar Departure Strips
+==============================================================================
+Template field labels on figure:
+  CALLSIGN | TYPE/EQPT | CODE | P-TIME | REQ ALT | DEPT POINT |
+  CLEARANCE LIMIT, ROUTE OF FLIGHT, REMARKS, RADAR CONTACT/HANDOFF (IF REQ), DEPARTURE FREQ IF OTHER THAN PUBLISHED |
+  REQ RLS | RLS TIME | CLNC ISSUED | DEPT TIME
+Figure note under strips: "NOTE: ALTITUDE IS PLACED IN BLOCK 9 WHEN HAND WRITTEN"
+
+Examples:
+1) IFR DEPARTURE — ATLAS40 · H/H1/P · 4774 · P1900 · 50 · NFG
+   Route: NFG BLDG2 VISTA V458 BONDO / NKX / ↑40 · circled R
+   REQ RLS 1900 · RLS TIME 02 · CLNC ISSUED B · DEPT TIME 04
+2) IFR EAST LOCAL VFR-ON-TOP - VISTA — ATLAS22 · H/H1/P · 7252 · P2300 · 40 · NFG
+   Route: NFG BLDG2 VISTA · ↑ OTP/40
+   REQ RLS 2303 · RLS TIME 05 · CLNC ISSUED B · DEPT TIME 05
+3) IFR VFR-ON-TOP RWY21 - CORRI — STI26 · H/H1/P · 4543 · P1815 · OTP/38 · NFG
+   Route: CORRI3 CORRI · ↑ OTP/38 · (slash/check marks on right of route block)
+   REQ RLS 2303 · RLS TIME 03 · DEPT TIME 05
+4) IFR VFR-ON-TOP RWY3 - CORRI — ATLAS22 · H/H1/P · 4540 · P2300 · OTP/38 · NFG
+   Route: CORRI3 CORRI · ↑ OTP/38 · (slash/check marks)
+   REQ RLS 2303 · RLS TIME 05 · DEPT TIME 05
+
+==============================================================================
+[SRC FIG D-5 / App D-6 / p-160] Radar Arrival Strips
+==============================================================================
+IFR ARRIVAL template:
+  CALLSIGN | TYPE/EQPT | CODE | PREVIOUS FIX | COORD FIX |
+  ETA AT COORD FIX | ACTUAL IFR | INBOUND PASSED |
+  ALTITUDE | RADAR CONTACT/HANDOFF (C / SFA marking in block) |
+  TYPE APCH | INTENT | BAY  (three rows for multiple approaches)
+
+Example IFR arrival:
+  STMPD19 · I/B350/L · 2252 · SXC · OCN · 1745 · I · ✓ inbound
+  Altitudes: <s>50</s> <s>40</s> 24 · C7 (SFA button; "C" around frequency once checked in) · circled R
+  TYPE APCH: TZ with checkmark/slash through once cleared · INTENT FS · BAY 1
+Figure notes:
+  "PUT A CHECKMARK THROUGH THE TYPE APPROACH ONCE THE AIRCRAFT IS CLEARED."
+  "FOR IFR AIRCRAFT, PLACE I IN BOX 8."
+
+IFR MULTIPLE GCA ARRIVAL (handwritten) example:
+  ATLAS40 · H/H1/P · 4534 · RADAR ID FIX L18 3N · TIME 2022 · I · ✓
+  Altitude rows: 28/28/28 · <s>32</s>/20/24 · 24 · C3 · circled R / circled R / R
+  APCH rows: PA/LAR/1 · PA/LAR/2 · SA/LAZ/1
+  Note: "PUT A 'C' AROUND THE FREQUENCY ONCE THE AIRCRAFT CHECKS IN ON THAT FREQUENCY."
+
+NON-RADAR ARRIVAL example:
+  ATLAS40 · H/H1/P · 4534 · FREQ circled 4 · RADAR ID FIX L18 3N · TIME 2022 · I · ✓ inbound to tower
+  Altitudes <s>50</s> <s>40</s> 28 · optional Blk9 RADAR ID STATUS marks as shown (CU/42 · 1910/1915 · R struck)
+  TYPE APCH: <s>PA</s> TZ · INTENT FS · BAY 1
+  Note: "NON-RADAR CONTROL MARKINGS SHOWN IN BLOCK 9 ARE OPTIONAL."
+
+==============================================================================
+[SRC FIG D-6 / App D-7 / p-161] Other Radar Strips
+==============================================================================
+OVERFLIGHT: N23485 · PA34 · 0252 · TANNR · 1745 · TANNR-CRQ · 45 · handoff RIV @ 1756
+  Large "V" in Blk9 if VFR; circled R; else IFR.
+POINT OUT: N4282M · SR22 · 0255 · OCN · 2022 · OKB–F70 · 45 · PSCT · EXIT 2030
+  Large "V" in Blk9 if VFR.
+FALLBROOK DEPARTURE: N234WC · 2/AV8 · 5646 · P1800 · 60 · L18
+  Route ROBNN OCN V23 LAX V299 VTU VTU299R SBA · V< 1810 · DEP 1811 · EXIT LIMA 1812
+
+==============================================================================
+Integration map (app)
+---------------------
+Verified 2026-09-11 against facman-pages p-156/159/160/161 (FIG D-1/D-4/D-5/D-6). Non-radar ACTUAL IFR = I (not blank). STI26 + ATLAS22 RWY3 blank CLNC. 2026-09-14: multi-GCA row2 alt shows 32 struck (FIG D-5).
+Coverage: FIG D-1 Tower IFR · D-2 Tower VFR · D-3 Tower SVFR · D-4 Radar dep · D-5 Radar arr · D-6 Other Radar.
+facmanStripBlock() — Learn ACAD topic 4 (collapsed): FIG D-4 example 1 + FIG D-5 IFR arrival + Multiple-GCA + Non-radar (radar-focused).
+stripsRef() — Reference STRIPS: FIG D-1…D-6 + 6-1-10. Primary D-4/D-5. MORE order: D-4 OTP (Vista ATLAS22 → STI26 RWY21 → ATLAS22 RWY3), then D-5 multi-GCA/non-radar; D-1 tower IFR (ATLAS40/STMPD19) + D-2 + D-3 + D-1 Vista/CORRI OTP (ATLAS22/SWIFT13/SWIFT22); D-6 overflight N23485 / point-out N4282M / Fallbrook N234WC. Tower arr PREV = JLI (not SXC). Keep SAMPLE labeling; no invented fields.
+FC_EXTRA lcl — fig-d1-twr-ifr / fig-d2-twr-vfr / fig-d3-twr-svfr.
+FC_EXTRA rfd — fig-d4-dep / fig-d4-otp + fig-d6-ovf / fig-d6-ptout / fig-d6-fallbrook.
+FC_EXTRA fin — fig-d5-arr / fig-d5-multi-gca / fig-d5-nonradar.
+ASK_ALIASES — tower IFR/VFR/SVFR strip + radar departure/FIG D-4 + radar arrival/FIG D-5 multi-GCA/non-radar + FIG D-6 / point out / Fallbrook / void time (do not put ahead of pass-a-bay).
+BOOK — FACMAN FIG D-* + dual keys FIG D-1…D-6.
+termstrip FC_SETS — JO 7110.65 TBL 2-3-3/2-3-4 box meanings; FACMAN 6-1-10 for local block fill.
+scratchpad FC_SETS — TBL 6-4 only (verified).
+pass-a-bay Ask — prefer FACMAN 6-3-4 / 6-3-6 / 6-3-7 / TBL 6-4 (not 6-1-10 / FIG D-5 as first hit).
+FIG D-3 note — arrival symbol on page image shows NE/entry arrow with SW text under circle; notes keep "SW symbol + ↓15" without inventing glyphs.
