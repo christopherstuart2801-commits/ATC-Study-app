@@ -518,7 +518,8 @@ ok('pub sections nested under each PUBLICATION', /function pubSectionsFor\(/.tes
 ok('fcdeck list Quizlet-style', /fcdeck-list/.test(html) && /data-action="fcjump"/.test(html));
 ok('fc chips gray counts', /fc-n/.test(html) && /countOf/.test(html));
 ok('clickable TBL refs', /function linkifyTblRefs\(/.test(html) && /data-action="jumptbl"/.test(html) && /function jumpTblRef\(/.test(html));
-ok('slim Reference STRIPS MORE SAMPLES', /MORE SAMPLES/.test(html) && /Open Appendix D/.test(html));
+ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendix D/.test(html));
+ok('App D sref-labels use FIG identity not SAMPLE', /sref-label">FIG D-4 · ATLAS40 IFR DEPARTURE</.test(html) && /sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</.test(html) && !/sref-label">SAMPLE ·/.test(html));
 ok('Home NOAA METAR KNFG', /fetchKnfgMetar/.test(html) && /aviationweather\.gov\/api\/data\/metar/.test(html) && /SAMPLE · offline/.test(html));
 ok('ACAD checkboxes persist localStorage', /vatc\.rfcChk/.test(html) && /data-action="acadcheck"/.test(html) && /loadRfcChk/.test(html));
 ok('statusbar v0.6 dry-run', /v0\.6 · dry-run/.test(html));
