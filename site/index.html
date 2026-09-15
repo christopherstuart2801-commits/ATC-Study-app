@@ -2882,9 +2882,15 @@ function vidsStrip(){
       <div class="sref-label">SAMPLE · STI76 VFR DEPARTURE (FIG D-2)</div>
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','P-TIME','DEST','TYPE STRIP','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('STI76')}${scell('AH1','sky')}${scell('P1900','amb')}${scell('RIV')}${scell('V/D','pur')}${scell('1906','amb')}${scell('CA')}</div></div>
-      <div class="sref-label">SAMPLE · SVFR DEP / ARR / PATTERN (FIG D-3)</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','ROUTE / ALT / REMARKS','CLNC','INITIAL CONTACT','EXIT / ARR'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('STI76')}${scell('H/SUCO','sky')}${scell('SW · ↓15')}${scell('B','sky')}${scell('1752','amb')}${scell('1759 EXIT D','amb')}</div></div>
+      <div class="sref-label">SAMPLE · STI76 SVFR DEPARTURE (FIG D-3)</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','DEPARTURE ROUTE / ALT / REMARKS','CLNC','INITIAL CONTACT','EXIT CLASS D'])}</div>
+        <div class="sref-row" style="margin-top:1px">${scell('STI76')}${scell('H/SUCO','sky')}${scell('SW · ↓15')}${scell('B','sky')}${scell('1752','amb')}${scell('1759','amb')}</div></div>
+      <div class="sref-label">SAMPLE · ATL40 SVFR ARRIVAL (FIG D-3)</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','ENTRY ROUTE / ALT / REMARKS','CLNC','INITIAL CONTACT','ARR TIME'])}</div>
+        <div class="sref-row" style="margin-top:1px">${scell('ATL40')}${scell('H/UH1Y','sky')}${scell('SW/entry · ↓15')}${scell('B','sky')}${scell('1936','amb')}${scell('1945','amb')}</div></div>
+      <div class="sref-label">SAMPLE · ATL40 SVFR PATTERN (FIG D-3)</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','LOCAL SVFR / ALT','CLNC','INITIAL CONTACT','ARR TIME'])}</div>
+        <div class="sref-row" style="margin-top:1px">${scell('ATL40')}${scell('H/UH1Y','sky')}${scell('ⒸW · ↓15')}${scell('B','sky')}${scell('1658','amb')}${scell('1741','amb')}</div></div>
       <div class="sref-label">SAMPLE · ATLAS22 IFR EAST LOCAL VFR-ON-TOP — VISTA (FIG D-1)</div>
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT','ROUTE / REMARKS','REQ RLS','RLS','CLNC','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS22')}${scell('H/SUCO/P','sky')}${scell('7252','pur')}${scell('P2300','amb')}${scell('OTP/40','amb')}${scell('NFG')}${scell('NFG BLDG2 VISTA · ↑OTP/40')}${scell('2303')}${scell('05')}${scell('B','sky')}${scell('05','amb')}${scell('RP')}</div></div>
