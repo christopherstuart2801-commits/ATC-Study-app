@@ -127,7 +127,7 @@ Figure notes:
 IFR MULTIPLE GCA ARRIVAL (handwritten) example:
   ATLAS40 · H/H1/P · 4534 · RADAR ID FIX L18 3N · TIME 2022 · I · ✓
   Altitude rows: 28/28/28 · <s>32</s>/20/24 · 24 · C3 · circled R / circled R / R
-  APCH rows: PA/LAR/1 · PA/LAR/2 · SA/LAZ/1
+  APCH rows: <s>PA</s>/LAR/1 · <s>PA</s>/LAR/2 · SA/LAZ/1 (checkmark through TYPE APCH once cleared)
   Note: "PUT A 'C' AROUND THE FREQUENCY ONCE THE AIRCRAFT CHECKS IN ON THAT FREQUENCY."
 
 NON-RADAR ARRIVAL example:
@@ -149,7 +149,7 @@ FALLBROOK DEPARTURE: N234WC · 2/AV8 · 5646 · P1800 · 60 · L18
 ==============================================================================
 Integration map (app)
 ---------------------
-Verified 2026-09-11 against facman-pages p-156/159/160/161 (FIG D-1/D-4/D-5/D-6). 2026-09-14: multi-GCA row2 alt shows 32 struck (FIG D-5); non-radar ACTUAL IFR blank on figure (not I — earlier I was wrong). STI26 + ATLAS22 RWY3 blank CLNC.
+Verified 2026-09-11 against facman-pages p-156/159/160/161 (FIG D-1/D-4/D-5/D-6). 2026-09-14: multi-GCA row2 alt shows 32 struck (FIG D-5); non-radar ACTUAL IFR blank on figure (not I — earlier I was wrong). STI26 + ATLAS22 RWY3 blank CLNC. 2026-09-14 11pm: multi-GCA TYPE APCH rows 1–2 show PA struck (figure note + p-160).
 Coverage: FIG D-1 Tower IFR · D-2 Tower VFR · D-3 Tower SVFR · D-4 Radar dep · D-5 Radar arr · D-6 Other Radar.
 facmanStripBlock() — Learn ACAD topic 4 (collapsed): primary FIG D-4 example 1 + FIG D-5 IFR arrival only.
 stripsRef() — Reference STRIPS: FIG D-1…D-6 + 6-1-10 + TBL 5-3/5-4/5-5. Primary D-4/D-5. MORE order: D-4 OTP (Vista ATLAS22 → STI26 RWY21 → ATLAS22 RWY3), then D-5 multi-GCA/non-radar; D-1 tower IFR (ATLAS40/STMPD19) + D-2 + D-3 dep/arr/pattern (STI76/ATL40/ATL40) + D-1 Vista/CORRI OTP (ATLAS22/SWIFT13/SWIFT22); D-6 overflight N23485 / point-out N4282M / Fallbrook N234WC. Tower arr PREV = JLI (not SXC). Keep SAMPLE labeling; no invented fields.

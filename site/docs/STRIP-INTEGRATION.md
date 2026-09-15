@@ -15,3 +15,4 @@ User-authored reference/knfg-flight-strip-field-reference.html remains a trainin
 
 2026-09-14 3am night grind: FIG D-5 non-radar SAMPLE IFR cell corrected to blank (match p-160); Learn Topic 4 strip block slimmed to primary D-4/D-5; stripsRef gained TBL 5-3/5-4/5-5 abbrev panel. App D FIG D-1…D-6 covered; App D-8 VFR strip abbreviations listed in TOC but not in the 161-page July 2025 PDF.
 2026-09-14 9pm night grind: FIG D-3 Reference STRIPS expanded from dep-only to STI76 dep + ATL40 arr + ATL40 pattern (match p-158). ask-aliases.json synced with live ASK_ALIASES for FIG D-4 / D-5. App D FIG D-1…D-6 still covered; App D-8 still absent from July 2025 PDF body.
+2026-09-14 11pm night grind: FIG D-5 multi-GCA SAMPLE/FC/BOOK — PA struck on cleared APCH rows 1–2 (match p-160 + figure note). App D FIG D-1…D-6 still covered; App D-8 still absent from July 2025 PDF body.
