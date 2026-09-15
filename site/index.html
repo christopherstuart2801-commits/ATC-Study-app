@@ -327,6 +327,10 @@
 #vatc .rfc-grid-dense .rfc-item{ padding:4px 0; font-size:11px; gap:6px; }
 #vatc .rfc-grid-dense .rfc-mark{ min-width:40px; font-size:8px; }
 #vatc .fps-slash{ text-decoration:line-through; text-decoration-thickness:1.5px; }
+#vatc .fps-vd{ display:inline-block; position:relative; width:22px; height:18px; border:1px solid var(--green2); vertical-align:middle; font-size:9px; font-weight:700; color:var(--green); line-height:1; }
+#vatc .fps-vd b:first-child{ position:absolute; top:1px; left:2px; }
+#vatc .fps-vd b:last-child{ position:absolute; bottom:1px; right:2px; }
+#vatc .fps-vd i{ position:absolute; inset:0; background:linear-gradient(to top right, transparent calc(50% - 0.6px), var(--green2) 50%, transparent calc(50% + 0.6px)); pointer-events:none; }
 #vatc .acad-chips{ margin:0 0 6px; gap:5px; }
 #vatc .rfc-topic-slim{ padding:10px 12px; margin-bottom:6px; gap:8px; }
 #vatc .rfc-topic-body{ flex:1; display:flex; align-items:center; gap:6px; flex-wrap:wrap; cursor:pointer; }
@@ -551,7 +555,7 @@
     lcl: TBL_5_1.slice(1).map(r=>vrpCard(r,'lcl')).concat([
       fcCard('crash-phone','Crash phone','Tower Supervisor responsible; Flight Data normally activates. Daily test: five minutes prior to airfield opening. FACMAN 5-1-2.','Airfield','lcl',{doc:'NFG FACMAN July 2025',pg:'5-1-2',pa:'CRASH PHONE',hl:'The Tower Supervisor is responsible for activating the crash phone circuit'}),
       fcCard('fig-d1-twr-ifr','FIG D-1 tower IFR','Dep ATLAS40 · H/UH1Y/P · 4774 · P1900 · 60 · NFG · QUNTN1 QUNTN SKATE NZY · ↑30 · REQ RLS 1900 · RLS 02 · B · DEPT 04 · FLT PLNG CA. Arr STMPD19 · H/B350/L · 2252 · PREV JLI · OCN · 1745 · PAFS · ARR 1812 · RP.','Strip','lcl',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-1 Tower IFR Flight Strips'}),
-      fcCard('fig-d2-twr-vfr','FIG D-2 tower VFR','STI76 · AH1 · P1900 · DEST RIV · TYPE STRIP V/D (diagonal) · DEPT 1906 · FLT PLNG CA.','Strip','lcl',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-2 Tower VFR Flight Strip'}),
+      fcCard('fig-d2-twr-vfr','FIG D-2 tower VFR','STI76 · AH1 · P1900 · DEST RIV · TYPE STRIP diagonal V/D box · DEPT 1906 · FLT PLNG CA.','Strip','lcl',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-2 Tower VFR Flight Strip'}),
       fcCard('fig-d3-twr-svfr','FIG D-3 tower SVFR','Dep STI76 · H/SUCO · SW + ↓15 · B · 1752 · EXIT CLASS D 1759. Arr ATL40 · H/UH1Y · SW/entry + ↓15 · B · 1936 · ARR 1945. Pattern ATL40 · circled W + ↓15 · B · 1658 · 1741. SVFR abbrevs TBL 5-5.','Strip','lcl',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-3 Tower Special VFR Flight Strips'})
     ]),
     rfd:[
@@ -2355,8 +2359,10 @@
         return `<div class="rfc-topic rfc-topic-slim"><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button><div data-action="acad" data-n="${t.n}" class="rfc-topic-body"><span class="rfc-n">${t.n}</span>${codes}<span class="rfc-tt">${t.t}</span><span class="muted rfc-prog">${refDone}/${refTot}</span></div></div>`;
       }).join('');
       const posLab=(PN[S.pos]||'POSITION').toUpperCase();
-      const pill=pack.demo?`ACAD · ${posLab} (SAMPLE)`:`ACAD · ${posLab}`;
-      return `${demoBanner}<div class="qmeta"><span class="pill warn">${pill}</span><span class="muted" style="font-size:10px">Topics → checklist → PDF cite</span></div>
+      const head=pack.demo
+        ?`<div class="qmeta"><span class="pill warn">ACAD · ${posLab} (SAMPLE)</span><span class="muted" style="font-size:10px">Topics → checklist → PDF cite</span></div>`
+        :`<div class="muted" style="font-size:10px;margin:0 0 8px">Topics → checklist → PDF cite</div>`;
+      return `${demoBanner}${head}
         ${cards}`;
     }
     const mid=Math.ceil(T.refs.length/2);
@@ -2369,10 +2375,9 @@
     /* Topic detail: no duplicate acadChipRow — Topic list button is enough */
     return `${demoBanner}<div class="lesson"><div class="lh"><div class="lt"><span class="rfc-n">${T.n}</span> <span class="rfc-acad">${T.id}</span><span class="muted rfc-prog">${done}/${T.refs.length}</span><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button></div><button class="mc" data-action="rfclist">Topics</button></div>
         <div class="rfc-tt rfc-tt-slim">${T.full}</div>
-        <div class="note note-slim">${T.req}</div>
+        <div class="muted" style="font-size:10px;margin:0 0 8px;line-height:1.35">${T.req}</div>
         <div class="rfc-grid rfc-grid-dense"><div>${col(T.refs.slice(0,mid))}</div><div>${col(T.refs.slice(mid))}</div></div>
         ${T.n===4?`<details class="pos-acads fps-acad"><summary>FIG D-4 / D-5 primary strips</summary>${facmanStripBlock()}</details>`:''}
-        <div class="sref-rule sref-rule-slim"><b>PERF:</b> written exam · 7110.65 · FACMAN</div>
         <div class="navrow"><span></span><button class="btn" data-action="rfctest" data-n="${T.n}">TEST ${T.n} ${I.arrow}</button></div>
       </div>`;
   }
@@ -2880,7 +2885,7 @@ function vidsStrip(){
         <div class="sref-row" style="margin-top:1px">${scell('STMPD19')}${scell('H/B350/L','sky')}${scell('2252','pur')}${scell('JLI')}${scell('OCN')}${scell('1745','amb')}${scell('PAFS')}${scell('1812','amb')}${scell('RP')}</div></div>
       <div class="sref-label">FIG D-2 · STI76 VFR DEPARTURE</div>
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','P-TIME','DEST','TYPE STRIP','DEPT TIME','FLT PLNG'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('STI76')}${scell('AH1','sky')}${scell('P1900','amb')}${scell('RIV')}${scell('V/D','pur')}${scell('1906','amb')}${scell('CA')}</div></div>
+        <div class="sref-row" style="margin-top:1px">${scell('STI76')}${scell('AH1','sky')}${scell('P1900','amb')}${scell('RIV')}${scell('<span class="fps-vd" title="VFR Departure"><b>V</b><i></i><b>D</b></span>','pur')}${scell('1906','amb')}${scell('CA')}</div></div>
       <div class="sref-label">FIG D-3 · STI76 SVFR DEPARTURE</div>
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','DEPARTURE ROUTE / ALT / REMARKS','CLNC','INITIAL CONTACT','EXIT CLASS D'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('STI76')}${scell('H/SUCO','sky')}${scell('SW · ↓15')}${scell('B','sky')}${scell('1752','amb')}${scell('1759','amb')}</div></div>
@@ -2935,7 +2940,7 @@ function vidsStrip(){
       <div class="sref-pos arr"><span class="sdot"></span>RADAR ARRIVAL — FIG D-5</div>
       <div class="sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</div>
       <div class="sref-mock"><div class="sref-row">${heads(arrH)}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('STMPD19')}${scell('I/B350/L','sky')}${scell('2252','pur')}${scell('SXC')}${scell('OCN')}${scell('1745','amb')}${scell('I','sky')}${scell('✓')}${scell('<s>50</s> <s>40</s> 24 · C7 · Ⓡ','amb')}${scell('TZ✓')}${scell('FS')}${scell('1')}</div></div>
+        <div class="sref-row" style="margin-top:1px">${scell('STMPD19')}${scell('I/B350/L','sky')}${scell('2252','pur')}${scell('SXC')}${scell('OCN')}${scell('1745','amb')}${scell('I','sky')}${scell('✓')}${scell('<s>50</s> <s>40</s> 24 · C7 · Ⓡ','amb')}${scell('<span class="fps-slash">TZ</span>')}${scell('FS')}${scell('1')}</div></div>
       <table class="sref-table"><tr><th>FIELD (FIG D-5)</th><th>WHAT GOES HERE</th><th>TAG</th></tr>
         ${row('PREV / COORD / ETA','','Blk6 previous fix; Blk7 coordination fix; ETA at coord fix.','SXC · OCN · 1745',ftag('req','6-1-10'))}
         ${row('ACTUAL IFR / INBOUND','sky','I in box 8 for IFR/IMC approaches; checkmark when inbound passed to tower.','I · ✓',ftag('ann','FIG D-5'))}
