@@ -140,12 +140,24 @@ NON-RADAR ARRIVAL example:
 ==============================================================================
 [SRC FIG D-6 / App D-7 / p-161] Other Radar Strips
 ==============================================================================
-OVERFLIGHT: N23485 · PA34 · 0252 · TANNR · 1745 · TANNR-CRQ · 45 · handoff RIV @ 1756
-  Large "V" in Blk9 if VFR; circled R; else IFR.
-POINT OUT: N4282M · SR22 · 0255 · OCN · 2022 · OKB–F70 · 45 · PSCT · EXIT 2030
-  Large "V" in Blk9 if VFR.
-FALLBROOK DEPARTURE: N234WC · 2/AV8 · 5646 · P1800 · 60 · L18
-  Route ROBNN OCN V23 LAX V299 VTU VTU299R SBA · V< 1810 · DEP 1811 · EXIT LIMA 1812
+OVERFLIGHT template fields:
+  CALLSIGN | TYPE | CODE | RADAR ID FIX | TIME AT ID FIX |
+  ROUTE THROUGH LIMA AIRSPACE / ALTITUDE (+ RADAR CONTACT / HANDOFF) |
+  HANDOFF FACILITY | HANDOFF TIME
+Example: N23485 · PA34 · 0252 · TANNR · 1745 · TANNR-CRQ · 45 · large V · circled R · HANDOFF FACILITY RIV · HANDOFF TIME 1756
+  Note: write a large V in Blk9 if VFR; otherwise IFR.
+
+POINT OUT template fields:
+  CALLSIGN | TYPE/EQPT | CODE | RADAR ID FIX | TIME ENTERING LIMA |
+  ROUTE THROUGH LIMA AIRSPACE / ALTITUDE | POINTOUT FACILITY | EXIT LIMA
+Example: N4282M · SR22 · 0255 · OCN · 2022 · OKB–F70 · 45 · large V · POINTOUT FACILITY PSCT · EXIT LIMA 2030
+  Note: write a large V in Blk9 if VFR; otherwise IFR.
+
+FALLBROOK DEPARTURE template fields:
+  CALLSIGN | TYPE | CODE | P-TIME | REQ ALT | DEPT POINT |
+  ROUTE OF FLIGHT, CLEARANCE LIMIT / CLEARANCE VOID TIME | DEP TIME | EXIT LIMA
+Example: N234WC · 2/AV8 · 5646 · P1800 · 60 · L18
+  Route ROBNN OCN V23 LAX V299 VTU VTU299R SBA · CLEARANCE VOID TIME V<1810 · DEP 1811 · EXIT LIMA 1812
 
 ==============================================================================
 Integration map (app)
@@ -166,3 +178,4 @@ FIG D-3 note — arrival symbol on page image shows NE/entry arrow with SW text 
 2026-09-15 9pm night grind: leftover TZ✓ prose in stripsRef field example, fig-d5-arr FC, and BOOK FIG D-5 duals aligned to slash-through TZ (match primary mock / p-160); stripsRef intro says primary not sample. App D FIG D-1…D-6 covered; App D-8 still absent from July 2025 PDF body.
 2026-09-15 11pm night grind: primary FIG D-5 STMPD19 TYPE APCH corrected to plain TZ (match p-160); procedure note kept. Final TEST SAMPLE only when pack.demo. App D-8 still absent from July 2025 PDF body.
 2026-09-16 1am night grind: FIG D-5 non-radar mock drops IFR/`—` column to match p-160 template (TIME AT ID FIX + INBOUND TO TOWER only). App D-8 still absent from July 2025 PDF body.
+2026-09-16 3am night grind: FIG D-6 stripsRef/FC/BOOK headers aligned to p-161 pub labels (TIME AT ID FIX · ROUTE THROUGH LIMA · HANDOFF FACILITY/TIME · TIME ENTERING LIMA · POINTOUT FACILITY · DEPT POINT · CLEARANCE VOID TIME). Non-radar remains TIME+INBOUND only (no ACTUAL IFR). App D-8 still absent from July 2025 PDF body.
