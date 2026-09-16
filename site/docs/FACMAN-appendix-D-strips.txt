@@ -119,7 +119,7 @@ IFR ARRIVAL template:
 Example IFR arrival:
   STMPD19 · I/B350/L · 2252 · SXC · OCN · 1745 · I · ✓ inbound
   Altitudes: <s>50</s> <s>40</s> 24 · C7 (SFA button; "C" around frequency once checked in) · circled R
-  TYPE APCH: TZ with checkmark/slash through once cleared · INTENT FS · BAY 1
+  TYPE APCH: TZ (figure shows TZ; instructional note: checkmark through once cleared) · INTENT FS · BAY 1
 Figure notes:
   "PUT A CHECKMARK THROUGH THE TYPE APPROACH ONCE THE AIRCRAFT IS CLEARED."
   "FOR IFR AIRCRAFT, PLACE I IN BOX 8."
@@ -152,7 +152,7 @@ Integration map (app)
 Verified 2026-09-11 against facman-pages p-156/159/160/161 (FIG D-1/D-4/D-5/D-6). 2026-09-14: multi-GCA row2 alt shows 32 struck (FIG D-5); non-radar ACTUAL IFR blank on figure (not I — earlier I was wrong). STI26 + ATLAS22 RWY3 blank CLNC. 2026-09-15 1am: multi-GCA TYPE APCH rows 1–2 show PA unstruck on figure (p-160 close-up); prior PA-struck SAMPLE was over-applied from the instructional note.
 Coverage: FIG D-1 Tower IFR · D-2 Tower VFR · D-3 Tower SVFR · D-4 Radar dep · D-5 Radar arr · D-6 Other Radar.
 facmanStripBlock() — Learn ACAD topic 4 (collapsed): primary FIG D-4 example 1 + FIG D-5 IFR arrival only.
-stripsRef() — Reference STRIPS: FIG D-1…D-6 + 6-1-10 + TBL 5-3/5-4/5-5. Primary D-4/D-5. MORE order: D-4 OTP (Vista ATLAS22 → STI26 RWY21 → ATLAS22 RWY3), then D-5 multi-GCA/non-radar; D-1 tower IFR (ATLAS40/STMPD19) + D-2 + D-3 dep/arr/pattern (STI76/ATL40/ATL40) + D-1 Vista/CORRI OTP (ATLAS22/SWIFT13/SWIFT22); D-6 overflight N23485 / point-out N4282M / Fallbrook N234WC. Tower arr PREV = JLI (not SXC). Validated App D mocks no longer use SAMPLE chrome (labels are `FIG D-N · …`); no invented fields. FIG D-2 TYPE STRIP is a diagonal V/D box (not plain V/D text). Primary FIG D-5 STMPD19 TYPE APCH uses slash-through TZ. 2026-09-15 9pm: remaining TZ✓ prose in stripsRef/FC/BOOK duals aligned to slash-through TZ.
+stripsRef() — Reference STRIPS: FIG D-1…D-6 + 6-1-10 + TBL 5-3/5-4/5-5. Primary D-4/D-5. MORE order: D-4 OTP (Vista ATLAS22 → STI26 RWY21 → ATLAS22 RWY3), then D-5 multi-GCA/non-radar; D-1 tower IFR (ATLAS40/STMPD19) + D-2 + D-3 dep/arr/pattern (STI76/ATL40/ATL40) + D-1 Vista/CORRI OTP (ATLAS22/SWIFT13/SWIFT22); D-6 overflight N23485 / point-out N4282M / Fallbrook N234WC. Tower arr PREV = JLI (not SXC). Validated App D mocks no longer use SAMPLE chrome (labels are `FIG D-N · …`); no invented fields. FIG D-2 TYPE STRIP is a diagonal V/D box (not plain V/D text). Primary FIG D-5 STMPD19 TYPE APCH is plain TZ on the figure (checkmark through once cleared is the instructional note). 2026-09-15 9pm: remaining TZ✓ prose cleared. 2026-09-15 11pm: STMPD19 figure TZ is plain (not slash-through); procedure note kept.
 FC_EXTRA lcl — fig-d1-twr-ifr / fig-d2-twr-vfr / fig-d3-twr-svfr.
 FC_EXTRA rfd — fig-d4-dep / fig-d4-otp + fig-d6-ovf / fig-d6-ptout / fig-d6-fallbrook.
 FC_EXTRA fin — fig-d5-arr / fig-d5-multi-gca / fig-d5-nonradar.
@@ -163,3 +163,4 @@ scratchpad FC_SETS — TBL 6-4 only (verified).
 pass-a-bay Ask — prefer FACMAN 6-3-4 / 6-3-6 / 6-3-7 / TBL 6-4 (not 6-1-10 / FIG D-5 as first hit).
 FIG D-3 note — arrival symbol on page image shows NE/entry arrow with SW text under circle; notes keep "SW symbol + ↓15" without inventing glyphs.
 2026-09-15 9pm night grind: leftover TZ✓ prose in stripsRef field example, fig-d5-arr FC, and BOOK FIG D-5 duals aligned to slash-through TZ (match primary mock / p-160); stripsRef intro says primary not sample. App D FIG D-1…D-6 covered; App D-8 still absent from July 2025 PDF body.
+2026-09-15 11pm night grind: primary FIG D-5 STMPD19 TYPE APCH corrected to plain TZ (match p-160); procedure note kept. Final TEST SAMPLE only when pack.demo. App D-8 still absent from July 2025 PDF body.
