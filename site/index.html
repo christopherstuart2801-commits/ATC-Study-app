@@ -215,7 +215,7 @@
 #vatc .sref-pos.cd{ background:rgba(255,178,77,.10); color:var(--amber); border:1px solid #5a431d; } #vatc .sref-pos.cd .sdot{ background:var(--amber); box-shadow:0 0 8px var(--amber); }
 #vatc .sref-label{ font-size:9px; letter-spacing:.2em; color:var(--muted); text-transform:uppercase; margin-bottom:10px; }
 #vatc .sref-mock{ background:#0a1f14; border:1.5px solid var(--green2); border-radius:6px; padding:10px; margin-bottom:14px; overflow-x:auto; }
-#vatc .sref-row{ display:grid; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:4px; overflow:hidden; grid-template-columns:repeat(12, minmax(52px, 1fr)); min-width:720px; }
+#vatc .sref-row{ display:grid; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:4px; overflow:hidden; grid-auto-flow:column; grid-auto-columns:minmax(52px, 1fr); min-width:max-content; }
 #vatc .sref-cell{ background:var(--panel); padding:6px 7px; font-size:9.5px; }
 #vatc .sref-cell.head{ background:#0a1a12; font-size:8px; letter-spacing:.16em; color:var(--muted); text-transform:uppercase; }
 #vatc .sref-cell .val{ color:var(--green); font-weight:700; font-size:11px; }
@@ -565,8 +565,8 @@
       fcCard('fdio-radar','FDIO — Radar','NFG Radar = NF1A, NF1D. FACMAN 5-1-11.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'5-1-11',pa:'FDIO',hl:'NFG Radar = NF1A, NF1D'}),
       fcCard('fig-d4-dep','FIG D-4 radar departure','ATLAS40 · H/H1/P · 4774 · P1900 · 50 · NFG · BLDG2 VISTA V458 BONDO / NKX / ↑40 · circled R · 1900/02/B/04. Altitude in Blk9 when handwritten.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-4 Radar Departure Strips'}),
       fcCard('fig-d4-otp','FIG D-4 VFR-on-Top radar dep','Vista OTP ATLAS22 · H/H1/P · 7252 · P2300 · 40 · NFG · BLDG2 VISTA · ↑OTP/40 · 2303/05/B/05. CORRI RWY21 STI26 · 4543 · P1815 · OTP/38 · CORRI3 · ↑OTP/38 · 2303/03/—/05 (no CLNC B). CORRI RWY3 ATLAS22 · 4540 · P2300 · OTP/38 · CORRI3 · ↑OTP/38 · 2303/05/—/05 (no CLNC B). Altitude in Blk9 when handwritten.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-4 Radar Departure Strips'}),
-      fcCard('fig-d6-ovf','FIG D-6 overflight','N23485 · PA34 · 0252 · TANNR · TIME AT ID FIX 1745 · ROUTE THROUGH LIMA TANNR-CRQ · 45 · large V · circled R · HANDOFF FACILITY RIV · HANDOFF TIME 1756.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-6 Other Radar Strips'}),
-      fcCard('fig-d6-ptout','FIG D-6 point out','N4282M · SR22 · 0255 · OCN · TIME ENTERING LIMA 2022 · ROUTE THROUGH LIMA OKB–F70 · 45 · large V · POINTOUT FACILITY PSCT · EXIT LIMA 2030.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-6 Other Radar Strips'}),
+      fcCard('fig-d6-ovf','FIG D-6 overflight','N23485 · PA34 · 0252 · TANNR · TIME AT ID FIX 1745 · ROUTE THROUGH LIMA AIRSPACE TANNR-CRQ · 45 · large V · circled R · HANDOFF FACILITY RIV · HANDOFF TIME 1756.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-6 Other Radar Strips'}),
+      fcCard('fig-d6-ptout','FIG D-6 point out','N4282M · SR22 · 0255 · OCN · TIME ENTERING LIMA 2022 · ROUTE THROUGH LIMA AIRSPACE OKB–F70 · 45 · large V · POINTOUT FACILITY PSCT · EXIT LIMA 2030.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-6 Other Radar Strips'}),
       fcCard('fig-d6-fallbrook','FIG D-6 Fallbrook','N234WC · 2/AV8 · 5646 · P1800 · 60 · DEPT POINT L18 · ROUTE OF FLIGHT … · CLEARANCE VOID TIME V<1810 · DEP TIME 1811 · EXIT LIMA 1812.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-6 Other Radar Strips'}),
       fcCard('fac-dep-fill','6-1-10 IFR departure fill','Blk6 P-time; Blk7 req alt; Blk8 dept if ≠NFG; Blk9 route/alt/R; Blk12 B when broadcast; Blk13–15 times.','Strip','rfd',{doc:'NFG FACMAN July 2025',pg:'6-1-10',pa:'FLIGHT PROGRESS STRIPS'})
     ],
@@ -2860,8 +2860,8 @@ function vidsStrip(){
     const row=(name,cls,what,ex,tag)=>`<tr><td><div class="fname${cls?' '+cls:''}">${name}</div></td><td class="fwhat">${what}${ex?`<div class="fex">${ex}</div>`:''}</td><td>${tag}</td></tr>`;
     const scell=(v,cls='')=>`<div class="sref-cell"><div class="val${cls?' '+cls:''}">${v}</div></div>`;
     const heads=hs=>hs.map(h=>`<div class="sref-cell head">${h}</div>`).join('');
-    const depH=['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT','ROUTE / REMARKS / RDR','REQ RLS','RLS','CLNC','DEPT TIME'];
-    const arrH=['CALLSIGN','TYPE/EQPT','CODE','PREV','COORD','ETA','IFR','INBD','ALT / SFA / RDR','APCH','INTENT','BAY'];
+    const depH=['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE / REMARKS / RDR','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME'];
+    const arrH=['CALLSIGN','TYPE/EQPT','CODE','PREV FIX','COORD FIX','ETA','ACTUAL IFR','INBD','ALT / SFA / RDR','TYPE APCH','INTENT','BAY'];
     const more=`<details class="sref-more pos-acads"><summary>MORE · OTP · multi-GCA · tower D-1…D-3 · FIG D-6</summary>
       <div class="sref-label">FIG D-4 · ATLAS22 IFR EAST LOCAL VFR-ON-TOP — VISTA</div>
       <div class="sref-mock"><div class="sref-row">${heads(depH)}</div>
@@ -2876,10 +2876,10 @@ function vidsStrip(){
       <div class="sref-mock"><div class="sref-row">${heads(arrH)}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4534','pur')}${scell('—')}${scell('L18 3N')}${scell('2022','amb')}${scell('I','sky')}${scell('✓')}${scell('28/28/28 · <s>32</s>/20/24 · 24 · C3 · Ⓡ/Ⓡ/R','amb')}${scell('PA<br>PA<br>SA')}${scell('LAR<br>LAR<br>LAZ')}${scell('1<br>2<br>1')}</div></div>
       <div class="sref-label">FIG D-5 · ATLAS40 NON-RADAR ARRIVAL</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','FREQ','RADAR ID FIX','TIME AT ID FIX','INBOUND TO TOWER','ALT / STATUS','APCH','INTENT','BAY'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','FREQ','RADAR ID FIX','TIME AT ID FIX','INBOUND TO TOWER','ALTITUDE / RDR ID STATUS','TYPE APCH','INTENT','BAY'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4534','pur')}${scell('Ⓒ4','sky')}${scell('L18 3N')}${scell('2022','amb')}${scell('✓')}${scell('<s>50</s> <s>40</s> 28 · CU/42 · 1910/1915 · <span class="fps-slash">Ⓡ</span>','amb')}${scell('<s>PA</s> TZ')}${scell('FS')}${scell('1')}</div></div>
       <div class="sref-label">FIG D-1 · ATLAS40 IFR DEPARTURE</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT','ROUTE / REMARKS','REQ RLS','RLS','CLNC','DEPT TIME','FLT PLNG'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/UH1Y/P','sky')}${scell('4774','pur')}${scell('P1900','amb')}${scell('60','amb')}${scell('NFG')}${scell('NFG QUNTN1 QUNTN SKATE NZY · ↑30')}${scell('1900')}${scell('02')}${scell('B','sky')}${scell('04','amb')}${scell('CA')}</div></div>
       <div class="sref-label">FIG D-1 · STMPD19 IFR ARRIVAL</div>
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','PREV','COORD','ETA','INTENTIONS','ARR TIME','FLT PLNG'])}</div>
@@ -2897,24 +2897,24 @@ function vidsStrip(){
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','LOCAL SVFR / ALT','CLNC','INITIAL CONTACT','ARR TIME'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATL40')}${scell('H/UH1Y','sky')}${scell('ⒸW · ↓15')}${scell('B','sky')}${scell('1658','amb')}${scell('1741','amb')}</div></div>
       <div class="sref-label">FIG D-1 · ATLAS22 IFR EAST LOCAL VFR-ON-TOP — VISTA</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT','ROUTE / REMARKS','REQ RLS','RLS','CLNC','DEPT TIME','FLT PLNG'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS22')}${scell('H/SUCO/P','sky')}${scell('7252','pur')}${scell('P2300','amb')}${scell('OTP/40','amb')}${scell('NFG')}${scell('NFG BLDG2 VISTA · ↑OTP/40')}${scell('2303')}${scell('05')}${scell('B','sky')}${scell('05','amb')}${scell('RP')}</div></div>
       <div class="sref-label">FIG D-1 · SWIFT13 IFR LIMA VFR-ON-TOP RWY21 — CORRI</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT','ROUTE / REMARKS','REQ RLS','RLS','CLNC','DEPT TIME','FLT PLNG'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('SWIFT13')}${scell('G/V22/I','sky')}${scell('4540','pur')}${scell('P1600','amb')}${scell('OTP/38','amb')}${scell('NFG')}${scell('NFG CORRI3 CORRI · ↑OTP/38')}${scell('1558')}${scell('1601')}${scell('B','sky')}${scell('02','amb')}${scell('RP')}</div></div>
       <div class="sref-label">FIG D-1 · SWIFT22 IFR LIMA VFR-ON-TOP RWY3 — CORRI</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT','ROUTE / REMARKS','REQ RLS','RLS','CLNC','DEPT TIME','FLT PLNG'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('SWIFT22')}${scell('G/V22/I','sky')}${scell('4543','pur')}${scell('P1730','amb')}${scell('OTP/38','amb')}${scell('NFG')}${scell('NFG CORRI3 CORRI · ↑OTP/38')}${scell('1732')}${scell('35')}${scell('B','sky')}${scell('37','amb')}${scell('RP')}</div></div>
       <div class="sref-label">FIG D-6 · N23485 OVERFLIGHT</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','CODE','RADAR ID FIX','TIME AT ID FIX','ROUTE THROUGH LIMA / ALT','HANDOFF FACILITY','HANDOFF TIME'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','CODE','RADAR ID FIX','TIME AT ID FIX','ROUTE THROUGH LIMA AIRSPACE / ALT','HANDOFF FACILITY','HANDOFF TIME'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('N23485')}${scell('PA34','sky')}${scell('0252','pur')}${scell('TANNR')}${scell('1745','amb')}${scell('TANNR-CRQ · <b>V</b> · Ⓡ · 45','amb')}${scell('RIV','sky')}${scell('1756','amb')}</div></div>
       <div class="note" style="margin:6px 0 10px">FIG D-6: write a large V in Blk9 if the overflight is VFR; otherwise IFR.</div>
       <div class="sref-label">FIG D-6 · N4282M POINT OUT</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','RADAR ID FIX','TIME ENTERING LIMA','ROUTE THROUGH LIMA / ALT','POINTOUT FACILITY','EXIT LIMA'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','RADAR ID FIX','TIME ENTERING LIMA','ROUTE THROUGH LIMA AIRSPACE / ALT','POINTOUT FACILITY','EXIT LIMA'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('N4282M')}${scell('SR22','sky')}${scell('0255','pur')}${scell('OCN')}${scell('2022','amb')}${scell('OKB–F70 · <b>V</b> · 45','amb')}${scell('PSCT','sky')}${scell('2030','amb')}</div></div>
       <div class="note" style="margin:6px 0 10px">FIG D-6: write a large V in Blk9 if the point out is VFR; otherwise IFR.</div>
       <div class="sref-label">FIG D-6 · N234WC FALLBROOK DEPARTURE</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE / CLEARANCE VOID TIME','DEP TIME','EXIT LIMA'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE OF FLIGHT, CLR LIMIT / VOID','DEP TIME','EXIT LIMA'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('N234WC')}${scell('2/AV8','sky')}${scell('5646','pur')}${scell('P1800','amb')}${scell('60','amb')}${scell('L18')}${scell('ROBNN OCN V23 LAX V299 VTU VTU299R SBA · V&lt;1810')}${scell('1811','amb')}${scell('1812','amb')}</div></div>
     </details>`;
     return `<div class="card" style="padding:16px;margin-top:12px">
@@ -2931,9 +2931,9 @@ function vidsStrip(){
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4774','pur')}${scell('P1900','amb')}${scell('50','amb')}${scell('NFG')}${scell('NFG BLDG2 VISTA V458 BONDO · NKX · ↑40 · Ⓡ')}${scell('1900')}${scell('02')}${scell('B','sky')}${scell('04','amb')}</div></div>
       <table class="sref-table"><tr><th>FIELD (FIG D-4)</th><th>WHAT GOES HERE</th><th>TAG</th></tr>
         ${row('CALLSIGN / TYPE / CODE','','Blk1 callsign; Blk3 type/eqpt (+CWT); Blk5 beacon.','ATLAS40 · H/H1/P · 4774',ftag('req','6-1-10'))}
-        ${row('P-TIME / REQ ALT / DEPT','amb','Blk6 proposed departure time; Blk7 requested altitude; DEPT POINT (NFG unless other).','P1900 · 50 · NFG',ftag('req','6-1-10'))}
+        ${row('P-TIME / REQ ALT / DEPT POINT','amb','Blk6 proposed departure time; Blk7 requested altitude; DEPT POINT (NFG unless other).','P1900 · 50 · NFG',ftag('req','6-1-10'))}
         ${row('ROUTE / REMARKS / RDR','','Blk9 clearance limit, route, altitude, remarks; radar contact/handoff symbol if req.','NFG BLDG2 VISTA… · ↑40 · circled R',ftag('req','FIG D-4'))}
-        ${row('REQ RLS / RLS / CLNC / DEPT TIME','amb','Blk13 release requested; Blk14 actual release; Blk12 B when clearance broadcast; Blk15 departure time.','1900 · 02 · B · 04',ftag('ann','6-1-10'))}
+        ${row('REQ RLS / RLS TIME / CLNC ISSUED / DEPT TIME','amb','Blk13 release requested; Blk14 actual release; Blk12 B when clearance broadcast; Blk15 departure time.','1900 · 02 · B · 04',ftag('ann','6-1-10'))}
       </table>
 
       <div class="sref-hr"></div>
