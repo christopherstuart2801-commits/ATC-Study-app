@@ -489,7 +489,7 @@ ok('SYLLABUS T2 PCG ASR vs PAR', /AIRPORT SURVEILLANCE RADAR vs PRECISION APPROA
 ok('Topics 1-4 checklists not rewritten (ACAD-0520 refs 2-1-7)', /"id":"ACAD-0520"[\s\S]{0,400}"7110.65 2-1-7"/.test(html));
 ok('D-4/D-5 strip block still present', /function facmanStripBlock\(\)/.test(html) || /FIG D-4/.test(html));
 
-ok('FIG D-5 non-radar ACTUAL IFR blank in stripsRef', /NON-RADAR ARRIVAL[\s\S]*?scell\('—'\)/.test(html) || /NON-RADAR ARRIVAL[\s\S]{0,400}scell\('—'\)/.test(html));
+ok('FIG D-5 non-radar has no ACTUAL IFR box', /NON-RADAR ARRIVAL[\s\S]{0,500}TIME AT ID FIX[\s\S]{0,80}INBOUND TO TOWER/.test(html) && !/NON-RADAR ARRIVAL[\s\S]{0,500}scell\('—'\)/.test(html));
 ok('Learn facmanStripBlock primary-only (no multi/nonr consts)', /function facmanStripBlock\(\)\{[\s\S]*?\n  \}/.test(html) && !/function facmanStripBlock\(\)\{[\s\S]*?const multi=/.test(html));
 ok('stripsRef has TBL 5-3/5-4/5-5 abbrev panel', /TBL 5-3 Departure procedures/.test(html) && /TBL 5-5 SVFR routes/.test(html));
 
@@ -518,7 +518,8 @@ ok('pub sections nested under each PUBLICATION', /function pubSectionsFor\(/.tes
 ok('fcdeck list Quizlet-style', /fcdeck-list/.test(html) && /data-action="fcjump"/.test(html));
 ok('fc chips gray counts', /fc-n/.test(html) && /countOf/.test(html));
 ok('clickable TBL refs', /function linkifyTblRefs\(/.test(html) && /data-action="jumptbl"/.test(html) && /function jumpTblRef\(/.test(html));
-ok('slim Reference STRIPS MORE SAMPLES', /MORE SAMPLES/.test(html) && /Open Appendix D/.test(html));
+ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendix D/.test(html));
+ok('App D sref-labels use FIG identity not SAMPLE', /sref-label">FIG D-4 · ATLAS40 IFR DEPARTURE</.test(html) && /sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</.test(html) && !/sref-label">SAMPLE ·/.test(html));
 ok('Home NOAA METAR KNFG', /fetchKnfgMetar/.test(html) && /aviationweather\.gov\/api\/data\/metar/.test(html) && /SAMPLE · offline/.test(html));
 ok('ACAD checkboxes persist localStorage', /vatc\.rfcChk/.test(html) && /data-action="acadcheck"/.test(html) && /loadRfcChk/.test(html));
 ok('statusbar v0.6 dry-run', /v0\.6 · dry-run/.test(html));

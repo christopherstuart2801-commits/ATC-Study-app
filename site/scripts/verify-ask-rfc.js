@@ -489,7 +489,7 @@ ok('SYLLABUS T2 PCG ASR vs PAR', /AIRPORT SURVEILLANCE RADAR vs PRECISION APPROA
 ok('Topics 1-4 checklists not rewritten (ACAD-0520 refs 2-1-7)', /"id":"ACAD-0520"[\s\S]{0,400}"7110.65 2-1-7"/.test(html));
 ok('D-4/D-5 strip block still present', /function facmanStripBlock\(\)/.test(html) || /FIG D-4/.test(html));
 
-ok('FIG D-5 non-radar ACTUAL IFR blank in stripsRef', /NON-RADAR ARRIVAL[\s\S]*?scell\('—'\)/.test(html) || /NON-RADAR ARRIVAL[\s\S]{0,400}scell\('—'\)/.test(html));
+ok('FIG D-5 non-radar has no ACTUAL IFR box', /NON-RADAR ARRIVAL[\s\S]{0,500}TIME AT ID FIX[\s\S]{0,80}INBOUND TO TOWER/.test(html) && !/NON-RADAR ARRIVAL[\s\S]{0,500}scell\('—'\)/.test(html));
 ok('Learn facmanStripBlock primary-only (no multi/nonr consts)', /function facmanStripBlock\(\)\{[\s\S]*?\n  \}/.test(html) && !/function facmanStripBlock\(\)\{[\s\S]*?const multi=/.test(html));
 ok('stripsRef has TBL 5-3/5-4/5-5 abbrev panel', /TBL 5-3 Departure procedures/.test(html) && /TBL 5-5 SVFR routes/.test(html));
 
