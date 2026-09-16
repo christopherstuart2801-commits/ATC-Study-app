@@ -522,7 +522,7 @@ ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendi
 ok('App D sref-labels use FIG identity not SAMPLE', /sref-label">FIG D-4 · ATLAS40 IFR DEPARTURE</.test(html) && /sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</.test(html) && !/sref-label">SAMPLE ·/.test(html));
 ok('Home NOAA METAR KNFG', /fetchKnfgMetar/.test(html) && /aviationweather\.gov\/api\/data\/metar/.test(html) && /SAMPLE · offline/.test(html));
 ok('ACAD checkboxes persist localStorage', /vatc\.rfcChk/.test(html) && /data-action="acadcheck"/.test(html) && /loadRfcChk/.test(html));
-ok('statusbar v0.6 dry-run', /v0\.6 · dry-run/.test(html));
+ok('statusbar v0.6.1 pdf-fix', /v0\.6\.1 · pdf-fix/.test(html));
 ok('cite overview removed from pdf pane', /No excerpt overview/.test(html) && !/<div class="pdfcite">/.test(html));
 ok('Learn ACADS toggle always present', /data-m="acad">ACADs/.test(html) && !/hasAcad\?`<button[^>]*data-m="acad"/.test(html));
 ok('Learn has FLASHCARDS mode', /data-action="learnmode"/.test(html) && /learnMode:'cards'/.test(html) && /data-m="acad">ACADs/.test(html));
