@@ -127,7 +127,7 @@ Figure notes:
 IFR MULTIPLE GCA ARRIVAL (handwritten) example:
   ATLAS40 · H/H1/P · 4534 · RADAR ID FIX L18 3N · TIME 2022 · I · ✓
   Altitude rows: 28/28/28 · <s>32</s>/20/24 · 24 · C3 · circled R / circled R / R
-  APCH rows: PA/LAR/1 · PA/LAR/2 · SA/LAZ/1 as printed (figure note: checkmark through TYPE APCH once cleared — shown on IFR arrival TZ, not struck on this multi-GCA example)
+  APCH rows: PA/LAR/1 · PA/LAR/2 · SA/LAZ/1 as printed (figure note: checkmark through TYPE APCH once cleared — IFR arrival figure shows plain TZ; multi-GCA PA rows unstruck)
   Note: "PUT A 'C' AROUND THE FREQUENCY ONCE THE AIRCRAFT CHECKS IN ON THAT FREQUENCY."
 
 NON-RADAR ARRIVAL example:
