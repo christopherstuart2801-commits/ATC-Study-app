@@ -492,6 +492,9 @@ ok('D-4/D-5 strip block still present', /function facmanStripBlock\(\)/.test(htm
 ok('FIG D-5 non-radar has no ACTUAL IFR box', /NON-RADAR ARRIVAL[\s\S]{0,500}TIME AT ID FIX[\s\S]{0,80}INBOUND TO TOWER/.test(html) && !/NON-RADAR ARRIVAL[\s\S]{0,500}scell\('—'\)/.test(html));
 ok('Learn facmanStripBlock primary-only (no multi/nonr consts)', /function facmanStripBlock\(\)\{[\s\S]*?\n  \}/.test(html) && !/function facmanStripBlock\(\)\{[\s\S]*?const multi=/.test(html));
 ok('stripsRef has TBL 5-3/5-4/5-5 abbrev panel', /TBL 5-3 Departure procedures/.test(html) && /TBL 5-5 SVFR routes/.test(html));
+ok('stripsRef has TBL 6-3 radar abbrev rows', /TBL 6-3 Approach \/ intent/.test(html) && /Open TBL 6-3 · FACMAN p\.80/.test(html));
+ok('BOOK has TBL 6-3 dual key', /"TBL 6-3":/.test(html) && /"FACMAN TBL 6-3":/.test(html));
+ok('ASK has TBL 6-3 radar strip abbrev alias', /TBL\\s\*6-3/.test(aliases) && /radar strip abbreviations\?/.test(aliases));
 
 ok('Academics action or acad handler', /data-action="acads"/.test(html) || /if\(a==='acad'\)/.test(html));
 ok('acads jumps to fin learn', /if\(a==='acads'\)return set\(\{pos:'fin',tab:'learn',learnMode:'acad'/.test(html));
@@ -522,7 +525,10 @@ ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendi
 ok('App D sref-labels use FIG identity not SAMPLE', /sref-label">FIG D-4 · ATLAS40 IFR DEPARTURE</.test(html) && /sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</.test(html) && !/sref-label">SAMPLE ·/.test(html));
 ok('Home NOAA METAR KNFG', /fetchKnfgMetar/.test(html) && /aviationweather\.gov\/api\/data\/metar/.test(html) && /SAMPLE · offline/.test(html));
 ok('ACAD checkboxes persist localStorage', /vatc\.rfcChk/.test(html) && /data-action="acadcheck"/.test(html) && /loadRfcChk/.test(html));
-ok('statusbar v0.6.1 pdf-fix', /v0\.6\.1 · pdf-fix/.test(html));
+ok('statusbar v0.6.3 t4-acad-appd', /v0\.6\.3 · t4-acad-appd/.test(html));
+ok('T4 refs have ACAD-0521/0522 hdr sections', /ACAD-0521","Aircraft movement data","hdr"/.test(html) && /ACAD-0522","Flight progress strips","hdr"/.test(html));
+ok('T4 checklist includes FIG D-6 (Appendix D-5–7)', /FACMAN FIG D-6","Other Radar Strips"/.test(html));
+ok('rfcLearn skips hdr rows in progress', /const citeRefs=T\.refs\.filter\(r=>!isHdr\(r\)\)/.test(html) || /citeR=\(t\.refs\|\|\[\]\)\.filter\(r=>!\(r&&r\[2\]==='hdr'\)\)/.test(html));
 ok('cite overview removed from pdf pane', /No excerpt overview/.test(html) && !/<div class="pdfcite">/.test(html));
 ok('Learn ACADS toggle always present', /data-m="acad">ACADs/.test(html) && !/hasAcad\?`<button[^>]*data-m="acad"/.test(html));
 ok('Learn has FLASHCARDS mode', /data-action="learnmode"/.test(html) && /learnMode:'cards'/.test(html) && /data-m="acad">ACADs/.test(html));
