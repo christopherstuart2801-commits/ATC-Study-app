@@ -525,9 +525,16 @@ ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendi
 ok('App D sref-labels use FIG identity not SAMPLE', /sref-label">FIG D-4 · ATLAS40 IFR DEPARTURE</.test(html) && /sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</.test(html) && !/sref-label">SAMPLE ·/.test(html));
 ok('Home NOAA METAR KNFG', /fetchKnfgMetar/.test(html) && /aviationweather\.gov\/api\/data\/metar/.test(html) && /SAMPLE · offline/.test(html));
 ok('ACAD checkboxes persist localStorage', /vatc\.rfcChk/.test(html) && /data-action="acadcheck"/.test(html) && /loadRfcChk/.test(html));
-ok('statusbar v0.6.3 t4-acad-appd', /v0\.6\.3 · t4-acad-appd/.test(html));
+ok('statusbar v0.6.4 d5-cols-t4', /v0\.6\.4 · d5-cols-t4/.test(html));
 ok('T4 refs have ACAD-0521/0522 hdr sections', /ACAD-0521","Aircraft movement data","hdr"/.test(html) && /ACAD-0522","Flight progress strips","hdr"/.test(html));
 ok('T4 checklist includes FIG D-6 (Appendix D-5–7)', /FACMAN FIG D-6","Other Radar Strips"/.test(html));
+ok('T4 checklist 6-1-11 + TBL 6-3 under ACAD-0522', /"ACAD-0522","Flight progress strips","hdr"\],\["FACMAN 6-1-11","Abbreviations"\],\["FACMAN TBL 6-3","Abbreviations"\]/.test(html));
+ok('T4 TBL 6-3 not left under ACAD-0521 block', !/\["FACMAN TBL 6-3","Abbreviations"\],\["ACAD-0522"/.test(html));
+ok('rfcLearn detail progress uses citeRefs.length', /done\}\/\$\{citeRefs\.length\}/.test(html));
+ok('rfcLearn hdr topics use full-width rfc-grid-span', /rfc-grid-span/.test(html));
+ok('FIG D-5 arrH splits ALTITUDE from RADAR CONTACT', /'ALTITUDE','RADAR CONTACT \/ HANDOFF'/.test(html));
+ok('FIG D-5 non-radar splits ALTITUDE from RDR ID STATUS', /'ALTITUDE','RDR ID STATUS'/.test(html));
+
 ok('rfcLearn skips hdr rows in progress', /const citeRefs=T\.refs\.filter\(r=>!isHdr\(r\)\)/.test(html) || /citeR=\(t\.refs\|\|\[\]\)\.filter\(r=>!\(r&&r\[2\]==='hdr'\)\)/.test(html));
 ok('cite overview removed from pdf pane', /No excerpt overview/.test(html) && !/<div class="pdfcite">/.test(html));
 ok('Learn ACADS toggle always present', /data-m="acad">ACADs/.test(html) && !/hasAcad\?`<button[^>]*data-m="acad"/.test(html));
