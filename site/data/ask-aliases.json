@@ -1,0 +1,1772 @@
+[
+  {
+    "phrases": [
+      "pass a bay",
+      "pass the bay",
+      "how to pass a bay",
+      "passing a bay",
+      "rfd inbound",
+      "radar flight data inbound"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-3-4 / 6-3-6 / 6-3-7",
+      "pa": "POSTING FLIGHT STRIPS / FINAL CONTROLLER COORDINATION / TOWER COORDINATION"
+    },
+    "note": "RFD: pending strips on inactive board; pass inbound to final (pos, cs, type, apch/intent, button); to tower NLT 10 flying miles; TBL 6-4 scratchpad. NOT helo spots."
+  },
+  {
+    "phrases": [
+      "operational request",
+      "approved as requested",
+      "how do i respond to a request",
+      "what do you say for an operational request"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "2-1-18",
+      "pa": "OPERATIONAL REQUESTS"
+    }
+  },
+  {
+    "phrases": [
+      "radio message format",
+      "hey you this is me",
+      "four-part format",
+      "identification of aircraft",
+      "omit aircraft identification",
+      "subsequent transmissions"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "2-4-8",
+      "pa": "RADIO MESSAGE FORMAT"
+    }
+  },
+  {
+    "phrases": [
+      "missed approach phraseology",
+      "your missed approach procedure is"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-10-11",
+      "pa": "MISSED APPROACH"
+    }
+  },
+  {
+    "phrases": [
+      "squawk ident",
+      "radar contact",
+      "point out approved"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-3-3 / 5-4-2 / 5-4-3",
+      "pa": "BEACON IDENT / TERMS / METHODS"
+    }
+  },
+  {
+    "phrases": [
+      "traffic advisory",
+      "traffic advisories"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "2-1-21",
+      "pa": "TRAFFIC ADVISORIES"
+    }
+  },
+  {
+    "phrases": [
+      "what do you say when",
+      "what do you say for"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "2-4-8 / 2-1-18",
+      "pa": "RADIO MESSAGE FORMAT / OPERATIONAL REQUESTS"
+    }
+  },
+  {
+    "phrases": [
+      "crash phone",
+      "daily crash phone test",
+      "standby standby standby"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-2",
+      "pa": "CRASH PHONE"
+    }
+  },
+  {
+    "phrases": [
+      "clear deck",
+      "clear the deck"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-2-6",
+      "pa": "ETVS"
+    }
+  },
+  {
+    "phrases": [
+      "squawk standby",
+      "squawk normal"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-2-10 / 5-3-3",
+      "pa": "STANDBY OPERATION / BEACON IDENT"
+    }
+  },
+  {
+    "phrases": [
+      "intercept angle",
+      "vectors to final",
+      "approach gate",
+      "tbl 5-9-1",
+      "maximum intercept"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-9-1 / 5-9-2 / TBL 5-9-1",
+      "pa": "VECTORS TO FINAL / FAC INTERCEPTION / APPROACH COURSE INTERCEPTION ANGLE"
+    }
+  },
+  {
+    "phrases": [
+      "helo spots",
+      "papa 1",
+      "papa 3",
+      "papa 4",
+      "request papa"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "2-1-15 / 5-5-23 / 5-5-3",
+      "pa": "HELO SPOTS / HELO SPOT OPERATIONS / COORDINATION BETWEEN POSITIONS"
+    }
+  },
+  {
+    "phrases": [
+      "bay assignment",
+      "block 12",
+      "strip boxes"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-1-10",
+      "pa": "FLIGHT PROGRESS STRIPS"
+    }
+  },
+  {
+    "phrases": [
+      "radio message format",
+      "2-4-8"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "2-4-8",
+      "pa": "RADIO MESSAGE FORMAT"
+    }
+  },
+  {
+    "phrases": [
+      "handoff",
+      "point out",
+      "radar contact",
+      "point out approved"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-4-2 / 5-4-3",
+      "pa": "TERMS / METHODS"
+    }
+  },
+  {
+    "phrases": [
+      "missed approach",
+      "your missed approach procedure is"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-10-11",
+      "pa": "MISSED APPROACH"
+    }
+  },
+  {
+    "phrases": [
+      "viscom",
+      "six miles",
+      "three miles",
+      "without viscom"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-2-7 / 6-2-8",
+      "pa": "VISCOM PROCEDURES / GCA TOWER COORDINATION WITHOUT VISCOM"
+    }
+  },
+  {
+    "phrases": [
+      "north initial",
+      "mass-3",
+      "point canyon",
+      "tbl 5-1",
+      "vfr reporting points"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 5-1",
+      "pa": "VFR Reporting Points"
+    },
+    "note": "FACMAN TBL 5-1 VFR Reporting Points (North Initial, MASS-3, Point Canyon)."
+  },
+  {
+    "phrases": [
+      "formation flight",
+      "formation flights",
+      "standard formation",
+      "nonstandard formation"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "PCG / 5-5-8 / 2-1-13",
+      "pa": "FORMATION FLIGHT / ADDITIONAL SEPARATION FOR FORMATION FLIGHTS / FORMATION FLIGHTS"
+    },
+    "note": "PCG standard 1 mile / 100 ft; extra radar sep is 5-5-8 +1/+2. Not intercept. Not pass-a-bay."
+  },
+  {
+    "phrases": [
+      "asr vs par",
+      "airport surveillance radar",
+      "precision approach radar",
+      "surveillance approach vs precision"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "PCG",
+      "pa": "AIRPORT SURVEILLANCE RADAR / PRECISION APPROACH RADAR / SURVEILLANCE APPROACH"
+    },
+    "note": "PCG ASR has no elevation; PAR is azimuth+elevation+range. KNFG ASR-9 / FPN-68A stays T3.7."
+  },
+  {
+    "phrases": [
+      "equipment suffix",
+      "slant golf",
+      "tbl 2-3-10"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "TBL 2-3-10 / 2-3-8",
+      "pa": "AIRCRAFT EQUIPMENT SUFFIXES / AIRCRAFT EQUIPMENT SUFFIX"
+    }
+  },
+  {
+    "phrases": [
+      "clearance abbreviation",
+      "clearance abbreviations",
+      "cleared as filed",
+      "tbl 2-3-11"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "TBL 2-3-11 / 2-3-9",
+      "pa": "CLEARANCE ABBREVIATIONS / CLEARANCE STATUS"
+    }
+  },
+  {
+    "phrases": [
+      "terminal data entries",
+      "arrival strip",
+      "departure strip",
+      "overflight strip",
+      "tbl 2-3-3",
+      "tbl 2-3-4",
+      "tbl 2-3-5"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "TBL 2-3-3 / TBL 2-3-4 / 2-3-4",
+      "pa": "TERMINAL DATA ENTRIES"
+    },
+    "note": "National arrival vs departure strip boxes. T4.8 already dedicated. Not pass-a-bay / not 6-1-10."
+  },
+  {
+    "phrases": [
+      "icao phonetics",
+      "tbl 2-4-1",
+      "radiotelephony alphabet"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "TBL 2-4-1 / 2-4-16",
+      "pa": "ICAO PHONETICS"
+    },
+    "note": "T1.8 already covers TREE / NIN-ER. Spellings as printed (Alfa, Juliett)."
+  },
+  {
+    "phrases": [
+      "papa taxiway",
+      "taxiway",
+      "taxiways",
+      "c-130",
+      "133 feet",
+      "vip parking",
+      "beast 03",
+      "mals-39",
+      "taxi ahead for fuel"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "2-1-15 / 2-1-17",
+      "pa": "AIRFIELD DESCRIPTION / AIRFIELD OPS DEPARTMENT"
+    },
+    "note": "Papa taxiway, widths, C-130 133 ft south of Alpha, VIP/Beast 03, MALS-39 freight. Transient hangar not available is 2-1-17. Not helo Papa 1-4."
+  },
+  {
+    "phrases": [
+      "hangar",
+      "transient hangar",
+      "mals-39 hangar"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "2-1-15 / 2-1-17",
+      "pa": "AIRFIELD DESCRIPTION / AIRFIELD OPS DEPARTMENT"
+    },
+    "note": "MALS-39 hangar freight in 2-1-15; hangar space for transient aircraft is not available in 2-1-17. Not TBL C-1 COAST GUARD HANGAR DCG."
+  },
+  {
+    "phrases": [
+      "course rules",
+      "lost comms",
+      "lost communications",
+      "squawk 7600",
+      "orbit northwest"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-5-2",
+      "pa": "LOST COMMUNICATIONS"
+    },
+    "note": "FACMAN only mentions course rules here (enter Class D via normal course rules per AOM). AOM not on disk."
+  },
+  {
+    "phrases": [
+      "facility identification",
+      "identify the facility",
+      "g-c-a",
+      "identify gca"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "2-4-19",
+      "pa": "FACILITY IDENTIFICATION"
+    },
+    "note": "Tower/approach/G-C-A identification. T1.18 already dedicated. Not pass-a-bay. Not intercept. GCA data stays TBL 6-2."
+  },
+  {
+    "phrases": [
+      "pilot acknowledgment",
+      "read back",
+      "hold short readback"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "2-4-3",
+      "pa": "PILOT ACKNOWLEDGMENT/READ BACK"
+    },
+    "note": "Ensure pilots acknowledge ATC clearances/instructions. Not 2-4-8 radio format."
+  },
+  {
+    "phrases": [
+      "landing area condition",
+      "runway condition codes",
+      "rwycc"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "3-3-1",
+      "pa": "LANDING AREA CONDITION"
+    },
+    "note": "RwyCC / FICON. T2 checklist cite. Not CWT. Not 00-80T."
+  },
+  {
+    "phrases": [
+      "par phraseology",
+      "on glidepath",
+      "slightly above glidepath",
+      "well above glidepath",
+      "azimuth position"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-2-11",
+      "pa": "PRECISION APPROACH RADAR (PAR) PHRASEOLOGY"
+    },
+    "note": "Elevation/azimuth feet criteria. Spoken commencing-descent phrases not printed in 6-2-11. T4.5 already dedicated. Not intercept 20/30/45. Not pass-a-bay."
+  },
+  {
+    "phrases": [
+      "asr phraseology",
+      "surveillance approach phraseology",
+      "9 miles from runway"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-2-12",
+      "pa": "SURVEILLANCE APPROACH (ASR) PHRASEOLOGY"
+    },
+    "note": "ASR FROM RUNWAY / PAR azimuth FROM TOUCHDOWN as printed. Not intercept. Not Papa 1."
+  },
+  {
+    "phrases": [
+      "tbl 8-1",
+      "1939 stations",
+      "1939 line stations"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 8-1 / 8-1-4",
+      "pa": "1939 Line Stations and Numbers"
+    },
+    "note": "Station numbers. Line type (dial/recorded) stays 8-1-4. Bare \"1939 line\" not aliased so T3.6 type-of-line still hits 8-1-4."
+  },
+  {
+    "phrases": [
+      "tbl 8-3",
+      "viscom buttons"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 8-3 / 8-1-6",
+      "pa": "VISCOM Buttons and Meanings"
+    },
+    "note": "Button labels. VISCOM procedures 6-2-7/6-2-8 stay on the viscom alias. Not pass-a-bay."
+  },
+  {
+    "phrases": [
+      "begin descent",
+      "commence descent",
+      "commencing descent",
+      "start descent PAR",
+      "descent instruction PAR"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-12-3",
+      "pa": "DESCENT INSTRUCTION"
+    },
+    "note": "Spoken BEGIN DESCENT when aircraft reaches point where final descent starts. JO 5-12-3 — not FACMAN 6-2-11 (criteria only)."
+  },
+  {
+    "phrases": [
+      "approaching glidepath",
+      "glidepath notification",
+      "approach glidepath"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-12-1",
+      "pa": "GLIDEPATH NOTIFICATION"
+    },
+    "note": "APPROACHING GLIDEPATH ~10–30 seconds before final descent. JO 5-12-1."
+  },
+  {
+    "phrases": [
+      "say on glidepath",
+      "on glidepath phraseology",
+      "slightly well above below glidepath",
+      "trend information PAR",
+      "glidepath and course information"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-12-4",
+      "pa": "GLIDEPATH AND COURSE INFORMATION"
+    },
+    "note": "Spoken ON GLIDEPATH / ON COURSE / SLIGHTLY/WELL ABOVE/BELOW + trend. JO 5-12-4. Feet criteria remain FACMAN 6-2-11 (on glidepath alias)."
+  },
+  {
+    "phrases": [
+      "at decision height",
+      "decision height notification",
+      "DH notification",
+      "provide the DH"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-12-6",
+      "pa": "DECISION HEIGHT"
+    },
+    "note": "AT DECISION HEIGHT when published DH reached; DH on request is 5-12-2. Prefer 5-12-6 for the call."
+  },
+  {
+    "phrases": [
+      "miles from touchdown",
+      "distance from touchdown"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-12-5",
+      "pa": "DISTANCE FROM TOUCHDOWN"
+    },
+    "note": "(Number of miles) MILES FROM TOUCHDOWN at least once each mile. JO 5-12-5."
+  },
+  {
+    "phrases": [
+      "over approach lights",
+      "over landing threshold",
+      "position advisories PAR"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-12-7",
+      "pa": "POSITION ADVISORIES"
+    },
+    "note": "Continue GS/course to threshold; OVER APPROACH LIGHTS; OVER LANDING THRESHOLD. JO 5-12-7."
+  },
+  {
+    "phrases": [
+      "elevation failure",
+      "no glidepath information available",
+      "PAR elevation failure"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-12-10",
+      "pa": "ELEVATION FAILURE"
+    },
+    "note": "NO GLIDEPATH INFORMATION AVAILABLE… JO 5-12-10."
+  },
+  {
+    "phrases": [
+      "approach information radar",
+      "radar approach information",
+      "issue approach information"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-10-2",
+      "pa": "APPROACH INFORMATION"
+    },
+    "note": "Radar approach information items. JO 5-10-2."
+  },
+  {
+    "phrases": [
+      "radar contact lost",
+      "lost radar contact on approach"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-10-5",
+      "pa": "RADAR CONTACT LOST"
+    },
+    "note": "JO 5-10-5 RADAR CONTACT LOST during approach."
+  },
+  {
+    "phrases": [
+      "landing check",
+      "perform landing check"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-10-6",
+      "pa": "LANDING CHECK"
+    },
+    "note": "USA/USN landing check. JO 5-10-6."
+  },
+  {
+    "phrases": [
+      "final approach abnormalities",
+      "abandon approach",
+      "unsafe approach"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-10-14",
+      "pa": "FINAL APPROACH ABNORMALITIES"
+    },
+    "note": "Instruct aircraft to abandon / climb / alternate. JO 5-10-14."
+  },
+  {
+    "phrases": [
+      "lost communications radar approach",
+      "radar approach lost comms",
+      "IFR lost communications approach"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-10-4",
+      "pa": "LOST COMMUNICATIONS"
+    },
+    "note": "JO 5-10-4 radar-approach lost communications. FACMAN course-rules lost comms stays on 5-5-2 alias."
+  },
+  {
+    "phrases": [
+      "recommended altitudes",
+      "recommended altitudes will be provided",
+      "altitude information ASR",
+      "ASR altitude information"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-11-1",
+      "pa": "ALTITUDE INFORMATION"
+    },
+    "note": "JO 5-11-1 recommended altitudes on surveillance final."
+  },
+  {
+    "phrases": [
+      "visual reference report",
+      "report runway in sight ASR",
+      "report airport in sight ASR",
+      "report approach lights in sight ASR"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-11-2",
+      "pa": "VISUAL REFERENCE REPORT"
+    },
+    "note": "JO 5-11-2 REPORT … IN SIGHT. Scoped with ASR."
+  },
+  {
+    "phrases": [
+      "prepare to descend in",
+      "descent notification ASR",
+      "circling MDA ASR",
+      "request your aircraft approach category"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-11-3",
+      "pa": "DESCENT NOTIFICATION"
+    },
+    "note": "JO 5-11-3 PREPARE TO DESCEND IN (number) MILE(S). Not FACMAN 9-mile."
+  },
+  {
+    "phrases": [
+      "descend to your minimum descent altitude",
+      "descend to MDA",
+      "surveillance descent instructions",
+      "descent instructions ASR"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-11-4",
+      "pa": "DESCENT INSTRUCTIONS"
+    },
+    "note": "JO 5-11-4 national MDA. FACMAN 9 miles from runway still 6-2-12."
+  },
+  {
+    "phrases": [
+      "surveillance final approach guidance",
+      "every 15 seconds ASR",
+      "ASR final approach guidance",
+      "final approach guidance ASR"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-11-5",
+      "pa": "FINAL APPROACH GUIDANCE"
+    },
+    "note": "JO 5-11-5 ~15 sec transmissions."
+  },
+  {
+    "phrases": [
+      "recommended altitude should be",
+      "altitude should be (ASR)",
+      "altitude should be ASR"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-11-5",
+      "pa": "FINAL APPROACH GUIDANCE"
+    },
+    "note": "JO 5-11-5 ALTITUDE SHOULD BE. Scoped off FACMAN mile cards."
+  },
+  {
+    "phrases": [
+      "approach guidance termination",
+      "proceed visually MAP",
+      "surveillance approach discontinued",
+      "ASR approach discontinued"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-11-6",
+      "pa": "APPROACH GUIDANCE TERMINATION"
+    },
+    "note": "JO 5-11-6 PROCEED VISUALLY / EXECUTE MISSED."
+  },
+  {
+    "phrases": [
+      "military single frequency approaches",
+      "single frequency approach"
+    ],
+    "cite": {
+      "doc": "JO 7110.65BB",
+      "pg": "5-10-15",
+      "pa": "MILITARY SINGLE FREQUENCY APPROACHES"
+    },
+    "note": "JO 5-10-15 PDF pp.361–362; ASR 5-11 grind addendum."
+  },
+  {
+    "phrases": [
+      "final duties",
+      "RFC duties",
+      "radar final duties",
+      "final controller duties",
+      "duties and responsibilities final"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-2-1",
+      "pa": "DUTIES & RESPONSIBILITIES"
+    },
+    "note": "FACMAN 6-2-1 duties; landing clearance + verbatim relay; additional duties cite 00-80T-114 only."
+  },
+  {
+    "phrases": [
+      "intrafacility handoff",
+      "intrafacility handoffs",
+      "contact final",
+      "GCA frequency handoff",
+      "your control on standby",
+      "your control on contact"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-2-2",
+      "pa": "INTRAFACILITY HANDOFFS"
+    },
+    "note": "FACMAN 6-2-2 dogleg RADAR CONTACT + YOUR CONTROL variants."
+  },
+  {
+    "phrases": [
+      "FACMAN final approach abnormalities",
+      "GCA final approach abnormalities",
+      "safe limit exceeded",
+      "lower safe limit",
+      "too low for safe approach",
+      "low altitude alert check your altitude"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-2-3",
+      "pa": "FINAL APPROACH ABNORMALITIES"
+    },
+    "note": "FACMAN 6-2-3 safe-limit / LOW ALTITUDE ALERT / optional wave off. Bare 'final approach abnormalities' remains JO 5-10-14 first; this alias is FACMAN-scoped."
+  },
+  {
+    "phrases": [
+      "missed approach wave off",
+      "wave-off instructions GCA",
+      "wave off instructions GCA",
+      "GCA wave-off instructions"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-2-4",
+      "pa": "MISSED APPROACH / WAVE OFF INSTRUCTIONS"
+    },
+    "note": "FACMAN 6-2-4 → Paragraph 6-4-8. Scoped so JO 5-10-11 missed approach phraseology alias stays distinct."
+  },
+  {
+    "phrases": [
+      "approach completion instructions"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-2-5",
+      "pa": "APPROACH COMPLETION INSTRUCTIONS"
+    },
+    "note": "FACMAN 6-2-5 → Paragraph 6-4-9."
+  },
+  {
+    "phrases": [
+      "approach completion coordination",
+      "remain with GCA after T&G",
+      "button on the go",
+      "BUTTON ON THE GO"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-2-6",
+      "pa": "APPROACH COMPLETION COORDINATION"
+    },
+    "note": "FACMAN 6-2-6 BUTTON (number) ON THE GO / CLEAR."
+  },
+  {
+    "phrases": [
+      "GCA traffic information",
+      "traffic information GCA",
+      "forward traffic information verbatim"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-2-9",
+      "pa": "GCA TRAFFIC INFORMATION"
+    },
+    "note": "FACMAN 6-2-9 tower interphone → final forwards verbatim."
+  },
+  {
+    "phrases": [
+      "climb and maintain 2200 via heading 211",
+      "wave off climb maintain 2200",
+      "helicopter radar missed approach KNFG",
+      "YOUR MISSED APPROACH PROCEDURE IS CLIMB AND MAINTAIN 2200"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-4-8",
+      "pa": "MISSED APPROACH / WAVE OFF INSTRUCTIONS"
+    },
+    "note": "FACMAN 6-4-8 helo MAP / wave-off phraseology. Scoped so wave-off instructions GCA stays 6-2-4 and JO 5-10-11 missed approach phraseology stays distinct."
+  },
+  {
+    "phrases": [
+      "AFTER LANDING STOP SQUAWK",
+      "AFTER COMPLETING LOW APPROACH MAINTAIN VFR STOP SQUAWK",
+      "REMAIN THIS FREQUENCY FOR DEPARTURE CONTROL",
+      "approach completion full stop phraseology"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-4-9",
+      "pa": "APPROACH COMPLETION INSTRUCTIONS"
+    },
+    "note": "FACMAN 6-4-9 phraseology. Bare approach completion instructions stays 6-2-5."
+  },
+  {
+    "phrases": [
+      "lost communications Camp Pendleton tower 340.2",
+      "IF NO TRANSMISSIONS ARE RECEIVED FOR ONE MINUTE"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-4-10",
+      "pa": "LOST COMMUNICATIONS PROCEDURES"
+    },
+    "note": "FACMAN 6-4-10 pub freqs 340.2 / 128.775. JO 5-10-4 lost communications radar approach stays distinct."
+  },
+  {
+    "phrases": [
+      "climbout instructions runway 21",
+      "climbout instructions RWY 21"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-4-11",
+      "pa": "CLIMBOUT INSTRUCTIONS"
+    },
+    "note": "FACMAN 6-4-11 RWY 21 climbout scripts."
+  },
+  {
+    "phrases": [
+      "arrival duties",
+      "Arrival Control duties",
+      "arrival controller duties",
+      "duties and responsibilities Arrival"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-4-1",
+      "pa": "DUTIES & RESPONSIBILITIES"
+    },
+    "note": "FACMAN 6-4-1 combine arrival+departure; interval judgment; NOTE no GCA pattern aircraft count restriction — controller judgment."
+  },
+  {
+    "phrases": [
+      "control transfer arrival",
+      "RFD handoff direction",
+      "RFD handoffs point outs only",
+      "transfer of control IFR Arrival"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-4-3",
+      "pa": "CONTROL TRANSFER"
+    },
+    "note": "FACMAN 6-4-3 Arrival owns IFR control transfer; RFD only does handoffs/point outs at Arrival's direction."
+  },
+  {
+    "phrases": [
+      "SCT release",
+      "request release Camp Pendleton",
+      "Corri departures",
+      "Fallbrook departures",
+      "RWY 21 switch 323.0"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-4-4",
+      "pa": "DEPARTURES"
+    },
+    "note": "FACMAN 6-4-4 SCT prior auth; release EXAMPLE; Fallbrook; RWY 21 323.0/127.3; RWY 3 236.3/128.45 (pub freqs)."
+  },
+  {
+    "phrases": [
+      "GCA pattern description",
+      "pattern description GCA",
+      "crosswind 050",
+      "dogleg heading",
+      "upwind crosswind downwind base dogleg"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-4-5",
+      "pa": "PATTERN DESCRIPTION"
+    },
+    "note": "FACMAN 6-4-5 pattern legs; 1200 before crosswind; 11–7 mi ≥2600; 7–5 mi ≥2000."
+  },
+  {
+    "phrases": [
+      "SCT approach clearance TACAN",
+      "SCT approach clearance VOR",
+      "SCT approach clearances TACAN VOR GPS",
+      "approach clearances TACAN VOR GPS"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-4-6",
+      "pa": "ARRIVALS"
+    },
+    "note": "FACMAN 6-4-6 SCT issues approach clearances for TACAN, VOR/DME, or GPS."
+  },
+  {
+    "phrases": [
+      "radar handoff fixes",
+      "coordination fixes",
+      "radar coordination fixes",
+      "BONDO",
+      "CASPO",
+      "GOZER",
+      "CORRI",
+      "WIPAM",
+      "AMFIB",
+      "FISAM",
+      "CUPIS"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-1-2",
+      "pa": "RADAR HANDOFF / COORDINATION FIXES"
+    },
+    "note": "FACMAN 6-1-2 handoff/coordination fixes (BONDO/CASPO/GOZER/CORRI/WIPAM/AMFIB…). Not pass-a-bay. Not intrafacility 6-2-2."
+  },
+  {
+    "phrases": [
+      "GCA critical data",
+      "decision altitude 393",
+      "ASR MDA 940",
+      "PAR FAF 5.03",
+      "TBL 6-2"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-1-5 / TBL 6-2",
+      "pa": "GCA CRITICAL DATA"
+    },
+    "note": "FACMAN 6-1-5 + TBL 6-2 GCA critical data. FC_SETS.gca already cards TBL 6-2."
+  },
+  {
+    "phrases": [
+      "Mode 3/A code assignments",
+      "beacon codes 4534",
+      "Lima beacon codes",
+      "Mode 3/A codes"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-1-6",
+      "pa": "MODE 3/A CODE ASSIGNMENTS"
+    },
+    "note": "FACMAN 6-1-6 Lima 4534–4543; MCB 4001–4037; 1255 firefighting."
+  },
+  {
+    "phrases": [
+      "civilian practice GCA",
+      "civilian practice GCAs",
+      "civilian GCA approval"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-1-12",
+      "pa": "CIVILIAN PRACTICE GCAs"
+    },
+    "note": "FACMAN 6-1-12 prior Airfield Ops approval."
+  },
+  {
+    "phrases": [
+      "MSAW inhibit",
+      "disable MSAW",
+      "disable MSAW CA",
+      "STARS MSAW",
+      "inhibit MSAW"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-1-15",
+      "pa": "DISABLING OF STARS MSAW AND CA ALARMS"
+    },
+    "note": "FACMAN 6-1-15 Radar Chief only; notify FO/FWO; Daily Record."
+  },
+  {
+    "phrases": [
+      "CWT radar strip",
+      "write CWT category",
+      "CWT category on strips",
+      "consolidated wake turbulence radar"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-1-17",
+      "pa": "CONSOLIDATED WAKE TURBULENCE - RADAR"
+    },
+    "note": "FACMAN 6-1-17 write CWT category on strips. Do NOT invent CAT A–I numbers."
+  },
+  {
+    "phrases": [
+      "radar emergencies mountainous",
+      "emergencies radar FACMAN",
+      "6-1-1 emergencies radar"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-1-1",
+      "pa": "EMERGENCIES"
+    },
+    "note": "FACMAN 6-1-1 mountainous terrain radio/radar; cites JO Ch 10, FACMAN 2-3-5, 00-80T-114 (pub not on disk)."
+  },
+  {
+    "phrases": [
+      "radar supervisor duties",
+      "RS duties",
+      "Radar Supervisor responsibilities"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-5-1",
+      "pa": "DUTIES & RESPONSIBILITIES"
+    },
+    "note": "FACMAN 6-5-1 RS to FWO; primary duties in 00-80T-114 (pub not filled)."
+  },
+  {
+    "phrases": [
+      "watch relief",
+      "position relief checklist",
+      "watch checklist radar"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-5-2",
+      "pa": "WATCH RELIEF"
+    },
+    "note": "FACMAN 6-5-2 RS ensures watch + position relief checklists (Appendix A)."
+  },
+  {
+    "phrases": [
+      "radar manning",
+      "combine positions radar",
+      "combining positions",
+      "FC shall not be combined",
+      "RFC may not be combined"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-5-4",
+      "pa": "COMBINING POSITIONS"
+    },
+    "note": "FACMAN 6-5-4 / 6-5-3 combine rules; FC/RFC/Range Air restrictions."
+  },
+  {
+    "phrases": [
+      "PAR trainee weather",
+      "PAR trainee minima",
+      "instructor debrief",
+      "debriefs after trainees",
+      "RS training responsibilities"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-5-5",
+      "pa": "TRAINING"
+    },
+    "note": "FACMAN 6-5-5 debriefs + PAR trainee wx 1000/3 or 500/1 with Radar Chief written approval."
+  },
+  {
+    "phrases": [
+      "time share procedures",
+      "ATNAVICS time share",
+      "AN/TPN-31A",
+      "Time Share CIC"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-5-9",
+      "pa": "TIME SHARE PROCEDURES"
+    },
+    "note": "FACMAN 6-5-9 Time Share procedures (6-1-13 only points here)."
+  },
+  {
+    "phrases": [
+      "extended field hours",
+      "extend airfield hours",
+      "field remain open"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-5-10",
+      "pa": "EXTENDED FIELD HOURS"
+    },
+    "note": "FACMAN 6-5-10 >30 Ops; <30 FWO; notify ATCMD/Longrifle/SCT."
+  },
+  {
+    "phrases": [
+      "radar supervisor equipment",
+      "equipment checkout radar shift"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "6-5-6",
+      "pa": "EQUIPMENT"
+    },
+    "note": "FACMAN 6-5-6 RS outages + shift checkout."
+  },
+  {
+    "phrases": [
+      "GCA frequencies",
+      "GCA freqs",
+      "TBL 8-4",
+      "GCA frequency table",
+      "radar GCA frequencies"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "8-2-2 / TBL 8-4",
+      "pa": "GCA FREQUENCIES"
+    },
+    "note": "FACMAN 8-2-2 + TBL 8-4 GCA frequencies. Tower Primary stays TBL 8-5."
+  },
+  {
+    "phrases": [
+      "GCA button 1",
+      "Arrival UHF 236.3",
+      "GCA Arrival frequency",
+      "button 1 Arrival"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 8-4",
+      "pa": "GCA Frequencies"
+    },
+    "note": "TBL 8-4 button 1 Arrival UHF 236.3."
+  },
+  {
+    "phrases": [
+      "RATCF 128.775",
+      "GCA 128.775",
+      "128.775 RATCF concurrence",
+      "GCA star 128.775"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "8-2-2 / TBL 8-4",
+      "pa": "GCA FREQUENCIES"
+    },
+    "note": "8-2-2 NOTE + TBL 8-4 *128.775: RATCF only with tower's concurrence. Not Tower Primary (TBL 8-5)."
+  },
+  {
+    "phrases": [
+      "R-2503D frequencies",
+      "R-2503D GCA buttons",
+      "GCA button 8",
+      "GCA button 9",
+      "GCA button 10"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 8-4",
+      "pa": "GCA Frequencies"
+    },
+    "note": "TBL 8-4 buttons 8–10 R-2503D (310.725 / 234.325 / 134.1)."
+  },
+  {
+    "phrases": [
+      "Range frequency",
+      "Range UHF 310.3",
+      "Range VHF 123.2",
+      "GCA Range freq"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 8-4",
+      "pa": "GCA Frequencies"
+    },
+    "note": "TBL 8-4 Range row UHF 310.3 / VHF 123.2 (not a numbered button)."
+  },
+  {
+    "phrases": [
+      "TACAN monitor",
+      "TACAN alarm",
+      "TACAN monitor ASR-2 PAR-1"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "8-2-5",
+      "pa": "TACAN MONITOR"
+    },
+    "note": "FACMAN 8-2-5 TACAN monitor between ASR-2 and PAR-1; report alarms to ATCMD."
+  },
+  {
+    "phrases": [
+      "tower frequencies",
+      "TBL 8-5",
+      "Tower Primary frequency",
+      "tower primary freq"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 8-5 / 8-3-1",
+      "pa": "TOWER FREQUENCIES"
+    },
+    "note": "FACMAN TBL 8-5 + 8-3-1. Prefer TBL 8-5 then 8-3-1. RATCF 128.775 concurrence stays 8-2-2/TBL 8-4."
+  },
+  {
+    "phrases": [
+      "Ground Control frequency",
+      "Ground Control freq",
+      "Clearance Delivery frequency",
+      "Clearance Delivery freq",
+      "Clnc Del frequency"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 8-5",
+      "pa": "Tower Frequencies"
+    },
+    "note": "TBL 8-5 Ground Control 360.2/134.675; Clearance Delivery 271.6/134.675."
+  },
+  {
+    "phrases": [
+      "crash phone location",
+      "crash phone circuit stations",
+      "stations on the crash phone",
+      "crash phone between flight data"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "8-3-2",
+      "pa": "CRASH PHONE"
+    },
+    "note": "FACMAN 8-3-2 equipment: location between FD and local; circuit stations. Bare \"crash phone\" / \"daily crash phone test\" stay 5-1-2 phraseology."
+  },
+  {
+    "phrases": [
+      "fire department line",
+      "FIRE RNG",
+      "ETVS FIRE RNG"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "8-3-3",
+      "pa": "FIRE DEPARTMENT LINE"
+    },
+    "note": "FACMAN 8-3-3 FIRE DEPARTMENT LINE on ETVS (FIRE RNG)."
+  },
+  {
+    "phrases": [
+      "longrifle line",
+      "Longrifle intercom",
+      "Longrifle ETVS"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "8-3-4",
+      "pa": "LONGRIFLE LINE"
+    },
+    "note": "FACMAN 8-3-4 LONGRIFLE LINE via ETVS to Range Control."
+  },
+  {
+    "phrases": [
+      "light guns",
+      "light gun range",
+      "tower light guns"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "8-3-5",
+      "pa": "LIGHT GUNS"
+    },
+    "note": "FACMAN 8-3-5 two light guns; daytime 3.6NM; JO 7110.65 signals."
+  },
+  {
+    "phrases": [
+      "airfield lighting",
+      "SALS runway 21",
+      "PAPI range",
+      "HIRLs",
+      "HIRLs runway 3/21"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "8-3-6",
+      "pa": "AIRFIELD LIGHTING"
+    },
+    "note": "FACMAN 8-3-6 HIRLs RWY 3/21; SALS A-2 RWY 21; SFLs; beacon; PAPI 5/20 mi."
+  },
+  {
+    "phrases": [
+      "AFLCS",
+      "pilot controlled lighting",
+      "PCL 340.2",
+      "Display AFLCS",
+      "pilot-controlled lighting"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "8-3-7",
+      "pa": "AFLCS"
+    },
+    "note": "FACMAN 8-3-7 AFLCS on VIDS; PCL on 340.2 (3/5/7); exclude beacon/compass rose/bird bath."
+  },
+  {
+    "phrases": [
+      "tower display workstation",
+      "TDW location",
+      "TDW between flight data"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "8-3-8",
+      "pa": "TOWER DISPLAY WORKSTATION"
+    },
+    "note": "FACMAN 8-3-8 TDW between FD and local."
+  },
+  {
+    "phrases": [
+      "ATIS frequency 285.45",
+      "ATIS broadcast on 285.45",
+      "ATIS 285.45"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "8-3-9",
+      "pa": "ATIS"
+    },
+    "note": "FACMAN 8-3-9 ATIS broadcast on 285.45; may use for emergency comms. Bare ATIS may stay 5-4-6."
+  },
+  {
+    "phrases": [
+      "strip marking procedures",
+      "TBL 5-3",
+      "departure procedure strip mark",
+      "QUNTN#",
+      "CORRI#",
+      "BLDG#",
+      "MUNN#"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 5-3 / 5-1-10",
+      "pa": "STRIP MARKING PROCEDURES"
+    },
+    "note": "FACMAN TBL 5-3 + 5-1-10. Prefer TBL 5-3 then 5-1-10. Not TBL 6-3 radar abbrev."
+  },
+  {
+    "phrases": [
+      "VFR-on-Top clearance limit",
+      "VFR on top clearance",
+      "TBL 5-4",
+      "VISTA BLDG#"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 5-4 / 5-1-10",
+      "pa": "VFR-on-Top Clearance Limits"
+    },
+    "note": "FACMAN TBL 5-4 VFR-on-Top clearance limits (VISTA/CORRI/QUENTIN). No Munn row."
+  },
+  {
+    "phrases": [
+      "SVFR route abbreviations",
+      "TBL 5-5",
+      "Intersection route NW",
+      "LCAC route SW",
+      "Point Canyon route"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 5-5 / 5-1-10",
+      "pa": "SVFR Route Abbreviations"
+    },
+    "note": "FACMAN TBL 5-5 SVFR route abbrevs. Bare SVFR may stay 5-1-7 when that para is filled."
+  },
+  {
+    "phrases": [
+      "FDIO message fields",
+      "TBL 5-6",
+      "FDIO AID",
+      "FDIO RTE",
+      "FDIO field abbreviations"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 5-6 / 5-1-11",
+      "pa": "FDIO Message Fields and Formats"
+    },
+    "note": "FACMAN TBL 5-6 FDIO fields. Prefer TBL 5-6 then 5-1-11."
+  },
+  {
+    "phrases": [
+      "FDIO message types",
+      "TBL 5-7",
+      "FDIO FP",
+      "FDIO AM",
+      "strip request SR",
+      "remove strip RS"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 5-7 / 5-1-11",
+      "pa": "FDIO Message Types"
+    },
+    "note": "FACMAN TBL 5-7 message types FP/AM/GI/SR/RS/WR/DM/FR. HM not on this table."
+  },
+  {
+    "phrases": [
+      "FDIO addresses",
+      "NFGT",
+      "NF1A",
+      "NF1D",
+      "NK1A",
+      "NF3A",
+      "local FDIO addresses"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-11",
+      "pa": "FLIGHT DATA INPUT / OUTPUT SYSTEM (FDIO)"
+    },
+    "note": "FACMAN 5-1-11.c local addresses NFGT / NF1A,NF1D / NK1A / NF3A,NF3D."
+  },
+  {
+    "phrases": [
+      "strip marking procedures 5-1-10",
+      "FACMAN 5-1-10"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-10",
+      "pa": "STRIP MARKING PROCEDURES"
+    },
+    "note": "FACMAN 5-1-10 points to TBL 5-3/5-4/5-5; Appendix D examples."
+  },
+  {
+    "phrases": [
+      "visual reporting points",
+      "VFR reporting points",
+      "5-1-3"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-3 / TBL 5-1",
+      "pa": "VISUAL REPORTING POINTS"
+    },
+    "note": "FACMAN 5-1-3 points to TBL 5-1. Prefer 5-1-3 then TBL 5-1. Named VRPs (North Initial etc.) may still hit TBL 5-1."
+  },
+  {
+    "phrases": [
+      "special VFR",
+      "SVFR operations",
+      "SVFR Class D",
+      "SVFR at or below 1500"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-7",
+      "pa": "SPECIAL VFR FLIGHTS"
+    },
+    "note": "FACMAN 5-1-7 SVFR in Class D/Lima; ≤1500 MSL; one aircraft unless visual sep; IFR priority. SVFR route abbrevs stay TBL 5-5."
+  },
+  {
+    "phrases": [
+      "ship to shore flight",
+      "ship-to-shore flight plan",
+      "FACSFAC North Island flight plan"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-5",
+      "pa": "SHIP TO SHORE FLIGHT"
+    },
+    "note": "FACMAN 5-1-5 ship-to-shore via FACSFAC North Island."
+  },
+  {
+    "phrases": [
+      "shore to ship flight",
+      "shore-to-ship flight plan",
+      "shore to ship restrictions"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-6",
+      "pa": "SHORE TO SHIP FLIGHT"
+    },
+    "note": "FACMAN 5-1-6 helo only; both facilities open VFR; min callsign/ETE/FOB/SOB/ship tactical callsign."
+  },
+  {
+    "phrases": [
+      "TEC routes",
+      "tower enroute control",
+      "TEC altitude categories"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-9",
+      "pa": "TEC ROUTES"
+    },
+    "note": "FACMAN 5-1-9 TEC Q/P/M/J categories; Chart Supplement."
+  },
+  {
+    "phrases": [
+      "NITEX",
+      "night vision operations",
+      "NVG operations Class D",
+      "night vision devices"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-12",
+      "pa": "NIGHT VISION OPERATIONS (NITEX)"
+    },
+    "note": "FACMAN 5-1-12 NITEX; unlighted Class D; station C-12 exception."
+  },
+  {
+    "phrases": [
+      "Longrifle operations",
+      "advise Longrifle",
+      "Longrifle ATC coordination"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-13",
+      "pa": "LONGRIFLE OPERATIONS"
+    },
+    "note": "FACMAN 5-1-13 ops coordination with MCB Longrifle. Equipment 'longrifle line' stays 8-3-4."
+  },
+  {
+    "phrases": [
+      "Area One",
+      "Area Two",
+      "Areas One and Two",
+      "R-2503B Area One"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-14",
+      "pa": "AREAS ONE AND TWO"
+    },
+    "note": "FACMAN 5-1-14 Area One R-2503B / Area Two R-2503A buffers."
+  },
+  {
+    "phrases": [
+      "CALA",
+      "combat aircraft loading area",
+      "500-foot AGL overflight CALA"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-15",
+      "pa": "COMBAT AIRCRAFT LOADING AREA (CALA)"
+    },
+    "note": "FACMAN 5-1-15 CALA NW corner; Taxiway Charlie; 500 ft AGL overflight."
+  },
+  {
+    "phrases": [
+      "arming area",
+      "de-arming area",
+      "arm de-arm"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-16",
+      "pa": "ARMING AREA"
+    },
+    "note": "FACMAN 5-1-16 arming area after CALA; up to six aircraft; 500 ft AGL."
+  },
+  {
+    "phrases": [
+      "flight check aircraft",
+      "flight check priority"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-17",
+      "pa": "FLIGHT CHECK AIRCRAFT"
+    },
+    "note": "FACMAN 5-1-17 Flight Check priority in Class D per JO 7110.65."
+  },
+  {
+    "phrases": [
+      "hand write CWT",
+      "CWT category on strip",
+      "CWT tower",
+      "consolidated wake turbulence tower"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-23",
+      "pa": "CONSOLIDATED WAKE TURBULENCE - TOWER"
+    },
+    "note": "FACMAN 5-1-23 hand-write CWT category on strips. Do NOT invent CAT A–I numbers; wake minima stay JO 5-5-4."
+  },
+  {
+    "phrases": [
+      "high power run-ups",
+      "hover checks north grass",
+      "Punch Bowl test area"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-21",
+      "pa": "HIGH POWER RUN-UPS"
+    },
+    "note": "FACMAN 5-1-21 high power run-ups; North Grass hover ≤50 AGL; Punch Bowl."
+  },
+  {
+    "phrases": [
+      "closed tower ops",
+      "closed tower operations"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-22",
+      "pa": "CLOSED TOWER OPS"
+    },
+    "note": "FACMAN 5-1-22 closed tower requests via Ops / MAG-39 Ops."
+  },
+  {
+    "phrases": [
+      "state and local callsigns",
+      "BRAVO callsign",
+      "DUKE callsign",
+      "EAGLE callsign"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "5-1-20",
+      "pa": "STATE AND LOCAL CALLSIGN DESIGNATIONS"
+    },
+    "note": "FACMAN 5-1-20 FAA-approved local callsigns BRAVO/DUKE/EAGLE/etc."
+  },
+  {
+    "phrases": [
+      "tower IFR strip",
+      "FIG D-1",
+      "tower IFR flight strip"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "FIG D-1 / 5-1-10",
+      "pa": "Tower IFR Flight Strips"
+    },
+    "note": "FACMAN FIG D-1 tower IFR samples (ATLAS40 / STMPD19 PREV JLI). Prefer FIG D-1 then 5-1-10. Not ahead of pass-a-bay."
+  },
+  {
+    "phrases": [
+      "tower VFR strip",
+      "FIG D-2",
+      "tower VFR flight strip"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "FIG D-2 / 5-1-10",
+      "pa": "Tower VFR Flight Strip"
+    },
+    "note": "FACMAN FIG D-2 STI76 V/D DEST RIV."
+  },
+  {
+    "phrases": [
+      "tower SVFR strip",
+      "FIG D-3",
+      "tower special VFR strip",
+      "SVFR strip marking"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "FIG D-3 / TBL 5-5 / 5-1-10",
+      "pa": "Tower Special VFR Flight Strips"
+    },
+    "note": "FACMAN FIG D-3 SVFR dep STI76 · arr ATL40 · pattern ATL40 (ⒸW); TBL 5-5 route abbrevs. Reference STRIPS shows all three FIG D-3 rows."
+  },
+  {
+    "phrases": [
+      "radar departure",
+      "FIG D-4",
+      "VFR-on-Top radar strip",
+      "VFR on top radar strip"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "FIG D-4 / 6-1-10",
+      "pa": "Radar Departure Strips"
+    },
+    "note": "FACMAN FIG D-4 ATLAS40 dep + Vista/CORRI OTP (STI26 + ATLAS22 RWY3 blank CLNC on figure). Prefer FIG D-4 then 6-1-10. Not ahead of pass-a-bay."
+  },
+  {
+    "phrases": [
+      "radar arrival strip",
+      "FIG D-5",
+      "multiple GCA strip",
+      "multi-GCA strip",
+      "multi GCA strip",
+      "non-radar arrival strip"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "FIG D-5 / 6-1-10",
+      "pa": "Radar Arrival Strips"
+    },
+    "note": "FACMAN FIG D-5 STMPD19 IFR arr + multi-GCA (PA/PA/SA as printed on figure; 32 struck in alt row; checkmark TYPE APCH once cleared per note) + non-radar (no ACTUAL IFR box — TIME AT ID FIX + INBOUND TO TOWER only). Prefer FIG D-5 then 6-1-10. Not ahead of pass-a-bay."
+  },
+  {
+    "phrases": [
+      "FIG D-6",
+      "other radar strip",
+      "point out strip",
+      "Fallbrook strip",
+      "void time V<",
+      "overflight radar strip"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "FIG D-6 / 6-1-10",
+      "pa": "Other Radar Strips"
+    },
+    "note": "FACMAN FIG D-6 overflight (ROUTE THROUGH LIMA AIRSPACE / TIME AT ID FIX / HANDOFF FACILITY+TIME) / point-out (TIME ENTERING LIMA / POINTOUT FACILITY / EXIT LIMA) / Fallbrook (CLEARANCE VOID TIME V<). Prefer FIG D-6 then 6-1-10. Distinct from JO TBL 2-3 overflight strip boxes."
+  },
+  {
+    "phrases": [
+      "TBL 6-3",
+      "radar strip abbreviations",
+      "radar strip abbreviation",
+      "FACMAN 6-1-11",
+      "strip abbreviation for Precision Approach",
+      "strip abbreviation for Surveillance Approach",
+      "PA = Precision Approach",
+      "SA = Surveillance Approach"
+    ],
+    "cite": {
+      "doc": "NFG FACMAN July 2025",
+      "pg": "TBL 6-3 / 6-1-11",
+      "pa": "Abbreviations"
+    },
+    "note": "FACMAN 6-1-11 requires TBL 6-3 for radar strip marking (SA/PA/TZ/TY/T3/CT21/VA/FS/…/QUNTN/BLDG/CORRI/MUNN). Prefer TBL 6-3 then 6-1-11. Not ahead of pass-a-bay. Distinct from TBL 5-3/5-4/5-5 tower marks and JO TBL 2-3-12."
+  }
+]
