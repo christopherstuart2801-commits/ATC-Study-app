@@ -525,8 +525,9 @@ ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendi
 ok('App D sref-labels use FIG identity not SAMPLE', /sref-label">FIG D-4 · ATLAS40 IFR DEPARTURE</.test(html) && /sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</.test(html) && !/sref-label">SAMPLE ·/.test(html));
 ok('Home NOAA METAR KNFG', /fetchKnfgMetar/.test(html) && /aviationweather\.gov\/api\/data\/metar/.test(html) && /SAMPLE · offline/.test(html));
 ok('ACAD checkboxes persist localStorage', /vatc\.rfcChk/.test(html) && /data-action="acadcheck"/.test(html) && /loadRfcChk/.test(html));
-ok('statusbar v0.6.5 t4-d5-altrc', /v0\.6\.5 · t4-d5-altrc/.test(html));
-ok('facmanStripBlock D-5 ALT vs RDR split', html.includes("cell('fps-al','ALTITUDE','<s>50</s> <s>40</s> 24')") && html.includes("cell('fps-rc','RADAR CONTACT / HANDOFF',circ('C')+'7 · '+circ('R'))") && !html.includes("ALTITUDE / SFA"));
+ok('statusbar v0.6.6 d5-csfa-alt', /v0\.6\.6 · d5-csfa-alt/.test(html));
+ok('facmanStripBlock D-5 ALT vs RDR split', html.includes("cell('fps-al','ALTITUDE','<s>50</s> <s>40</s> 24 · '+circ('C')+'7')") && html.includes("cell('fps-rc','RADAR CONTACT / HANDOFF',circ('R'))") && !html.includes("ALTITUDE / SFA"));
+ok('stripsRef D-5 C/SFA with ALTITUDE', html.includes("scell('<s>50</s> <s>40</s> 24 · C7','amb')") && html.includes("scell('Ⓡ','sky')") && html.includes("24 · C3','amb')") && html.includes("scell('Ⓡ/Ⓡ/R','sky')") && !html.includes("C7 · Ⓡ") && !html.includes("C3 · Ⓡ/Ⓡ/R"));
 
 ok('T4 refs have ACAD-0521/0522 hdr sections', /ACAD-0521","Aircraft movement data","hdr"/.test(html) && /ACAD-0522","Flight progress strips","hdr"/.test(html));
 ok('T4 checklist includes FIG D-6 (Appendix D-5–7)', /FACMAN FIG D-6","Other Radar Strips"/.test(html));

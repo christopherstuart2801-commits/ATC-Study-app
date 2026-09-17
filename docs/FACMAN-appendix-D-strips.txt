@@ -113,12 +113,13 @@ Examples:
 IFR ARRIVAL template:
   CALLSIGN | TYPE/EQPT | CODE | PREVIOUS FIX | COORD FIX |
   ETA AT COORD FIX | ACTUAL IFR | INBOUND PASSED |
-  ALTITUDE | RADAR CONTACT/HANDOFF (C / SFA marking in block) |
+  ALTITUDE (+ C/SFA with altitudes) | RADAR CONTACT/HANDOFF (circled R) |
   TYPE APCH | INTENT | BAY  (three rows for multiple approaches)
 
 Example IFR arrival:
   STMPD19 · I/B350/L · 2252 · SXC · OCN · 1745 · I · ✓ inbound
-  Altitudes: <s>50</s> <s>40</s> 24 · C7 (SFA button; "C" around frequency once checked in) · circled R
+  ALTITUDE: <s>50</s> <s>40</s> 24 · C7 (SFA; "C" around frequency once checked in)
+  RADAR CONTACT/HANDOFF: circled R alone
   TYPE APCH: TZ (figure shows TZ; instructional note: checkmark through once cleared) · INTENT FS · BAY 1
 Figure notes:
   "PUT A CHECKMARK THROUGH THE TYPE APPROACH ONCE THE AIRCRAFT IS CLEARED."
@@ -126,7 +127,8 @@ Figure notes:
 
 IFR MULTIPLE GCA ARRIVAL (handwritten) example:
   ATLAS40 · H/H1/P · 4534 · RADAR ID FIX L18 3N · TIME 2022 · I · ✓
-  Altitude rows: 28/28/28 · <s>32</s>/20/24 · 24 · C3 · circled R / circled R / R
+  ALTITUDE rows: 28/28/28 · <s>32</s>/20/24 · 24 · C3 (SFA)
+  RADAR CONTACT/HANDOFF: circled R / circled R / R
   APCH rows: PA/LAR/1 · PA/LAR/2 · SA/LAZ/1 as printed (figure note: checkmark through TYPE APCH once cleared — IFR arrival figure shows plain TZ; multi-GCA PA rows unstruck)
   Note: "PUT A 'C' AROUND THE FREQUENCY ONCE THE AIRCRAFT CHECKS IN ON THAT FREQUENCY."
 
@@ -184,3 +186,4 @@ FIG D-3 note — arrival symbol on page image shows NE/entry arrow with SW text 
 2026-09-16 11pm night grind: Final Topic 4 Learn checklist split into paper ACAD-0521 (movement) / ACAD-0522 (strips) section headers; added FACMAN FIG D-6 so Appendix D-5–7 (FIG D-4…D-6) is complete; rfcLearn skips hdr rows in progress counts. App D FIG D-1…D-6 still covered; App D-8 still absent from July 2025 PDF body.
 2026-09-17 1am night grind: stripsRef D-5 primary/multi-GCA/non-radar column split (ALTITUDE vs RADAR CONTACT/HANDOFF or RDR ID STATUS) match p-160; T4 checklist 6-1-11+TBL 6-3 under ACAD-0522; rfcLearn detail hdr progress/layout fixed. App D-8 still absent from July 2025 PDF body.
 2026-09-17 3am night grind: facmanStripBlock D-5 ALTITUDE vs RADAR CONTACT/HANDOFF split (match stripsRef + p-160). App D-8 still absent from July 2025 PDF body.
+2026-09-17 5am night grind: FIG D-5 primary/multi-GCA — C/SFA (C7/C3) with ALTITUDE; circled R alone under RADAR CONTACT/HANDOFF (p-160). App D FIG D-1…D-6 covered; App D-8 still absent from July 2025 PDF body.
