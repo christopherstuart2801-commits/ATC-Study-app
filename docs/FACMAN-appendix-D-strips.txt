@@ -101,10 +101,10 @@ Examples:
    Route: NFG BLDG2 VISTA · ↑ OTP/40
    REQ RLS 2303 · RLS TIME 05 · CLNC ISSUED B · DEPT TIME 05
 3) IFR VFR-ON-TOP RWY21 - CORRI — STI26 · H/H1/P · 4543 · P1815 · OTP/38 · NFG
-   Route: CORRI3 CORRI · ↑ OTP/38 · (slash/check marks on right of route block)
+   Route: CORRI3 CORRI · ↑ OTP/38 · slash-through R on right of route block (radar mark; not checkmark)
    REQ RLS 2303 · RLS TIME 03 · DEPT TIME 05
 4) IFR VFR-ON-TOP RWY3 - CORRI — ATLAS22 · H/H1/P · 4540 · P2300 · OTP/38 · NFG
-   Route: CORRI3 CORRI · ↑ OTP/38 · (slash/check marks)
+   Route: CORRI3 CORRI · ↑ OTP/38 · slash-through R on right of route block
    REQ RLS 2303 · RLS TIME 05 · DEPT TIME 05
 
 ==============================================================================
@@ -190,3 +190,5 @@ FIG D-3 note — arrival symbol on page image shows NE/entry arrow with SW text 
 2026-09-17 9pm night grind: FIG D-5 multi-GCA stripsRef headers use RADAR ID FIX + TIME AT ID FIX + INBOUND PASSED (not primary PREV/COORD/ETA); dropped blank PREV cell; BOOK duals + sref-rule clarify layouts. App D FIG D-1…D-6 covered; App D-8 still absent from July 2025 PDF body.
 2026-09-17 11pm night grind: stripsRef primary depH/arrH + tower FIG D-1…D-3 MORE headers aligned to App D pub wording (CLEARANCE LIMIT / ROUTE / REMARKS / RADAR CONTACT; PREVIOUS FIX · COORD FIX · ETA AT COORD FIX · INBOUND PASSED; tower INTENTIONS / REMARKS; D-3 ALTITUDE RESTRICTIONS / CLNC ISSUED). Multi-GCA / non-radar unchanged. App D FIG D-1…D-6 covered; App D-8 still absent from July 2025 PDF body.
 2026-09-18 1am night grind: FIG D-2 stripsRef gains REMARKS column (blank on STI76; match p-157). App D FIG D-1…D-6 covered; App D-8 still absent from July 2025 PDF body.
+
+2026-09-18 3am night grind: FIG D-4 CORRI OTP (STI26 RWY21 + ATLAS22 RWY3) route-block mark corrected from invented ✓/ to slash-through R (match p-159). App D FIG D-1…D-6 covered; App D-8 still absent from July 2025 PDF body.
