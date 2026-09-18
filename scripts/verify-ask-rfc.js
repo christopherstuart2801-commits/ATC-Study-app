@@ -525,7 +525,7 @@ ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendi
 ok('App D sref-labels use FIG identity not SAMPLE', /sref-label">FIG D-4 · ATLAS40 IFR DEPARTURE</.test(html) && /sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</.test(html) && !/sref-label">SAMPLE ·/.test(html));
 ok('Home NOAA METAR KNFG', /fetchKnfgMetar/.test(html) && /aviationweather\.gov\/api\/data\/metar/.test(html) && /SAMPLE · offline/.test(html));
 ok('ACAD checkboxes persist localStorage', /vatc\.rfcChk/.test(html) && /data-action="acadcheck"/.test(html) && /loadRfcChk/.test(html));
-ok('statusbar v0.6.6 d5-csfa-alt', /v0\.6\.6 · d5-csfa-alt/.test(html));
+ok('statusbar v0.6.7 d5-multi-hdr', /v0\.6\.7 · d5-multi-hdr/.test(html));
 ok('facmanStripBlock D-5 ALT vs RDR split', html.includes("cell('fps-al','ALTITUDE','<s>50</s> <s>40</s> 24 · '+circ('C')+'7')") && html.includes("cell('fps-rc','RADAR CONTACT / HANDOFF',circ('R'))") && !html.includes("ALTITUDE / SFA"));
 ok('stripsRef D-5 C/SFA with ALTITUDE', html.includes("scell('<s>50</s> <s>40</s> 24 · C7','amb')") && html.includes("scell('Ⓡ','sky')") && html.includes("24 · C3','amb')") && html.includes("scell('Ⓡ/Ⓡ/R','sky')") && !html.includes("C7 · Ⓡ") && !html.includes("C3 · Ⓡ/Ⓡ/R"));
 
@@ -537,6 +537,7 @@ ok('rfcLearn detail progress uses citeRefs.length', /done\}\/\$\{citeRefs\.lengt
 ok('rfcLearn hdr topics use full-width rfc-grid-span', /rfc-grid-span/.test(html));
 ok('FIG D-5 arrH splits ALTITUDE from RADAR CONTACT', /'ALTITUDE','RADAR CONTACT \/ HANDOFF'/.test(html));
 ok('FIG D-5 non-radar splits ALTITUDE from RDR ID STATUS', /'ALTITUDE','RDR ID STATUS'/.test(html));
+ok('FIG D-5 multi-GCA uses RADAR ID FIX + TIME AT ID FIX', /IFR MULTIPLE GCA ARRIVAL[\s\S]{0,400}RADAR ID FIX[\s\S]{0,80}TIME AT ID FIX/.test(html) && !/IFR MULTIPLE GCA ARRIVAL[\s\S]{0,220}heads\(arrH\)/.test(html));
 
 ok('rfcLearn skips hdr rows in progress', /const citeRefs=T\.refs\.filter\(r=>!isHdr\(r\)\)/.test(html) || /citeR=\(t\.refs\|\|\[\]\)\.filter\(r=>!\(r&&r\[2\]==='hdr'\)\)/.test(html));
 ok('cite overview removed from pdf pane', /No excerpt overview/.test(html) && !/<div class="pdfcite">/.test(html));
