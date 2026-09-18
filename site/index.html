@@ -558,7 +558,7 @@
     lcl: TBL_5_1.slice(1).map(r=>vrpCard(r,'lcl')).concat([
       fcCard('crash-phone','Crash phone','Tower Supervisor responsible; Flight Data normally activates. Daily test: five minutes prior to airfield opening. FACMAN 5-1-2.','Airfield','lcl',{doc:'NFG FACMAN July 2025',pg:'5-1-2',pa:'CRASH PHONE',hl:'The Tower Supervisor is responsible for activating the crash phone circuit'}),
       fcCard('fig-d1-twr-ifr','FIG D-1 tower IFR','Dep ATLAS40 · H/UH1Y/P · 4774 · P1900 · 60 · NFG · QUNTN1 QUNTN SKATE NZY · ↑30 · REQ RLS 1900 · RLS 02 · B · DEPT 04 · FLT PLNG CA. Arr STMPD19 · H/B350/L · 2252 · PREV JLI · OCN · 1745 · PAFS · ARR 1812 · RP.','Strip','lcl',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-1 Tower IFR Flight Strips'}),
-      fcCard('fig-d2-twr-vfr','FIG D-2 tower VFR','STI76 · AH1 · P1900 · DEST RIV · TYPE STRIP diagonal V/D box · DEPT 1906 · FLT PLNG CA.','Strip','lcl',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-2 Tower VFR Flight Strip'}),
+      fcCard('fig-d2-twr-vfr','FIG D-2 tower VFR','STI76 · AH1 · P1900 · REMARKS blank · DEST RIV · TYPE STRIP diagonal V/D box · DEPT 1906 · FLT PLNG CA.','Strip','lcl',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-2 Tower VFR Flight Strip'}),
       fcCard('fig-d3-twr-svfr','FIG D-3 tower SVFR','Dep STI76 · H/SUCO · SW + ↓15 · B · 1752 · EXIT CLASS D 1759. Arr ATL40 · H/UH1Y · SW/entry + ↓15 · B · 1936 · ARR 1945. Pattern ATL40 · circled W + ↓15 · B · 1658 · 1741. SVFR abbrevs TBL 5-5.','Strip','lcl',{doc:'NFG FACMAN July 2025',pg:'Appendix D',pa:'FIG D-3 Tower Special VFR Flight Strips'})
     ]),
     rfd:[
@@ -2574,7 +2574,7 @@
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.6.7 · d5-multi-hdr</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.6.8 · fig-d2-remarks</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -2869,8 +2869,8 @@ function vidsStrip(){
     const row=(name,cls,what,ex,tag)=>`<tr><td><div class="fname${cls?' '+cls:''}">${name}</div></td><td class="fwhat">${what}${ex?`<div class="fex">${ex}</div>`:''}</td><td>${tag}</td></tr>`;
     const scell=(v,cls='')=>`<div class="sref-cell"><div class="val${cls?' '+cls:''}">${v}</div></div>`;
     const heads=hs=>hs.map(h=>`<div class="sref-cell head">${h}</div>`).join('');
-    const depH=['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE / REMARKS / RDR','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME'];
-    const arrH=['CALLSIGN','TYPE/EQPT','CODE','PREV FIX','COORD FIX','ETA','ACTUAL IFR','INBD','ALTITUDE','RADAR CONTACT / HANDOFF','TYPE APCH','INTENT','BAY'];
+    const depH=['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','CLEARANCE LIMIT / ROUTE / REMARKS / RADAR CONTACT','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME'];
+    const arrH=['CALLSIGN','TYPE/EQPT','CODE','PREVIOUS FIX','COORD FIX','ETA AT COORD FIX','ACTUAL IFR','INBOUND PASSED','ALTITUDE','RADAR CONTACT / HANDOFF','TYPE APCH','INTENT','BAY'];
     const more=`<details class="sref-more pos-acads"><summary>MORE · OTP · multi-GCA · tower D-1…D-3 · FIG D-6</summary>
       <div class="sref-label">FIG D-4 · ATLAS22 IFR EAST LOCAL VFR-ON-TOP — VISTA</div>
       <div class="sref-mock"><div class="sref-row">${heads(depH)}</div>
@@ -2888,31 +2888,31 @@ function vidsStrip(){
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','FREQ','RADAR ID FIX','TIME AT ID FIX','INBOUND TO TOWER','ALTITUDE','RDR ID STATUS','TYPE APCH','INTENT','BAY'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4534','pur')}${scell('Ⓒ4','sky')}${scell('L18 3N')}${scell('2022','amb')}${scell('✓')}${scell('<s>50</s> <s>40</s> 28','amb')}${scell('CU/42 · 1910/1915 · <span class="fps-slash">Ⓡ</span>','amb')}${scell('<s>PA</s> TZ')}${scell('FS')}${scell('1')}</div></div>
       <div class="sref-label">FIG D-1 · ATLAS40 IFR DEPARTURE</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','CLEARANCE LIMIT / ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/UH1Y/P','sky')}${scell('4774','pur')}${scell('P1900','amb')}${scell('60','amb')}${scell('NFG')}${scell('NFG QUNTN1 QUNTN SKATE NZY · ↑30')}${scell('1900')}${scell('02')}${scell('B','sky')}${scell('04','amb')}${scell('CA')}</div></div>
       <div class="sref-label">FIG D-1 · STMPD19 IFR ARRIVAL</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','PREV','COORD','ETA','INTENTIONS','ARR TIME','FLT PLNG'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','PREVIOUS FIX','COORD FIX','ETA AT COORD FIX','INTENTIONS / REMARKS','ARR TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('STMPD19')}${scell('H/B350/L','sky')}${scell('2252','pur')}${scell('JLI')}${scell('OCN')}${scell('1745','amb')}${scell('PAFS')}${scell('1812','amb')}${scell('RP')}</div></div>
       <div class="sref-label">FIG D-2 · STI76 VFR DEPARTURE</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','P-TIME','DEST','TYPE STRIP','DEPT TIME','FLT PLNG'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('STI76')}${scell('AH1','sky')}${scell('P1900','amb')}${scell('RIV')}${scell('<span class="fps-vd" title="VFR Departure"><b>V</b><i></i><b>D</b></span>','pur')}${scell('1906','amb')}${scell('CA')}</div></div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','P-TIME','REMARKS','DEST','TYPE STRIP','DEPT TIME','FLT PLNG'])}</div>
+        <div class="sref-row" style="margin-top:1px">${scell('STI76')}${scell('AH1','sky')}${scell('P1900','amb')}${scell('')}${scell('RIV')}${scell('<span class="fps-vd" title="VFR Departure"><b>V</b><i></i><b>D</b></span>','pur')}${scell('1906','amb')}${scell('CA')}</div></div>
       <div class="sref-label">FIG D-3 · STI76 SVFR DEPARTURE</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','DEPARTURE ROUTE / ALT / REMARKS','CLNC','INITIAL CONTACT','EXIT CLASS D'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','DEPARTURE ROUTE / ALTITUDE RESTRICTIONS / REMARKS','CLNC ISSUED','INITIAL CONTACT','EXIT CLASS D'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('STI76')}${scell('H/SUCO','sky')}${scell('SW · ↓15')}${scell('B','sky')}${scell('1752','amb')}${scell('1759','amb')}</div></div>
       <div class="sref-label">FIG D-3 · ATL40 SVFR ARRIVAL</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','ENTRY ROUTE / ALT / REMARKS','CLNC','INITIAL CONTACT','ARR TIME'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','ENTRY ROUTE / ALTITUDE RESTRICTIONS / REMARKS','CLNC ISSUED','INITIAL CONTACT','ARR TIME'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATL40')}${scell('H/UH1Y','sky')}${scell('SW/entry · ↓15')}${scell('B','sky')}${scell('1936','amb')}${scell('1945','amb')}</div></div>
       <div class="sref-label">FIG D-3 · ATL40 SVFR PATTERN</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','LOCAL SVFR / ALT','CLNC','INITIAL CONTACT','ARR TIME'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','LOCAL SVFR SYMBOL / ALTITUDE RESTRICTIONS','CLNC ISSUED','INITIAL CONTACT','ARR TIME'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATL40')}${scell('H/UH1Y','sky')}${scell('ⒸW · ↓15')}${scell('B','sky')}${scell('1658','amb')}${scell('1741','amb')}</div></div>
       <div class="sref-label">FIG D-1 · ATLAS22 IFR EAST LOCAL VFR-ON-TOP — VISTA</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','CLEARANCE LIMIT / ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('ATLAS22')}${scell('H/SUCO/P','sky')}${scell('7252','pur')}${scell('P2300','amb')}${scell('OTP/40','amb')}${scell('NFG')}${scell('NFG BLDG2 VISTA · ↑OTP/40')}${scell('2303')}${scell('05')}${scell('B','sky')}${scell('05','amb')}${scell('RP')}</div></div>
       <div class="sref-label">FIG D-1 · SWIFT13 IFR LIMA VFR-ON-TOP RWY21 — CORRI</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','CLEARANCE LIMIT / ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('SWIFT13')}${scell('G/V22/I','sky')}${scell('4540','pur')}${scell('P1600','amb')}${scell('OTP/38','amb')}${scell('NFG')}${scell('NFG CORRI3 CORRI · ↑OTP/38')}${scell('1558')}${scell('1601')}${scell('B','sky')}${scell('02','amb')}${scell('RP')}</div></div>
       <div class="sref-label">FIG D-1 · SWIFT22 IFR LIMA VFR-ON-TOP RWY3 — CORRI</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
+      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','CLEARANCE LIMIT / ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
         <div class="sref-row" style="margin-top:1px">${scell('SWIFT22')}${scell('G/V22/I','sky')}${scell('4543','pur')}${scell('P1730','amb')}${scell('OTP/38','amb')}${scell('NFG')}${scell('NFG CORRI3 CORRI · ↑OTP/38')}${scell('1732')}${scell('35')}${scell('B','sky')}${scell('37','amb')}${scell('RP')}</div></div>
       <div class="sref-label">FIG D-6 · N23485 OVERFLIGHT</div>
       <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','CODE','RADAR ID FIX','TIME AT ID FIX','ROUTE THROUGH LIMA AIRSPACE / ALT','HANDOFF FACILITY','HANDOFF TIME'])}</div>
@@ -2941,7 +2941,7 @@ function vidsStrip(){
       <table class="sref-table"><tr><th>FIELD (FIG D-4)</th><th>WHAT GOES HERE</th><th>TAG</th></tr>
         ${row('CALLSIGN / TYPE / CODE','','Blk1 callsign; Blk3 type/eqpt (+CWT); Blk5 beacon.','ATLAS40 · H/H1/P · 4774',ftag('req','6-1-10'))}
         ${row('P-TIME / REQ ALT / DEPT POINT','amb','Blk6 proposed departure time; Blk7 requested altitude; DEPT POINT (NFG unless other).','P1900 · 50 · NFG',ftag('req','6-1-10'))}
-        ${row('ROUTE / REMARKS / RDR','','Blk9 clearance limit, route, altitude, remarks; radar contact/handoff symbol if req.','NFG BLDG2 VISTA… · ↑40 · circled R',ftag('req','FIG D-4'))}
+        ${row('CLEARANCE LIMIT / ROUTE / REMARKS / RADAR CONTACT','','Blk9 clearance limit, route, altitude, remarks; radar contact/handoff symbol if req.','NFG BLDG2 VISTA… · ↑40 · circled R',ftag('req','FIG D-4'))}
         ${row('REQ RLS / RLS TIME / CLNC ISSUED / DEPT TIME','amb','Blk13 release requested; Blk14 actual release; Blk12 B when clearance broadcast; Blk15 departure time.','1900 · 02 · B · 04',ftag('ann','6-1-10'))}
       </table>
 
@@ -2952,8 +2952,8 @@ function vidsStrip(){
       <div class="sref-mock"><div class="sref-row">${heads(arrH)}</div>
         <div class="sref-row" style="margin-top:1px">${scell('STMPD19')}${scell('I/B350/L','sky')}${scell('2252','pur')}${scell('SXC')}${scell('OCN')}${scell('1745','amb')}${scell('I','sky')}${scell('✓')}${scell('<s>50</s> <s>40</s> 24 · C7','amb')}${scell('Ⓡ','sky')}${scell('TZ')}${scell('FS')}${scell('1')}</div></div>
       <table class="sref-table"><tr><th>FIELD (FIG D-5)</th><th>WHAT GOES HERE</th><th>TAG</th></tr>
-        ${row('PREV / COORD / ETA','','Blk6 previous fix; Blk7 coordination fix; ETA at coord fix.','SXC · OCN · 1745',ftag('req','6-1-10'))}
-        ${row('ACTUAL IFR / INBOUND','sky','I in box 8 for IFR/IMC approaches; checkmark when inbound passed to tower.','I · ✓',ftag('ann','FIG D-5'))}
+        ${row('PREVIOUS FIX / COORD FIX / ETA AT COORD FIX','','Blk6 previous fix; Blk7 coordination fix; ETA at coord fix.','SXC · OCN · 1745',ftag('req','6-1-10'))}
+        ${row('ACTUAL IFR / INBOUND PASSED','sky','I in box 8 for IFR/IMC approaches; checkmark when inbound passed to tower.','I · ✓',ftag('ann','FIG D-5'))}
         ${row('ALTITUDE','amb','Blk9 altitude (hundreds); strike as cleared lower; C/SFA with altitude once checked in.','<s>50</s> <s>40</s> 24 · C7',ftag('req','FIG D-5'))}
         ${row('RADAR CONTACT / HANDOFF','sky','Circled R for radar contact/handoff (C/SFA stays with altitudes).','circled R',ftag('ann','FIG D-5'))}
         ${row('TYPE APCH / INTENT / BAY','','Blk10 type apch (checkmark through once cleared); Blk11 intentions; Blk12 bay.','TZ · FS · 1 (figure; checkmark through once cleared)',ftag('ann','FIG D-5'))}
