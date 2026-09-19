@@ -1941,7 +1941,7 @@
       '5-1':51,'5-3':51,'5-4':51,'5-5':51,'5-6':51,'5-7':51,'6-1':80,'6-1-10':82,'6-1-11':85,'6-3':86,'8-1':111,'8-2':111,'8-3':111,'8-4':111,'8-5':111,'C-1':135,'C-2':136,'C-3':136,
       'TBL 5-1':51,'TBL 5-3':51,'TBL 5-4':51,'TBL 5-5':51,'TBL 5-6':51,'TBL 5-7':51,'TBL 6-1':80,'TBL 6-2':80,'TBL 6-3':86,'TBL 6-4':97,'TBL 8-1':111,'TBL 8-2':111,'TBL 8-3':111,'TBL 8-4':111,'TBL 8-5':111,'TBL C-1':135,'TBL C-2':136,'TBL C-3':136,
       'FIG D-1':156,'FIG D-2':157,'FIG D-3':158,'FIG D-4':159,'FIG D-5':160,'FIG D-6':161,'Appendix D':155,'Appendix C':135},
-    jo:{1:25,2:37,3:121,4:213,5:279,6:379,7:411,8:443,
+    jo:{1:25,2:37,3:121,4:213,5:279,6:379,7:411,8:443,'PCG':577,
       '2-3-3':37,'2-3-4':37,'2-3-5':37,'2-3-10':37,'2-3-11':37,'2-3-12':37,'2-4-1':37,'5-9-1':279,
       'TBL 2-3-3':37,'TBL 2-3-4':37,'TBL 2-3-5':37,'TBL 2-3-10':37,'TBL 2-3-11':37,'TBL 2-3-12':37,'TBL 2-4-1':37,'TBL 5-9-1':279}
   };
@@ -1965,6 +1965,8 @@
     if(secM){
       if(/TBL|FIG/i.test(raw)) sec=raw.replace(/^.*?\b((?:TBL|FIG)\s*[A-Z]?-?\d+(?:-\d+)*)\b.*/i,'$1').replace(/\s+/g,' ').trim();
       else sec=[secM[1],secM[2]].concat(secM[3]?[secM[3]]:[]).join('-');
+    } else if(/\bPCG\b/i.test(raw)){
+      sec='PCG';
     }
     if(!pub){
       if(b && /FACMAN|NFG/i.test(b.doc||'')) pub='facman';
@@ -1978,10 +1980,14 @@
     let raw=String(sec||'').replace(/[−–—]/g,'-').replace(/\s+/g,' ').trim();
     if(!raw) return 1;
     const keys=Object.keys(map).map(String).sort((a,b)=>b.length-a.length);
-    // Prefer exact TBL/FIG keys before stripping
+    // Prefer exact TBL/FIG/PCG keys before stripping
     for(const k of keys){ if(raw.toUpperCase()===k.toUpperCase()) return map[k]; }
+    const secIsTblFig=/^(?:TBL|FIG)\b/i.test(raw);
     let s=raw.replace(/^(?:TBL|FIG)\s+/i,'');
     for(const k of keys){
+      const kIsTblFig=/^(?:TBL|FIG)\b/i.test(k);
+      // Do not let TBL 6-2 steal section 6-2-7 (or FIG steal bare section nums)
+      if(kIsTblFig!==secIsTblFig) continue;
       const kk=k.replace(/^(?:TBL|FIG)\s+/i,'');
       if(s===k || s===kk || s.indexOf(kk+'-')===0 || s.indexOf(k+'-')===0) return map[k];
     }
@@ -2328,7 +2334,7 @@
       <div class="fps-cite">${btn('FACMAN 6-1-10','Flight Progress Strips','6-1-10. FLIGHT PROGRESS STRIPS')} · ${btn('FACMAN 5-1-10','Strip Marking Procedures','5-1-10. STRIP MARKING PROCEDURES')} · JO ${btn('7110.65 2-3-1','General (strips)','2-3-1. GENERAL')} / ${btn('7110.65 2-3-4','Terminal Data Entries','2-3-4. TERMINAL DATA ENTRIES')} / ${btn('7110.65 2-3-10','Control Symbology','2-3-10. CONTROL SYMBOLOGY')}</div>
       <div class="fps-sub">3 · Pub examples (open the figure pages)</div>
       <div class="fps-cite">${btn('FACMAN FIG D-4','Radar Departure Strips','FIG D-4')} · ${btn('FACMAN FIG D-5','Radar Arrival Strips','FIG D-5')} · ${btn('FACMAN FIG D-6','Other Radar Strips','FIG D-6')} — learn marks from the PDF. BACK returns here.</div>
-      <div class="fps-note">Order: 6-1-11 / TBL 6-3 → fill rules → FIG D-4/D-5. Do not memorize App D mocks.</div>
+      <div class="fps-note">Order: 6-1-11 / TBL 6-3 → fill rules → FIG D-4/D-5/D-6. Open the pubs — no App D mock grind.</div>
     </div>`;
   }
   function acadChipRow(){
@@ -2564,7 +2570,7 @@
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.7.1 · cite-strip-learn</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.7.2 · cite-page-fix</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
