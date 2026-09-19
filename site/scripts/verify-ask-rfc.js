@@ -499,7 +499,12 @@ ok('ASK has TBL 6-3 radar strip abbrev alias', /TBL\\s\*6-3/.test(aliases) && /r
 ok('Academics action or acad handler', /data-action="acads"/.test(html) || /if\(a==='acad'\)/.test(html));
 ok('acads jumps to fin learn', /if\(a==='acads'\)return set\(\{pos:'fin',tab:'learn',learnMode:'acad'/.test(html));
 ok('cite step next/prev', /function\s+stepLearnCite\s*\(/.test(html) && /data-action="citenext"/.test(html) && /data-action="citeprev"/.test(html));
-ok('learnReturn stores cite', /learnReturn:\{pos:S\.pos, rfcTopic:S\.rfcTopic, cite:/.test(html) || /cite:String\(cite\|\|''\)/.test(html));
+ok('learnReturn stores cite', /learnReturn:\{pos:S\.pos, rfcTopic:S\.rfcTopic, cite:/.test(html) || /cite:String\(cite\|\|''\)/.test(html) || /cite:rawCite/.test(html));
+ok('acadTopicRefs skips hdr for section step', /refs=T\.refs\.filter\(r=>!\(r && r\[2\]==='hdr'\)\)/.test(html) || /r\[2\]==='hdr'\)\)/.test(html));
+ok('openLearnCite rejects ACAD- hdr cites', /\^ACAD-/i.test(html) || /\/\^ACAD-/i.test(html));
+ok('citestep shows cite label', /citestep-lab/.test(html));
+ok('PUB map TBL 6-3 p86 / 6-1-11 p85 / TBL C-2 p136', /'TBL 6-3':86/.test(html) && /'6-1-11':85/.test(html) && /'TBL C-2':136/.test(html));
+ok('strip learning cite-first 6-1-11', /Strip learning · ACAD-0522/.test(html) && /data-cite=\"FACMAN 6-1-11\"/.test(html));
 ok('syllabusFor helper', /function\s+syllabusFor\s*\(/.test(html));
 ok('acadChipRow uses syllabusFor', /function acadChipRow\(\)\{[\s\S]{0,120}syllabusFor\(S\.pos\)/.test(html));
 ok('syllabusFor no Final stand-in', /return \{list:own, demo:false, src:k\}/.test(html) && !/Radar Final as SAMPLE stand-in/.test(html));
@@ -525,7 +530,8 @@ ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendi
 ok('App D sref-labels use FIG identity not SAMPLE', /sref-label">FIG D-4 · ATLAS40 IFR DEPARTURE</.test(html) && /sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</.test(html) && !/sref-label">SAMPLE ·/.test(html));
 ok('Home NOAA METAR KNFG', /fetchKnfgMetar/.test(html) && /aviationweather\.gov\/api\/data\/metar/.test(html) && /SAMPLE · offline/.test(html));
 ok('ACAD checkboxes persist localStorage', /vatc\.rfcChk/.test(html) && /data-action="acadcheck"/.test(html) && /loadRfcChk/.test(html));
-ok('statusbar v0.6.8 fig-d2-remarks', /v0\.6\.8 · fig-d2-remarks/.test(html));
+ok('statusbar v0.7 acad-cites', /v0\.7 · acad-cites/.test(html));
+ok('FIG D-4 CORRI OTP slash-through R not checkmark', html.includes("CORRI3 CORRI · ↑OTP/38 · <span class=\"fps-slash\">R</span>") && html.split("CORRI3 CORRI · ↑OTP/38 · <span class=\"fps-slash\">R</span>").length-1===2 && !html.includes('↑OTP/38 · ✓/'));
 ok('facmanStripBlock D-5 ALT vs RDR split', html.includes("cell('fps-al','ALTITUDE','<s>50</s> <s>40</s> 24 · '+circ('C')+'7')") && html.includes("cell('fps-rc','RADAR CONTACT / HANDOFF',circ('R'))") && !html.includes("ALTITUDE / SFA"));
 ok('stripsRef D-5 C/SFA with ALTITUDE', html.includes("scell('<s>50</s> <s>40</s> 24 · C7','amb')") && html.includes("scell('Ⓡ','sky')") && html.includes("24 · C3','amb')") && html.includes("scell('Ⓡ/Ⓡ/R','sky')") && !html.includes("C7 · Ⓡ") && !html.includes("C3 · Ⓡ/Ⓡ/R"));
 
