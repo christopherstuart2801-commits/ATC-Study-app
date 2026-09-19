@@ -23,6 +23,13 @@ ok('pdfFind skips front-matter first jump', /i>=floor/.test(html) && /do not jum
 ok('study mark chrome removed (PDF is book)', !/data-action="markhl"/.test(html) && !/<div class="pdfcite">/.test(html));
 ok('ACAD packets use shared needle path comment', /Future ACAD cite opens MUST/.test(html));
 
+ok('citePubAndSec blocks 00-80T as non-JO', /00-80T[\s\S]{0,120}pub:null/.test(html) || /NAVAIR 00-80T[\s\S]{0,200}pub:null/.test(html));
+ok('openLearnCite refuses missing pubs', /book\.missing[\s\S]{0,200}learnBlockedNote/.test(html) || /learnBlockedNote:rawCite/.test(html));
+ok('Learn cite PDF hides FIND UI', /Learn ACAD cite: clean PDF-only/.test(html) && /learnCite\?''/.test(html) || /hiddenFind/.test(html));
+ok('ACAD-0522 strip learning cite-first (no fps-dep mock)', /ACAD-0522 · strip learning \(cite-first\)/.test(html) && !/fps fps-dep/.test(html));
+ok('Topic4 strip details open by default', /fps-acad" open>/.test(html) || /fps-acad" open /.test(html));
+
+
 ok('askHits function exists', /function\s+askHits\s*\(/.test(html));
 ok('BOOK embedded', /const BOOK=\{/.test(html) && /"FACMAN 6-3-6"/.test(html));
 ok('How to pass a bay chip kept', /ASK_CHIPS=\[[^\]]*How to pass a bay/.test(html));
@@ -504,7 +511,7 @@ ok('acadTopicRefs skips hdr for section step', /refs=T\.refs\.filter\(r=>!\(r &&
 ok('openLearnCite rejects ACAD- hdr cites', /\^ACAD-/i.test(html) || /\/\^ACAD-/i.test(html));
 ok('citestep shows cite label', /citestep-lab/.test(html));
 ok('PUB map TBL 6-3 p86 / 6-1-11 p85 / TBL C-2 p136', /'TBL 6-3':86/.test(html) && /'6-1-11':85/.test(html) && /'TBL C-2':136/.test(html));
-ok('strip learning cite-first 6-1-11', /Strip learning · ACAD-0522/.test(html) && /data-cite=\"FACMAN 6-1-11\"/.test(html));
+ok('strip learning cite-first 6-1-11', /ACAD-0522 · strip learning/.test(html) && /btn\('FACMAN 6-1-11'/.test(html) && /btn\('FACMAN TBL 6-3'/.test(html));
 ok('syllabusFor helper', /function\s+syllabusFor\s*\(/.test(html));
 ok('acadChipRow uses syllabusFor', /function acadChipRow\(\)\{[\s\S]{0,120}syllabusFor\(S\.pos\)/.test(html));
 ok('syllabusFor no Final stand-in', /return \{list:own, demo:false, src:k\}/.test(html) && !/Radar Final as SAMPLE stand-in/.test(html));
@@ -530,9 +537,9 @@ ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendi
 ok('App D sref-labels use FIG identity not SAMPLE', /sref-label">FIG D-4 · ATLAS40 IFR DEPARTURE</.test(html) && /sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</.test(html) && !/sref-label">SAMPLE ·/.test(html));
 ok('Home NOAA METAR KNFG', /fetchKnfgMetar/.test(html) && /aviationweather\.gov\/api\/data\/metar/.test(html) && /SAMPLE · offline/.test(html));
 ok('ACAD checkboxes persist localStorage', /vatc\.rfcChk/.test(html) && /data-action="acadcheck"/.test(html) && /loadRfcChk/.test(html));
-ok('statusbar v0.7 acad-cites', /v0\.7 · acad-cites/.test(html));
+ok('statusbar v0.7.1 cite-strip-learn', /v0\.7\.1 · cite-strip-learn/.test(html));
 ok('FIG D-4 CORRI OTP slash-through R not checkmark', html.includes("CORRI3 CORRI · ↑OTP/38 · <span class=\"fps-slash\">R</span>") && html.split("CORRI3 CORRI · ↑OTP/38 · <span class=\"fps-slash\">R</span>").length-1===2 && !html.includes('↑OTP/38 · ✓/'));
-ok('facmanStripBlock D-5 ALT vs RDR split', html.includes("cell('fps-al','ALTITUDE','<s>50</s> <s>40</s> 24 · '+circ('C')+'7')") && html.includes("cell('fps-rc','RADAR CONTACT / HANDOFF',circ('R'))") && !html.includes("ALTITUDE / SFA"));
+ok('facmanStripBlock cite-first no App D mock grid', /6-1-11\. ABBREVIATIONS/.test(html) && /FIG D-4/.test(html) && !/fps fps-dep/.test(html) && !/fps fps-arr/.test(html));
 ok('stripsRef D-5 C/SFA with ALTITUDE', html.includes("scell('<s>50</s> <s>40</s> 24 · C7','amb')") && html.includes("scell('Ⓡ','sky')") && html.includes("24 · C3','amb')") && html.includes("scell('Ⓡ/Ⓡ/R','sky')") && !html.includes("C7 · Ⓡ") && !html.includes("C3 · Ⓡ/Ⓡ/R"));
 
 ok('T4 refs have ACAD-0521/0522 hdr sections', /ACAD-0521","Aircraft movement data","hdr"/.test(html) && /ACAD-0522","Flight progress strips","hdr"/.test(html));

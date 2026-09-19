@@ -1948,6 +1948,11 @@
   function citePubAndSec(cite){
     const raw=String(cite||'').trim().replace(/[−–—]/g,'-');
     let pub=null;
+    // NAVAIR 00-80T / 00-80T-114 — not FACMAN/JO; do not parse "00-80" as a JO section
+    if(/^00-80T\b/i.test(raw) || /\b00-80T(?:-\d+)?\b/i.test(raw)){
+      const bMiss=bookResolve(raw);
+      return {raw, pub:null, sec:'', book:bMiss};
+    }
     if(/^FACMAN\b/i.test(raw) || /^NFG\b/i.test(raw)) pub='facman';
     else if(/7110/.test(raw) || /^JO\b/i.test(raw)) pub='jo';
     else if(/3500\.39/i.test(raw)) pub='orm';
@@ -2108,17 +2113,22 @@
     // Paper ACAD section headers are not publication cites — stay on checklist
     if(!rawCite || /^ACAD-/i.test(rawCite)) return;
     const info=citePubAndSec(rawCite);
-    let pub=info.pub||'facman';
+    // Missing / blocked pubs (00-80T, 00-80T-114, etc.): never open wrong JO/FACMAN p.1
+    if(!info.pub || (info.book && info.book.missing)){
+      const why=(info.book && info.book.note) ? info.book.note : 'Pub PDF not loaded in app — blocked until paper lands.';
+      resetCitePdfFind();
+      return set({tab:'learn', learnMode:'acad', pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', pubPreferPage:0, pubCiteSec:'', learnReturn:null, learnBlockedNote:rawCite+' — '+why, lkFocus:false, refQ:''});
+    }
+    let pub=info.pub;
     // Always re-resolve mapped page from chapter/section map (BOOK.pg is section id; PUB_CH_PAGES is PDF page).
     const page=pageForCite(pub, info.sec);
     const needle=resolveCiteNeedle({cite:rawCite, book:info.book, title:opts.title, needle:needleForCite(rawCite, opts.title)}).needle || needleForCite(rawCite, opts.title);
     const ban=citeBannerFromBook(info.book, rawCite, opts.title);
     let guessNote='';
-    if(!info.pub){ guessNote='Opened '+(pub==='jo'?'7110.65':'FACMAN')+' (best guess) — refine with Find if needed.'; }
     const lr={pos:S.pos, rfcTopic:S.rfcTopic, cite:rawCite};
     // Every checklist cite click: clear stale Find hits / in-flight scan so 2nd+ cites re-jump.
     resetCitePdfFind();
-    set({tab:'learn', learnMode:'acad', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:ban.lab, pubCiteQuote:ban.quote, pubPreferPage:page, pubCiteSec:info.sec||'', learnReturn:lr, lkFocus:false, refQ:''});
+    set({tab:'learn', learnMode:'acad', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:ban.lab, pubCiteQuote:ban.quote, pubPreferPage:page, pubCiteSec:info.sec||'', learnReturn:lr, learnBlockedNote:'', lkFocus:false, refQ:''});
   }
   function acadTopicRefs(pos, topicN){
     const pack=syllabusFor(pos);
@@ -2147,7 +2157,7 @@
   function leavePdfToLearn(){
     const lr=S.learnReturn;
     resetCitePdfFind();
-    return set({tab:'learn', pos:lr.pos, rfcTopic:lr.rfcTopic, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', pubPreferPage:0, pubCiteSec:'', learnReturn:null, refQ:''});
+    return set({tab:'learn', pos:lr.pos, rfcTopic:lr.rfcTopic, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', pubPreferPage:0, pubCiteSec:'', learnReturn:null, learnBlockedNote:'', refQ:''});
   }
 
   const STUDY_MARKS_KEY='vatc.studymarks';
@@ -2308,45 +2318,17 @@
 
 
   function facmanStripBlock(){
-    const cell=(cls,lab,val)=>`<div class="fps-c ${cls}"><span class="lb">${lab}</span><span class="vl">${val}</span></div>`;
-    const circ=s=>`<span class="fps-circ">${s}</span>`;
-    const dep=[
-      cell('fps-cs','CALLSIGN','ATLAS40'),
-      cell('fps-ty','TYPE / EQPT','H/H1/P'),
-      cell('fps-cd','CODE','4774'),
-      cell('fps-pt','P-TIME','P1900'),
-      cell('fps-ra','REQ ALT','50'),
-      cell('fps-dp','DEPT POINT','NFG'),
-      cell('fps-rt','CLEARANCE LIMIT / ROUTE / REMARKS / RADAR CONTACT','NFG BLDG2 VISTA V458 BONDO<br>NKX<br>↑40 '+circ('R')),
-      cell('fps-rr','REQ RLS','1900'),
-      cell('fps-rl','RLS TIME','02'),
-      cell('fps-ci','CLNC ISSUED','B'),
-      cell('fps-dt','DEPT TIME','04')
-    ].join('');
-    const arr=[
-      cell('fps-cs','CALLSIGN','STMPD19'),
-      cell('fps-ty','TYPE / EQPT','I/B350/L'),
-      cell('fps-cd','CODE','2252'),
-      cell('fps-pf','PREVIOUS FIX','SXC'),
-      cell('fps-cf','COORD FIX','OCN'),
-      cell('fps-et','ETA AT COORD FIX','1745'),
-      cell('fps-ai','ACTUAL IFR','I'),
-      cell('fps-ib','INBOUND PASSED','✓'),
-      cell('fps-al','ALTITUDE','<s>50</s> <s>40</s> 24 · '+circ('C')+'7'),
-      cell('fps-rc','RADAR CONTACT / HANDOFF',circ('R')),
-      cell('fps-ap','TYPE APCH','TZ'),
-      cell('fps-it','INTENT','FS'),
-      cell('fps-by','BAY','1')
-    ].join('');
+    const btn=(cite,title,lab)=>`<button type="button" class="btn-ghost" data-action="rfcref" data-cite="${cite}" data-title="${title}" data-k="4:${cite}">${lab}</button>`;
+    // Cite-first strip LEARNING (ACAD-0522) — open real pubs; no App D mock grind
     return `<div class="fps-block">
-      <div class="fps-h">Strip learning · ACAD-0522</div>
-      <div class="fps-cite">Start at the pub: <button type="button" class="btn-ghost" data-action="rfcref" data-cite="FACMAN 6-1-11" data-title="Abbreviations" data-k="4:FACMAN 6-1-11">FACMAN 6-1-11</button> → <button type="button" class="btn-ghost" data-action="rfcref" data-cite="FACMAN TBL 6-3" data-title="Abbreviations" data-k="4:FACMAN TBL 6-3">TBL 6-3</button> (radar marks). Fill rules <button type="button" class="btn-ghost" data-action="rfcref" data-cite="FACMAN 6-1-10" data-title="Flight Progress Strips" data-k="4:FACMAN 6-1-10">6-1-10</button> / <button type="button" class="btn-ghost" data-action="rfcref" data-cite="FACMAN 5-1-10" data-title="Strip Marking Procedures" data-k="4:FACMAN 5-1-10">5-1-10</button>. Examples below = FIG D-4 / D-5 primary.</div>
-      <div class="fps-sub">FIG D-4 · radar departure</div>
-      <div class="fps-wrap"><div class="fps fps-dep">${dep}</div></div>
-      <div class="fps-note">FIG D-4: altitude in Blk9 when handwritten. Open FIG D-4 from the checklist for the full pub page.</div>
-      <div class="fps-sub">FIG D-5 · radar arrival</div>
-      <div class="fps-wrap"><div class="fps fps-arr">${arr}</div></div>
-      <div class="fps-note">FIG D-5: TZ in TYPE APCH; I = IFR; C around SFA once checked in. More examples → Reference STRIPS.</div>
+      <div class="fps-h">ACAD-0522 · strip learning (cite-first)</div>
+      <div class="fps-sub">1 · Radar abbreviations — start here</div>
+      <div class="fps-cite">${btn('FACMAN 6-1-11','Abbreviations','6-1-11. ABBREVIATIONS')} → ${btn('FACMAN TBL 6-3','Abbreviations','TBL 6-3')} — local radar marks used with JO 7110.65 contractions.</div>
+      <div class="fps-sub">2 · Fill / mark rules</div>
+      <div class="fps-cite">${btn('FACMAN 6-1-10','Flight Progress Strips','6-1-10. FLIGHT PROGRESS STRIPS')} · ${btn('FACMAN 5-1-10','Strip Marking Procedures','5-1-10. STRIP MARKING PROCEDURES')} · JO ${btn('7110.65 2-3-1','General (strips)','2-3-1. GENERAL')} / ${btn('7110.65 2-3-4','Terminal Data Entries','2-3-4. TERMINAL DATA ENTRIES')} / ${btn('7110.65 2-3-10','Control Symbology','2-3-10. CONTROL SYMBOLOGY')}</div>
+      <div class="fps-sub">3 · Pub examples (open the figure pages)</div>
+      <div class="fps-cite">${btn('FACMAN FIG D-4','Radar Departure Strips','FIG D-4')} · ${btn('FACMAN FIG D-5','Radar Arrival Strips','FIG D-5')} · ${btn('FACMAN FIG D-6','Other Radar Strips','FIG D-6')} — learn marks from the PDF. BACK returns here.</div>
+      <div class="fps-note">Order: 6-1-11 / TBL 6-3 → fill rules → FIG D-4/D-5. Do not memorize App D mocks.</div>
     </div>`;
   }
   function acadChipRow(){
@@ -2392,8 +2374,9 @@
     return `${demoBanner}<div class="lesson"><div class="lh"><div class="lt"><span class="rfc-n">${T.n}</span> <span class="rfc-acad">${T.id}</span><span class="muted rfc-prog">${done}/${citeRefs.length}</span><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button></div><button class="mc" data-action="rfclist">Topics</button></div>
         <div class="rfc-tt rfc-tt-slim">${T.full}</div>
         <div class="muted" style="font-size:10px;margin:0 0 8px;line-height:1.35">${T.req}</div>
+        ${S.learnBlockedNote?`<div class="pill warn" style="margin:0 0 8px">${escTxt(S.learnBlockedNote)}</div>`:''}
         <div class="rfc-grid rfc-grid-dense">${T.refs.some(isHdr)?`<div class="rfc-grid-span">${col(T.refs)}</div>`:`<div>${col(citeRefs.slice(0,mid))}</div><div>${col(citeRefs.slice(mid))}</div>`}</div>
-        ${T.n===4?`<details class="pos-acads fps-acad"><summary>Strip learning · open 6-1-11 / TBL 6-3 first</summary>${facmanStripBlock()}</details>`:''}
+        ${T.n===4?`<details class="pos-acads fps-acad" open><summary>Strip learning · ACAD-0522 · open 6-1-11 / TBL 6-3 first</summary>${facmanStripBlock()}</details>`:''}
         <div class="navrow"><span></span><button class="btn" data-action="rfctest" data-n="${T.n}">TEST ${T.n} ${I.arrow}</button></div>
       </div>`;
   }
@@ -2581,7 +2564,7 @@
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.7 · acad-cites</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.7.1 · cite-strip-learn</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -3105,9 +3088,10 @@ function pdfPaneHTML(){
     const p=PUBS.find(x=>x.id===S.pub)||PUBS[0];
     const guess=(S.pubGuessNote?`<div class="note">${escTxt(S.pubGuessNote)}</div>`:'');
     // No excerpt overview / Highlight-Underline bar — PDF is the book section.
-    const backTitle=S.learnReturn?'Back to Learn checklist':'Back to hits';
+    const learnCite=!!S.learnReturn;
+    const backTitle=learnCite?'Back to Learn checklist':'Back to hits';
     let citeStep='';
-    if(S.learnReturn){
+    if(learnCite){
       const pack=acadTopicRefs(S.learnReturn.pos, S.learnReturn.rfcTopic);
       if(pack){
         const cite=String(S.learnReturn.cite||'');
@@ -3121,16 +3105,19 @@ function pdfPaneHTML(){
         citeStep=`<div class="citestep"><button type="button" class="btn-ghost" data-action="citeprev"${prevDis}>PREV SECTION</button><span class="muted">Section ${at} / ${tot}</span><button type="button" class="btn-ghost" data-action="citenext"${nextDis}>NEXT SECTION</button><span class="citestep-lab">${escTxt(lab)}</span></div>`;
       }
     }
-    return `<div class="pdfbox">${guess}${citeStep}${tblBarHTML()}
+    // Learn ACAD cite: clean PDF-only (no FIND / tables bar). Reference keeps FIND + dropdowns.
+    const findBits=learnCite?'':`<input id="pdffind" placeholder="Find in this pub (Enter / Shift+Enter)" autocomplete="off" spellcheck="false"><button class="btn-ghost" data-action="pdffindgo">FIND</button><span class="muted" id="pdfhits"></span>`;
+    const tblBits=learnCite?'':tblBarHTML();
+    // Hidden find input so cite auto-Find + bindPdf still have a target on Learn opens
+    const hiddenFind=learnCite?`<input id="pdffind" type="hidden" value="${escTxt(S.pubQ||'')}"><span class="muted" id="pdfhits" style="display:none"></span>`:'';
+    return `<div class="pdfbox">${guess}${citeStep}${tblBits}
       <div class="pdfbar">
         <button type="button" class="btn-back" data-action="findback" title="${backTitle}">← BACK</button>
         <span class="pill ok">${escTxt(p.lab)}</span>
         <button class="btn-ghost" data-action="pdfprev">PREV PAGE</button>
         <span class="pdfpg" id="pdfpglbl">—</span>
         <button class="btn-ghost" data-action="pdfnext">NEXT PAGE</button>
-        <input id="pdffind" placeholder="Find in this pub (Enter / Shift+Enter)" autocomplete="off" spellcheck="false">
-        <button class="btn-ghost" data-action="pdffindgo">FIND</button>
-        <span class="muted" id="pdfhits"></span>
+        ${findBits}${hiddenFind}
         <button class="btn-ghost" data-action="pdfclose">CLOSE</button>
       </div>
       <div class="pdfstage"><canvas id="pdfcanvas"></canvas></div>
