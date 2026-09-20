@@ -2,7 +2,7 @@
 
 **Audience:** Gunny Harris (Radar chief) — practice dry run  
 **Later:** Captain Lopez / cabin brief · October NATOPS inspection concept  
-**Live:** https://christopherstuart2801-commits.github.io/ATC-Study-app/ · **v0.7.4 · cite-pages**  
+**Live:** https://christopherstuart2801-commits.github.io/ATC-Study-app/ · **v0.7.5 · shared-rfd-cites**  
 **Owner:** LCPL Stuart (CS) · KNFG Radar Final + Radar Flight Data syllabus  
 **Length:** ~8–10 minutes talk + 2–3 minute live demo  
 **Gunny rule:** pitch **Home / Ask / Learn / Reference** — de-emphasize **SIM**. Less is more. Skeleton = Google-findable pubs only.
@@ -73,11 +73,11 @@ Optional printable outline: § Printable outline (end of this file).
 
 ## Slide 4 — LIVE DEMO (exact tap path)
 
-**Prep:** Phone or laptop browser · live Pages link · Wi-Fi · statusbar shows **v0.7.4 · cite-pages**.
+**Prep:** Phone or laptop browser · live Pages link · Wi-Fi · statusbar shows **v0.7.5 · shared-rfd-cites**.
 
 | Step | Tap | What you should see |
 |------|-----|---------------------|
-| 1 | Open live URL | Home; statusbar v0.7.4 |
+| 1 | Open live URL | Home; statusbar v0.7.5 |
 | 2 | **R/FINAL** (if needed) | Radar Final context |
 | 3 | **Learn** | ACAD list (0520 / 0534 / 0532 / 0521-0522…) |
 | 4 | **ACAD-0520 Radio & Interphone** | Checklist of 7110.65 cites |
@@ -170,7 +170,7 @@ Optional printable outline: § Printable outline (end of this file).
 
 ```
 VECTOR ATC — Gunny Harris dry run — Mon 2026-09-21 PT
-Live: …/ATC-Study-app/ · v0.7.4 · cite-pages · LCPL Stuart
+Live: …/ATC-Study-app/ · v0.7.5 · shared-rfd-cites · LCPL Stuart
 
 1. Study aid for paper syllabus (Radar Final demo; RFD paper in-hand) — not a quiz toy, not a pub replacement
 2. Accuracy bar: source-anchored only · no invented freqs/SIDs/minima/ACADs · verify green
@@ -187,7 +187,7 @@ DO NOT: SIM grind · invent content · empty / unphotographed ACADs · FIG polis
 
 ## Pre-brief checklist (Sunday night / Monday morning)
 
-- [ ] Open live link on the device you will use; confirm **v0.7.4 · cite-pages**
+- [ ] Open live link on the device you will use; confirm **v0.7.5 · shared-rfd-cites**
 - [ ] One dry run of the exact tap path (PDF paints, NEXT, BACK)
 - [ ] One-pager printed or on second screen
 - [ ] Wi-Fi confirmed; JO PDF allowed time to load once
