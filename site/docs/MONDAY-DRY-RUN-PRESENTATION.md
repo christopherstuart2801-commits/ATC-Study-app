@@ -2,12 +2,13 @@
 
 **Audience:** Gunny Harris (Radar chief) — practice dry run  
 **Later:** Captain Lopez / cabin brief · October NATOPS inspection concept  
-**Live:** https://christopherstuart2801-commits.github.io/ATC-Study-app/ · **v0.7.2 · cite-page-fix**  
-**Owner:** LCPL Stuart (CS) · KNFG Radar Final syllabus  
+**Live:** https://christopherstuart2801-commits.github.io/ATC-Study-app/ · **v0.7.4 · cite-pages**  
+**Owner:** LCPL Stuart (CS) · KNFG Radar Final + Radar Flight Data syllabus  
 **Length:** ~8–10 minutes talk + 2–3 minute live demo  
 **Gunny rule:** pitch **Home / Ask / Learn / Reference** — de-emphasize **SIM**. Less is more. Skeleton = Google-findable pubs only.
 
-**Companion one-pager:** `docs/NATOPS-VECTOR-ATC-one-pager.md`
+**Companion one-pager:** `docs/NATOPS-VECTOR-ATC-one-pager.md`  
+**Paper in-hand:** Radar Flight Data (Oct 2025) photos — cover STUART/CS; overview RDR-3700 / QUAL-6100 / QUAL-6103; ACAD-0520 + ACAD-0534. Monday demo still leads Radar Final; RFD is next chip from real paper.
 
 ---
 
@@ -31,7 +32,7 @@ Optional printable outline: § Printable outline (end of this file).
 
 **On screen / say:**
 - Phone-friendly **trainee study aid** tied to the **paper ATC Training Syllabus**.
-- Built for **Radar Final** first; same packet pattern for other KNFG positions when paper lands.
+- Built for **Radar Final** first (Monday demo); **Radar Flight Data** now live from Oct 2025 paper (ACAD-0520 / ACAD-0534); same packet pattern for remaining positions when paper lands.
 - Opens the **real pub PDF** on the **real chapter page** from an ACAD checklist cite.
 
 **Is not:**
@@ -59,7 +60,7 @@ Optional printable outline: § Printable outline (end of this file).
 
 | Tab | One-line role |
 |-----|----------------|
-| **Home** | Position chips — R/FINAL live |
+| **Home** | Position chips — R/FINAL live (demo); R/Flight Data live (paper) |
 | **Ask** | FIND by heading / wording across pubs |
 | **Learn** | ACAD → checklist → cite PDF → BACK |
 | **Reference** | Full shelf + same FIND |
@@ -72,11 +73,11 @@ Optional printable outline: § Printable outline (end of this file).
 
 ## Slide 4 — LIVE DEMO (exact tap path)
 
-**Prep:** Phone or laptop browser · live Pages link · Wi-Fi · statusbar shows **v0.7.2 · cite-page-fix**.
+**Prep:** Phone or laptop browser · live Pages link · Wi-Fi · statusbar shows **v0.7.4 · cite-pages**.
 
 | Step | Tap | What you should see |
 |------|-----|---------------------|
-| 1 | Open live URL | Home; statusbar v0.7.2 |
+| 1 | Open live URL | Home; statusbar v0.7.4 |
 | 2 | **R/FINAL** (if needed) | Radar Final context |
 | 3 | **Learn** | ACAD list (0520 / 0534 / 0532 / 0521-0522…) |
 | 4 | **ACAD-0520 Radio & Interphone** | Checklist of 7110.65 cites |
@@ -93,19 +94,19 @@ Optional printable outline: § Printable outline (end of this file).
 
 ## Slide 5 — Live today vs blocked on paper
 
-**Live (Radar Final)**
-- ACAD cite → real PDF chapter landing
-- PREV/NEXT SECTION cite walk + ← BACK
-- Ask / Reference FIND
-- Sourced FACMAN / JO where filled; flashcards from sourced decks
+**Live**
+- **Radar Final** ACAD cite → real PDF chapter landing (Monday demo path)
+- **Radar Flight Data** chip from Oct 2025 paper in-hand (STUART/CS; RDR-3700 / QUAL-6100 / QUAL-6103; ACAD-0520 + ACAD-0534) — same cite → JO/FACMAN open / PREV/NEXT / BACK
+- Unphotographed RFD topics stay empty; **00-80T-114** still blocked
+- Ask / Reference FIND; sourced FACMAN / JO where filled
 
-**Blocked until paper**
-- Other KNFG position ACADs
-- Charts / routes / strip guides / TNR manuals detail
-- 00-80T, CWT CAT A–I numbers, Vengeance/Coyote, FIG/AOM
+**Blocked until paper / pubs**
+- Remaining RFD lesson topics not photographed; other KNFG position ACADs
+- Charts / routes / strip guides / TNR manuals / DOD FLIP minima pages
+- **00-80T-114**, CWT CAT A–I numbers, Vengeance/Coyote, FIG/AOM
 - Student/trainer sign-on (planned — not needed for concept demo)
 
-**Speaker notes:** “Same pipeline; paper unlocks positions — we do not fill gaps with guesses.”
+**Speaker notes:** “Monday path stays R/FINAL. RFD chip is live from real paper — we do not invent unphotographed topics.”
 
 ---
 
@@ -113,7 +114,7 @@ Optional printable outline: § Printable outline (end of this file).
 
 1. Confirm the **accuracy / no-invention** rule is the right bar for October.
 2. Feedback on the **2–3 min demo** (cite landing, nav, BACK).
-3. **Priority** for next paper upload after Radar Final.
+3. **Priority** for remaining RFD pages / next position after RFD.
 4. Blessing to brief as a **syllabus-aligned study aid** (not a pub replacement).
 5. Green light for **Captain Lopez / cabin** using this same lean path.
 
@@ -125,7 +126,7 @@ Optional printable outline: § Printable outline (end of this file).
 
 - Dry run complete → fold Gunny notes into cabin brief.
 - Keep verify green; only ship sourced content.
-- Next paper packet → next position chip lights up the same way.
+- RFD paper in-hand → chip live (0520/0534); remaining RFD pages + next position same pipeline.
 
 **Close line:** “Less is more. Accuracy first. Pub page over chrome.”
 
@@ -137,7 +138,7 @@ Optional printable outline: § Printable outline (end of this file).
 |----------|----------------|
 | Is this approved pubs for control? | No — **study aid**. Controlled use stays with official pubs / instructors. App banner: no controlled data loaded for ops. |
 | Why is SIM on the bar? | Legacy position practice. **Not** the pitch for Monday / NATOPS concept. |
-| Can we add Arrival / Local ACADs now? | **When the paper packet is uploaded.** Pattern is ready; content is not invented. |
+| Can we add Arrival / Local ACADs now? | **When the paper packet is uploaded.** RFD is the worked example from Oct 2025 photos. Pattern ready; content not invented. |
 | Where do freqs / SIDs / minima come from? | Only from sourced FACMAN / JO tables already in the app. **Nothing invented.** |
 | What if FIND misses? | Cite open uses heading Find + chapter floor. If a cite fails, we fix mapping — we do not fake a page. |
 | How do you keep from shipping junk? | `verify-ask-rfc.js` must pass **ALL CHECKS** before push. |
@@ -152,8 +153,8 @@ Optional printable outline: § Printable outline (end of this file).
 
 **Do not:**
 - Open **SIM** as part of the prepared path.
-- Demo empty other-position ACADs as if they were complete.
-- Quote **invented** freqs, SIDs, minima, App D-8, CWT CAT A–I numbers, Vengeance/Coyote, 00-80T.
+- Demo empty other-position / unphotographed RFD ACADs as if they were complete.
+- Quote **invented** freqs, SIDs, minima, App D-8, CWT CAT A–I numbers, Vengeance/Coyote, **00-80T-114**.
 - Polish or dwell on App D **FIG** mocks.
 - Claim the app is a substitute for NATOPS pubs or the paper syllabus.
 - Promise timelines you do not control (paper upload schedule = training leadership).
@@ -169,27 +170,27 @@ Optional printable outline: § Printable outline (end of this file).
 
 ```
 VECTOR ATC — Gunny Harris dry run — Mon 2026-09-21 PT
-Live: …/ATC-Study-app/ · v0.7.2 · cite-page-fix · LCPL Stuart
+Live: …/ATC-Study-app/ · v0.7.4 · cite-pages · LCPL Stuart
 
-1. Study aid for paper syllabus (Radar Final first) — not a quiz toy, not a pub replacement
+1. Study aid for paper syllabus (Radar Final demo; RFD paper in-hand) — not a quiz toy, not a pub replacement
 2. Accuracy bar: source-anchored only · no invented freqs/SIDs/minima/ACADs · verify green
 3. Tabs: Home · Ask · Learn · Reference  (SIM quiet)
-4. DEMO: Learn → ACAD-0520 → 2-4-3 → PDF p.~79 → NEXT SECTION → ← BACK → optional FIND
-5. Live vs paper-blocked: R/Final live; other positions wait for paper
-6. Asks: accuracy bar OK? demo notes? next packet priority? NATOPS concept blessing? Lopez green light?
+4. DEMO: Home → R/FINAL → Learn → ACAD-0520 → 2-4-3 → PDF p.~79 → NEXT SECTION → ← BACK → optional FIND
+5. Live vs blocked: R/Final + RFD (0520/0534) live; unphotographed RFD + 00-80T-114 blocked
+6. Asks: accuracy bar OK? demo notes? remaining RFD pages priority? NATOPS concept blessing? Lopez green light?
 7. Close: less is more · accuracy first
 
-DO NOT: SIM grind · invent content · empty position ACADs · FIG polish
+DO NOT: SIM grind · invent content · empty / unphotographed ACADs · FIG polish
 ```
 
 ---
 
 ## Pre-brief checklist (Sunday night / Monday morning)
 
-- [ ] Open live link on the device you will use; confirm **v0.7.2 · cite-page-fix**
+- [ ] Open live link on the device you will use; confirm **v0.7.4 · cite-pages**
 - [ ] One dry run of the exact tap path (PDF paints, NEXT, BACK)
 - [ ] One-pager printed or on second screen
 - [ ] Wi-Fi confirmed; JO PDF allowed time to load once
-- [ ] Mentally park SIM / empty ACADs / FIG topics
+- [ ] Mentally park SIM / unphotographed RFD / empty ACADs / FIG / 00-80T-114
 
 *Practice path locked. Accuracy first.*

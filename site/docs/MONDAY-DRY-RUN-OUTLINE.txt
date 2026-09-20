@@ -1,16 +1,19 @@
 VECTOR ATC — Gunny Harris dry run — Mon 2026-09-21 PT
 Live: https://christopherstuart2801-commits.github.io/ATC-Study-app/
-Build: v0.7.2 · cite-page-fix · LCPL Stuart (CS) · KNFG Radar Final
+Build: v0.7.4 · cite-pages · LCPL Stuart (CS) · KNFG Radar Final + Radar Flight Data
 
-1. Study aid for paper syllabus (Radar Final first) — not a quiz toy, not a pub replacement
+Paper in-hand: RFD Oct 2025 (STUART/CS; RDR-3700 / QUAL-6100 / QUAL-6103; ACAD-0520 + ACAD-0534 photographed).
+Monday demo still leads Radar Final on live app; RFD chip live from paper — unphotographed RFD topics empty; 00-80T-114 blocked.
+
+1. Study aid for paper syllabus (Radar Final demo; RFD paper in-hand) — not a quiz toy, not a pub replacement
 2. Accuracy bar: source-anchored only · no invented freqs/SIDs/minima/ACADs · verify green
 3. Tabs: Home · Ask · Learn · Reference  (SIM quiet)
-4. DEMO: Learn → ACAD-0520 → 2-4-3 → PDF p.~79 → NEXT SECTION → ← BACK → optional FIND
-5. Live vs paper-blocked: R/Final live; other positions wait for paper
-6. Asks: accuracy bar OK? demo notes? next packet priority? NATOPS concept blessing? Lopez green light?
+4. DEMO: Home → R/FINAL → Learn → ACAD-0520 → 2-4-3 → PDF p.~79 → NEXT SECTION → ← BACK → optional FIND
+5. Live vs blocked: R/Final + RFD (0520/0534) live; unphotographed RFD + 00-80T-114 blocked
+6. Asks: accuracy bar OK? demo notes? remaining RFD pages priority? NATOPS concept blessing? Lopez green light?
 7. Close: less is more · accuracy first
 
-DO NOT: SIM grind · invent content · empty position ACADs · FIG polish
+DO NOT: SIM grind · invent content · empty / unphotographed ACADs · FIG polish
 
 Full pack: docs/MONDAY-DRY-RUN-PRESENTATION.md
 One-pager: docs/NATOPS-VECTOR-ATC-one-pager.md
