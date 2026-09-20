@@ -1,0 +1,16 @@
+VECTOR ATC — Gunny Harris dry run — Mon 2026-09-21 PT
+Live: https://christopherstuart2801-commits.github.io/ATC-Study-app/
+Build: v0.7.2 · cite-page-fix · LCPL Stuart (CS) · KNFG Radar Final
+
+1. Study aid for paper syllabus (Radar Final first) — not a quiz toy, not a pub replacement
+2. Accuracy bar: source-anchored only · no invented freqs/SIDs/minima/ACADs · verify green
+3. Tabs: Home · Ask · Learn · Reference  (SIM quiet)
+4. DEMO: Learn → ACAD-0520 → 2-4-3 → PDF p.~79 → NEXT SECTION → ← BACK → optional FIND
+5. Live vs paper-blocked: R/Final live; other positions wait for paper
+6. Asks: accuracy bar OK? demo notes? next packet priority? NATOPS concept blessing? Lopez green light?
+7. Close: less is more · accuracy first
+
+DO NOT: SIM grind · invent content · empty position ACADs · FIG polish
+
+Full pack: docs/MONDAY-DRY-RUN-PRESENTATION.md
+One-pager: docs/NATOPS-VECTOR-ATC-one-pager.md
