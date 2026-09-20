@@ -1,6 +1,6 @@
 VECTOR ATC — Gunny Harris dry run — Mon 2026-09-21 PT
 Live: https://christopherstuart2801-commits.github.io/ATC-Study-app/
-Build: v0.7.4 · cite-pages · LCPL Stuart (CS) · KNFG Radar Final + Radar Flight Data
+Build: v0.7.5 · shared-rfd-cites · LCPL Stuart (CS) · KNFG Radar Final + Radar Flight Data
 
 Paper in-hand: RFD Oct 2025 (STUART/CS; RDR-3700 / QUAL-6100 / QUAL-6103; ACAD-0520 + ACAD-0534 photographed).
 Monday demo still leads Radar Final on live app; RFD chip live from paper — unphotographed RFD topics empty; 00-80T-114 blocked.

@@ -1,7 +1,7 @@
 # VECTOR ATC — Monday Dry Run One-Pager (Gunny Harris)
 
 **Live app:** https://christopherstuart2801-commits.github.io/ATC-Study-app/  
-**Build:** **v0.7.4 · cite-pages** (GitHub Pages)  
+**Build:** **v0.7.5 · shared-rfd-cites** (GitHub Pages)  
 **Owner:** LCPL Stuart (CS) · KNFG / MCAS Camp Pendleton (Munn Field) · Radar Final + Radar Flight Data syllabus  
 **This sit-down:** Gunny Harris practice dry run → later Captain Lopez / cabin brief → October NATOPS inspection concept  
 
@@ -31,7 +31,7 @@ Phone-friendly trainee study app tied to the **paper ATC Training Syllabus**, no
 ---
 
 ## 3. Demo path (2–3 minutes) — exact taps
-1. Open live link → confirm statusbar **v0.7.4 · cite-pages**.
+1. Open live link → confirm statusbar **v0.7.5 · shared-rfd-cites**.
 2. **Home** → **R/FINAL** (Radar Final) if not already selected.
 3. **Learn** → **ACAD-0520 Radio & Interphone** (or Basic Radar).
 4. Tap checklist cite **7110.65 2-4-3 · Pilot Acknowledgement**.
@@ -89,7 +89,7 @@ Same reusable pipeline for every position chip:
 | ← BACK to Learn | **GO** |
 | Ask / Reference FIND by heading | **GO** |
 | `verify-ask-rfc.js` | **ALL CHECKS PASSED** |
-| RFD chip ACAD-0520 / ACAD-0534 (paper) | **GO** (v0.7.4 · cite-pages) |
+| RFD chip ACAD-0520 / ACAD-0534 (paper) | **GO** (v0.7.5 · shared-rfd-cites) |
 | Presentation pack | `docs/MONDAY-DRY-RUN-PRESENTATION.md` |
 
 *Less is more. Accuracy first. Pub page over excerpt chrome. Home / Ask / Learn / Reference — not SIM.*
