@@ -1,7 +1,7 @@
 # VECTOR ATC — Monday Dry Run One-Pager (Gunny Harris)
 
 **Live app:** https://christopherstuart2801-commits.github.io/ATC-Study-app/  
-**Build:** **v0.7.5 · shared-rfd-cites** (GitHub Pages)  
+**Build:** **v0.7.6 · finals-t5-t6** (GitHub Pages)  
 **Owner:** LCPL Stuart (CS) · KNFG / MCAS Camp Pendleton (Munn Field) · Radar Final + Radar Flight Data syllabus  
 **This sit-down:** Gunny Harris practice dry run → later Captain Lopez / cabin brief → October NATOPS inspection concept  
 
@@ -29,6 +29,11 @@ Phone-friendly trainee study app tied to the **paper ATC Training Syllabus**, no
 - Unphotographed RFD lesson topics, other-position ACADs, TNR manuals, CWT CAT A–I detail, Vengeance/Coyote, **00-80T-114**, FIG/AOM stay **empty / blocked** until official paper or pubs upload.
 
 ---
+
+
+
+### Finals Topics 5–6 (2026-09-21)
+R/FINAL Learn now includes **ACAD-0523** (ATC clearances), **ACAD-0538** (radar coordination), **ACAD-0533** (radar final control). SCT LOA / 00-80T-114 / FLIP minima stay blocked until pubs land.
 
 ## 3. Demo path (2–3 minutes) — exact taps
 1. Open live link → confirm statusbar **v0.7.5 · shared-rfd-cites**.
