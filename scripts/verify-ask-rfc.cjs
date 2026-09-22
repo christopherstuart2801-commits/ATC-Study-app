@@ -584,11 +584,12 @@ ok('SYLLABUS.rfd ACAD-0534 paper extras', /rfd:\[[\s\S]*?ACAD-0534[\s\S]*?FACMAN
   ok('ACAD-0538 hdr + 00-80T-114 blocked under Topic 5', !!(a523&&a523.refs&&a523.refs.some(r=>r[0]==='ACAD-0538'&&r[2]==='hdr') && a523.refs.some(r=>r[0]==='00-80T-114 10.1.3.5')));
   ok('Learn AA/refs nav (sticky + cite-dd)', /learn-sticky/.test(html) && /cite-dd/.test(html) && /aafocus/.test(html) && /citesel/.test(html));
   ok('PUBS includes StaO 3710.1H AOM', /id:'aom'/.test(html) && /StaO-3710\.1H-Airfield-Operations-Manual\.pdf/.test(html) && /StaO 3710\.1H AOM/.test(html));
-  ok('pubSectionsFor has AOM ATC chapters', /pub==='aom'/.test(html) && /App G Radio Freq Directory/.test(html) && /Ch3 Course Rules/.test(html));
+  ok('pubSectionsFor has AOM ATC chapters', /pub==='aom'/.test(html) && /App G Radio Freq Directory/.test(html) && /Ch3 Course Rules/.test(html) && /Ch8 Airfield Security/.test(html) && /App K Weight bearing/.test(html));
   ok('pubIdForDoc maps StaO/3710 to aom', /3710\\\.1\|StaO\|Airfield Operations Manual/i.test(html) || /3710\.1\|StaO\|Airfield Operations Manual/.test(html));
   ok('PUBS includes AIM (2/20/25)', /id:'aim'/.test(html) && /AIM-2025-02-20\.pdf/.test(html) && /AIM \(2\/20\/25\)/.test(html));
   ok('pubIdForDoc maps AIM to aim', /\\bAIM\\b\|Aeronautical Information Manual/i.test(html) || /AIM\|Aeronautical Information Manual/.test(html));
-  ok('statusbar v0.7.8 aim-pub', /v0\.7\.8 · aim-pub/.test(html));
+  ok('pubSectionsFor has AIM chapters', /pub==='aim'/.test(html) && /Ch4 Air Traffic Control/.test(html) && /Ch11 Unmanned Aircraft/.test(html) && /Ch1 Air Navigation/.test(html));
+  ok('statusbar v0.7.9 aim-aom-nests', /v0\.7\.9 · aim-aom-nests/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);

@@ -2590,7 +2590,7 @@
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.7.8 · aim-pub</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.7.9 · aim-aom-nests</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -3054,7 +3054,17 @@ function vidsStrip(){
       return [
         ['Ch1 General',13],['Ch2 Flight Planning',25],['Ch3 Course Rules',32],['Ch4 Instrument Procedures',60],
         ['Ch5 Airfield Ops & Maint',65],['Ch6 Transient Services',78],['Ch7 Emergency Response',83],
-        ['App E Traffic Pattern',110],['App F Airspace',111],['App G Radio Freq Directory',112]
+        ['Ch8 Airfield Security',88],['Ch9 Ground Vehicle Ops',93],
+        ['App A VFR Routes',104],['App B Airport Diagram',107],['App C Phone Directory',108],['App D Closed Field Ops',109],
+        ['App E Traffic Pattern',110],['App F Class D/E/LIMA',111],['App G Radio Freq Directory',112],
+        ['App H CALA diagram',113],['App I Hot pits',114],['App J ELP',116],['App K Weight bearing',117]
+      ].map(([lab,p])=>row(lab,p)).join('');
+    }
+    if(pub==='aim'){
+      return [
+        ['Ch1 Air Navigation',41],['Ch2 Aeronautical Lighting',95],['Ch3 Airspace',149],['Ch4 Air Traffic Control',183],
+        ['Ch5 Air Traffic Procedures',303],['Ch6 Emergency Procedures',465],['Ch7 Safety of Flight',497],
+        ['Ch8 Medical Facts',621],['Ch9 Charts & Publications',631],['Ch10 Helicopter Ops',647],['Ch11 Unmanned Aircraft',675]
       ].map(([lab,p])=>row(lab,p)).join('');
     }
     return '';
