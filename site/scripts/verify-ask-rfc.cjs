@@ -595,7 +595,7 @@ ok('JO Chg2 pub present', /id:'jochg2'/.test(html) && /JO-7110\.65BB-CHG2-2026-0
 ok('Ask scans full pubs not 40-cap', /CHUNK=50/.test(html) && !/Math\.min\(doc\.numPages,\s*40\)/.test(html));
 ok('Ask empty copy mentions publication library', /publication library/.test(html));
 ok('PCG GO AROUND in BOOK', /7110\.65 PCG GO AROUND/.test(html));
-ok('statusbar v0.8.3 ask-vector', /v0\.8\.3 · ask-vector/.test(html));
+ok('statusbar v0.8.4 ask-vector', /v0\.8\.4 · ask-vector/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);
