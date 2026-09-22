@@ -198,7 +198,7 @@
 #vatc .findhits.slim .findhit{ padding:8px 10px; text-align:left;}
 #vatc .findhits.slim .fh-quote{ display:none;}
 #vatc .lkempty.vector{ border:1px dashed var(--line); border-radius:12px; padding:14px; font-size:13px; line-height:1.45; color:var(--muted);}
-/* flashcard — Quizlet tap-to-reveal (memorization) · v0.8.11 ask-nitty · reveal-lock kept */
+/* flashcard — Quizlet tap-to-reveal (memorization) · v0.8.12 ask-all-pubs · reveal-lock kept */
 #vatc .fcard{ margin-bottom:12px; position:relative; height:min(48vh,320px); min-height:240px; cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none;}
 #vatc .fcard .fcface{ position:absolute; inset:0; border:1px solid var(--line); border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:22px 18px; box-sizing:border-box; background:var(--panel); text-align:center; overflow:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;}
 #vatc .fcard .fcface.front{ opacity:1; visibility:visible; pointer-events:auto; z-index:1;}
@@ -2613,12 +2613,8 @@ function vectorAnswerHTML(query, hits){
       return;
     }
     const hits=askHits(q);
-    if(!hits.length){
-      box.innerHTML=S.tab==='ask' ? vectorAnswerHTML(q, [])+'<div class="lkempty vector">Scanning pubs for a Find hit…</div>' : '<div class="lkempty">No matching passages.</div>';
-      queueCrossPubFind(q);
-      return;
-    }
-    const support=hits.slice(0,5).map((h)=>{
+    const supportHits=diversifyAskHits(hits, 6);
+    const support=supportHits.map((h)=>{
       const b=h.book||null;
       if(b){
         const cite=bookCite(b);
@@ -2641,7 +2637,16 @@ function vectorAnswerHTML(query, hits){
       }
       return '';
     }).join('');
-    box.innerHTML=(S.tab==='ask'?vectorAnswerHTML(q, hits):'')+'<div class="findhits slim">'+support+'</div>';
+    const crossMount='<div id="crosspubhits" class="findhits" aria-live="polite"></div>';
+    if(!hits.length){
+      box.innerHTML=(S.tab==='ask' ? vectorAnswerHTML(q, []) : '<div class="lkempty">No matching passages.</div>')+crossMount;
+    } else {
+      const srcHead=S.tab==='ask'?'<div class="muted" style="font-size:10px;letter-spacing:.14em;margin:8px 0 4px">SOURCES</div>':'';
+      box.innerHTML=(S.tab==='ask'?vectorAnswerHTML(q, hits):'')+srcHead+'<div class="findhits slim">'+support+'</div>'+crossMount;
+    }
+    // Ask always scans the full Reference shelf (AIM/AOM/OPNAV/Chg2/archives), even when BOOK already hit.
+    // Reference Find still scans when local BOOK is empty (type-as-you-go) so we do not thrash PDFs on every key.
+    if(S.tab==='ask' || !hits.length) queueCrossPubFind(q);
   }
   function onLookupInput(){
     const inp=document.getElementById('reflk'); if(!inp) return;
@@ -2997,7 +3002,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.11 · ask-nitty</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.12 · ask-all-pubs</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -3139,6 +3144,32 @@ function vidsStrip(){
   }
   function askMatch(query){ const q=(query||'').toLowerCase(); if(!q.trim())return null; const tok=q.split(/[^a-z0-9]+/).filter(Boolean);
     let best=null,bs=0; ASK.forEach(e=>{let s=0; e.kw.forEach(k=>{ if(q.includes(k))s+=2; else if(tok.includes(k))s+=1; }); if(s>bs){bs=s;best=e;}}); return bs>0?best:null; }
+  /* Prefer top score hits for nitty lead, then fill Sources with other pub families when they also match. */
+  function diversifyAskHits(hits, max){
+    max=max||8;
+    if(!hits||!hits.length) return [];
+    const out=[]; const used=new Set();
+    const pubKey=h=>{
+      const d=(h.book&&h.book.doc)||(h.e&&h.e.src&&h.e.src.doc)||'';
+      return pubIdForDoc(d)||h.band||('x:'+(h.id||''));
+    };
+    const primary=Math.min(4, hits.length, max);
+    for(let i=0;i<primary;i++){ out.push(hits[i]); used.add(hits[i]); }
+    const seen=new Set(out.map(pubKey));
+    for(const h of hits){
+      if(out.length>=max) break;
+      if(used.has(h)) continue;
+      const k=pubKey(h);
+      if(k && seen.has(k)) continue;
+      seen.add(k); out.push(h); used.add(h);
+    }
+    for(const h of hits){
+      if(out.length>=max) break;
+      if(used.has(h)) continue;
+      out.push(h);
+    }
+    return out;
+  }
   function askHits(query){
     const raw=String(query||'').trim();
     if(!raw) return [];
@@ -3184,7 +3215,7 @@ function vidsStrip(){
       push({kind:'lk', e, s:h.s, band:h.band, id:'e:'+(e.origin||'')+'|'+(e.q||'')});
     });
     hits.sort((a,b)=>b.s-a.s);
-    return hits.slice(0,8);
+    return diversifyAskHits(hits, 8);
   }
   function askResultHTML(r,query){
     if(!r) return vectorAnswerHTML(query||'', []);
@@ -3622,6 +3653,22 @@ function pdfPaneHTML(){
       <div class="pdfstage"><canvas id="pdfcanvas"></canvas></div>
     </div>`;
   }
+  /* Full Reference shelf order for Ask PDF scan — every PUBS id, primary editions first. */
+  function askScanPubOrder(){
+    return [...PUBS].sort((a,b)=>{
+      const rank=id=>{
+        if(id==='facman') return 0;
+        if(id==='jo') return 1;
+        if(id==='jochg2') return 2;
+        if(id==='aim') return 3;
+        if(id==='aom') return 4;
+        if(id==='orm'||id==='soh') return 5;
+        if(id==='facman2025') return 9;
+        return 6;
+      };
+      return rank(a.id)-rank(b.id);
+    });
+  }
   function queueCrossPubFind(q){
     const query=String(q||'').trim();
     if(!query || query.length<3) return;
@@ -3631,22 +3678,8 @@ function pdfPaneHTML(){
       if(gen!==pdfFindGen || ((S.tab==='ask'?(S.askDoneQ||''):(S.refQ||'').trim())!==query)) return;
       const needle=query.toLowerCase();
       const found=[];
-      // Primary library first; archives last. Full progressive scan (no 40-page hard stop).
-      const order=[...PUBS].sort((a,b)=>{
-        const arch=id=>/2025|archive|chg2/i.test(id)?1:0;
-        // Prefer primary facman/jo/aim/aom before archive/chg — but still scan chg2 (not archive-class)
-        const rank=id=>{
-          if(id==='facman') return 0;
-          if(id==='jo') return 1;
-          if(id==='jochg2') return 2;
-          if(id==='aim') return 3;
-          if(id==='aom') return 4;
-          if(id==='orm'||id==='soh') return 5;
-          if(id==='facman2025') return 9;
-          return 6;
-        };
-        return rank(a.id)-rank(b.id);
-      });
+      // Primary library first; archives last. Full progressive scan (no 40-page hard stop). Full PUBS shelf — no whitelist.
+      const order=askScanPubOrder();
       const CHUNK=50;
       const headingBonus=(txt, n)=>{
         const t=String(txt||'');
@@ -3660,16 +3693,35 @@ function pdfPaneHTML(){
       };
       const render=()=>{
         if(!box || gen!==pdfFindGen || ((S.tab==='ask'?(S.askDoneQ||''):(S.refQ||'').trim())!==query) || S.pub) return;
+        let mount=document.getElementById('crosspubhits');
+        if(!mount){
+          mount=document.createElement('div');
+          mount.id='crosspubhits';
+          mount.className='findhits';
+          mount.setAttribute('aria-live','polite');
+          box.appendChild(mount);
+        }
+        // Skip pubs already shown as BOOK/Sources chips so multi-doc Results add AIM/AOM/OPNAV/etc.
+        const shown=new Set();
+        box.querySelectorAll('.findhits.slim .findhit[data-pub], .vector-ans .srcchip[data-pub]').forEach(el=>{
+          const p=el.getAttribute('data-pub'); if(p) shown.add(p);
+        });
+        const fresh=found.filter(f=>f && f.pub && !shown.has(f.pub));
         if(!found.length){
-          box.innerHTML='<div class="lkempty">Scanning publication library for “'+escTxt(query)+'”…</div>';
+          mount.innerHTML='<div class="lkempty">Scanning publication library for “'+escTxt(query)+'”…</div>';
           return;
         }
-        const extra=found.map(f=>`<button type="button" class="findhit" data-action="openfindhit" data-pub="${f.pub}" data-needle="${escTxt(query).replace(/"/g,'&quot;')}" data-page="${f.page}">
+        if(!fresh.length){
+          mount.innerHTML='';
+          return;
+        }
+        const head='<div class="muted" style="font-size:10px;letter-spacing:.14em;margin:8px 0 4px">ALSO IN LIBRARY</div>';
+        const extra=fresh.map(f=>`<button type="button" class="findhit" data-action="openfindhit" data-pub="${f.pub}" data-needle="${escTxt(query).replace(/"/g,'&quot;')}" data-page="${f.page}">
           <span class="fh-band">PDF</span>
           <div class="fh-cite">${escTxt(f.lab)} · p.${f.page}</div>
           <div class="fh-quote">Matched “${escTxt(query)}” in extracted PDF text${f.note?(' · '+escTxt(f.note)):''}</div>
         </button>`).join('');
-        box.innerHTML='<div class="findhits">'+extra+'</div>';
+        mount.innerHTML=head+extra;
       };
       render();
       for(const pub of order){
@@ -3697,7 +3749,8 @@ function pdfPaneHTML(){
             // Yield UI progress for long pubs (AIM)
             if(box && !found.some(f=>f.pub===pub.id) && (start===1 || start%100===1)){
               if(!found.length){
-                box.innerHTML='<div class="lkempty">Scanning '+escTxt(pub.lab)+' p.'+endP+'/'+doc.numPages+' for “'+escTxt(query)+'”…</div>';
+                const mount=document.getElementById('crosspubhits')||box;
+                mount.innerHTML='<div class="lkempty">Scanning '+escTxt(pub.lab)+' p.'+endP+'/'+doc.numPages+' for “'+escTxt(query)+'”…</div>';
               }
             }
             if(best && best.score>=20 && endP>=Math.min(doc.numPages, start+CHUNK*2)) {
@@ -3712,7 +3765,13 @@ function pdfPaneHTML(){
       }
       if(!box || gen!==pdfFindGen || ((S.tab==='ask'?(S.askDoneQ||''):(S.refQ||'').trim())!==query) || S.pub) return;
       if(!found.length){
-        box.innerHTML='<div class="lkempty">No hit in the publication library.</div>';
+        const mount=document.getElementById('crosspubhits');
+        const hasBook=!!box.querySelector('.findhits.slim .findhit, .vector-ans .srcchip');
+        if(mount){
+          mount.innerHTML=hasBook?'':'<div class="lkempty">No hit in the publication library.</div>';
+        } else if(!hasBook){
+          box.innerHTML='<div class="lkempty">No hit in the publication library.</div>';
+        }
       }
     }).catch(()=>{});
   }

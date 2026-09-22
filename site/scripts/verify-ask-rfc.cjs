@@ -623,7 +623,14 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.11 ask-nitty', /v0\.8\.11 · ask-nitty/.test(html));
+ok('statusbar v0.8.12 ask-all-pubs', /v0\.8\.12 · ask-all-pubs/.test(html));
+ok('askScanPubOrder helper', /function\s+askScanPubOrder\s*\(/.test(html));
+ok('diversifyAskHits helper', /function\s+diversifyAskHits\s*\(/.test(html));
+ok('Ask always queues cross-pub find', /tab==='ask'\s*\|\|\s*!hits\.length\)\s*queueCrossPubFind/.test(html));
+ok('crosspubhits merge mount', /id="crosspubhits"|id='crosspubhits'|getElementById\('crosspubhits'\)/.test(html));
+ok('Ask Sources label', /SOURCES/.test(html) && /ALSO IN LIBRARY/.test(html));
+ok('PUBS Ask shelf has all library ids', /id:'facman'/.test(html) && /id:'facman2025'/.test(html) && /id:'jo'/.test(html) && /id:'jochg2'/.test(html) && /id:'aim'/.test(html) && /id:'aom'/.test(html) && /id:'orm'/.test(html) && /id:'soh'/.test(html));
+
 ok('quizlet reveal-lock dual-face', /fcard\$\{S\.fcFlip\?' is-revealed':''\}/.test(html) && /fcface front/.test(html) && /fcface back/.test(html) && /function fcKeep\(/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
@@ -665,7 +672,7 @@ if (sm) {
   let code = sm[1];
   code = code.replace(
     /document\.getElementById\('vatc'\)\.addEventListener\('click'[\s\S]*render\(\);\s*\}\)\(\);/,
-    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcSetChipRow,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES};\n})();'
+    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcSetChipRow,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,diversifyAskHits,pubIdForDoc,queueCrossPubFind};\n})();'
   );
   try {
     eval(code);
@@ -1688,6 +1695,28 @@ ok('home GCA group closed by default', !/<details class="fc-crt" open><summary d
         const dmTop = (dmHits||[]).slice(0,4).map(h => h.book && h.book.cite).join(' ');
         ok('Del Mar Fallbrook askHits top cites 6-4-4', /6-4-4/.test(dmTop), dmTop);
         ok('no Desmore invent in aliases', !(V.ASK_ALIASES||[]).some(a => /desmore/i.test(String(a.re))));
+
+        // v0.8.12 ask-all-pubs: full shelf scan + multi-doc Sources
+        ok('askScanPubOrder exported', typeof V.askScanPubOrder === 'function');
+        ok('diversifyAskHits exported', typeof V.diversifyAskHits === 'function');
+        ok('PUBS exported', Array.isArray(V.PUBS) && V.PUBS.length >= 8, 'n='+(V.PUBS&&V.PUBS.length));
+        const shelfIds = (V.askScanPubOrder ? V.askScanPubOrder() : []).map(p => p.id);
+        const needIds = ['facman','facman2025','jo','jochg2','aim','aom','orm','soh'];
+        ok('askScanPubOrder includes every PUBS id', needIds.every(id => shelfIds.includes(id)) && shelfIds.length === (V.PUBS||[]).length, shelfIds.join(','));
+        ok('askScanPubOrder primary facman before archive', shelfIds.indexOf('facman') < shelfIds.indexOf('facman2025'));
+        ok('askScanPubOrder jo before jochg2 before aim', shelfIds.indexOf('jo') < shelfIds.indexOf('jochg2') && shelfIds.indexOf('jochg2') < shelfIds.indexOf('aim'));
+        const airHits = V.askHits('airspace');
+        const airPubs = [...new Set((airHits||[]).map(h => V.pubIdForDoc((h.book&&h.book.doc)||((h.e&&h.e.src&&h.e.src.doc)||''))).filter(Boolean))];
+        ok('airspace askHits multi-doc cites when AIM+JO match', airPubs.length >= 2 || (airHits||[]).some(h => /AIM/i.test((h.book&&h.book.doc)||'')) , 'pubs='+airPubs.join(',')+' n='+(airHits&&airHits.length));
+        const airDocs = (airHits||[]).map(h => (h.book&&(h.book.doc+' '+h.book.cite))||'').join(' | ');
+        ok('airspace askHits includes AIM when present in BOOK', /AIM/i.test(airDocs) || airPubs.includes('aim'), airDocs.slice(0,200));
+        const airDiv = V.diversifyAskHits(airHits||[], 6);
+        const airDivPubs = [...new Set((airDiv||[]).map(h => V.pubIdForDoc((h.book&&h.book.doc)||'')||'').filter(Boolean))];
+        ok('diversifyAskHits surfaces multiple pub families when present', airDivPubs.length >= 2 || airPubs.length < 2, 'divPubs='+airDivPubs.join(','));
+        const bayStillShelf = V.askHits('how to pass a bay');
+        const bayTopShelf = (bayStillShelf||[]).slice(0,4).map(h => h.book&&h.book.cite).join(' ');
+        ok('pass-a-bay top4 still FACMAN 6-3 after diversify', /6-3-4/.test(bayTopShelf) && /6-3-6/.test(bayTopShelf), bayTopShelf);
+        ok('queueCrossPubFind still present', typeof V.queueCrossPubFind === 'function');
 
         ok('T2 still 36 / T3 still 12 / T4 still 18', t2t.length === 36 && t3t.length === 12 && t4t.length === 18, 'T2='+t2t.length+' T3='+t3t.length+' T4='+t4t.length);
 
