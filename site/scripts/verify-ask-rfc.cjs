@@ -284,8 +284,8 @@ ok('begin-descent still prefer 5-12-3 after 6-4 aliases', /begin descent[\s\S]*?
 ok('9-miles still prefer 6-2-12 after 6-4 aliases', /9 miles from runway[\s\S]*?prefer:\[\{pg:'6-2-12'/.test(aliases));
 ok('FC_SET_LAB arrcomp ARR COMP', /arrcomp:'ARR COMP'/.test(html));
 ok('FC_CHIP_GROUPS GCA includes arrcomp', /id:'gca'[\s\S]*?arrcomp/.test(html));
-ok('SRC_648 FACMAN 6-4-8', /SRC_648=\{doc:'NFG FACMAN July 2025',pg:'6-4-8'/.test(html));
-ok('SRC_649 FACMAN 6-4-9', /SRC_649=\{doc:'NFG FACMAN July 2025',pg:'6-4-9'/.test(html));
+ok('SRC_648 FACMAN 6-4-8', /SRC_648=\{doc:'NFG FACMAN July 2026',pg:'6-4-8'/.test(html));
+ok('SRC_649 FACMAN 6-4-9', /SRC_649=\{doc:'NFG FACMAN July 2026',pg:'6-4-9'/.test(html));
 
 ok('BOOK has FACMAN 6-4-1 key', /"FACMAN 6-4-1":/.test(html));
 ok('BOOK has 6-4-1 dual key', /"6-4-1":/.test(html));
@@ -396,7 +396,7 @@ ok('9-miles still prefer 6-2-12 after 6-1 aliases', /9 miles from runway[\s\S]*?
 ok('wave-off-GCA still prefer 6-2-4 after 6-1 aliases', /wave\[- \]\?off instructions GCA[\s\S]*?prefer:\[\{pg:'6-2-4'/.test(aliases) || /missed approach wave[\s\S]*?prefer:\[\{pg:'6-2-4'/.test(aliases));
 ok('FC_SET_LAB fixes FIXES', /fixes:'FIXES'/.test(html));
 ok('FC_CHIP_GROUPS RADAR includes fixes', /id:'radar'[\s\S]*?fixes/.test(html));
-ok('SRC_612 FACMAN 6-1-2', /SRC_612=\{doc:'NFG FACMAN July 2025',pg:'6-1-2'/.test(html));
+ok('SRC_612 FACMAN 6-1-2', /SRC_612=\{doc:'NFG FACMAN July 2026',pg:'6-1-2'/.test(html));
 ok('FC_SETS.fixes present in source', /fixes:\s*\[/.test(html) && /fx-bondo/.test(html));
 
 ok('BOOK has FACMAN 6-5-1 key', /"FACMAN 6-5-1":/.test(html));
@@ -436,20 +436,20 @@ ok('begin-descent still prefer 5-12-3 after radsup aliases', /begin descent[\s\S
 ok('9-miles still prefer 6-2-12 after radsup aliases', /9 miles from runway[\s\S]*?prefer:\[\{pg:'6-2-12'/.test(aliases));
 ok('FC_SET_LAB radsup RAD SUP', /radsup:'RAD SUP'/.test(html));
 ok('FC_CHIP_GROUPS RADAR includes radsup', /id:'radar'[\s\S]*?radsup/.test(html));
-ok('SRC_651 FACMAN 6-5-1', /SRC_651=\{doc:'NFG FACMAN July 2025',pg:'6-5-1'/.test(html));
-ok('SRC_655 FACMAN 6-5-5', /SRC_655=\{doc:'NFG FACMAN July 2025',pg:'6-5-5'/.test(html));
-ok('SRC_659 FACMAN 6-5-9', /SRC_659=\{doc:'NFG FACMAN July 2025',pg:'6-5-9'/.test(html));
-ok('SRC_6510 FACMAN 6-5-10', /SRC_6510=\{doc:'NFG FACMAN July 2025',pg:'6-5-10'/.test(html));
+ok('SRC_651 FACMAN 6-5-1', /SRC_651=\{doc:'NFG FACMAN July 2026',pg:'6-5-1'/.test(html));
+ok('SRC_655 FACMAN 6-5-5', /SRC_655=\{doc:'NFG FACMAN July 2026',pg:'6-5-5'/.test(html));
+ok('SRC_659 FACMAN 6-5-9', /SRC_659=\{doc:'NFG FACMAN July 2026',pg:'6-5-9'/.test(html));
+ok('SRC_6510 FACMAN 6-5-10', /SRC_6510=\{doc:'NFG FACMAN July 2026',pg:'6-5-10'/.test(html));
 ok('FC_SETS.radsup present in source', /radsup:\s*\[/.test(html) && /rs-duties/.test(html));
 ok('SKILLS has instructor-debrief', /id:'instructor-debrief'/.test(html));
 
 
-ok('SRC_641 FACMAN 6-4-1', /SRC_641=\{doc:'NFG FACMAN July 2025',pg:'6-4-1'/.test(html));
-ok('SRC_643 FACMAN 6-4-3', /SRC_643=\{doc:'NFG FACMAN July 2025',pg:'6-4-3'/.test(html));
-ok('SRC_645 FACMAN 6-4-5', /SRC_645=\{doc:'NFG FACMAN July 2025',pg:'6-4-5'/.test(html));
-ok('SRC_646 FACMAN 6-4-6', /SRC_646=\{doc:'NFG FACMAN July 2025',pg:'6-4-6'/.test(html));
-ok('SRC_6410 FACMAN 6-4-10', /SRC_6410=\{doc:'NFG FACMAN July 2025',pg:'6-4-10'/.test(html));
-ok('SRC_6411 FACMAN 6-4-11', /SRC_6411=\{doc:'NFG FACMAN July 2025',pg:'6-4-11'/.test(html));
+ok('SRC_641 FACMAN 6-4-1', /SRC_641=\{doc:'NFG FACMAN July 2026',pg:'6-4-1'/.test(html));
+ok('SRC_643 FACMAN 6-4-3', /SRC_643=\{doc:'NFG FACMAN July 2026',pg:'6-4-3'/.test(html));
+ok('SRC_645 FACMAN 6-4-5', /SRC_645=\{doc:'NFG FACMAN July 2026',pg:'6-4-5'/.test(html));
+ok('SRC_646 FACMAN 6-4-6', /SRC_646=\{doc:'NFG FACMAN July 2026',pg:'6-4-6'/.test(html));
+ok('SRC_6410 FACMAN 6-4-10', /SRC_6410=\{doc:'NFG FACMAN July 2026',pg:'6-4-10'/.test(html));
+ok('SRC_6411 FACMAN 6-4-11', /SRC_6411=\{doc:'NFG FACMAN July 2026',pg:'6-4-11'/.test(html));
 
 
 
@@ -499,7 +499,7 @@ ok('D-4/D-5 strip block still present', /function facmanStripBlock\(\)/.test(htm
 ok('FIG D-5 non-radar has no ACTUAL IFR box', /NON-RADAR ARRIVAL[\s\S]{0,500}TIME AT ID FIX[\s\S]{0,80}INBOUND TO TOWER/.test(html) && !/NON-RADAR ARRIVAL[\s\S]{0,500}scell\('—'\)/.test(html));
 ok('Learn facmanStripBlock primary-only (no multi/nonr consts)', /function facmanStripBlock\(\)\{[\s\S]*?\n  \}/.test(html) && !/function facmanStripBlock\(\)\{[\s\S]*?const multi=/.test(html));
 ok('stripsRef has TBL 5-3/5-4/5-5 abbrev panel', /TBL 5-3 Departure procedures/.test(html) && /TBL 5-5 SVFR routes/.test(html));
-ok('stripsRef has TBL 6-3 radar abbrev rows', /TBL 6-3 Approach \/ intent/.test(html) && /Open TBL 6-3 · FACMAN p\.80/.test(html));
+ok('stripsRef has TBL 6-3 radar abbrev rows', /TBL 6-3 Approach \/ intent/.test(html) && /Open TBL 6-3 · FACMAN p\.83/.test(html));
 ok('BOOK has TBL 6-3 dual key', /"TBL 6-3":/.test(html) && /"FACMAN TBL 6-3":/.test(html));
 ok('ASK has TBL 6-3 radar strip abbrev alias', /TBL\\s\*6-3/.test(aliases) && /radar strip abbreviations\?/.test(aliases));
 
@@ -510,7 +510,7 @@ ok('learnReturn stores cite', /learnReturn:\{pos:S\.pos, rfcTopic:S\.rfcTopic, c
 ok('acadTopicRefs skips hdr for section step', /refs=T\.refs\.filter\(r=>!\(r && r\[2\]==='hdr'\)\)/.test(html) || /r\[2\]==='hdr'\)\)/.test(html));
 ok('openLearnCite rejects ACAD- hdr cites', /\^ACAD-/i.test(html) || /\/\^ACAD-/i.test(html));
 ok('citestep shows cite label', /citestep-lab/.test(html));
-ok('PUB map TBL 6-3 p86 / 6-1-11 p85 / TBL C-2 p136', /['"]TBL 6-3['"]:86/.test(html) && /['"]6-1-11['"]:85/.test(html) && /['"]TBL C-2['"]:136/.test(html));
+ok('PUB map TBL 6-3 p83 / 6-1-11 p82 / TBL C-2 p129', /['"]TBL 6-3['"]:83/.test(html) && /['"]6-1-11['"]:82/.test(html) && /['"]TBL C-2['"]:129/.test(html));
 ok('strip learning cite-first 6-1-11', /ACAD-0522 · strip learning/.test(html) && /btn\('FACMAN 6-1-11'/.test(html) && /btn\('FACMAN TBL 6-3'/.test(html));
 ok('syllabusFor helper', /function\s+syllabusFor\s*\(/.test(html));
 ok('acadChipRow uses syllabusFor', /function acadChipRow\(\)\{[\s\S]{0,120}syllabusFor\(S\.pos\)/.test(html));
@@ -589,7 +589,7 @@ ok('SYLLABUS.rfd ACAD-0534 paper extras', /rfd:\[[\s\S]*?ACAD-0534[\s\S]*?FACMAN
   ok('PUBS includes AIM (2/20/25)', /id:'aim'/.test(html) && /AIM-2025-02-20\.pdf/.test(html) && /AIM \(2\/20\/25\)/.test(html));
   ok('pubIdForDoc maps AIM to aim', /\\bAIM\\b\|Aeronautical Information Manual/i.test(html) || /AIM\|Aeronautical Information Manual/.test(html));
   ok('pubSectionsFor has AIM chapters', /pub==='aim'/.test(html) && /Ch4 Air Traffic Control/.test(html) && /Ch11 Unmanned Aircraft/.test(html) && /Ch1 Air Navigation/.test(html));
-  ok('statusbar v0.7.9 aim-aom-nests', /v0\.7\.9 · aim-aom-nests/.test(html));
+  ok('statusbar v0.8.0 facman-2026', /v0\.8\.0 · facman-2026/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);
