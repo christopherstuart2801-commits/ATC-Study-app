@@ -198,9 +198,13 @@
 #vatc .findhits.slim .findhit{ padding:8px 10px; text-align:left;}
 #vatc .findhits.slim .fh-quote{ display:none;}
 #vatc .lkempty.vector{ border:1px dashed var(--line); border-radius:12px; padding:14px; font-size:13px; line-height:1.45; color:var(--muted);}
-/* flashcard — Quizlet tap-to-reveal (memorization) */
-#vatc .fcard{ margin-bottom:12px; min-height:220px; cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none;}
-#vatc .fcface{ border:1px solid var(--line); border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:22px 18px; min-height:220px; background:var(--panel); text-align:center;}
+/* flashcard — Quizlet tap-to-reveal (memorization) · v0.8.11 ask-nitty · reveal-lock kept */
+#vatc .fcard{ margin-bottom:12px; position:relative; height:min(48vh,320px); min-height:240px; cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none;}
+#vatc .fcard .fcface{ position:absolute; inset:0; border:1px solid var(--line); border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:22px 18px; box-sizing:border-box; background:var(--panel); text-align:center; overflow:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;}
+#vatc .fcard .fcface.front{ opacity:1; visibility:visible; pointer-events:auto; z-index:1;}
+#vatc .fcard .fcface.back{ opacity:0; visibility:hidden; pointer-events:none; z-index:0; background:var(--panel2); border-color:var(--green-dim);}
+#vatc .fcard.is-revealed .fcface.front{ opacity:0; visibility:hidden; pointer-events:none; z-index:0;}
+#vatc .fcard.is-revealed .fcface.back{ opacity:1; visibility:visible; pointer-events:auto; z-index:1;}
 #vatc .fcface.revealed{ background:var(--panel2); border-color:var(--green-dim);}
 #vatc .fcface .q{ font-family:var(--fd); font-size:clamp(15px,4.2vw,20px); letter-spacing:.05em; text-transform:uppercase; line-height:1.35;}
 #vatc .fcface .a{ font-family:var(--fm); font-size:clamp(15px,4vw,22px); color:var(--green); line-height:1.4; white-space:pre-wrap;}
@@ -212,7 +216,7 @@
 #vatc .fc-nav .btn{ flex:1; }
 #vatc .fc-nav .btn.sec{ flex:0 0 auto; min-width:72px; }
 #vatc .fc-prog{ font-size:11px; letter-spacing:.08em; color:var(--muted); text-align:center; margin:0 0 8px;}
-#vatc button.srcchip.fccitebtn{ margin-top:10px; }
+#vatc button.srcchip.fccitebtn{ margin-top:10px; flex:none; }
 /* reference */
 #vatc .refgrid{ display:grid; grid-template-columns:1fr 1fr; gap:12px;} @media(max-width:640px){#vatc .refgrid{grid-template-columns:1fr;}}
 #vatc .freqrow{ display:flex; align-items:baseline; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--line);} #vatc .freqrow:last-child{border-bottom:none;}
@@ -2433,46 +2437,67 @@
   function vectorInstructorLead(query, book){
     if(!book||!book.text) return null;
     const q=String(query||'').toLowerCase();
-    const cite=bookCite(book);
     const steps=vectorChecklistSteps(book.text);
     const isOpen=/open/i.test(q) && !/clos/i.test(q);
     const isClose=/clos/i.test(q) && !/open/i.test(q);
     const isCompare=/vs|versus|difference|open(ing)?\s+vs|open(ing)?\s+versus/i.test(q);
     const isLima=/lima|golf|gca airspace|airspace size|how big|dimensions|class d/i.test(q);
-    if(isLima && /2-1-8|2-1-9|2-1-10|2-1-12|5-1-8/i.test((book.pg||'')+' '+(book.cite||''))){
-      // Accurate instructor framing — no invented Lima NM dimensions
-      if(/2-1-8/i.test((book.pg||'')+' '+(book.cite||''))){
-        return {kind:'teach', text:'Do not swap Class D for Lima. Class D is surface up to and including 2600′ MSL along the ARP bearings in 2-1-8 (010@4NM→227@4NM→240@2.6NM→355@2.6NM→010@4NM). Full Lima/Golf geometry lives in Appendix C — Ch 2 does not give a single Lima radius.'};
+    const pgCite=((book.pg||'')+' '+(book.cite||'')+' '+(book.title||''));
+    // Dense first-line answer — no essay / we-voice fluff. Cite chips carry the pub.
+    if(isLima && /2-1-8|2-1-9|2-1-10|2-1-12|5-1-8/i.test(pgCite)){
+      if(/2-1-8/i.test(pgCite)){
+        return {kind:'teach', text:'Class D (2-1-8): surface up to and including 2600′ MSL — ARP 010@4NM→227@4NM→240@2.6NM→355@2.6NM→010@4NM. That is not Lima — Lima/Golf geometry is Appendix C (see 2-1-10).'};
       }
-      if(/2-1-10|2-1-12|5-1-8/i.test((book.pg||'')+' '+(book.cite||''))){
-        return {kind:'teach', text:'Lima and Golf are SCT-delegated GCA airspace for NFG RATCF. We work them from the SCT LOA plus Appendix C (Lima and Golf Airspace figure) — not from a memorized NM radius, and not by borrowing Class D circle numbers.'};
+      if(/2-1-10|2-1-12|5-1-8/i.test(pgCite)){
+        return {kind:'teach', text:'Lima and Golf: SCT-delegated GCA airspace for NFG RATCF (2-1-10). Size/shape: Appendix C figure — Ch 2 gives no single Lima NM radius. Do not use Class D bearings as Lima size.'};
       }
     }
-    if((isOpen||isClose||isCompare||/checklist/i.test(q)) && /Appendix A/i.test((book.cite||'')+' '+(book.pg||'')+' '+(book.title||''))){
-      const label=/radar/i.test(q) && !/tower/i.test(q) ? 'Radar' : (/tower/i.test(q) ? 'Tower' : (/A-[34]|Radar/i.test((book.cite||'')+(book.title||''))?'Radar':'Tower'));
-      let head;
+    if((isOpen||isClose||isCompare||/checklist/i.test(q)) && /Appendix A/i.test(pgCite)){
+      const isRadar=(/radar/i.test(q) && !/tower/i.test(q)) || (!/tower/i.test(q) && /A-[34]|Radar/i.test(pgCite));
       if(isCompare){
-        head='Opening and closing are different Appendix A watch items — do not mix them. Opening builds readiness (manning, ATIS, crash-phone test 5 min prior, opening broadcast). Closing secures the facility (closing calls with initials, return Lima to SCT on radar close, closing/closed-field ATIS). Run this cite in order:';
-      } else if(isOpen){
-        head='We open '+label+' from the Appendix A watch item — not from memory. Readiness first (manning, ATIS, crash phone), then the opening broadcast. Sequence:';
-      } else if(isClose){
-        head='We close '+label+' from the Appendix A watch item. Secure the facility, make the closing calls with initials, and on radar close return Lima to SCT. Sequence:';
-      } else {
-        head=label+' open/close — match the Appendix A watch item and run it in order:';
+        return {kind:'steps', head:'Open ≠ close — different Appendix A watch items.', steps:[
+          'Open (A-1/A-3): man H−15 / full crew H−5 → readiness → opening broadcast (radar: SOCAL for Lima NLT H−5).',
+          'Close (A-2/A-4): secure → closing calls with initials → closing/closed-field ATIS; radar returns Lima to SCT.'
+        ]};
       }
-      if(steps.length>=3){
-        return {kind:'steps', head, steps:steps.slice(0,10)};
+      if(isOpen){
+        if(isRadar){
+          return {kind:'steps', head:'Radar open (App A-3): supervisor + radar data + final by H−15; full crew by H−5.', steps:[
+            'Panels → Equip checklist (A-5) → aural alarm → Longrifle → weather (VIDS) → advise tower → logs.',
+            'NLT H−5: call SOCAL for Lima airspace + departure frequency.'
+          ]};
+        }
+        return {kind:'steps', head:'Tower open (App A-1): qualified FD + supervisor by H−15; full crew by H−5.', steps:[
+          'Panels (disable PCL) → FIRE RNG line check → Longrifle → weather/ATIS → ARFF + Flight Clearance.',
+          'Crash-phone test at H−5; opening broadcast on all recorded freqs except guard.'
+        ]};
+      }
+      if(isClose){
+        if(isRadar){
+          return {kind:'steps', head:'Radar close (App A-4): secure the room, then return Lima to SCT.', steps:[
+            'Monitors down · ops count · close logs/evals · passdown.',
+            'Notify SCT of close time, return Lima, log initials; notify ATCMD.'
+          ]};
+        }
+        return {kind:'steps', head:'Tower close (App A-2): field lighting off (enable PCL for closed field), then secure.', steps:[
+          'Closing calls: ARFF + Flight Clearance — get initials.',
+          'Closing broadcast + closed-field ATIS; Basilone traffic light to green.'
+        ]};
+      }
+      if(steps.length>=2){
+        return {kind:'steps', head:(isRadar?'Radar':'Tower')+' Appendix A watch item — run in order.', steps:steps.slice(0,3)};
       }
       const body=book.text.replace(/^[^\n]+\n/,'').replace(/\s+/g,' ').trim();
-      return {kind:'teach', text:head+' '+shortQuote(body, 280)};
+      return {kind:'teach', text:shortQuote(body, 200)};
     }
-    if(vectorIsHowto(query) && steps.length>=4){
-      return {kind:'steps', head:'Here is the procedure from '+cite+' — we run it in order, then verify in the pub:', steps:steps.slice(0,10)};
+    if(vectorIsHowto(query) && steps.length>=3){
+      const head=((book.cite||book.pg||'')+(book.title||book.pa?' · '+(book.title||book.pa):'')).trim()+' —';
+      return {kind:'steps', head, steps:steps.slice(0,3)};
     }
     if(vectorIsHowto(query)){
       const body=book.text.replace(/^[^\n]+\n/,'').replace(/\s+/g,' ').trim();
-      const lead=shortQuote(body, 220);
-      if(lead) return {kind:'teach', text:'From '+cite+' — '+lead+' Verify the full paragraph in the pub; do not invent freqs, minima, or SIDs.'};
+      const lead=shortQuote(body, 200);
+      if(lead) return {kind:'teach', text:lead};
     }
     return null;
   }
@@ -2532,7 +2557,7 @@ function vectorSnippetFromBook(b, query){
     return {kind:'quote', text:shortQuote(raw, 180)};
   }
 function vectorAnswerHTML(query, hits){
-    const empty=`<div class="vector-ans"><div class="va-who">VECTOR</div><div class="va-body">Not in the loaded pub library with a solid hit. Try a paragraph (e.g. 6-2-12), a PCG term, or a local phrase — I will not invent frequencies, minima, or SIDs.</div><div class="va-note">Ask answers from on-device pubs only — instructor overview, then steps when the cite has them. No invented freqs, minima, or SIDs.</div></div>`;
+    const empty=`<div class="vector-ans"><div class="va-who">VECTOR</div><div class="va-body">Not in the loaded pub library with a solid hit. Try a paragraph (e.g. 6-2-12), a PCG term, or a local phrase — I will not invent frequencies, minima, or SIDs.</div><div class="va-note">Ask answers from on-device pubs only — first-line fact, short steps when procedural. No invented freqs, minima, or SIDs.</div></div>`;
     if(!hits || !hits.length) return empty;
     const h=vectorPickHit(hits);
     if(!h) return empty;
@@ -2822,7 +2847,30 @@ function vectorAnswerHTML(query, hits){
   const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'acad',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcRated:{},fcDeck:'pos',fcGrp:'',fcOpen:{},fcOrder:null,
     lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'' };
-  function set(o){ Scope.teardown(); Object.assign(S,o); render(); }
+  function set(o, opts){
+    const keep=opts&&opts.keepScroll;
+    let y=0;
+    if(keep){ const sm=document.querySelector('#vatc .scrollmain'); y=sm?sm.scrollTop:0; }
+    Scope.teardown(); Object.assign(S,o); render();
+    if(keep){
+      const sm=document.querySelector('#vatc .scrollmain');
+      if(sm) sm.scrollTop=y;
+      const card=document.querySelector('#vatc .fcard');
+      if(sm&&card){
+        requestAnimationFrame(()=>{
+          const cr=card.getBoundingClientRect(), sr=sm.getBoundingClientRect();
+          if(cr.top < sr.top+6) sm.scrollTop += (cr.top - sr.top - 10);
+          else if(cr.bottom > sr.bottom-6){
+            // Keep card top in view — never dump user below the card
+            const need = cr.bottom - sr.bottom + 10;
+            const maxDown = Math.max(0, cr.top - sr.top - 10);
+            sm.scrollTop += Math.min(need, maxDown);
+          }
+        });
+      }
+    }
+  }
+  function fcKeep(o){ return set(o,{keepScroll:true}); }
   const TRAINEE_KEY='vatc.trainee';
   function loadTrainee(){
     try{
@@ -2949,7 +2997,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.9 · rfd-lqs-paper</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.11 · ask-nitty</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -3213,11 +3261,10 @@ function vidsStrip(){
     const a=escTxt(String(card.a||''));
     const tag=escTxt(String(card.tag||''));
     const citeBtn=cite?`<button type="button" class="srcchip fccitebtn" data-action="fccite" data-cite="${escTxt(cite)}" data-title="${title}">${I.ext} ${escTxt(citeLab)}</button>`:'';
-    const face=S.fcFlip
-      ? `<div class="fcface revealed" data-action="fcflip" data-answer="${a}"><div class="tag">${tag}</div><div class="a def">${a}</div>${citeBtn}<div class="fchint">tap · hide · or Next</div></div>`
-      : `<div class="fcface" data-action="fcflip" data-answer="${a}"><div class="tag">${tag}</div><div class="q">${q}</div><div class="fchint">tap to reveal</div><div class="fccite" hidden>${escTxt(citeLab)}</div><div class="a def" hidden>${a}</div>${cite?`<span hidden>${escTxt(cite)}</span>`:''}</div>`;
+    const front=`<div class="fcface front" data-answer="${a}"><div class="tag">${tag}</div><div class="q">${q}</div><div class="fchint">tap to reveal</div></div>`;
+    const back=`<div class="fcface back revealed" data-answer="${a}"><div class="tag">${tag}</div><div class="a def">${a}</div>${citeBtn}<div class="fchint">tap · hide · or Next</div></div>`;
     const nav=`<div class="fc-nav"><button type="button" class="btn sec" data-action="fcprev">PREV</button><button type="button" class="btn" data-action="fcnext">NEXT ${I.arrow}</button><button type="button" class="btn sec" data-action="fcshuffle">SHUFFLE</button></div>`;
-    return chips+`<div class="fc-prog">${lab} · ${i+1} / ${cards.length}</div><div class="fcard">${face}</div>${nav}`;
+    return chips+`<div class="fc-prog">${lab} · ${i+1} / ${cards.length}</div><div class="fcard${S.fcFlip?' is-revealed':''}" data-action="fcflip">${front}${back}</div>${nav}`;
   }
 
   function simView(){ if(PSIM[S.pos]==='scope') return scopeView(); return scnView(); }
@@ -3972,12 +4019,17 @@ function pdfPaneHTML(){
     if(a==='qchoose')return set({qSel:+el.dataset.i});
     if(a==='qnext'){if(S.qSel===null)return;const ans=S.qAns.slice();ans[S.qIdx]=S.qSel;const QZ=Q.slice(0,5);if(S.qIdx<QZ.length-1)return set({qAns:ans,qIdx:S.qIdx+1,qSel:null});const {pct}=computeQuiz(ans);return set({qAns:ans,qDone:true,quizBest:Math.max(S.quizBest,pct)});}
     if(a==='qreset')return set({qIdx:0,qSel:null,qAns:[],qDone:false});
-    if(a==='fcflip')return set({fcFlip:!S.fcFlip});
-    if(a==='fcnext'){const n=(fcOrderedDeck().cards||[]).length||1; return set({fcIdx:(S.fcIdx+1+n)%n,fcFlip:false});}
-    if(a==='fcprev'){const n=(fcOrderedDeck().cards||[]).length||1; return set({fcIdx:(S.fcIdx-1+n)%n,fcFlip:false});}
-    if(a==='fcshuffle'){const {deck,key}=fcOrderedDeck(); return set({fcOrder:fcShuffleOrder(deck.length,key),fcIdx:0,fcFlip:false});}
+    if(a==='fcflip'){
+      S.fcFlip=!S.fcFlip;
+      const card=document.querySelector('#vatc .fcard');
+      if(card){ card.classList.toggle('is-revealed', !!S.fcFlip); return; }
+      return fcKeep({fcFlip:S.fcFlip});
+    }
+    if(a==='fcnext'){const n=(fcOrderedDeck().cards||[]).length||1; return fcKeep({fcIdx:(S.fcIdx+1+n)%n,fcFlip:false});}
+    if(a==='fcprev'){const n=(fcOrderedDeck().cards||[]).length||1; return fcKeep({fcIdx:(S.fcIdx-1+n)%n,fcFlip:false});}
+    if(a==='fcshuffle'){const {deck,key}=fcOrderedDeck(); return fcKeep({fcOrder:fcShuffleOrder(deck.length,key),fcIdx:0,fcFlip:false});}
     if(a==='fccite'){const cite=el.dataset.cite||''; if(!cite)return; openLearnCite(cite,{title:el.dataset.title||''}); return;}
-    if(a==='rate'){const deck=activeFcDeck(); const i=deck.length?((S.fcIdx%deck.length)+deck.length)%deck.length:0; const card=deck[i]; const r=Object.assign({},S.fcRated); if(card) r[fcDeckKey()+':'+card.id]=el.dataset.r; return set({fcRated:r,fcIdx:deck.length?(i+1)%deck.length:0,fcFlip:false});}
+    if(a==='rate'){const deck=activeFcDeck(); const i=deck.length?((S.fcIdx%deck.length)+deck.length)%deck.length:0; const card=deck[i]; const r=Object.assign({},S.fcRated); if(card) r[fcDeckKey()+':'+card.id]=el.dataset.r; return fcKeep({fcRated:r,fcIdx:deck.length?(i+1)%deck.length:0,fcFlip:false});}
     if(a==='scn'){if(S.scnAns)return;const steps=SCN[S.pos]||SCN.rfd;const i=+el.dataset.i;return set({scnSel:i,scnAns:true,scnScore:S.scnScore+(i===steps[S.scnIdx].ans?1:0)});}
     if(a==='scnnext')return set({scnIdx:S.scnIdx+1,scnAns:false,scnSel:null});
     if(a==='scnrestart')return set({scnIdx:0,scnAns:false,scnSel:null,scnScore:0});

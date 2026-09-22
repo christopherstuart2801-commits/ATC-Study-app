@@ -544,7 +544,7 @@ ok('Ask does not live-find on input', /function onLookupInput\(\)\{[\s\S]*?if\(S
 ok('Ask Enter submits via doAsk', /if\(e\.key==='Enter'\)\{[\s\S]*?if\(S\.tab==='ask'\) return doAsk\(\);/.test(html));
 ok('Ask restore uses askDoneQ not draft', /askDoneQ:''/.test(html) && /if\(S\.askDoneQ\) drawLookup\(S\.askDoneQ\)/.test(html) && /S\.askDoneQ=String\(inp\.value/.test(html));
 ok('Ask Ctrl+F does not hijack while typing', /Ask query field \/ Ask without PDF/.test(html) && /S\.tab==='ask' && \(!S\.pub \|\| \(e\.target && e\.target\.id==='reflk'\)\)\) return;/.test(html));
-ok('instructor lead OJTI open/close we-voice', /We open /.test(html) && /We close /.test(html) && /Here is the procedure from /.test(html));
+ok('instructor lead nitty-gritty (no we-voice essay)', /Dense first-line answer/.test(html) && /Tower open \(App A-1\)/.test(html) && /Radar close \(App A-4\)/.test(html) && !/We open /.test(html) && !/Here is the procedure from /.test(html));
 ok('Reference uses professional Find console', /function refConsole\([\s\S]*?PUBLICATIONS[\s\S]*?Find in publications[\s\S]*?data-action=\"findgo\">FIND/.test(html) && /function askConsole\([\s\S]*?VECTOR · ASK/.test(html));
 ok('Reference skips VECTOR answer card', /box\.innerHTML=\(S\.tab==='ask'\?vectorAnswerHTML/.test(html));
 ok('fc chips gray counts', /fc-n/.test(html) && /countOf/.test(html));
@@ -623,7 +623,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.10 quizlet-reveal-lock', /v0\.8\.10 · quizlet-reveal-lock/.test(html));
+ok('statusbar v0.8.11 ask-nitty', /v0\.8\.11 · ask-nitty/.test(html));
 ok('quizlet reveal-lock dual-face', /fcard\$\{S\.fcFlip\?' is-revealed':''\}/.test(html) && /fcface front/.test(html) && /fcface back/.test(html) && /function fcKeep\(/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
@@ -1110,6 +1110,9 @@ ok('home GCA group closed by default', !/<details class="fc-crt" open><summary d
         ok('opening checklist askResultHTML is instructor-style (steps or teach)', /va-steps|va-teach|OPENING|Appendix A/i.test(openHtml||''), (openHtml||'').slice(0,180));
         const limaHtml = V.askResultHTML(limaHits, 'lima airspace size');
         ok('lima airspace size answer warns App C vs Class D', /Appendix C|Class D|2600|SCT|delegat/i.test(limaHtml||''), (limaHtml||'').slice(0,220));
+        ok('lima nitty first-line (no we-voice fluff)', /Lima and Golf: SCT-delegated|Class D \(2-1-8\): surface/i.test(limaHtml||'') && !/We work them|Do not swap Class D for Lima\. Class D is surface/i.test(limaHtml||''), (limaHtml||'').slice(0,280));
+        ok('opening checklist nitty head (H-15 / H-5)', /H−15|H-15|fifteen minutes|H−5|H-5/i.test(openHtml||'') && /va-steps|Tower open|Radar open/i.test(openHtml||'') && !/We open /.test(openHtml||''), (openHtml||'').slice(0,280));
+        ok('opening checklist bullets capped (<=3 li)', ((openHtml||'').match(/<li>/g)||[]).length <= 3 && ((openHtml||'').match(/<li>/g)||[]).length >= 1, 'li='+((openHtml||'').match(/<li>/g)||[]).length);
         const rfdSyl = (V.SYLLABUS && V.SYLLABUS.rfd) || [];
         ok('runtime SYLLABUS.rfd length 5', rfdSyl.length===5, 'n='+rfdSyl.length);
 
