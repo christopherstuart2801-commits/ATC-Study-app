@@ -537,7 +537,6 @@ ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendi
 ok('App D sref-labels use FIG identity not SAMPLE', /sref-label">FIG D-4 · ATLAS40 IFR DEPARTURE</.test(html) && /sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</.test(html) && !/sref-label">SAMPLE ·/.test(html));
 ok('Home NOAA METAR KNFG', /fetchKnfgMetar/.test(html) && /aviationweather\.gov\/api\/data\/metar/.test(html) && /SAMPLE · offline/.test(html));
 ok('ACAD checkboxes persist localStorage', /vatc\.rfcChk/.test(html) && /data-action="acadcheck"/.test(html) && /loadRfcChk/.test(html));
-ok('statusbar v0.7.6 finals-t5-t6', /v0\.7\.6 · finals-t5-t6/.test(html));
 ok('FIG D-4 CORRI OTP slash-through R not checkmark', html.includes("CORRI3 CORRI · ↑OTP/38 · <span class=\"fps-slash\">R</span>") && html.split("CORRI3 CORRI · ↑OTP/38 · <span class=\"fps-slash\">R</span>").length-1===2 && !html.includes('↑OTP/38 · ✓/'));
 ok('facmanStripBlock cite-first no App D mock grid', /6-1-11\. ABBREVIATIONS/.test(html) && /FIG D-4/.test(html) && !/fps fps-dep/.test(html) && !/fps fps-arr/.test(html));
 ok('stripsRef D-5 C/SFA with ALTITUDE', html.includes("scell('<s>50</s> <s>40</s> 24 · C7','amb')") && html.includes("scell('Ⓡ','sky')") && html.includes("24 · C3','amb')") && html.includes("scell('Ⓡ/Ⓡ/R','sky')") && !html.includes("C7 · Ⓡ") && !html.includes("C3 · Ⓡ/Ⓡ/R"));
@@ -569,18 +568,25 @@ ok('SYLLABUS.rfd ACAD-0534 paper extras', /rfd:\[[\s\S]*?ACAD-0534[\s\S]*?FACMAN
   const fin = (SYL && SYL.fin) || [];
   const rfd = (SYL && SYL.rfd) || [];
   const finIds = fin.map(a => a.id);
-  ok('SYLLABUS.fin has Topics 5-6 ACADs', finIds.includes('ACAD-0523') && finIds.includes('ACAD-0538') && finIds.includes('ACAD-0533'));
+  const hasCode=(list,code)=>list.some(a=>a.id===code || (a.ids||[]).includes(code) || String(a.id||'').indexOf(code)>=0);
+  ok('SYLLABUS.fin has Topics 5-6 ACADs', hasCode(fin,'ACAD-0523') && hasCode(fin,'ACAD-0538') && hasCode(fin,'ACAD-0533'));
   ok('SYLLABUS.fin keeps Topics 1-4', finIds.includes('ACAD-0520') && finIds.includes('ACAD-0534') && finIds.includes('ACAD-0532') && finIds.includes('ACAD-0521/0522'));
-  ok('no duplicate ACAD-0523 cards', fin.filter(a=>a.id==='ACAD-0523').length===1 && rfd.every(a=>a.id!=='ACAD-0523'));
-  ok('Topics 5-6 live under fin not rfd-only', finIds.includes('ACAD-0523') && !rfd.some(a=>a.id==='ACAD-0523'||a.id==='ACAD-0538'||a.id==='ACAD-0533'));
-  ok('ACAD-0523 not duplicated into rfd', !rfd.some(a=>a.id==='ACAD-0523'));
+  ok('Topic 5 AAs consolidated (0523/0538 one card)', fin.filter(a=>a.id==='ACAD-0523/0538' || ((a.ids||[]).includes('ACAD-0523')&&(a.ids||[]).includes('ACAD-0538'))).length===1);
+  ok('no split ACAD-0523 or ACAD-0538 cards', !fin.some(a=>a.id==='ACAD-0523'||a.id==='ACAD-0538'));
+  ok('Topics 5-6 live under fin not rfd-only', hasCode(fin,'ACAD-0523') && !rfd.some(a=>hasCode([a],'ACAD-0523')||hasCode([a],'ACAD-0538')||hasCode([a],'ACAD-0533')));
+  ok('ACAD-0523 not duplicated into rfd', !rfd.some(a=>hasCode([a],'ACAD-0523')));
   const a533 = fin.find(a=>a.id==='ACAD-0533');
   const r533 = (a533&&a533.refs||[]).map(r=>r[0]);
+  ok('ACAD-0533 is Finals Test 6 (n=6)', !!(a533 && a533.n===6));
   ok('ACAD-0533 checklist has 5-12-10 + FACMAN 6-2-12', r533.includes('7110.65 5-12-10') && r533.includes('FACMAN 6-2-12'));
-  const a523 = fin.find(a=>a.id==='ACAD-0523');
+  const a523 = fin.find(a=>a.id==='ACAD-0523/0538' || ((a.ids||[]).includes('ACAD-0523')&&(a.ids||[]).includes('ACAD-0538')));
   ok('ACAD-0523 checklist has 4-2-1 Clearance Items', !!(a523&&a523.refs&&a523.refs.some(r=>r[0]==='7110.65 4-2-1' && /Clearance Items/i.test(r[1]||''))));
-  const a538 = fin.find(a=>a.id==='ACAD-0538');
-  ok('ACAD-0538 blocks 00-80T-114 10.1.3.5', !!(a538&&a538.refs&&a538.refs.some(r=>r[0]==='00-80T-114 10.1.3.5')));
+  ok('ACAD-0538 hdr + 00-80T-114 blocked under Topic 5', !!(a523&&a523.refs&&a523.refs.some(r=>r[0]==='ACAD-0538'&&r[2]==='hdr') && a523.refs.some(r=>r[0]==='00-80T-114 10.1.3.5')));
+  ok('Learn AA/refs nav (sticky + cite-dd)', /learn-sticky/.test(html) && /cite-dd/.test(html) && /aafocus/.test(html) && /citesel/.test(html));
+  ok('PUBS includes StaO 3710.1H AOM', /id:'aom'/.test(html) && /StaO-3710\.1H-Airfield-Operations-Manual\.pdf/.test(html) && /StaO 3710\.1H AOM/.test(html));
+  ok('pubSectionsFor has AOM ATC chapters', /pub==='aom'/.test(html) && /App G Radio Freq Directory/.test(html) && /Ch3 Course Rules/.test(html));
+  ok('pubIdForDoc maps StaO/3710 to aom', /3710\\\.1\|StaO\|Airfield Operations Manual/i.test(html) || /3710\.1\|StaO\|Airfield Operations Manual/.test(html));
+  ok('statusbar v0.7.7 test6-aa-aom', /v0\.7\.7 · test6-aa-aom/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);
@@ -1003,7 +1009,7 @@ if (sm) {
         V.S.fcDeck = 'pos';
 
         const finSyl = (V.SYLLABUS && V.SYLLABUS.fin) || [];
-        ok('SYLLABUS.fin has 7 Finals ACADs (T1-6)', (html.match(/"id":"ACAD-0/g)||[]).length>=7 && /"id":"ACAD-0523"/.test(html));
+        ok('SYLLABUS.fin has Topics 1-6 ACADs', /"id":"ACAD-0523\/0538"/.test(html) && /"id":"ACAD-0533"/.test(html) && /"id":"ACAD-0521\/0522"/.test(html));
         ok('SYLLABUS.fin[0] ACAD-0520', !!(finSyl[0] && (finSyl[0].id === 'ACAD-0520' || (finSyl[0].ids||[]).includes('ACAD-0520'))));
         ok('SYLLABUS.fin[1] ACAD-0534', !!(finSyl[1] && finSyl[1].id === 'ACAD-0534'));
         ok('SYLLABUS.fin[2] ACAD-0532', !!(finSyl[2] && finSyl[2].id === 'ACAD-0532'));
