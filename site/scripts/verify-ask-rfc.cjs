@@ -618,7 +618,8 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.8 ask-rfd-tests', /v0\.8\.8 · ask-rfd-tests/.test(html));
+ok('statusbar v0.8.10 quizlet-reveal-lock', /v0\.8\.10 · quizlet-reveal-lock/.test(html));
+ok('quizlet reveal-lock dual-face', /fcard\$\{S\.fcFlip\?' is-revealed':''\}/.test(html) && /fcface front/.test(html) && /fcface back/.test(html) && /function fcKeep\(/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);
