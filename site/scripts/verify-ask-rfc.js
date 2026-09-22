@@ -533,7 +533,7 @@ ok('pub sections nested under each PUBLICATION', /function pubSectionsFor\(/.tes
 ok('fcdeck Quizlet tap-to-reveal', /data-action="fcflip"/.test(html) && /data-action="fcshuffle"/.test(html) && /tap to reveal/.test(html));
 ok('Ask and Reference consoles split', /function askConsole\(\)/.test(html) && /function refConsole\(\)/.test(html) && /function askView\(\)[\s\S]{0,100}askConsole\(\)/.test(html) && /function refView\(\)[\s\S]{0,140}refConsole\(\)/.test(html));
 ok('VECTOR Ask persona stays on Ask', /function askConsole\([\s\S]*?VECTOR · ASK/.test(html) && /placeholder=\"Ask VECTOR\"/.test(html) && /data-action=\"findgo\">ASK/.test(html));
-ok('Reference uses professional Find console', /function refConsole\([\s\S]*?PUBLICATIONS[\s\S]*?Find in publications[\s\S]*?data-action=\"findgo\">FIND/.test(html) && /Browse PUBLICATIONS or search the loaded library/.test(html));
+ok('Reference uses professional Find console', /function refConsole\([\s\S]*?PUBLICATIONS[\s\S]*?Find in publications[\s\S]*?data-action=\"findgo\">FIND/.test(html) && /function askConsole\([\s\S]*?VECTOR · ASK/.test(html));
 ok('Reference skips VECTOR answer card', /box\.innerHTML=\(S\.tab==='ask'\?vectorAnswerHTML/.test(html));
 ok('fc chips gray counts', /fc-n/.test(html) && /countOf/.test(html));
 ok('clickable TBL refs', /function linkifyTblRefs\(/.test(html) && /data-action="jumptbl"/.test(html) && /function jumpTblRef\(/.test(html));
@@ -604,7 +604,12 @@ ok('ASK_ALIASES has Fallbrook / Del Mar RFD', /fallbrook/.test(aliases) && /[Dd]
 ok('BOOK has 7110.65 4-2-8', /"7110\.65 4-2-8":\{/.test(html));
 ok('BOOK has 7110.65 4-2-1', /"7110\.65 4-2-1":\{/.test(html));
 ok('BOOK has FACMAN 5-3-1', /"FACMAN 5-3-1":\{/.test(html));
-ok('statusbar v0.8.6 ask-howdoi', /v0\.8\.6 · ask-howdoi/.test(html));
+ok('home quizlets closed by default', !/fcOpen\|\|{gca:true}/.test(html) && /fcOpen\|\|\{\}/.test(html));
+ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
+ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
+ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
+ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
+ok('statusbar v0.8.7 home-clean', /v0\.8\.7 · home-clean/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);
@@ -777,7 +782,7 @@ if (sm) {
       const home2 = typeof V.homeView === 'function' ? V.homeView() : '';
       ok('homeView KNFG Quizlets chips', /KNFG Quizlets/.test(home2) && /3-LETTER IDENTS/.test(home2) && /1939 LINE/.test(home2) && /4779 LINE/.test(home2) && /VISCOM/.test(home2) && /SIDS/.test(home2) && /SVFR/.test(home2) && /ABBREV/.test(home2) && /data-d="vrp"/.test(home2) && /data-d="scratchpad"/.test(home2) && /data-d="fdio"/.test(home2) && /data-d="twr-freq"/.test(home2) && /data-d="helo"/.test(home2) && /data-d="crash"/.test(home2) && /data-d="par"/.test(home2) && /data-d="asr"/.test(home2) && /data-d="radio"/.test(home2) && /data-d="rfd"/.test(home2) && /data-d="handoff"/.test(home2) && /data-d="missed"/.test(home2) && /data-d="final"/.test(home2) && /data-d="wake"/.test(home2) && /data-d="sep"/.test(home2) && /TWR FREQ/.test(home2) && /CRASH/.test(home2) && /RFD/.test(home2) && /HANDOFF/.test(home2) && /MISSED/.test(home2) && /data-d="final">FINAL/.test(home2) && /data-d="wake">WAKE/.test(home2) && /data-d="sep">SEP/.test(home2) && /data-d="intercept">INTERCEPT/.test(home2));
       ok('home chip UI group label LOCAL or GCA', /<summary[^>]*>LOCAL<\/summary>/.test(home2) || /<summary[^>]*>GCA<\/summary>/.test(home2), (home2.match(/<summary[^>]*>[^<]+<\/summary>/g)||[]).slice(0,6).join(' | '));
-      ok('home GCA group open by default', /<details class="fc-crt" open><summary data-action="fcgrp" data-g="gca">GCA<\/summary>/.test(home2));
+ok('home GCA group closed by default', !/<details class="fc-crt" open><summary data-action="fcgrp" data-g="gca">GCA<\/summary>/.test(home2));
       const priorFcKeys=['idents','gca','gca-freq','squadrons','diverts','dial-1939','dial-4779','viscom','sids','svfr','abbrev','vrp','scratchpad','fdio','twr-freq','helo','crash','par','asr','radio','rfd','handoff','missed','final','wake','sep','intercept','taxi'];
       const missingFc=priorFcKeys.filter(k=>!(V.FC_SETS && Array.isArray(V.FC_SETS[k]) && V.FC_SETS[k].length));
       ok('all prior FC_SETS keys still exist', missingFc.length===0, missingFc.join(','));

@@ -1508,8 +1508,8 @@
     const g=FC_CHIP_GROUPS.find(x=>x.sets.indexOf(k)>=0);
     return g?g.id:'gca';
   }
-  function fcOpenGroup(){ return S.fcGrp||'gca'; }
-  function fcOpenMap(){ return S.fcOpen||{gca:true}; }
+  function fcOpenGroup(){ return S.fcGrp||''; }
+  function fcOpenMap(){ return S.fcOpen||{}; }
   function fcSetChipRow(includePos){
     const cur=S.fcDeck||'pos';
     const openMap=fcOpenMap();
@@ -1531,7 +1531,7 @@
       return `<details class="fc-crt"${openMap[g.id]?' open':''}><summary data-action="fcgrp" data-g="${g.id}">${g.lab}</summary><div class="askchips fc-chips">${chips}</div></details>`;
     });
     const extra=Object.keys(FC_SETS).filter(k=>!grouped.has(k));
-    if(extra.length) groups.push(`<details class="fc-crt" open><summary>MORE</summary><div class="askchips fc-chips">${extra.map(k=>chipOf(k,FC_SET_LAB[k]||k.toUpperCase())).join('')}</div></details>`);
+    if(extra.length) groups.push(`<details class="fc-crt"><summary>MORE</summary><div class="askchips fc-chips">${extra.map(k=>chipOf(k,FC_SET_LAB[k]||k.toUpperCase())).join('')}</div></details>`);
     return `<div class="fc-chip-wrap">${posChip}<div class="fc-chip-groups">${groups.join('')}</div></div>`;
   }
 
@@ -1761,7 +1761,7 @@
     {re:/\b(vfr\s*(to|→|-)?\s*ifr|ifr\s*(from|after)\s*vfr|clear(ing)?\s+(an?\s+)?aircraft\s+from\s+vfr|pop[- ]?up\s*ifr|how (do i|to) clear.{0,40}ifr|vr\s+to\s+ifr)\b/i, extra:'IFR-VFR VFR-IFR 4-2-8 pop-up terrain obstruction MSAW beacon 4-2-1 CLEARANCE ITEMS 4-2-4 CLEARANCE RELAY', prefer:[{pg:'4-2-8',pa:'IFR-VFR AND VFR-IFR FLIGHTS',key:'7110.65 4-2-8'},{pg:'4-2-1',pa:'CLEARANCE ITEMS',key:'7110.65 4-2-1'},{pg:'4-2-4',pa:'CLEARANCE RELAY',key:'7110.65 4-2-4'},{pg:'5-3-1',pa:'DUTIES & RESPONSIBILITIES',key:'FACMAN 5-3-1'}]},
     {re:/\b(fallbrook\s*(ifr\s*)?(dep|departure|release)|del\s*mar(\s*sector)?|delmar|what (do i|to) say.{0,80}fallbrook|radar flight data.{0,60}fallbrook|rfd.{0,60}fallbrook|fallbrook.{0,40}(del\s*mar|release)|when\s+del\s*mar\s+calls)\b/i, extra:'Fallbrook departures 6-4-4c LOA SCT call Arrival request release RFD assist 6-3-2 6-3-1 Del Mar Sector TBL 8-1 dial 75 strip void V< 6-1-10', prefer:[{pg:'6-4-4',pa:'DEPARTURES',key:'FACMAN 6-4-4'},{pg:'6-3-2',pa:'DEPARTURE COORDINATION',key:'FACMAN 6-3-2'},{pg:'6-3-1',pa:'DUTIES & RESPONSIBILITIES',key:'FACMAN 6-3-1'},{pg:'TBL 8-1',pa:'1939 Line Stations and Numbers',key:'FACMAN TBL 8-1'},{pg:'6-1-10',pa:'FLIGHT PROGRESS STRIPS',key:'FACMAN 6-1-10'},{pg:'6-1-2',pa:'RADAR HANDOFF / COORDINATION FIXES',key:'FACMAN 6-1-2'}]},
     {re:/\b(how do i|how to|what do i say|what to say|phraseology for|say when)\b/i, extra:'PHRASEOLOGY EXAMPLE LOCAL FACMAN', prefer:[]},
-    {re:/\b(true or false|t\/f|which is correct|select the correct|test bank|quiz)\b/i, extra:'verify paragraph cite FACMAN JO AIM PCG do not invent', prefer:[]},
+    {re:/\b(true or false|t\/f|which is correct|select the correct|test bank|quiz)\b/i, extra:'verify paragraph cite FACMAN JO AIM PCG', prefer:[]},
     {re:/\b(aim|aeronautical information manual)\b.*\b(airspace|class [abcdg]|atc|clearance|traffic pattern)\b/i, extra:'AIM airspace ATC procedures', prefer:[]},
     {re:/\b(class [abcdg] airspace|controlled airspace|special use airspace|moa|tfr)\b/i, extra:'AIM Chapter 3 Airspace Class B C D E', prefer:[]},
     {re:/\b(pilot acknowledgment|read ?back|hear ?back)\b/i, extra:'7110.65 2-4-3 PILOT ACKNOWLEDGMENT READ BACK', prefer:[{pg:'2-4-3',pa:'PILOT ACKNOWLEDGMENT/READ BACK',key:'7110.65 2-4-3'}]},
@@ -2463,7 +2463,7 @@
     return {kind:'quote', text:shortQuote(raw, 180)};
   }
 function vectorAnswerHTML(query, hits){
-    const empty=`<div class="vector-ans"><div class="va-who">VECTOR · experimental</div><div class="va-body">Not in the loaded pub library with a solid hit. Try a paragraph (e.g. 6-2-12), a PCG term, or a local phrase — I will not invent frequencies, minima, or SIDs.</div><div class="va-note">Ask is sourced only from pubs on-device.</div></div>`;
+    const empty=`<div class="vector-ans"><div class="va-who">VECTOR</div><div class="va-body">Not in the loaded pub library with a solid hit. Try a paragraph (e.g. 6-2-12), a PCG term, or a local phrase — I will not invent frequencies, minima, or SIDs.</div><div class="va-note">Ask is sourced only from pubs on-device.</div></div>`;
     if(!hits || !hits.length) return empty;
     const h=vectorPickHit(hits);
     if(!h) return empty;
@@ -2478,7 +2478,7 @@ function vectorAnswerHTML(query, hits){
       const needle=escTxt(findNeedleFromBook(b)).replace(/"/g,'&quot;');
       return `<div class="vector-ans"><div class="va-who">VECTOR · ${escTxt(h.band||'HIT')}</div><div class="va-body">${body}</div>
         <div class="va-cite"><button type="button" class="srcchip" data-action="openfindhit" data-pub="${pub}" data-doc="${escTxt(b.doc||'')}" data-needle="${needle}" data-cite="${escTxt(b.cite||'')}">${I.ext} ${escTxt(cite)}</button></div>
-        <div class="va-note">Verify in the pub — experimental instructor from sourced text only.</div></div>`;
+        <div class="va-note">Verify in the pub — </div></div>`;
     }
     if(h.e){
       const e=h.e, src=e.src||{};
@@ -2488,7 +2488,7 @@ function vectorAnswerHTML(query, hits){
       const needle=escTxt(shortQuote(e.a||e.q||'', 60)).replace(/"/g,'&quot;');
       return `<div class="vector-ans"><div class="va-who">VECTOR · ${escTxt(h.band||'HIT')}</div><div class="va-body">${escTxt(ans)}</div>
         <div class="va-cite"><button type="button" class="srcchip" data-action="openfindhit" data-pub="${pub}" data-doc="${escTxt(src.doc||'')}" data-needle="${needle}">${I.ext} ${escTxt(cite)}</button></div>
-        <div class="va-note">Verify in the pub — experimental instructor from sourced text only.</div></div>`;
+        <div class="va-note">Verify in the pub — </div></div>`;
     }
     return empty;
   }
@@ -2512,7 +2512,7 @@ function vectorAnswerHTML(query, hits){
     }
     const hits=askHits(q);
     if(!hits.length){
-      box.innerHTML=S.tab==='ask' ? vectorAnswerHTML(q, [])+'<div class="lkempty vector">Scanning pubs for a Find hit…</div>' : '<div class="lkempty">No matching publication passages yet. Browse PUBLICATIONS or search a PDF.</div>';
+      box.innerHTML=S.tab==='ask' ? vectorAnswerHTML(q, [])+'<div class="lkempty vector">Scanning pubs for a Find hit…</div>' : '<div class="lkempty">No matching passages.</div>';
       queueCrossPubFind(q);
       return;
     }
@@ -2570,26 +2570,26 @@ function vectorAnswerHTML(query, hits){
     const q=escTxt(S.refQ||'');
     const deep=(S.refQ||'').trim()||S.pub;
     return `<div class="lkwrap${(S.refQ||'').trim()?' hasq':''}${S.pub?' haspdf':''}">
-      <div class="qmeta"><span class="pill warn">VECTOR · ASK</span><span class="muted" style="font-size:11px">ATC instructor · sourced · experimental</span></div>
+      <div class="qmeta"><span class="pill warn">VECTOR · ASK</span></div>
       <div class="findtools">
         <button type="button" class="btn-back" data-action="findback"${deep?'':' hidden'} title="Back one level">← BACK</button>
         <button type="button" class="btn-ghost" data-action="findclear"${deep?'':' hidden'}>CLEAR</button>
       </div>
       <div class="findbar"><input id="reflk" placeholder="Ask VECTOR" autocomplete="off" spellcheck="false" value="${q}"><button class="btn" data-action="findgo">ASK</button></div>
-      <div id="refhits">${(S.refQ||'').trim()?'':`<div class="lkempty vector"><b style="color:var(--amber)">VECTOR</b> answers from FACMAN / JO / PCG / AIM on-device — short and cited. Ask a procedure, mile mark, or para. Never invents freqs, minima, or SIDs.</div>`}</div>
+      <div id="refhits">${(S.refQ||'').trim()?'':''}</div>
     </div>`;
   }
   function refConsole(){
     const q=escTxt(S.refQ||'');
     const deep=(S.refQ||'').trim()||S.pub;
     return `<div class="lkwrap${(S.refQ||'').trim()?' hasq':''}${S.pub?' haspdf':''}">
-      <div class="qmeta"><span class="pill">PUBLICATIONS</span><span class="muted" style="font-size:11px">On-device library · source-linked</span></div>
+      <div class="qmeta"><span class="pill">PUBLICATIONS</span></div>
       <div class="findtools">
         <button type="button" class="btn-back" data-action="findback"${deep?'':' hidden'} title="Back one level">← BACK</button>
         <button type="button" class="btn-ghost" data-action="findclear"${deep?'':' hidden'}>CLEAR</button>
       </div>
       <div class="findbar"><input id="reflk" placeholder="Find in publications" autocomplete="off" spellcheck="false" value="${q}"><button class="btn" data-action="findgo">FIND</button></div>
-      <div id="refhits">${(S.refQ||'').trim()?'':`<div class="lkempty">Browse PUBLICATIONS or search the loaded library. Open a result to jump into the PDF.</div>`}</div>
+      <div id="refhits">${(S.refQ||'').trim()?'':''}</div>
     </div>`;
   }
 
@@ -2731,7 +2731,7 @@ function vectorAnswerHTML(query, hits){
 
 
   const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'acad',
-    pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcRated:{},fcDeck:'pos',fcGrp:'gca',fcOpen:{gca:true},fcOrder:null,
+    pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcRated:{},fcDeck:'pos',fcGrp:'',fcOpen:{},fcOrder:null,
     lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'' };
   function set(o){ Scope.teardown(); Object.assign(S,o); render(); }
   const TRAINEE_KEY='vatc.trainee';
@@ -2860,7 +2860,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.6 · ask-howdoi</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.7 · home-clean</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -2989,8 +2989,7 @@ function vidsStrip(){
         </div></div>`;
     }).join('');
     const quiz=`<div class="grp">KNFG Quizlets</div>
-      ${fcSetChipRow(false)}
-      <div class="explain" style="margin-bottom:14px">Tap-to-reveal decks (ASR Phraseology · Squadrons · …). Tap FLASHCARDS on a position (or Learn → FLASHCARDS) for the sourced deck. Tap the card for Learn / ACADs.</div>`;
+      ${fcSetChipRow(false)}`;
     return `<div class="hero reveal"><div class="hk">KNFG</div><div class="hn">MCAS Camp Pendleton · Munn Field · Oceanside, CA</div>
         <div class="hstats"><div><b>RWY 21</b><span>Primary</span></div><div><b>78 ft</b><span>Field Elev</span></div><div><b>3 / 21</b><span>Runways</span></div><div><b>Ch 55</b><span>NFG TACAN</span></div><div><b>${POS.length}</b><span>Positions</span></div></div>
         <div class="qa"><button class="qabtn" data-action="tab" data-t="ask">${I.ask} Ask a question</button><button class="qabtn" data-action="tab" data-t="reference">${I.file} Charts & routes</button><button class="qabtn" data-action="goscope">${I.sim} Run the scope</button><button class="qabtn" data-action="acads">${I.grad} Academics</button></div></div>
@@ -3577,7 +3576,7 @@ function pdfPaneHTML(){
       }
       if(!box || gen!==pdfFindGen || (S.refQ||'').trim()!==query || S.pub) return;
       if(!found.length){
-        box.innerHTML='<div class="lkempty">No hit in the publication library (pack + full PDF scan). Open a publication and Find there — do not invent an answer.</div>';
+        box.innerHTML='<div class="lkempty">No hit in the publication library.</div>';
       }
     }).catch(()=>{});
   }
@@ -3766,7 +3765,7 @@ function pdfPaneHTML(){
       d.addEventListener('toggle',()=>{
         const s=d.querySelector('summary[data-g]');
         if(!s) return;
-        S.fcOpen=Object.assign({gca:true}, S.fcOpen||{});
+        S.fcOpen=Object.assign({}, S.fcOpen||{});
         S.fcOpen[s.dataset.g]=d.open;
         S.fcGrp=s.dataset.g;
       });
@@ -3791,7 +3790,7 @@ function pdfPaneHTML(){
         <div class="gg"><div class="gn">WX / CRASH</div><div class="gd">Weather; crash hotline.</div></div></div>
         <div class="note" style="margin-top:10px">Mirrors the VCSS landline layout. Discrete internal frequencies are intentionally not listed — only published positions; the full freq load stays in on-device, access-controlled material.</div></div>
       ${stripsRef()}
-      <div class="explain" style="margin-top:12px">Each line is source-anchored in the live app — tap to open your locally-imported plate at the exact page. Controlled pubs are never bundled.</div></div></details>`; }
+      </div></details>`; }
 
   function stationScreen(){ const lock=(c,n)=>`<div class="stn lock"><div class="code">${c}</div><div class="nm">${n}</div><div class="lockrow">${I.lock} Content in validation — coming soon</div></div>`;
     return `<div class="body reveal"><h2 class="sec">${I.target} SELECT STATION</h2><div class="stationgrid">
@@ -3893,11 +3892,11 @@ function pdfPaneHTML(){
     if(a==='scnnext')return set({scnIdx:S.scnIdx+1,scnAns:false,scnSel:null});
     if(a==='scnrestart')return set({scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='src')return set({source:+el.dataset.i});
-    if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({gca:true},S.fcOpen||{}); o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null});}
+    if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({}, S.fcOpen||{}); o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null});}
     if(a==='fcjump'){const i=Math.max(0,parseInt(el.dataset.i,10)||0); return set({fcIdx:i,fcFlip:false});}
     if(a==='jumptbl'){ jumpTblRef(el.dataset.tbl||el.textContent||''); return; }
     if(a==='wxrefresh'){ fetchKnfgMetar(true); return; }
-    if(a==='fcgrp'){ const g=el.dataset.g||'gca'; setTimeout(()=>{ const o=Object.assign({gca:false,local:false,radar:false,strips:false},S.fcOpen||{gca:true}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
+    if(a==='fcgrp'){ const g=el.dataset.g||'gca'; setTimeout(()=>{ const o=Object.assign({gca:false,local:false,radar:false,strips:false},S.fcOpen||{}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
     if(a==='openpub'){const page=Math.max(1,parseInt(el.dataset.page,10)||1);const same=S.pub===el.dataset.id; if(!same){resetCitePdfFind();} return set({tab:'reference',pub:el.dataset.id,pubPage:page,pubQ:same?S.pubQ:'',pubGuessNote:'',pubPreferPage:page,pubCiteSec:same?S.pubCiteSec:''});}
     if(a==='pdfclose'){ if(S.learnReturn) return leavePdfToLearn(); resetCitePdfFind(); return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:''}); }
     if(a==='pdfprev'){ S.pubPage=Math.max(1,(S.pubPage||1)-1); pdfDraw(); return; }
