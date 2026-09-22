@@ -531,7 +531,10 @@ ok('Reference PUBLICATIONS closed by default', /function pubShelfHTML\(/.test(ht
 ok('no standalone SECTIONS · FACMAN dropdown', !/<summary>SECTIONS · FACMAN<\/summary>/.test(html) && !/<summary>SECTIONS · 7110\.65<\/summary>/.test(html));
 ok('pub sections nested under each PUBLICATION', /function pubSectionsFor\(/.test(html) && /pub-nest/.test(html));
 ok('fcdeck Quizlet tap-to-reveal', /data-action="fcflip"/.test(html) && /data-action="fcshuffle"/.test(html) && /tap to reveal/.test(html));
-ok('VECTOR Ask persona', /vectorAnswerHTML/.test(html) && /VECTOR · ASK/.test(html));
+ok('Ask and Reference consoles split', /function askConsole\(\)/.test(html) && /function refConsole\(\)/.test(html) && /function askView\(\)[\s\S]{0,100}askConsole\(\)/.test(html) && /function refView\(\)[\s\S]{0,140}refConsole\(\)/.test(html));
+ok('VECTOR Ask persona stays on Ask', /function askConsole\([\s\S]*?VECTOR · ASK/.test(html) && /placeholder=\"Ask VECTOR\"/.test(html) && /data-action=\"findgo\">ASK/.test(html));
+ok('Reference uses professional Find console', /function refConsole\([\s\S]*?PUBLICATIONS[\s\S]*?Find in publications[\s\S]*?data-action=\"findgo\">FIND/.test(html) && /Browse PUBLICATIONS or search the loaded library/.test(html));
+ok('Reference skips VECTOR answer card', /box\.innerHTML=\(S\.tab==='ask'\?vectorAnswerHTML/.test(html));
 ok('fc chips gray counts', /fc-n/.test(html) && /countOf/.test(html));
 ok('clickable TBL refs', /function linkifyTblRefs\(/.test(html) && /data-action="jumptbl"/.test(html) && /function jumpTblRef\(/.test(html));
 ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendix D/.test(html));
@@ -595,7 +598,13 @@ ok('JO Chg2 pub present', /id:'jochg2'/.test(html) && /JO-7110\.65BB-CHG2-2026-0
 ok('Ask scans full pubs not 40-cap', /CHUNK=50/.test(html) && !/Math\.min\(doc\.numPages,\s*40\)/.test(html));
 ok('Ask empty copy mentions publication library', /publication library/.test(html));
 ok('PCG GO AROUND in BOOK', /7110\.65 PCG GO AROUND/.test(html));
-ok('statusbar v0.8.4 ask-vector', /v0\.8\.4 · ask-vector/.test(html));
+
+ok('ASK_ALIASES has VFR to IFR / 4-2-8', /4-2-8/.test(aliases) && /pop\[- \]\?up/.test(aliases));
+ok('ASK_ALIASES has Fallbrook / Del Mar RFD', /fallbrook/.test(aliases) && /[Dd]el [Mm]ar|delmar|del\s\*mar/.test(aliases) && !/desmore/i.test(aliases));
+ok('BOOK has 7110.65 4-2-8', /"7110\.65 4-2-8":\{/.test(html));
+ok('BOOK has 7110.65 4-2-1', /"7110\.65 4-2-1":\{/.test(html));
+ok('BOOK has FACMAN 5-3-1', /"FACMAN 5-3-1":\{/.test(html));
+ok('statusbar v0.8.6 ask-howdoi', /v0\.8\.6 · ask-howdoi/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);
@@ -1608,6 +1617,28 @@ if (sm) {
         ok('RATCF 128.775 still prefers 8-2-2 or TBL 8-4 after 5-1 rest', (t51rest_ratcf.prefer||[]).some(p => /8-2-2|TBL 8-4/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(t51rest_ratcf.prefer));
         const t51rest_svfrRoute = V.expandAsk('SVFR route abbreviations');
         ok('SVFR route abbreviations still prefers TBL 5-5 after 5-1-7', (t51rest_svfrRoute.prefer||[]).some(p => /TBL 5-5/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(t51rest_svfrRoute.prefer));
+
+
+        // v0.8.6 ask-howdoi: VFR→IFR + Fallbrook/Del Mar
+        ok('BOOK 4-2-8 terrain phraseology', !!(V.BOOK['7110.65 4-2-8'] && /ARE YOU ABLE TO MAINTAIN YOUR OWN TERRAIN/.test(V.BOOK['7110.65 4-2-8'].text||'')));
+        ok('BOOK 4-2-1 clearance items', !!(V.BOOK['7110.65 4-2-1'] && /Aircraft identification/.test(V.BOOK['7110.65 4-2-1'].text||'')));
+        ok('BOOK FACMAN 5-3-1 verbatim SCT', !!(V.BOOK['FACMAN 5-3-1'] && /relayed to the pilot verbatim/i.test(V.BOOK['FACMAN 5-3-1'].text||'')));
+        const vfrIfrExp = V.expandAsk('how do I clear an aircraft from VFR to IFR');
+        ok('clear aircraft from VFR to IFR expandAsk prefers 4-2-8', (vfrIfrExp.prefer||[]).some(p => /4-2-8/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(vfrIfrExp.prefer));
+        const vfrIfrHits = V.askHits('how do I clear an aircraft from VFR to IFR');
+        const vfrIfrTop = (vfrIfrHits||[]).slice(0,3).map(h => h.book && h.book.cite).join(' ');
+        ok('clear VFR to IFR askHits top cites 4-2-8', /4-2-8/.test(vfrIfrTop), vfrIfrTop);
+        const fbExp = V.expandAsk('Fallbrook departure');
+        ok('Fallbrook departure expandAsk prefers 6-4-4', (fbExp.prefer||[]).some(p => /6-4-4/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(fbExp.prefer));
+        const fbRelExp = V.expandAsk('Fallbrook release');
+        ok('Fallbrook release expandAsk prefers 6-4-4', (fbRelExp.prefer||[]).some(p => /6-4-4/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(fbRelExp.prefer));
+        const dmExp = V.expandAsk('what do I say when Del Mar calls for a Fallbrook departure as radar flight data');
+        ok('Del Mar Fallbrook RFD expandAsk prefers 6-4-4', (dmExp.prefer||[]).some(p => /6-4-4/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(dmExp.prefer));
+        ok('Del Mar Fallbrook also prefers TBL 8-1 or 6-3', (dmExp.prefer||[]).some(p => /TBL 8-1|6-3-1|6-3-2/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(dmExp.prefer));
+        const dmHits = V.askHits('what do I say when Del Mar calls for a Fallbrook departure as radar flight data');
+        const dmTop = (dmHits||[]).slice(0,4).map(h => h.book && h.book.cite).join(' ');
+        ok('Del Mar Fallbrook askHits top cites 6-4-4', /6-4-4/.test(dmTop), dmTop);
+        ok('no Desmore invent in aliases', !(V.ASK_ALIASES||[]).some(a => /desmore/i.test(String(a.re))));
 
         ok('T2 still 36 / T3 still 12 / T4 still 18', t2t.length === 36 && t3t.length === 12 && t4t.length === 18, 'T2='+t2t.length+' T3='+t3t.length+' T4='+t4t.length);
 
