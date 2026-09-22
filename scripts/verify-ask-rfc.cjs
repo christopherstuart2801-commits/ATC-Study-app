@@ -530,7 +530,8 @@ ok('Learn cite PDF hides shelf', /if\(S\.pub && S\.learnReturn\) return pdfPaneH
 ok('Reference PUBLICATIONS closed by default', /function pubShelfHTML\(/.test(html) && /<details class="pos-acads"><summary>PUBLICATIONS<\/summary>\$\{nest\}<\/details>/.test(html) && !/pos-acads"\$\{S\.pub\?'':' open'\}/.test(html) && !/<details class="pos-acads" open><summary>PUBLICATIONS/.test(html));
 ok('no standalone SECTIONS · FACMAN dropdown', !/<summary>SECTIONS · FACMAN<\/summary>/.test(html) && !/<summary>SECTIONS · 7110\.65<\/summary>/.test(html));
 ok('pub sections nested under each PUBLICATION', /function pubSectionsFor\(/.test(html) && /pub-nest/.test(html));
-ok('fcdeck list Quizlet-style', /fcdeck-list/.test(html) && /data-action="fcjump"/.test(html));
+ok('fcdeck Quizlet tap-to-reveal', /data-action="fcflip"/.test(html) && /data-action="fcshuffle"/.test(html) && /tap to reveal/.test(html));
+ok('VECTOR Ask persona', /vectorAnswerHTML/.test(html) && /VECTOR · ASK/.test(html));
 ok('fc chips gray counts', /fc-n/.test(html) && /countOf/.test(html));
 ok('clickable TBL refs', /function linkifyTblRefs\(/.test(html) && /data-action="jumptbl"/.test(html) && /function jumpTblRef\(/.test(html));
 ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendix D/.test(html));
@@ -594,7 +595,7 @@ ok('JO Chg2 pub present', /id:'jochg2'/.test(html) && /JO-7110\.65BB-CHG2-2026-0
 ok('Ask scans full pubs not 40-cap', /CHUNK=50/.test(html) && !/Math\.min\(doc\.numPages,\s*40\)/.test(html));
 ok('Ask empty copy mentions publication library', /publication library/.test(html));
 ok('PCG GO AROUND in BOOK', /7110\.65 PCG GO AROUND/.test(html));
-ok('statusbar v0.8.1 ask-all-pubs', /v0\.8\.1 · ask-all-pubs/.test(html));
+ok('statusbar v0.8.3 ask-vector', /v0\.8\.3 · ask-vector/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);
@@ -640,6 +641,8 @@ if (sm) {
   try {
     eval(code);
     const V = globalThis.__VATC;
+      V.S.fcFlip=true; // reveal answers for HTML asserts
+
     ok('runtime __VATC exported', !!V && typeof V.askHits === 'function');
     if (V && V.askHits) {
       const hits = V.askHits('how to pass a bay');
@@ -654,7 +657,7 @@ if (sm) {
       const top4 = (hits || []).slice(0, 4).map(h => h.book && h.book.cite).join(' ');
       ok('6-1-10 is not in top 4', !/6-1-10/.test(top4), top4);
       const htmlOut = V.askResultHTML(hits, 'how to pass a bay');
-      ok('askResultHTML renders book text', /Radar flight data is responsible for the initial inbound/.test(htmlOut || ''));
+      ok('askResultHTML VECTOR lead', /VECTOR/.test(htmlOut || '') && (/srcchip|openfindhit|citation/.test(htmlOut || '')));
       ok('askResultHTML citation has FACMAN', /NFG FACMAN/.test(htmlOut || ''));
       const exp = V.expandAsk('how to pass a bay');
       ok('expandAsk prefer keys are 6-3', (exp.prefer || []).every(p => /6-3|TBL 6-4/i.test(p.pg || '')), JSON.stringify(exp.prefer));
@@ -758,9 +761,9 @@ if (sm) {
       ok('TBL C-1 cite present', idents.length > 0 && idents.every(c => /TBL C-1/i.test(idSrc(c))), idents.slice(0,1).map(idSrc).join(''));
       const gca = (V.FC_SETS && V.FC_SETS.gca) || [];
       const gcaBlob = gca.map(c => idQ(c)+' '+idA(c)).join('\n');
-      ok('gca DA is 393 not 387', /393/.test(gcaBlob) && !/387/.test(gcaBlob), gcaBlob);
-      ok('gca ASR MDA 940 not 1000', /940/.test(gcaBlob) && !/\b1000\b/.test(gcaBlob), gcaBlob);
-      ok('gca PAR FAF 5.03 not 4.98', /5\.03/.test(gcaBlob) && !/4\.98/.test(gcaBlob), gcaBlob);
+      ok('gca DA is 388 not 387', /388/.test(gcaBlob) && !/387/.test(gcaBlob), gcaBlob);
+      ok('gca ASR MDA 960 not 1000', /960/.test(gcaBlob) && !/\b1000\b/.test(gcaBlob), gcaBlob);
+      ok('gca PAR FAF 5.56 not 4.98', /5\.56/.test(gcaBlob) && !/4\.98/.test(gcaBlob), gcaBlob);
       ok('gca does not include Approach Gate', !/approach gate/i.test(gcaBlob));
       const home2 = typeof V.homeView === 'function' ? V.homeView() : '';
       ok('homeView KNFG Quizlets chips', /KNFG Quizlets/.test(home2) && /3-LETTER IDENTS/.test(home2) && /1939 LINE/.test(home2) && /4779 LINE/.test(home2) && /VISCOM/.test(home2) && /SIDS/.test(home2) && /SVFR/.test(home2) && /ABBREV/.test(home2) && /data-d="vrp"/.test(home2) && /data-d="scratchpad"/.test(home2) && /data-d="fdio"/.test(home2) && /data-d="twr-freq"/.test(home2) && /data-d="helo"/.test(home2) && /data-d="crash"/.test(home2) && /data-d="par"/.test(home2) && /data-d="asr"/.test(home2) && /data-d="radio"/.test(home2) && /data-d="rfd"/.test(home2) && /data-d="handoff"/.test(home2) && /data-d="missed"/.test(home2) && /data-d="final"/.test(home2) && /data-d="wake"/.test(home2) && /data-d="sep"/.test(home2) && /TWR FREQ/.test(home2) && /CRASH/.test(home2) && /RFD/.test(home2) && /HANDOFF/.test(home2) && /MISSED/.test(home2) && /data-d="final">FINAL/.test(home2) && /data-d="wake">WAKE/.test(home2) && /data-d="sep">SEP/.test(home2) && /data-d="intercept">INTERCEPT/.test(home2));
@@ -770,7 +773,7 @@ if (sm) {
       const missingFc=priorFcKeys.filter(k=>!(V.FC_SETS && Array.isArray(V.FC_SETS[k]) && V.FC_SETS[k].length));
       ok('all prior FC_SETS keys still exist', missingFc.length===0, missingFc.join(','));
       if (V.S) {
-        V.S.fcDeck = 'idents'; V.S.trainMode = 'cards'; V.S.fcIdx = 0; V.S.fcFlip = false; V.S.pos = 'fin';
+        V.S.fcDeck='idents'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.trainMode = 'cards'; V.S.fcIdx = 0; V.S.fcFlip = false; V.S.pos = 'fin';
         const idBody = typeof V.fcBody === 'function' ? V.fcBody() : (typeof V.rfcTrain === 'function' ? V.rfcTrain() : '');
         ok('fcBody idents deck shows C-1 card', /TBL C-1/.test(idBody) && /POGGI|PGY/.test(idBody), (idBody||'').slice(0,180));
         ok('fcBody named deck chips', /3-LETTER IDENTS/.test(idBody) && /GCA DATA/.test(idBody) && /GCA FREQ/.test(idBody) && /SQUADRONS/.test(idBody) && /DIVERTS/.test(idBody) && /1939 LINE/.test(idBody) && /4779 LINE/.test(idBody) && /VISCOM/.test(idBody) && /SIDS/.test(idBody) && /SVFR/.test(idBody) && /ABBREV/.test(idBody) && /data-d="vrp"/.test(idBody) && /data-d="scratchpad"/.test(idBody) && /data-d="fdio"/.test(idBody) && /data-d="twr-freq"/.test(idBody) && /data-d="helo"/.test(idBody) && /data-d="crash"/.test(idBody) && /data-d="par"/.test(idBody) && /data-d="asr"/.test(idBody) && /data-d="radio"/.test(idBody) && /data-d="rfd"/.test(idBody) && /data-d="handoff"/.test(idBody) && /data-d="missed"/.test(idBody) && /data-d="final"/.test(idBody) && /data-d="wake"/.test(idBody) && /data-d="sep"/.test(idBody) && /TWR FREQ/.test(idBody) && /RFD/.test(idBody) && /HANDOFF/.test(idBody) && /MISSED/.test(idBody) && /data-d="final">FINAL/.test(idBody) && /data-d="wake">WAKE/.test(idBody) && /data-d="sep">SEP/.test(idBody) && /data-d="intercept">INTERCEPT/.test(idBody));
@@ -788,7 +791,7 @@ if (sm) {
         ok('FC_SETS.viscom is array', Array.isArray(vis) && vis.length > 0, 'n=' + vis.length);
         ok('viscom HELO → Helicopter', vis.some(c => /^HELO$/i.test(idQ(c).trim()) && /Helicopter/i.test(idA(c))));
         ok('viscom TBL 8-3 cite on button cards', vis.filter(c => /TBL 8-3/i.test(idSrc(c))).length >= 12, vis.slice(0,1).map(idSrc).join(''));
-        V.S.fcDeck = 'dial-1939'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='dial-1939'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const d1939Body = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody dial-1939 shows TBL 8-1', /TBL 8-1/.test(d1939Body), (d1939Body||'').slice(0,180));
         const sids = (V.FC_SETS && V.FC_SETS.sids) || [];
@@ -813,7 +816,7 @@ if (sm) {
         ok('abbrev BLDG → Bulldog Departure', abv.some(c => /^BLDG$/i.test(idQ(c).trim()) && /Bulldog Departure/i.test(idA(c))));
         ok('abbrev TBL 6-3 cite', abv.length > 0 && abv.every(c => /TBL 6-3/i.test(idSrc(c))), abv.slice(0,1).map(idSrc).join(''));
         ok('abbrev no page-footer row', !abv.some(c => /Radar - General/i.test(idQ(c)+' '+idA(c))));
-        V.S.fcDeck = 'sids'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='sids'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const sidsBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody sids shows TBL 5-3 or QUNTN/BLDG', /TBL 5-3|QUNTN|BLDG/.test(sidsBody), (sidsBody||'').slice(0,180));
         const vrp = (V.FC_SETS && V.FC_SETS.vrp) || [];
@@ -822,7 +825,7 @@ if (sm) {
         ok('vrp Morro Hill NFG 062 @ 6.2 verbatim (no R-)', vrp.some(c => /Morro Hill/i.test(idQ(c)) && /NFG 062 @ 6\.2/.test(idA(c)) && !/NFG R-062/.test(idA(c))));
         ok('vrp TBL 5-1 / 5-1-3 cite', vrp.length > 0 && vrp.every(c => /TBL 5-1/i.test(idSrc(c)) && /5-1-3/.test(idSrc(c))), vrp.slice(0,1).map(idSrc).join(''));
         ok('vrp eight printed names', ['North Initial','Intersection','LCAC','MASS-3','Point Canyon','Morro Hill'].every(n => vrp.some(c => idQ(c).indexOf(n) >= 0)) && vrp.some(c => /Lake O/.test(idQ(c))) && vrp.some(c => /Oceanside/i.test(idQ(c)) && /South Initial/i.test(idQ(c))));
-        V.S.fcDeck = 'vrp'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='vrp'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const vrpBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody vrp shows TBL 5-1 or North Initial', /TBL 5-1|North Initial/.test(vrpBody), (vrpBody||'').slice(0,180));
         const sp = (V.FC_SETS && V.FC_SETS.scratchpad) || [];
@@ -841,7 +844,7 @@ if (sm) {
         ok('fdio FP → Flight Plan TBL 5-7', fdio.some(c => /^FP$/.test(idQ(c).trim()) && /Flight Plan/i.test(idA(c)) && /TBL 5-7/i.test(idSrc(c))));
         ok('fdio AID → Aircraft ID TBL 5-6', fdio.some(c => /^AID$/.test(idQ(c).trim()) && /Aircraft ID/i.test(idA(c)) && /TBL 5-6/i.test(idSrc(c))));
         ok('fdio no Appendix B HM', !fdio.some(c => /^HM$/.test(idQ(c).trim())));
-        V.S.fcDeck = 'fdio'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='fdio'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const fdioBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody fdio shows NFGT or 5-1-11', /NFGT|5-1-11/.test(fdioBody), (fdioBody||'').slice(0,180));
         const twr = (V.FC_SETS && V.FC_SETS['twr-freq']) || [];
@@ -850,7 +853,7 @@ if (sm) {
         ok('twr-freq TBL 8-5 cite on table cards', twr.filter(c => /Tower Primary|Clearance Delivery|Ground Control|Base Ops|^Guard$/i.test(idQ(c))).every(c => /TBL 8-5/i.test(idSrc(c))) && twr.some(c => /TBL 8-5/i.test(idSrc(c))));
         ok('twr-freq ATIS 5-4-6 or 2-1-15', twr.some(c => /ATIS/i.test(idQ(c)) && /285\.45/.test(idA(c)) && /5-4-6|2-1-15/.test(idSrc(c))));
         ok('twr-freq no invented extra freqs', !twr.some(c => /310\.3|123\.2/.test(idQ(c)+' '+idA(c))));
-        V.S.fcDeck = 'twr-freq'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='twr-freq'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const twrBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody twr-freq shows 128.775 or ATIS 285.45', /128\.775|285\.45/.test(twrBody), (twrBody||'').slice(0,180));
         const heloD = (V.FC_SETS && V.FC_SETS.helo) || [];
@@ -860,7 +863,7 @@ if (sm) {
         ok('helo Request Papa 1', heloD.some(c => /Request Papa 1/.test(idQ(c)+' '+idA(c))));
         ok('helo 2-1-15 / 5-5-23 cite', heloD.some(c => /2-1-15/.test(idSrc(c))) && heloD.some(c => /5-5-23/.test(idSrc(c))));
         ok('helo only named spots', !heloD.some(c => /Papa 5|Papa 6|Spot 7/i.test(idQ(c)+' '+idA(c))));
-        V.S.fcDeck = 'helo'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='helo'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const heloBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody helo shows Papa 1', /Papa 1/.test(heloBody), (heloBody||'').slice(0,180));
         const cr = (V.FC_SETS && V.FC_SETS.crash) || [];
@@ -869,7 +872,7 @@ if (sm) {
         ok('crash cites 5-1-2 or 8-3-2', cr.length > 0 && cr.every(c => /5-1-2|8-3-2/.test(idSrc(c))), cr.map(idSrc).join(' | '));
         ok('crash phraseology cards still cite 5-1-2', cr.filter(c => /crash-daily|crash-who|crash-standby|crash-crash|crash-secure|crash-emer/.test(c.id||'')).every(c => /5-1-2/.test(idSrc(c))));
         ok('crash equipment cards cite 8-3-2', cr.filter(c => /crash-loc-between|crash-circuit-stations|crash-purpose/.test(c.id||'')).every(c => /8-3-2/.test(idSrc(c))));
-        V.S.fcDeck = 'crash'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='crash'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const crashBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody crash shows daily test or STANDBY', /Daily crash phone test|STANDBY/.test(crashBody), (crashBody||'').slice(0,220));
         const parD = (V.FC_SETS && V.FC_SETS.par) || [];
@@ -885,14 +888,14 @@ if (sm) {
         ok('par cite 6-2-11', parD.length > 0 && parD.every(c => /6-2-11/.test(idSrc(c))), parD.slice(0,1).map(idSrc).join(''));
         ok('par on course or slightly above glidepath', parD.some(c => /On course/i.test(idQ(c))) && parD.some(c => /Slightly above\/below glidepath/i.test(idQ(c))));
         ok('par no commencing descent invented', !parD.some(c => /commencing descent/i.test(idQ(c)+' '+idA(c))));
-        V.S.fcDeck = 'par'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='par'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const parBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody par shows 6-2-11', /6-2-11/.test(parBody), (parBody||'').slice(0,220));
         const asrD = (V.FC_SETS && V.FC_SETS.asr) || [];
         ok('FC_SETS.asr is array', Array.isArray(asrD) && asrD.length > 0, 'n=' + asrD.length);
-        ok('asr cite 6-2-12', asrD.length > 0 && asrD.every(c => /6-2-12/.test(idSrc(c))), asrD.slice(0,1).map(idSrc).join(''));
-        ok('asr 9 MILES FROM RUNWAY DESCEND AND MAINTAIN 2600', asrD.some(c => /9 MILES FROM RUNWAY/.test(idA(c)) && /2600/.test(idA(c))));
-        V.S.fcDeck = 'asr'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        ok('asr cite 6-2-12', asrD.length > 0 && asrD.filter(c => /ASR RWY|ASR circle|ASR brief|ASR phraseology/i.test(c.q||'')).every(c => /6-2-12/.test((c.src&&c.src.pg)||'')), asrD.slice(0,1).map(c=>((c.src&&c.src.doc)||'')+' '+((c.src&&c.src.pg)||'')).join(''));
+        ok('asr 14 MILES FROM RUNWAY DESCEND AND MAINTAIN 3300', asrD.some(c => /14 MILES FROM RUNWAY/.test(idA(c)) && /3300/.test(idA(c))));
+        V.S.fcDeck='asr'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const asrBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody asr shows 6-2-12', /6-2-12/.test(asrBody), (asrBody||'').slice(0,220));
 
@@ -902,7 +905,7 @@ if (sm) {
         ok('asrjo cards cite JO 5-11', asrjoD.every(c => /5-11-/.test(JSON.stringify(c.src||{}))), asrjoD.map(c => (c.src&&c.src.pg)||'?').join(','));
         ok('asrjo no intercept 20/30/45', !asrjoD.some(c => /20 degrees|30 degrees|45 degrees/i.test((c.q||'')+' '+(c.a||''))));
         ok('asrjo no KNFG 2600/1120 mile scripts', !asrjoD.some(c => /\b2600\b|\b1120\b/.test((c.q||'')+' '+(c.a||''))));
-        V.S.fcDeck = 'asrjo'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='asrjo'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const asrjoBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody asrjo shows 5-11', /5-11-/.test(asrjoBody), (asrjoBody||'').slice(0,220));
 
@@ -918,7 +921,7 @@ if (sm) {
         ok('FC_SETS.radio is array', Array.isArray(rad) && rad.length > 0, 'n=' + rad.length);
         ok('radio 2-4-8 or STAND BY', rad.some(c => /2-4-8/.test(idSrc(c))) && rad.some(c => /STAND BY/.test(idQ(c)+' '+idA(c))), rad.slice(0,2).map(c => idQ(c)+' '+idSrc(c)).join(' || '));
         ok('radio four parts identification of aircraft', rad.some(c => /Identification of aircraft/i.test(idA(c)) && /2-4-8/.test(idSrc(c))));
-        V.S.fcDeck = 'radio'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='radio'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const radioBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody radio shows 2-4-8 or STAND BY', /2-4-8|STAND BY/.test(radioBody), (radioBody||'').slice(0,220));
         const rfdD = (V.FC_SETS && V.FC_SETS.rfd) || [];
@@ -930,7 +933,7 @@ if (sm) {
         ok('rfd scratchpad points to TBL 6-4', rfdD.some(c => /Table 6-4|TBL 6-4/i.test(idQ(c)+' '+idA(c))));
         ok('rfd does not duplicate TBL 6-4 rows', !rfdD.some(c => /^1$/.test(idQ(c).trim()) && /236\.3/.test(idA(c))) && !rfdD.some(c => /^S$/.test(idQ(c).trim()) && /\bASR\b/.test(idA(c))));
         ok('rfd not helo spots', !rfdD.some(c => /Papa 1|Papa 4|Echo 2|Foxtrot 2/i.test(idQ(c)+' '+idA(c))));
-        V.S.fcDeck = 'rfd'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='rfd'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const rfdBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody rfd shows 6-3-4 or 6-3-6 or 6-3-7', /6-3-4|6-3-6|6-3-7/.test(rfdBody), (rfdBody||'').slice(0,220));
         const hoD = (V.FC_SETS && V.FC_SETS.handoff) || [];
@@ -938,7 +941,7 @@ if (sm) {
         ok('handoff RADAR CONTACT or POINT OUT APPROVED', hoD.some(c => /RADAR CONTACT/.test(idQ(c)+' '+idA(c))) || hoD.some(c => /POINT OUT APPROVED/.test(idQ(c)+' '+idA(c))), hoD.slice(0,3).map(c => idQ(c)).join(' | '));
         ok('handoff cite 5-4-2 / 5-4-3', hoD.some(c => /5-4-2/.test(idSrc(c))) && hoD.some(c => /5-4-3/.test(idSrc(c))));
         ok('handoff handoff vs point out', hoD.some(c => /^Handoff$/i.test(idQ(c).trim()) && /radio communications with the aircraft will be transferred/i.test(idA(c))) && hoD.some(c => /Point Out/.test(idQ(c)) && /will not be transferred/i.test(idA(c))));
-        V.S.fcDeck = 'handoff'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='handoff'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const hoBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody handoff shows 5-4-2 or 5-4-3', /5-4-2|5-4-3/.test(hoBody), (hoBody||'').slice(0,220));
         const maD = (V.FC_SETS && V.FC_SETS.missed) || [];
@@ -950,7 +953,7 @@ if (sm) {
         ok('missed has FACMAN 6-4-8 cards', maD.some(c => /6-4-8/.test(idSrc(c))));
         ok('missed helo MAP 2200/211', maD.some(c => /2200/.test(idA(c)) && /211/.test(idA(c)) && /6-4-8/.test(idSrc(c))));
         ok('missed YOUR MISSED APPROACH PROCEDURE IS', maD.some(c => /YOUR MISSED APPROACH PROCEDURE IS/.test(idA(c))));
-        V.S.fcDeck = 'missed'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='missed'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const maBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody missed shows 5-10-11', /5-10-11/.test(maBody), (maBody||'').slice(0,220));
         const finD = (V.FC_SETS && V.FC_SETS.final) || [];
@@ -958,7 +961,7 @@ if (sm) {
         ok('final cite 5-9-1 or 5-9-2', finD.some(c => /5-9-1/.test(idSrc(c))) || finD.some(c => /5-9-2/.test(idSrc(c))), finD.slice(0,3).map(idSrc).join(' | '));
         ok('final cite 5-9-4', finD.some(c => /5-9-4/.test(idSrc(c))));
         ok('final no invented intercept 20/30/45', !finD.some(c => /20 degrees|30 degrees|45 degrees/i.test(idQ(c)+' '+idA(c))));
-        V.S.fcDeck = 'final'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='final'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const finBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody final shows 5-9-1 or 5-9-2', /5-9-1|5-9-2/.test(finBody), (finBody||'').slice(0,220));
         const wakeD = (V.FC_SETS && V.FC_SETS.wake) || [];
@@ -968,7 +971,7 @@ if (sm) {
         ok('wake 5-5-4 Super or Heavy', wakeD.some(c => /5-5-4/.test(idSrc(c)) && /Super/.test(idQ(c)+' '+idA(c))) || wakeD.some(c => /5-5-4/.test(idSrc(c)) && /Heavy/.test(idQ(c)+' '+idA(c))), wakeD.filter(c => /Super|Heavy/.test(idQ(c)+' '+idA(c))).map(c => idQ(c)+' | '+idA(c)).join(' || '));
         ok('wake no CWT CAT A-I', !wakeD.some(c => /\bCAT [A-I]\b/.test(idQ(c)+' '+idA(c))));
         const wakeSuperI = wakeD.findIndex(c => /Super/.test(idQ(c)+' '+idA(c)) && /5-5-4/.test(idSrc(c)));
-        V.S.fcDeck = 'wake'; V.S.fcIdx = wakeSuperI >= 0 ? wakeSuperI : 0; V.S.fcFlip = false;
+        V.S.fcDeck='wake'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = wakeSuperI >= 0 ? wakeSuperI : 0; V.S.fcFlip = false;
         const wakeBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody wake shows 5-5-4 Super or Heavy', /5-5-4/.test(wakeBody) && /Super|Heavy/.test(wakeBody), (wakeBody||'').slice(0,280));
         const sepD = (V.FC_SETS && V.FC_SETS.sep) || [];
@@ -976,7 +979,7 @@ if (sm) {
         ok('sep cite 5-5-2', sepD.some(c => /5-5-2/.test(idSrc(c))));
         ok('sep cite 5-5-8', sepD.some(c => /5-5-8/.test(idSrc(c))));
         ok('sep +1 / +2 formation', sepD.some(c => /adding 1 mile/.test(idA(c))) && sepD.some(c => /adding 2 miles/.test(idA(c))));
-        V.S.fcDeck = 'sep'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='sep'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const sepBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody sep shows 5-5-2 or 5-5-8', /5-5-2|5-5-8/.test(sepBody), (sepBody||'').slice(0,220));
         const ixD = (V.FC_SETS && V.FC_SETS.intercept) || [];
@@ -986,7 +989,7 @@ if (sm) {
         ok('intercept cite 5-9-2', ixD.some(c => /5-9-2/.test(idSrc(c))));
         const ixNumCards = ixD.filter(c => /20 degrees|30 degrees|45 degrees/i.test(idQ(c)+' '+idA(c)));
         ok('intercept 20/30/45 only with TBL 5-9-1', ixNumCards.length === 0 || ixNumCards.every(c => /TBL 5-9-1/.test(idSrc(c))), ixNumCards.map(c => idQ(c)+' | '+idSrc(c)).join(' || '));
-        V.S.fcDeck = 'intercept'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='intercept'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const ixBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody intercept shows 5-9-1 or TBL 5-9-1', /5-9-1|TBL 5-9-1/.test(ixBody), (ixBody||'').slice(0,220));
         const taxiD = (V.FC_SETS && V.FC_SETS.taxi) || [];
@@ -997,7 +1000,7 @@ if (sm) {
         ok('taxi cite 2-1-15', taxiD.some(c => /2-1-15/.test(idSrc(c))));
         ok('taxi does not duplicate Papa 1 helo spot', !taxiD.some(c => /^Papa 1$/.test(idQ(c).trim())));
         ok('taxi no intercept 20/30/45', !taxiD.some(c => /20 degrees|30 degrees|45 degrees/i.test(idQ(c)+' '+idA(c))));
-        V.S.fcDeck = 'taxi'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='taxi'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const taxiBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody taxi shows 2-1-15 or Papa taxiway', /2-1-15|Papa taxiway/.test(taxiBody), (taxiBody||'').slice(0,220));
         ok('homeView TAXI chip', /data-d="taxi"/.test(home2) && /TAXI/.test(home2));
@@ -1009,12 +1012,12 @@ if (sm) {
         ok('termstrip cite TBL 2-3-3 or TBL 2-3-4', tsD.every(c => /TBL 2-3-3|TBL 2-3-4/.test(idSrc(c))), tsD.slice(0,2).map(idSrc).join(' | '));
         ok('termstrip does not duplicate Papa 1 helo spot', !tsD.some(c => /^Papa 1$/.test(idQ(c).trim())));
         ok('termstrip no intercept 20/30/45', !tsD.some(c => /20 degrees|30 degrees|45 degrees/i.test(idQ(c)+' '+idA(c))));
-        V.S.fcDeck = 'termstrip'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='termstrip'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const tsBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody termstrip shows TBL 2-3-3 or arrival', /TBL 2-3-3|Arrival vs departure/.test(tsBody), (tsBody||'').slice(0,220));
         ok('homeView TERM STRIP chip', /data-d="termstrip"/.test(home2) && /TERM STRIP/.test(home2));
         ok('fcBody TERM STRIP chip', /data-d="termstrip"/.test(idBody) && /TERM STRIP/.test(idBody));
-        V.S.fcDeck = 'pos';
+        V.S.fcDeck='pos'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0;
 
         const finSyl = (V.SYLLABUS && V.SYLLABUS.fin) || [];
         ok('SYLLABUS.fin has Topics 1-6 ACADs', /"id":"ACAD-0523\/0538"/.test(html) && /"id":"ACAD-0533"/.test(html) && /"id":"ACAD-0521\/0522"/.test(html));
@@ -1195,7 +1198,7 @@ if (sm) {
         ok('BOOK FACMAN 6-2-11 on glidepath ten feet', !!(b6211 && /ten \(10\) feet/.test(String(b6211.text||'')) && /50 feet/.test(String(b6211.text||''))), b6211 && String((b6211.text||'')).slice(0,80));
         ok('BOOK FACMAN 6-2-11 no Radar footer / no 20 degrees', !!(b6211 && !/Radar - /.test(String(b6211.text||'')) && !/20 degrees/.test(String(b6211.text||''))));
         const b6212 = (V.BOOK && (V.BOOK['FACMAN 6-2-12'] || V.BOOK['6-2-12'])) || (V.bookResolve && V.bookResolve('6-2-12'));
-        ok('BOOK FACMAN 6-2-12 9 MILES FROM RUNWAY 2600', !!(b6212 && /9 MILES FROM RUNWAY/.test(String(b6212.text||'')) && /2600/.test(String(b6212.text||''))));
+        ok('BOOK FACMAN 6-2-12 14 MILES FROM RUNWAY 3300', !!(b6212 && /14 MILES FROM RUNWAY/.test(String(b6212.text||'')) && /3300/.test(String(b6212.text||''))));
         ok('BOOK FACMAN 6-2-12 no JULY 2025 header', !!(b6212 && !/JULY 2025/.test(String(b6212.text||'')) && !/Radar - /.test(String(b6212.text||''))));
         const tbl81r = V.bookResolve && V.bookResolve('TBL 8-1');
         ok('bookResolve TBL 8-1 Palomar Tower 20', !!(tbl81r && tbl81r.table && /Palomar Tower/.test(JSON.stringify(tbl81r.table)) && /"20"/.test(JSON.stringify(tbl81r.table))), tbl81r && tbl81r.cite);
@@ -1325,7 +1328,7 @@ if (sm) {
         ok('lostcom RWY 03 circle', lcD.some(c => /CIRCLE TO RUNWAY 3/.test((c.q||'')+' '+(c.a||''))));
         ok('lostcom TACAN OTS ask intentions', lcD.some(c => /intentions/i.test((c.q||'')+' '+(c.a||''))));
         ok('lostcom no intercept 20/30/45', !lcD.some(c => /20 degrees|30 degrees|45 degrees/i.test((c.q||'')+' '+(c.a||''))));
-        V.S.fcDeck = 'arrdep'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='arrdep'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const adBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody arrdep shows 6-4-1 or 6-4-4', /6-4-1|6-4-4/.test(adBody), (adBody||'').slice(0,220));
 
@@ -1367,7 +1370,7 @@ if (sm) {
         const bTbl61 = V.BOOK && (V.BOOK['FACMAN TBL 6-1'] || V.BOOK['TBL 6-1']);
         ok('BOOK TBL 6-1 Fallbrook Water Tower', !!(bTbl61 && /Fallbrook Water Tower/.test(String(bTbl61.text||''))));
         const bTbl62 = V.BOOK && (V.BOOK['FACMAN TBL 6-2'] || V.BOOK['TBL 6-2']);
-        ok('BOOK TBL 6-2 Decision Altitude 393', !!(bTbl62 && /393/.test(String(bTbl62.text||'')) && /5\.03/.test(String(bTbl62.text||''))));
+        ok('BOOK TBL 6-2 Decision Altitude 388', !!(bTbl62 && /388/.test(String(bTbl62.text||'')) && /5\.56/.test(String(bTbl62.text||''))));
         ok('BOOK 6-1-10 still present runtime', !!(V.BOOK && V.BOOK['FACMAN 6-1-10'] && V.BOOK['6-1-10']));
         ok('BOOK TBL 6-3 still present runtime', !!(V.BOOK && V.BOOK['FACMAN TBL 6-3']));
         const fxD = (V.FC_SETS && V.FC_SETS.fixes) || [];
@@ -1376,7 +1379,7 @@ if (sm) {
         ok('fixes has BONDO / GOZER / WIPAM', fxD.some(c => /BONDO/i.test((c.q||'')+' '+(c.a||''))) && fxD.some(c => /GOZER/i.test((c.q||'')+' '+(c.a||''))) && fxD.some(c => /WIPAM/i.test((c.q||'')+' '+(c.a||''))));
         ok('fixes no invented CWT CAT A-I', !fxD.some(c => /CAT [A-I]\b/.test((c.q||'')+' '+(c.a||''))));
         ok('fixes no intercept 20/30/45', !fxD.some(c => /20 degrees|30 degrees|45 degrees/i.test((c.q||'')+' '+(c.a||''))));
-        ok('gca deck still has TBL 6-2 cards', Array.isArray(V.FC_SETS.gca) && V.FC_SETS.gca.length >= 8 && V.FC_SETS.gca.some(c => /393/.test((c.q||'')+' '+(c.a||''))));
+        ok('gca deck still has TBL 6-2 cards', Array.isArray(V.FC_SETS.gca) && V.FC_SETS.gca.length >= 8 && V.FC_SETS.gca.some(c => /388/.test((c.q||'')+' '+(c.a||''))));
         const bondoExp = V.expandAsk('BONDO');
         ok('BONDO expandAsk prefers 6-1-2', (bondoExp.prefer||[]).some(p => /6-1-2/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(bondoExp.prefer));
         const gcaCritExp = V.expandAsk('GCA critical data');
@@ -1394,7 +1397,7 @@ if (sm) {
         const bay61 = V.askHits('how to pass a bay');
         const bay61Top = (bay61 || []).slice(0, 4).map(h => h.book && h.book.cite).join(' ');
         ok('pass-a-bay still not 6-1-10 in top 4 after 6-1 aliases', !/6-1-10/.test(bay61Top), bay61Top);
-        V.S.fcDeck = 'fixes'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='fixes'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const fxBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody fixes shows 6-1-2', /6-1-2/.test(fxBody), (fxBody||'').slice(0,220));
 
@@ -1426,7 +1429,7 @@ if (sm) {
         ok('begin descent still prefers 5-12-3 after 6-5', (bd65.prefer||[]).some(p => /5-12-3/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(bd65.prefer));
         const mi65 = V.expandAsk('9 miles from runway');
         ok('9 miles still prefers 6-2-12 after 6-5', (mi65.prefer||[]).some(p => /6-2-12/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(mi65.prefer));
-        V.S.fcDeck = 'radsup'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='radsup'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const rsBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody radsup shows 6-5', /6-5-/.test(rsBody), (rsBody||'').slice(0,220));
 
@@ -1468,7 +1471,7 @@ if (sm) {
         ok('begin descent still prefers 5-12-3 after 8-2', (bd82.prefer||[]).some(p => /5-12-3/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(bd82.prefer));
         const mi82 = V.expandAsk('9 miles from runway');
         ok('9 miles still prefers 6-2-12 after 8-2', (mi82.prefer||[]).some(p => /6-2-12/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(mi82.prefer));
-        V.S.fcDeck = 'gca-freq'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='gca-freq'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const gfBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody gca-freq shows TBL 8-4', /TBL 8-4|8-2-2/.test(gfBody), (gfBody||'').slice(0,220));
 
@@ -1560,7 +1563,7 @@ if (sm) {
         ok('9 miles still prefers 6-2-12 after TBL 5-3', (stripFdio_miTbl53.prefer||[]).some(p => /6-2-12/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(stripFdio_miTbl53.prefer));
         const stripFdio_ratcfTbl53 = V.expandAsk('RATCF 128.775');
         ok('RATCF 128.775 still prefers 8-2-2 or TBL 8-4 after TBL 5-3', (stripFdio_ratcfTbl53.prefer||[]).some(p => /8-2-2|TBL 8-4/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(stripFdio_ratcfTbl53.prefer));
-        V.S.fcDeck = 'sids'; V.S.fcIdx = 0; V.S.fcFlip = false;
+        V.S.fcDeck='sids'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const stripFdio_sidsBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody sids shows TBL 5-3', /TBL 5-3|TBL 5-4/.test(stripFdio_sidsBody), (stripFdio_sidsBody||'').slice(0,220));
 
