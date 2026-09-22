@@ -2477,7 +2477,7 @@
     }
     const hits=askHits(q);
     if(!hits.length){
-      box.innerHTML=vectorAnswerHTML(q, [])+'<div class="lkempty vector">Scanning pubs for a Find hit…</div>';
+      box.innerHTML=S.tab==='ask' ? vectorAnswerHTML(q, [])+'<div class="lkempty vector">Scanning pubs for a Find hit…</div>' : '<div class="lkempty">No matching publication passages yet. Browse PUBLICATIONS or search a PDF.</div>';
       queueCrossPubFind(q);
       return;
     }
@@ -2504,7 +2504,7 @@
       }
       return '';
     }).join('');
-    box.innerHTML=vectorAnswerHTML(q, hits)+'<div class="findhits slim">'+support+'</div>';
+    box.innerHTML=(S.tab==='ask'?vectorAnswerHTML(q, hits):'')+'<div class="findhits slim">'+support+'</div>';
   }
   function onLookupInput(){
     const inp=document.getElementById('reflk'); if(!inp) return;
@@ -2531,7 +2531,7 @@
     const inp=document.getElementById('reflk');
     if(inp){ inp.focus(); try{inp.select();}catch(_){} }
   }
-  function lookupConsole(){
+  function askConsole(){
     const q=escTxt(S.refQ||'');
     const deep=(S.refQ||'').trim()||S.pub;
     return `<div class="lkwrap${(S.refQ||'').trim()?' hasq':''}${S.pub?' haspdf':''}">
@@ -2542,6 +2542,19 @@
       </div>
       <div class="findbar"><input id="reflk" placeholder="Ask VECTOR" autocomplete="off" spellcheck="false" value="${q}"><button class="btn" data-action="findgo">ASK</button></div>
       <div id="refhits">${(S.refQ||'').trim()?'':`<div class="lkempty vector"><b style="color:var(--amber)">VECTOR</b> answers from FACMAN / JO / PCG / AIM on-device — short and cited. Ask a procedure, mile mark, or para. Never invents freqs, minima, or SIDs.</div>`}</div>
+    </div>`;
+  }
+  function refConsole(){
+    const q=escTxt(S.refQ||'');
+    const deep=(S.refQ||'').trim()||S.pub;
+    return `<div class="lkwrap${(S.refQ||'').trim()?' hasq':''}${S.pub?' haspdf':''}">
+      <div class="qmeta"><span class="pill">PUBLICATIONS</span><span class="muted" style="font-size:11px">On-device library · source-linked</span></div>
+      <div class="findtools">
+        <button type="button" class="btn-back" data-action="findback"${deep?'':' hidden'} title="Back one level">← BACK</button>
+        <button type="button" class="btn-ghost" data-action="findclear"${deep?'':' hidden'}>CLEAR</button>
+      </div>
+      <div class="findbar"><input id="reflk" placeholder="Find in publications" autocomplete="off" spellcheck="false" value="${q}"><button class="btn" data-action="findgo">FIND</button></div>
+      <div id="refhits">${(S.refQ||'').trim()?'':`<div class="lkempty">Browse PUBLICATIONS or search the loaded library. Open a result to jump into the PDF.</div>`}</div>
     </div>`;
   }
 
@@ -2812,7 +2825,7 @@
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.4 · ask-vector</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.5 · ref-library</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -2951,7 +2964,7 @@ function vidsStrip(){
       ${quiz}`; }
 
   function askView(){
-    return lookupConsole()+pdfPaneHTML();
+    return askConsole()+pdfPaneHTML();
   }
   function askMatch(query){ const q=(query||'').toLowerCase(); if(!q.trim())return null; const tok=q.split(/[^a-z0-9]+/).filter(Boolean);
     let best=null,bs=0; ASK.forEach(e=>{let s=0; e.kw.forEach(k=>{ if(q.includes(k))s+=2; else if(tok.includes(k))s+=1; }); if(s>bs){bs=s;best=e;}}); return bs>0?best:null; }
@@ -3725,7 +3738,7 @@ function pdfPaneHTML(){
     });
   }
 
-  function refView(){ if(S.learnReturn && S.pub) return pdfPaneHTML(); const lk=lookupConsole(); const f=KNFG.freqs.map(x=>`<div class="freqrow"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join('');
+  function refView(){ if(S.learnReturn && S.pub) return pdfPaneHTML(); const lk=refConsole(); const f=KNFG.freqs.map(x=>`<div class="freqrow"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join('');
     const n=KNFG.navaids.map(x=>`<div class="freqrow"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join('');
     const fl=KNFG.field.map(x=>`<div class="freqrow"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join('');
     const dp=KNFG.deps.map((d,i)=>`<li><div class="nm2">${d.nm}</div><div class="ds">${d.ds}</div>${routeBox('Route',d.rt)}</li>`).join('');
@@ -3762,7 +3775,8 @@ function pdfPaneHTML(){
     if(!inp) return;
     S.refQ=inp.value;
     // Prefer shared find UI when present
-    if(document.getElementById('refhits')){ drawLookup(inp.value); return; }
+    if(document.getElementById('refhits')){ if(S.tab==='ask'||S.tab==='reference') drawLookup(inp.value); return; }
+    if(S.tab!=='ask') return;
     const r=askHits(inp.value);
     const out=document.getElementById('askresults');
     if(out) out.innerHTML=askResultHTML(r,inp.value);

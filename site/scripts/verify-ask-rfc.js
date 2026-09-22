@@ -531,7 +531,10 @@ ok('Reference PUBLICATIONS closed by default', /function pubShelfHTML\(/.test(ht
 ok('no standalone SECTIONS · FACMAN dropdown', !/<summary>SECTIONS · FACMAN<\/summary>/.test(html) && !/<summary>SECTIONS · 7110\.65<\/summary>/.test(html));
 ok('pub sections nested under each PUBLICATION', /function pubSectionsFor\(/.test(html) && /pub-nest/.test(html));
 ok('fcdeck Quizlet tap-to-reveal', /data-action="fcflip"/.test(html) && /data-action="fcshuffle"/.test(html) && /tap to reveal/.test(html));
-ok('VECTOR Ask persona', /vectorAnswerHTML/.test(html) && /VECTOR · ASK/.test(html));
+ok('Ask and Reference consoles split', /function askConsole\(\)/.test(html) && /function refConsole\(\)/.test(html) && /function askView\(\)[\s\S]{0,100}askConsole\(\)/.test(html) && /function refView\(\)[\s\S]{0,140}refConsole\(\)/.test(html));
+ok('VECTOR Ask persona stays on Ask', /function askConsole\([\s\S]*?VECTOR · ASK/.test(html) && /placeholder=\"Ask VECTOR\"/.test(html) && /data-action=\"findgo\">ASK/.test(html));
+ok('Reference uses professional Find console', /function refConsole\([\s\S]*?PUBLICATIONS[\s\S]*?Find in publications[\s\S]*?data-action=\"findgo\">FIND/.test(html) && /Browse PUBLICATIONS or search the loaded library/.test(html));
+ok('Reference skips VECTOR answer card', /box\.innerHTML=\(S\.tab==='ask'\?vectorAnswerHTML/.test(html));
 ok('fc chips gray counts', /fc-n/.test(html) && /countOf/.test(html));
 ok('clickable TBL refs', /function linkifyTblRefs\(/.test(html) && /data-action="jumptbl"/.test(html) && /function jumpTblRef\(/.test(html));
 ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendix D/.test(html));
@@ -595,7 +598,7 @@ ok('JO Chg2 pub present', /id:'jochg2'/.test(html) && /JO-7110\.65BB-CHG2-2026-0
 ok('Ask scans full pubs not 40-cap', /CHUNK=50/.test(html) && !/Math\.min\(doc\.numPages,\s*40\)/.test(html));
 ok('Ask empty copy mentions publication library', /publication library/.test(html));
 ok('PCG GO AROUND in BOOK', /7110\.65 PCG GO AROUND/.test(html));
-ok('statusbar v0.8.4 ask-vector', /v0\.8\.4 · ask-vector/.test(html));
+ok('statusbar v0.8.5 ref-library', /v0\.8\.5 · ref-library/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);
