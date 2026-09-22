@@ -1819,6 +1819,7 @@
     if(/FACMAN|NFG/i.test(d)) return 'facman';
     if(/7110/.test(d)) return 'jo';
     if(/3710\.1|StaO|Airfield Operations Manual/i.test(d)) return 'aom';
+    if(/\bAIM\b|Aeronautical Information Manual/i.test(d)) return 'aim';
     if(/3500\.39/i.test(d)) return 'orm';
     if(/5100\.23/i.test(d)) return 'soh';
     // Soft guesses for local/playbook cites that still belong in the FACMAN/JO pack
@@ -2589,7 +2590,7 @@
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.7.7 · test6-aa-aom</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.7.8 · aim-pub</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -3014,6 +3015,7 @@ function vidsStrip(){
   const PUBS=[
     {id:'facman', href:'docs/NFG-FACMAN-July-2025.pdf', lab:'NFG FACMAN July 2025'},
     {id:'jo', href:'docs/JO-7110.65BB.pdf', lab:'JO 7110.65BB'},
+    {id:'aim', href:'docs/AIM-2025-02-20.pdf', lab:'AIM (2/20/25)'},
     {id:'aom', href:'docs/StaO-3710.1H-Airfield-Operations-Manual.pdf', lab:'StaO 3710.1H AOM'},
     {id:'orm', href:'docs/OPNAVINST-3500.39D.pdf', lab:'OPNAVINST 3500.39D'},
     {id:'soh', href:'docs/OPNAV-M-5100.23.pdf', lab:'OPNAV M-5100.23'}
