@@ -527,7 +527,7 @@ ok('posProgress function', /function\s+posProgress\s*\(/.test(html));
 ok('rfcTrain FLASHCARDS seg', /function rfcExerciseBody\(\)/.test(html) && /function rfcTrain\(\)/.test(html));
 ok('no Learn TEST EXERCISE toggle', !/TEST EXERCISE/.test(html));
 ok('Learn cite PDF hides shelf', /if\(S\.pub && S\.learnReturn\) return pdfPaneHTML\(\)/.test(html));
-ok('Reference PUBLICATIONS closed by default', /function pubShelfHTML\(\)[\s\S]{0,900}<details class="pos-acads"><summary>PUBLICATIONS<\/summary>/.test(html) && !/pos-acads"\$\{S\.pub\?'':' open'\}/.test(html));
+ok('Reference PUBLICATIONS closed by default', /function pubShelfHTML\(/.test(html) && /<details class="pos-acads"><summary>PUBLICATIONS<\/summary>\$\{nest\}<\/details>/.test(html) && !/pos-acads"\$\{S\.pub\?'':' open'\}/.test(html) && !/<details class="pos-acads" open><summary>PUBLICATIONS/.test(html));
 ok('no standalone SECTIONS · FACMAN dropdown', !/<summary>SECTIONS · FACMAN<\/summary>/.test(html) && !/<summary>SECTIONS · 7110\.65<\/summary>/.test(html));
 ok('pub sections nested under each PUBLICATION', /function pubSectionsFor\(/.test(html) && /pub-nest/.test(html));
 ok('fcdeck list Quizlet-style', /fcdeck-list/.test(html) && /data-action="fcjump"/.test(html));
@@ -589,7 +589,12 @@ ok('SYLLABUS.rfd ACAD-0534 paper extras', /rfd:\[[\s\S]*?ACAD-0534[\s\S]*?FACMAN
   ok('PUBS includes AIM (2/20/25)', /id:'aim'/.test(html) && /AIM-2025-02-20\.pdf/.test(html) && /AIM \(2\/20\/25\)/.test(html));
   ok('pubIdForDoc maps AIM to aim', /\\bAIM\\b\|Aeronautical Information Manual/i.test(html) || /AIM\|Aeronautical Information Manual/.test(html));
   ok('pubSectionsFor has AIM chapters', /pub==='aim'/.test(html) && /Ch4 Air Traffic Control/.test(html) && /Ch11 Unmanned Aircraft/.test(html) && /Ch1 Air Navigation/.test(html));
-  ok('statusbar v0.8.0 facman-2026', /v0\.8\.0 · facman-2026/.test(html));
+  ok('PUBLICATIONS family grouping', /pub-family/.test(html) && /editionLab:'July 2026'/.test(html) && /editionLab:'Chg 2/.test(html));
+ok('JO Chg2 pub present', /id:'jochg2'/.test(html) && /JO-7110\.65BB-CHG2-2026-01-22\.pdf/.test(html));
+ok('Ask scans full pubs not 40-cap', /CHUNK=50/.test(html) && !/Math\.min\(doc\.numPages,\s*40\)/.test(html));
+ok('Ask empty copy mentions publication library', /publication library/.test(html));
+ok('PCG GO AROUND in BOOK', /7110\.65 PCG GO AROUND/.test(html));
+ok('statusbar v0.8.1 ask-all-pubs', /v0\.8\.1 · ask-all-pubs/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);
