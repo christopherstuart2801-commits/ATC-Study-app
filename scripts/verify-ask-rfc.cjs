@@ -540,6 +540,11 @@ ok('pub sections nested under each PUBLICATION', /function pubSectionsFor\(/.tes
 ok('fcdeck Quizlet tap-to-reveal', /data-action="fcflip"/.test(html) && /data-action="fcshuffle"/.test(html) && /tap to reveal/.test(html));
 ok('Ask and Reference consoles split', /function askConsole\(\)/.test(html) && /function refConsole\(\)/.test(html) && /function askView\(\)[\s\S]{0,100}askConsole\(\)/.test(html) && /function refView\(\)[\s\S]{0,140}refConsole\(\)/.test(html));
 ok('VECTOR Ask persona stays on Ask', /function askConsole\([\s\S]*?VECTOR · ASK/.test(html) && /placeholder=\"Ask VECTOR\"/.test(html) && /data-action=\"findgo\">ASK/.test(html));
+ok('Ask does not live-find on input', /function onLookupInput\(\)\{[\s\S]*?if\(S\.tab==='ask'\) return;[\s\S]*?drawLookup/.test(html) && /type freely/.test(html));
+ok('Ask Enter submits via doAsk', /if\(e\.key==='Enter'\)\{[\s\S]*?if\(S\.tab==='ask'\) return doAsk\(\);/.test(html));
+ok('Ask restore uses askDoneQ not draft', /askDoneQ:''/.test(html) && /if\(S\.askDoneQ\) drawLookup\(S\.askDoneQ\)/.test(html) && /S\.askDoneQ=String\(inp\.value/.test(html));
+ok('Ask Ctrl+F does not hijack while typing', /Ask query field \/ Ask without PDF/.test(html) && /S\.tab==='ask' && \(!S\.pub \|\| \(e\.target && e\.target\.id==='reflk'\)\)\) return;/.test(html));
+ok('instructor lead OJTI open/close we-voice', /We open /.test(html) && /We close /.test(html) && /Here is the procedure from /.test(html));
 ok('Reference uses professional Find console', /function refConsole\([\s\S]*?PUBLICATIONS[\s\S]*?Find in publications[\s\S]*?data-action=\"findgo\">FIND/.test(html) && /function askConsole\([\s\S]*?VECTOR · ASK/.test(html));
 ok('Reference skips VECTOR answer card', /box\.innerHTML=\(S\.tab==='ask'\?vectorAnswerHTML/.test(html));
 ok('fc chips gray counts', /fc-n/.test(html) && /countOf/.test(html));
@@ -618,7 +623,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.8 ask-rfd-tests', /v0\.8\.8 · ask-rfd-tests/.test(html));
+ok('statusbar v0.8.9 ask-on-submit', /v0\.8\.9 · ask-on-submit/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);
@@ -1082,7 +1087,7 @@ ok('home GCA group closed by default', !/<details class="fc-crt" open><summary d
 
         const formExp = V.expandAsk('formation flight');
         
-        // v0.8.8 ask-rfd-tests: Lima size + opening/closing checklists
+        // v0.8.8+ ask-rfd-tests: Lima size + opening/closing checklists
         const limaExp = V.expandAsk('lima airspace size');
         ok('lima airspace size expandAsk prefers 2-1-10 or 2-1-8', (limaExp.prefer||[]).some(p => /2-1-10|2-1-8/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(limaExp.prefer));
         const limaHits = V.askHits('lima airspace size');

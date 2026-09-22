@@ -2442,28 +2442,37 @@
     if(isLima && /2-1-8|2-1-9|2-1-10|2-1-12|5-1-8/i.test((book.pg||'')+' '+(book.cite||''))){
       // Accurate instructor framing — no invented Lima NM dimensions
       if(/2-1-8/i.test((book.pg||'')+' '+(book.cite||''))){
-        return {kind:'teach', text:'Class D (do not confuse with full Lima): surface up to and including 2600′ MSL, ARP bearings 010@4NM→227@4NM→240@2.6NM→355@2.6NM→010@4NM. Full Lima/Golf geometry is in Appendix C (figure), not a single radius in Ch 2 text.'};
+        return {kind:'teach', text:'Do not swap Class D for Lima. Class D is surface up to and including 2600′ MSL along the ARP bearings in 2-1-8 (010@4NM→227@4NM→240@2.6NM→355@2.6NM→010@4NM). Full Lima/Golf geometry lives in Appendix C — Ch 2 does not give a single Lima radius.'};
       }
       if(/2-1-10|2-1-12|5-1-8/i.test((book.pg||'')+' '+(book.cite||''))){
-        return {kind:'teach', text:'Lima (and Golf) are SCT-delegated GCA airspace for NFG RATCF — text cites the SCT LOA + Appendix C for the picture. Ch 2 does not publish a single “Lima is X NM” radius; use App C (Lima and Golf Airspace) for the boundary depiction, and do not swap Class D circle numbers for Lima.'};
+        return {kind:'teach', text:'Lima and Golf are SCT-delegated GCA airspace for NFG RATCF. We work them from the SCT LOA plus Appendix C (Lima and Golf Airspace figure) — not from a memorized NM radius, and not by borrowing Class D circle numbers.'};
       }
     }
     if((isOpen||isClose||isCompare||/checklist/i.test(q)) && /Appendix A/i.test((book.cite||'')+' '+(book.pg||'')+' '+(book.title||''))){
       const label=/radar/i.test(q) && !/tower/i.test(q) ? 'Radar' : (/tower/i.test(q) ? 'Tower' : (/A-[34]|Radar/i.test((book.cite||'')+(book.title||''))?'Radar':'Tower'));
-      const mode=isClose?'closing':(isOpen?'opening':'open/close');
-      let head=label+' '+mode+' (FACMAN Appendix A) — sequenced from the watch item, not memory:';
+      let head;
       if(isCompare){
-        head='Opening vs closing — use the matching Appendix A watch item. Opening builds readiness (manning, ATIS, crash-phone test 5 min prior, opening broadcast). Closing secures the facility (closing calls with initials, return Lima to SCT on radar close, closing/closed-field ATIS). Steps from this cite:';
+        head='Opening and closing are different Appendix A watch items — do not mix them. Opening builds readiness (manning, ATIS, crash-phone test 5 min prior, opening broadcast). Closing secures the facility (closing calls with initials, return Lima to SCT on radar close, closing/closed-field ATIS). Run this cite in order:';
+      } else if(isOpen){
+        head='We open '+label+' from the Appendix A watch item — not from memory. Readiness first (manning, ATIS, crash phone), then the opening broadcast. Sequence:';
+      } else if(isClose){
+        head='We close '+label+' from the Appendix A watch item. Secure the facility, make the closing calls with initials, and on radar close return Lima to SCT. Sequence:';
+      } else {
+        head=label+' open/close — match the Appendix A watch item and run it in order:';
       }
       if(steps.length>=3){
         return {kind:'steps', head, steps:steps.slice(0,10)};
       }
-      // Fall back to first sentences
       const body=book.text.replace(/^[^\n]+\n/,'').replace(/\s+/g,' ').trim();
       return {kind:'teach', text:head+' '+shortQuote(body, 280)};
     }
     if(vectorIsHowto(query) && steps.length>=4){
-      return {kind:'steps', head:'Procedure sequence from '+cite+':', steps:steps.slice(0,10)};
+      return {kind:'steps', head:'Here is the procedure from '+cite+' — we run it in order, then verify in the pub:', steps:steps.slice(0,10)};
+    }
+    if(vectorIsHowto(query)){
+      const body=book.text.replace(/^[^\n]+\n/,'').replace(/\s+/g,' ').trim();
+      const lead=shortQuote(body, 220);
+      if(lead) return {kind:'teach', text:'From '+cite+' — '+lead+' Verify the full paragraph in the pub; do not invent freqs, minima, or SIDs.'};
     }
     return null;
   }
@@ -2523,7 +2532,7 @@ function vectorSnippetFromBook(b, query){
     return {kind:'quote', text:shortQuote(raw, 180)};
   }
 function vectorAnswerHTML(query, hits){
-    const empty=`<div class="vector-ans"><div class="va-who">VECTOR</div><div class="va-body">Not in the loaded pub library with a solid hit. Try a paragraph (e.g. 6-2-12), a PCG term, or a local phrase — I will not invent frequencies, minima, or SIDs.</div><div class="va-note">Ask is sourced only from pubs on-device. How-tos may be sequenced instructor-style from those cites — still no invented freqs/minima/SIDs.</div></div>`;
+    const empty=`<div class="vector-ans"><div class="va-who">VECTOR</div><div class="va-body">Not in the loaded pub library with a solid hit. Try a paragraph (e.g. 6-2-12), a PCG term, or a local phrase — I will not invent frequencies, minima, or SIDs.</div><div class="va-note">Ask answers from on-device pubs only — instructor overview, then steps when the cite has them. No invented freqs, minima, or SIDs.</div></div>`;
     if(!hits || !hits.length) return empty;
     const h=vectorPickHit(hits);
     if(!h) return empty;
@@ -2612,6 +2621,9 @@ function vectorAnswerHTML(query, hits){
   function onLookupInput(){
     const inp=document.getElementById('reflk'); if(!inp) return;
     S.refQ=inp.value;
+    // Ask: type freely — no live Find / PDF scan / hit updates until ASK or Enter.
+    // Reference keeps Find-as-you-type.
+    if(S.tab==='ask') return;
     clearTimeout(lkTimer);
     lkTimer=setTimeout(()=>drawLookup(inp.value),150);
   }
@@ -2620,14 +2632,23 @@ function vectorAnswerHTML(query, hits){
     inp.value=S.refQ||'';
     inp.addEventListener('input', onLookupInput);
     inp.addEventListener('keydown', e=>{
-      if(e.key==='Enter'){ e.preventDefault(); clearTimeout(lkTimer); drawLookup(inp.value); }
+      if(e.key==='Enter'){
+        e.preventDefault();
+        clearTimeout(lkTimer);
+        if(S.tab==='ask') return doAsk();
+        drawLookup(inp.value);
+      }
       if(e.key==='Escape'){
         e.preventDefault();
         if(S.pub){ set({pub:null,pubPage:1,pubQ:''}); return; }
-        inp.value=''; S.refQ=''; drawLookup('');
+        inp.value=''; S.refQ=''; S.askDoneQ=''; drawLookup('');
       }
     });
-    if(S.refQ) drawLookup(S.refQ);
+    if(S.tab==='ask'){
+      if(S.askDoneQ) drawLookup(S.askDoneQ);
+    } else if(S.refQ){
+      drawLookup(S.refQ);
+    }
     if(S.lkFocus){ S.lkFocus=false; setTimeout(()=>{ inp.focus(); try{inp.select();}catch(_){} },20); }
   }
   function focusLookup(){
@@ -2800,7 +2821,7 @@ function vectorAnswerHTML(query, hits){
 
   const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'acad',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcRated:{},fcDeck:'pos',fcGrp:'',fcOpen:{},fcOrder:null,
-    lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'' };
+    lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'' };
   function set(o){ Scope.teardown(); Object.assign(S,o); render(); }
   const TRAINEE_KEY='vatc.trainee';
   function loadTrainee(){
@@ -2928,7 +2949,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.8 · ask-rfd-tests</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.9 · ask-on-submit</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -3560,7 +3581,7 @@ function pdfPaneHTML(){
     const box=document.getElementById('refhits');
     const gen=++pdfFindGen;
     loadPdfJs().then(async lib=>{
-      if(gen!==pdfFindGen || (S.refQ||'').trim()!==query) return;
+      if(gen!==pdfFindGen || ((S.tab==='ask'?(S.askDoneQ||''):(S.refQ||'').trim())!==query)) return;
       const needle=query.toLowerCase();
       const found=[];
       // Primary library first; archives last. Full progressive scan (no 40-page hard stop).
@@ -3591,7 +3612,7 @@ function pdfPaneHTML(){
         return 5;
       };
       const render=()=>{
-        if(!box || gen!==pdfFindGen || (S.refQ||'').trim()!==query || S.pub) return;
+        if(!box || gen!==pdfFindGen || ((S.tab==='ask'?(S.askDoneQ||''):(S.refQ||'').trim())!==query) || S.pub) return;
         if(!found.length){
           box.innerHTML='<div class="lkempty">Scanning publication library for “'+escTxt(query)+'”…</div>';
           return;
@@ -3605,12 +3626,12 @@ function pdfPaneHTML(){
       };
       render();
       for(const pub of order){
-        if(gen!==pdfFindGen || (S.refQ||'').trim()!==query) return;
+        if(gen!==pdfFindGen || ((S.tab==='ask'?(S.askDoneQ||''):(S.refQ||'').trim())!==query)) return;
         try{
           const doc=await lib.getDocument({url:assetUrl(pub.href)}).promise;
           let best=null;
           for(let start=1; start<=doc.numPages; start+=CHUNK){
-            if(gen!==pdfFindGen || (S.refQ||'').trim()!==query) return;
+            if(gen!==pdfFindGen || ((S.tab==='ask'?(S.askDoneQ||''):(S.refQ||'').trim())!==query)) return;
             const endP=Math.min(doc.numPages, start+CHUNK-1);
             for(let p=start; p<=endP; p++){
               const page=await doc.getPage(p);
@@ -3642,7 +3663,7 @@ function pdfPaneHTML(){
           }
         }catch(_){}
       }
-      if(!box || gen!==pdfFindGen || (S.refQ||'').trim()!==query || S.pub) return;
+      if(!box || gen!==pdfFindGen || ((S.tab==='ask'?(S.askDoneQ||''):(S.refQ||'').trim())!==query) || S.pub) return;
       if(!found.length){
         box.innerHTML='<div class="lkempty">No hit in the publication library.</div>';
       }
@@ -3876,8 +3897,9 @@ function pdfPaneHTML(){
     const inp=document.getElementById('reflk')||document.getElementById('askq');
     if(!inp) return;
     S.refQ=inp.value;
-    // Prefer shared find UI when present
-    if(document.getElementById('refhits')){ if(S.tab==='ask'||S.tab==='reference') drawLookup(inp.value); return; }
+    S.askDoneQ=String(inp.value||'').trim();
+    // Prefer shared find UI when present — Ask runs Find/answer only on submit
+    if(document.getElementById('refhits')){ if(S.tab==='ask'||S.tab==='reference') drawLookup(S.askDoneQ||inp.value); return; }
     if(S.tab!=='ask') return;
     const r=askHits(inp.value);
     const out=document.getElementById('askresults');
@@ -3886,7 +3908,7 @@ function pdfPaneHTML(){
 
   function render(){ if(S.screen==='station'){root.innerHTML=stationScreen();return;} root.innerHTML=appScreen();
     if(S.tab==='sim'&&PSIM[S.pos]==='scope')Scope.mount();
-    if(S.tab==='ask'||S.tab==='reference'){ bindLookup(); bindPdf(); if(S.tab==='reference'&&!S.pub){ document.querySelectorAll('#vatc .scrollmain details.pos-acads').forEach(d=>{ d.open=false; }); } if(S.tab==='ask'||S.lkFocus){ S.lkFocus=false; setTimeout(()=>focusLookup(),20); } if((S.refQ||'').trim()) drawLookup(S.refQ); }
+    if(S.tab==='ask'||S.tab==='reference'){ bindLookup(); bindPdf(); if(S.tab==='reference'&&!S.pub){ document.querySelectorAll('#vatc .scrollmain details.pos-acads').forEach(d=>{ d.open=false; }); } if(S.tab==='ask'||S.lkFocus){ S.lkFocus=false; setTimeout(()=>focusLookup(),20); } if(S.tab==='reference'&&(S.refQ||'').trim()) drawLookup(S.refQ); }
     if(S.tab==='learn'&&S.pub&&S.learnReturn){ bindPdf(); }
     bindFcGroups(); }
 
@@ -3914,13 +3936,13 @@ function pdfPaneHTML(){
     if(a==='simcmd')return Scope.cmd(el.dataset.c,el.dataset.v);
     if(a==='asksubmit'||a==='findgo')return doAsk();
     if(a==='askchip'||a==='skillchip'){const inp=document.getElementById('reflk')||document.getElementById('askq');if(inp){inp.value=el.dataset.q;doAsk();}return;}
-    if(a==='findclear'){ S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.pubPreferPage=0; S.pubCiteSec=''; S.learnReturn=null; resetCitePdfFind(); pdfDoc=null; pdfSrc=''; pdfTextIndex=null; return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null}); }
+    if(a==='findclear'){ S.refQ=''; S.askDoneQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.pubPreferPage=0; S.pubCiteSec=''; S.learnReturn=null; resetCitePdfFind(); pdfDoc=null; pdfSrc=''; pdfTextIndex=null; return set({refQ:'',askDoneQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null}); }
     if(a==='findback'){
       if(S.learnReturn && S.pub){ return leavePdfToLearn(); }
       if(S.pub){ resetCitePdfFind(); return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:''}); }
-      S.refQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.pubPreferPage=0; S.pubCiteSec=''; S.learnReturn=null; resetCitePdfFind(); pdfDoc=null; pdfSrc=''; pdfTextIndex=null;
+      S.refQ=''; S.askDoneQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.pubPreferPage=0; S.pubCiteSec=''; S.learnReturn=null; resetCitePdfFind(); pdfDoc=null; pdfSrc=''; pdfTextIndex=null;
       const inp=document.getElementById('reflk'); if(inp) inp.value='';
-      return set({refQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null});
+      return set({refQ:'',askDoneQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null});
     }
     if(a==='openfindhit'){
       openFindHit({pub:el.dataset.pub, doc:el.dataset.doc, needle:el.dataset.needle, page:el.dataset.page, cite:el.dataset.cite, title:el.dataset.title||'', q:S.refQ});
@@ -3988,6 +4010,8 @@ function pdfPaneHTML(){
     const tag=(e.target&&e.target.tagName||'').toLowerCase();
     const typing=tag==='input'||tag==='textarea';
     if((e.key==='f'||e.key==='F')&&(e.ctrlKey||e.metaKey)){
+      // Ask query field / Ask without PDF: do not steal browser Find or re-focus Ask while typing
+      if(S.tab==='ask' && (!S.pub || (e.target && e.target.id==='reflk'))) return;
       e.preventDefault();
       if((S.tab==='reference'||S.tab==='ask') && S.pub){
         const pf=document.getElementById('pdffind');
