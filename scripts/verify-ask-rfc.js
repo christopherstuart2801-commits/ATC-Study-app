@@ -80,6 +80,13 @@ ok('radio leftover four-part still 2-4-8', /four\[- \]parts\?/.test(aliases) && 
 ok('papa-taxiway alias prefer 2-1-15', /papa taxiway[\s\S]*?prefer:\[\{pg:'2-1-15'/.test(aliases));
 ok('course-rules alias prefer 5-5-2', /course rules[\s\S]*?prefer:\[\{pg:'5-5-2'/.test(aliases) && /FACMAN 5-5-2/.test(aliases));
 ok('BOOK has FACMAN 2-1-17 key', /"FACMAN 2-1-17":/.test(html));
+ok('BOOK has FACMAN 2-1-8 key', /"FACMAN 2-1-8":/.test(html));
+ok('BOOK has FACMAN 2-1-10 key', /"FACMAN 2-1-10":/.test(html));
+ok('BOOK has FACMAN Appendix A-1 key', /"FACMAN Appendix A-1":/.test(html));
+ok('ASK alias lima airspace size', /lima airspace size/.test(html));
+ok('ASK alias opening checklist', /opening checklist/.test(html));
+ok('ASK alias closing checklist', /closing checklist/.test(html));
+ok('vectorInstructorLead exists', /function\s+vectorInstructorLead/.test(html));
 ok('BOOK has 2-1-17 dual key', /"2-1-17":/.test(html));
 ok('BOOK has FACMAN 5-5-2 key', /"FACMAN 5-5-2":/.test(html));
 ok('BOOK has TBL C-3 dual key', /"TBL C-3":/.test(html));
@@ -577,8 +584,10 @@ ok('SYLLABUS.rfd ACAD-0534 paper extras', /rfd:\[[\s\S]*?ACAD-0534[\s\S]*?FACMAN
   ok('SYLLABUS.fin keeps Topics 1-4', finIds.includes('ACAD-0520') && finIds.includes('ACAD-0534') && finIds.includes('ACAD-0532') && finIds.includes('ACAD-0521/0522'));
   ok('Topic 5 AAs consolidated (0523/0538 one card)', fin.filter(a=>a.id==='ACAD-0523/0538' || ((a.ids||[]).includes('ACAD-0523')&&(a.ids||[]).includes('ACAD-0538'))).length===1);
   ok('no split ACAD-0523 or ACAD-0538 cards', !fin.some(a=>a.id==='ACAD-0523'||a.id==='ACAD-0538'));
-  ok('Topics 5-6 live under fin not rfd-only', hasCode(fin,'ACAD-0523') && !rfd.some(a=>hasCode([a],'ACAD-0523')||hasCode([a],'ACAD-0538')||hasCode([a],'ACAD-0533')));
-  ok('ACAD-0523 not duplicated into rfd', !rfd.some(a=>hasCode([a],'ACAD-0523')));
+  ok('SYLLABUS.rfd has 5 tests', rfd.length===5);
+  ok('SYLLABUS.rfd Topics 1-5 ids', hasCode(rfd,'ACAD-0520') && hasCode(rfd,'ACAD-0534') && hasCode(rfd,'ACAD-0532') && hasCode(rfd,'ACAD-0521') && hasCode(rfd,'ACAD-0523'));
+  ok('same ACAD id allowed on fin and rfd (no anti-dupe)', hasCode(fin,'ACAD-0520') && hasCode(rfd,'ACAD-0520') && hasCode(fin,'ACAD-0523') && hasCode(rfd,'ACAD-0523'));
+  ok('ACAD-0533 Topic 6 remains on fin (RFD LQS may add later)', hasCode(fin,'ACAD-0533') && !rfd.some(a=>hasCode([a],'ACAD-0533')));
   const a533 = fin.find(a=>a.id==='ACAD-0533');
   const r533 = (a533&&a533.refs||[]).map(r=>r[0]);
   ok('ACAD-0533 is Finals Test 6 (n=6)', !!(a533 && a533.n===6));
@@ -609,7 +618,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.7 home-clean', /v0\.8\.7 · home-clean/.test(html));
+ok('statusbar v0.8.8 ask-rfd-tests', /v0\.8\.8 · ask-rfd-tests/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
 const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);
@@ -1072,6 +1081,32 @@ ok('home GCA group closed by default', !/<details class="fc-crt" open><summary d
         ok('T4 no CWT CAT A-I minima', !t4t.some(x => /CWT/.test(tQ(x)+tA(x)) && !/not CWT/.test(tQ(x)+tA(x))));
 
         const formExp = V.expandAsk('formation flight');
+        
+        // v0.8.8 ask-rfd-tests: Lima size + opening/closing checklists
+        const limaExp = V.expandAsk('lima airspace size');
+        ok('lima airspace size expandAsk prefers 2-1-10 or 2-1-8', (limaExp.prefer||[]).some(p => /2-1-10|2-1-8/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(limaExp.prefer));
+        const limaHits = V.askHits('lima airspace size');
+        const limaCites = (limaHits||[]).map(h => (h.book&& (h.book.cite||h.book.pg)) || '').join(' ');
+        ok('lima airspace size askHits cites FACMAN 2-1-10 or 2-1-8 or App C path', /2-1-10|2-1-8|2-1-12|5-1-8|Appendix C/i.test(limaCites), limaCites);
+        ok('BOOK has FACMAN 2-1-8/2-1-10', !!(V.BOOK && V.BOOK['FACMAN 2-1-8'] && V.BOOK['FACMAN 2-1-10']));
+        ok('BOOK has Appendix A-1/A-2', !!(V.BOOK && V.BOOK['FACMAN Appendix A-1'] && V.BOOK['FACMAN Appendix A-2']));
+        const openExp = V.expandAsk('opening checklist');
+        ok('opening checklist expandAsk prefers Appendix A-1 or A-3', (openExp.prefer||[]).some(p => /Appendix A-[13]/i.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(openExp.prefer));
+        const openHits = V.askHits('opening checklist');
+        const openCites = (openHits||[]).map(h => (h.book&& (h.book.cite||h.book.pg)) || '').join(' ');
+        ok('opening checklist askHits cites Appendix A opening', /Appendix A-[13]|TOWER OPENING|RADAR OPENING/i.test(openCites), openCites);
+        const closeExp = V.expandAsk('closing checklist');
+        ok('closing checklist expandAsk prefers Appendix A-2 or A-4', (closeExp.prefer||[]).some(p => /Appendix A-[24]/i.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(closeExp.prefer));
+        const closeHits = V.askHits('closing checklist');
+        const closeCites = (closeHits||[]).map(h => (h.book&& (h.book.cite||h.book.pg)) || '').join(' ');
+        ok('closing checklist askHits cites Appendix A closing', /Appendix A-[24]|TOWER CLOSING|RADAR CLOSING/i.test(closeCites), closeCites);
+        const openHtml = V.askResultHTML(openHits, 'opening checklist');
+        ok('opening checklist askResultHTML is instructor-style (steps or teach)', /va-steps|va-teach|OPENING|Appendix A/i.test(openHtml||''), (openHtml||'').slice(0,180));
+        const limaHtml = V.askResultHTML(limaHits, 'lima airspace size');
+        ok('lima airspace size answer warns App C vs Class D', /Appendix C|Class D|2600|SCT|delegat/i.test(limaHtml||''), (limaHtml||'').slice(0,220));
+        const rfdSyl = (V.SYLLABUS && V.SYLLABUS.rfd) || [];
+        ok('runtime SYLLABUS.rfd length 5', rfdSyl.length===5, 'n='+rfdSyl.length);
+
         ok('formation flight expandAsk prefers PCG', (formExp.prefer||[]).some(p => /PCG/i.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(formExp.prefer));
         const formHits = V.askHits('formation flight');
         const formCites = (formHits || []).map(h => (h.book && h.book.cite) || '').join(' | ');
