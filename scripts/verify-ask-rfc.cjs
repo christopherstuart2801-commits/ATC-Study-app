@@ -623,7 +623,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.14 quizlet-3part', /v0\.8\.14 · quizlet-3part/.test(html) && !/v0\.8\.13 · home-slim<\/span>/.test(html));
+ok('statusbar v0.8.15 asr-par-by-mile', /v0\.8\.15 · asr-par-by-mile/.test(html) && !/v0\.8\.14 · quizlet-3part<\/span>/.test(html));
 ok('home-slim: VIDS strip off Home only', /S\.tab==='home'\?'':vidsStrip\(\)/.test(html) && /function vidsStrip\(\)/.test(html));
 ok('home-slim: topbar station text hidden on Home', /<div class="stnchip">\$\{S\.tab==='home'\?'':/.test(html));
 ok('home-slim: first six positions tiles', /const first6=POS\.slice\(0,6\)/.test(html) && /class="pos6"/.test(html));
@@ -825,10 +825,10 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         const srcCards=[].concat(...(V.QZ_SRC_ORDER||[]).map(k=>FS[k]||[]));
         const partN=QP.map(p=>(QD['q-'+p.id]||[]).length);
         const catSum=QP.map(p=>p.cats.reduce((a,c)=>a+(QD[c.k]||[]).length,0));
-        ok('quizlet source total 676', srcCards.length===676, 'n='+srcCards.length);
+        ok('quizlet source total 712 (676 + 25 ASR/11 PAR by mile)', srcCards.length===712, 'n='+srcCards.length);
         ok('quizlet dupes removed 23', Object.keys(DU).length===23, 'n='+Object.keys(DU).length);
-        ok('part counts TOWER 97 / RADAR 307 / LOCAL 249', partN.join('/')==='97/307/249', partN.join('/'));
-        ok('part counts sum = source − dupes = 653', partN.reduce((a,b)=>a+b,0)===srcCards.length-Object.keys(DU).length && partN.reduce((a,b)=>a+b,0)===653, partN.join('+'));
+        ok('part counts TOWER 97 / RADAR 343 / LOCAL 249', partN.join('/')==='97/343/249', partN.join('/'));
+        ok('part counts sum = source − dupes = 689', partN.reduce((a,b)=>a+b,0)===srcCards.length-Object.keys(DU).length && partN.reduce((a,b)=>a+b,0)===689, partN.join('+'));
         ok('category counts sum to part counts', catSum.join('/')===partN.join('/'), catSum.join('/'));
         const allIds=[].concat(...QP.map(p=>(QD['q-'+p.id]||[]).map(c=>c.id)));
         ok('each card in exactly one part', allIds.length===new Set(allIds).size);
@@ -846,6 +846,36 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         ok('TOWER has crash/svfr/sids/fdio + tower ops moves', qt.some(c=>c.o==='crash') && qt.some(c=>c.o==='svfr') && qt.some(c=>c.id==='ab-quntn') && qt.some(c=>c.o==='fdio') && qt.some(c=>c.id==='helo-echo-2-to'));
         ok('RADAR has PAR/ASR/RFD/strips, not moved-out cards', qr.some(c=>c.o==='parjo') && qr.some(c=>c.o==='asr') && qr.some(c=>c.o==='rfd') && qr.some(c=>c.o==='termstrip') && !qr.some(c=>/^sp-\d+$/.test(c.id)) && !qr.some(c=>c.id==='gca-elev'));
         ok('distinct facts sharing a question kept (T=TACAN & T=TOUCH & GO)', qr.some(c=>c.id==='sp-ap-t') && qr.some(c=>c.id==='sp-int-t'));
+        // v0.8.15 asr-par-by-mile: two RADAR chips right after ASR, FACMAN-only, farthest mile inward
+        {
+          const rc=(QP.find(p=>p.id==='radar')||{cats:[]}).cats.map(c=>c.k);
+          const ia=rc.indexOf('qr-asr');
+          ok('RADAR chips: ASR BY MILE + PAR BY MILE right after ASR', ia>=0 && rc[ia+1]==='qr-asrmile' && rc[ia+2]==='qr-parmile', rc.join(','));
+          const am=QD['qr-asrmile']||[], pm=QD['qr-parmile']||[];
+          ok('ASR BY MILE 25 cards / PAR BY MILE 11 cards', am.length===25 && pm.length===11, am.length+'/'+pm.length);
+          ok('by-mile cards all cite NFG FACMAN July 2026 (no 7110.65)', am.concat(pm).every(c=>c.src && c.src.doc==='NFG FACMAN July 2026' && /^6-[24]-\d+$/.test(c.src.pg) && /p\. 6-[24]-\d/.test(c.src.pa||'')), am.concat(pm).filter(c=>!(c.src&&c.src.doc==='NFG FACMAN July 2026')).map(c=>c.id).join(','));
+          const nq=t=>String(t||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+          const inChip=d=>new Set(d.map(c=>nq(c.q)+'|'+nq(c.a))).size===d.length && new Set(d.map(c=>nq(c.q))).size===d.length;
+          ok('by-mile chips have no duplicate cards', inChip(am) && inChip(pm));
+          const mi=c=>{ const m=/·\s*([\d.]+)\s*(?:mi|NM)\b/.exec(c.q); return m?parseFloat(m[1]):null; };
+          const seq=am.map(mi).filter(x=>x!==null);
+          ok('ASR BY MILE ordered farthest → inward (15 … 1)', seq[0]===15 && seq.every((x,i)=>i===0||x<=seq[i-1]), seq.join(','));
+          const pseq=pm.map(c=>{ const m=/·\s*([\d.]+)\s*(?:mi|NM)\b/.exec(c.q); return m?parseFloat(m[1]):null; }).filter(x=>x!==null);
+          ok('PAR BY MILE ordered farthest → inward', pseq[0]===11.56 && pseq.every((x,i)=>i===0||x<=pseq[i-1]), pseq.join(','));
+          const blob=am.map(c=>c.a).join('\n');
+          ok('ASR by mile: FACMAN 6-2-12 values (3300/3100/1800/2720/2360/1980/1620, CAT 1260/1500)', ['DESCEND AND MAINTAIN 3300','DESCEND AND MAINTAIN 3100','DESCEND AND MAINTAIN 1800','ALTITUDE SHOULD BE 2720','ALTITUDE SHOULD BE 2360','ALTITUDE SHOULD BE 1980','ALTITUDE SHOULD BE 1620','1260 (CAT B), 1500 (CAT C/D)'].every(x=>blob.includes(x)));
+          ok('ASR by mile: STARS fixes 14/11/8 NM (3600\'/3300\')', am.some(c=>c.id==='am-fix-14'&&/3600'/.test(c.a)) && am.some(c=>c.id==='am-fix-11'&&/3300'/.test(c.a)) && am.some(c=>c.id==='am-fix-8'&&/8NM/.test(c.a)));
+          ok('PAR by mile: 11.56 / 8.00 / 5.56 NM from RPI + 2026 wave off', pm.some(c=>/11\.56NM/.test(c.a)) && pm.some(c=>/8\.00NM from RPI/.test(c.a)) && pm.some(c=>/5\.56NM from RPI/.test(c.a)) && pm.some(c=>/CLIMB TO 3000 DIRECT NFG TACAN, AT 1 DME TURN LEFT HEADING 050/.test(c.a)));
+          ok('PAR by mile: no invented per-mile PAR phraseology', !pm.some(c=>/MILES? FROM TOUCHDOWN|ON GLIDEPATH|SLIGHTLY/i.test(c.a)));
+          ok('home RADAR shows ASR BY MILE / PAR BY MILE chips', /data-d="qr-asrmile"[^>]*>ASR BY MILE<span class="fc-n">25</.test(home2) && /data-d="qr-parmile"[^>]*>PAR BY MILE<span class="fc-n">11</.test(home2));
+          if (V.S) {
+            const k2={d:V.S.fcDeck,f:V.S.fcFlip,i:V.S.fcIdx,o:V.S.fcOrder};
+            V.S.fcDeck='qr-asrmile'; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcFlip=true;
+            const b=V.fcBody();
+            ok('ASR BY MILE reveal: big answer + small FACMAN source', /RADAR · ASR BY MILE · 1 \/ 25/.test(b) && /class="fcard is-revealed"/.test(b) && /class="fcsrc fccitebtn"[^>]*>NFG FACMAN July 2026 · 6-2-12/.test(b) && /15 MILES FROM RUNWAY, PREPARE TO DESCEND IN ONE MILE/.test(b), b.slice(0,160));
+            V.S.fcDeck=k2.d; V.S.fcFlip=k2.f; V.S.fcIdx=k2.i; V.S.fcOrder=k2.o;
+          }
+        }
         if (V.S) {
           const keep={d:V.S.fcDeck,f:V.S.fcFlip,i:V.S.fcIdx,o:V.S.fcOrder};
           V.S.fcDeck='q-local'; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcFlip=true;

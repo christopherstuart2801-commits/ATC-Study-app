@@ -100,7 +100,7 @@
 #vatc .hero .hstats div b{ font-family:var(--fd); font-size:18px; color:var(--text); display:block;}
 #vatc .hero .hstats div span{ font-size:8.5px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase;}
 #vatc .grp{ font-family:var(--fd); letter-spacing:.2em; font-size:10px; color:var(--amber); text-transform:uppercase; margin:16px 0 8px;}
-/* v0.8.13 home-slim · v0.8.14 quizlet-3part */
+/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile */
 #vatc .stnbar{ font-family:var(--fd); font-size:12px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 2px 10px; margin-bottom:12px; border-bottom:1px solid var(--line); }
 #vatc .pos6{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px; }
 @media(max-width:640px){ #vatc .pos6{ grid-template-columns:1fr 1fr; } }
@@ -757,7 +757,7 @@
   const SRC_TBL233={doc:'JO 7110.65BB',pg:'TBL 2-3-3',pa:'TERMINAL DATA ENTRIES — ARRIVALS'};
   const SRC_TBL234={doc:'JO 7110.65BB',pg:'TBL 2-3-4',pa:'TERMINAL DATA ENTRIES — DEPARTURES'};
   const SRC_2117={doc:'NFG FACMAN July 2026',pg:'2-1-17',pa:'AIRFIELD OPS DEPARTMENT'};
-  const FC_SET_LAB={pos:'POSITION',idents:'3-LETTER IDENTS',gca:'GCA DATA','gca-freq':'GCA FREQ',squadrons:'SQUADRONS',diverts:'DIVERTS','dial-1939':'1939 LINE','dial-4779':'4779 LINE',viscom:'VISCOM',sids:'SIDS',svfr:'SVFR',abbrev:'ABBREV',vrp:'VRP',scratchpad:'SCRATCHPAD',fdio:'FDIO','twr-freq':'TWR FREQ',helo:'HELO',crash:'CRASH',par:'PAR',parjo:'PAR JO',asr:'ASR PHRASEOLOGY',asrjo:'ASR JO',gcafinal:'GCA FINAL',arrcomp:'ARR COMP',arrdep:'ARR DEP',climbout:'CLIMBOUT',lostcom:'LOST COM',fixes:'FIXES',radsup:'RAD SUP',radio:'RADIO',rfd:'RFD',handoff:'HANDOFF',missed:'MISSED',final:'FINAL',wake:'WAKE',sep:'SEP',intercept:'INTERCEPT',taxi:'TAXI',termstrip:'TERM STRIP'};
+  const FC_SET_LAB={pos:'POSITION',idents:'3-LETTER IDENTS',gca:'GCA DATA','gca-freq':'GCA FREQ',squadrons:'SQUADRONS',diverts:'DIVERTS','dial-1939':'1939 LINE','dial-4779':'4779 LINE',viscom:'VISCOM',sids:'SIDS',svfr:'SVFR',abbrev:'ABBREV',vrp:'VRP',scratchpad:'SCRATCHPAD',fdio:'FDIO','twr-freq':'TWR FREQ',helo:'HELO',crash:'CRASH',par:'PAR',parjo:'PAR JO',asr:'ASR PHRASEOLOGY',asrmile:'ASR BY MILE',parmile:'PAR BY MILE',asrjo:'ASR JO',gcafinal:'GCA FINAL',arrcomp:'ARR COMP',arrdep:'ARR DEP',climbout:'CLIMBOUT',lostcom:'LOST COM',fixes:'FIXES',radsup:'RAD SUP',radio:'RADIO',rfd:'RFD',handoff:'HANDOFF',missed:'MISSED',final:'FINAL',wake:'WAKE',sep:'SEP',intercept:'INTERCEPT',taxi:'TAXI',termstrip:'TERM STRIP'};
   const FC_SETS={
     idents:[
       fcCard('poggi','POGGI','PGY','VORTAC','idents',SRC_TBLC1),
@@ -1250,6 +1250,65 @@
       fcCard('asrjo-proceed-vis','PROCEED VISUALLY (guidance termination)','When guidance discontinued and runway/lights in sight: (Distance) MILE(S) FROM RUNWAY/AIRPORT/HELIPORT, or OVER MISSED APPROACH POINT. PROCEED VISUALLY (additional instructions/clearance as required.)','ASR JO','asrjo',SRC_5116),
       fcCard('asrjo-missed','EXECUTE MISSED if not in sight','When guidance discontinued and not in sight: IF RUNWAY, or APPROACH/RUNWAY LIGHTS NOT IN SIGHT, EXECUTE MISSED APPROACH/(missed approach instructions).','ASR JO','asrjo',SRC_5116)
     ],
+    /* v0.8.15 asr-par-by-mile: mileage-ordered (farthest → inward), verbatim from NFG FACMAN July 2026 only.
+       ASR per-mile script = 6-2-12 a (RWY 21 straight-in) / b (circle RWY 3), p. 6-2-4–6-2-5; ASR/PAR segment fixes = 6-4-5 f/g, p. 6-4-3;
+       GCA final coordination by mile = 6-2-7 / 6-2-8 / 6-2-10 (p. 6-2-2–6-2-3), wave off = 6-4-8 d (p. 6-4-4); circling at 2 / 1 mile = 6-4-13 b (p. 6-4-7).
+       FACMAN has NO per-mile PAR phraseology: 6-2-11 points PAR phraseology criteria to FAAO JO 7110.65 (see PAR JO deck) — nothing invented here. */
+    asrmile:(function(){
+      const S21={doc:'NFG FACMAN July 2026',pg:'6-2-12',pa:'a · straight-in RWY 21 · p. 6-2-4'};
+      const S3={doc:'NFG FACMAN July 2026',pg:'6-2-12',pa:'b · circling to RWY 3 · p. 6-2-4–6-2-5'};
+      const SAB={doc:'NFG FACMAN July 2026',pg:'6-2-12',pa:'a & b · RWY 21 and circle RWY 3 (identical) · p. 6-2-4–6-2-5'};
+      const SG={doc:'NFG FACMAN July 2026',pg:'6-4-5',pa:'g · Surveillance Approach (STARS) Intermediate/Final · p. 6-4-3'};
+      const SC={doc:'NFG FACMAN July 2026',pg:'6-4-13',pa:'b · Circling approaches · p. 6-4-7'};
+      const both=(mi,a)=>fcCard('am-'+String(mi).replace('.','p'),'ASR · '+mi+' mi callout · RWY 21 & circle RWY 3',a,'ASR','asrmile',SAB);
+      return [
+        both(15,'15 MILES FROM RUNWAY, PREPARE TO DESCEND IN ONE MILE'),
+        both(14,'14 MILES FROM RUNWAY, DESCEND AND MAINTAIN 3300'),
+        fcCard('am-fix-14','ASR · 14 NM · intermediate fix (STARS)','The intermediate segment for the surveillance approach (STARS) is located between 14NM to 8NM from the runway threshold (RWT).\nThe minimum crossing altitude for the intermediate fix located 14NM from runway threshold is 3600\'','ASR','asrmile',SG),
+        both(13,'13 MILES FROM RUNWAY'),
+        both(12,'12 MILES FROM RUNWAY, PREPARE TO DESCEND IN ONE MILE'),
+        both(11,'11 MILES FROM RUNWAY, DESCEND AND MAINTAIN 3100'),
+        fcCard('am-fix-11','ASR · 11 NM · step-down fix (STARS)','A step down fix is located at 11NM from RWT.\nThe minimum crossing altitude for the stepdown fix located 11NM from RWT is 3300\'','ASR','asrmile',SG),
+        both(10,'10 MILES FROM RUNWAY'),
+        both(9,'9 MILES FROM RUNWAY, PREPARE TO DESCEND IN ONE MILE'),
+        both(8,'8 MILES FROM RUNWAY, DESCEND AND MAINTAIN 1800'),
+        fcCard('am-fix-8','ASR · 8 NM · final approach fix (STARS)','The final approach fix for the surveillance approach (STARS) is located at 8NM from RWT.','ASR','asrmile',SG),
+        both(7,'7 MILES FROM RUNWAY, ALTITUDE SHOULD BE 2720'),
+        both(6,'6 MILES FROM RUNWAY, ALTITUDE SHOULD BE 2360'),
+        both(5,'5 MILES FROM RUNWAY, ALTITUDE SHOULD BE 1980, PREPARE TO DESCEND IN HALF A MILE'),
+        fcCard('am-4p5-21','ASR · 4.5 mi callout · RWY 21 straight-in','4.5 MILES FROM RUNWAY, DESCEND AND MAINTAIN 1240, ALTITUDE SHOULD BE 1800','ASR','asrmile',S21),
+        fcCard('am-4p5-3','ASR · 4.5 mi callout · circle RWY 3','4.5 MILES FROM RUNWAY, DESCEND AND MAINTAIN 1240 (CAT A), 1260 (CAT B), 1500 (CAT C/D), ALTITUDE SHOULD BE 1800','ASR','asrmile',S3),
+        both(4,'4 MILES FROM RUNWAY, ALTITUDE SHOULD BE 1620'),
+        fcCard('am-3-21','ASR · 3 mi callout · RWY 21 straight-in','3 MILES FROM RUNWAY, ALTITUDE SHOULD BE 1240, DESCEND TO YOUR MINIMUM DESCENT ALTITUDE','ASR','asrmile',S21),
+        fcCard('am-3-3','ASR · 3 mi callout · circle RWY 3','3 MILES FROM RUNWAY, DESCEND TO YOUR MINIMUM DESCENT ALTITUDE','ASR','asrmile',S3),
+        both(2,'2 MILES FROM RUNWAY'),
+        fcCard('am-map-21','ASR · missed approach point · RWY 21 straight-in','OVER MISSED APPROACH POINT PROCEED VISUALLY,\nor,\nIF RUNWAY NOT IN SIGHT EXECUTE MISSED APPROACH','ASR','asrmile',S21),
+        fcCard('am-c3-vfr','ASR · after 2 mi · circle RWY 3 · airport VFR','TURN RIGHT, CIRCLE NORTHWEST FOR LEFT DOWNWIND RUNWAY 3, (Observe aircraft turn) CONTACT TOWER.','ASR','asrmile',S3),
+        fcCard('am-c3-vfr-when','Circle RWY 3 (VFR) · when to issue circling','Final controller shall issue circling instructions at 2 miles or as directed by the tower.\nTURN RIGHT, CIRCLE NORTHWEST FOR LEFT DOWNWIND RUNWAY THREE. CONTACT TOWER.','ASR','asrmile',SC),
+        fcCard('am-c3-ifr','ASR · 1 mi · circle RWY 3 · airport IFR','If the airport is IFR, continue the approach to one mile before issuing circling instructions:\nOVER MISSED APPROACH POINT. TURN RIGHT, CIRCLE NORTHWEST FOR LEFT DOWNWIND RUNWAY 3, (Observe aircraft turn) CONTACT TOWER.\nor,\nIF RUNWAY NOT IN SIGHT, EXECUTE MISSED APPROACH.','ASR','asrmile',S3),
+        fcCard('am-c3-ifr-1mi','Circle RWY 3 (IFR) · 1 mi · runway in sight','Final controller shall issue circling instructions at 1 mile or as directed by the tower.\nThe aircraft must report the runway in sight prior to commencing the circling maneuver. If the pilot does not report the runway in sight by one mile, issue missed approach instructions.\nREPORT FIELD / RUNWAY IN SIGHT.','ASR','asrmile',SC)
+      ];
+    })(),
+    parmile:(function(){
+      const SF={doc:'NFG FACMAN July 2026',pg:'6-4-5',pa:'f · PAR Intermediate/Final · p. 6-4-3'};
+      const SV={doc:'NFG FACMAN July 2026',pg:'6-2-7',pa:'b · VISCOM PROCEDURES · p. 6-2-2'};
+      const SN={doc:'NFG FACMAN July 2026',pg:'6-2-8',pa:'GCA – TOWER COORDINATION WITHOUT VISCOM · p. 6-2-3'};
+      const ST={doc:'NFG FACMAN July 2026',pg:'6-2-10',pa:'TOWER CLEARANCES · p. 6-2-3'};
+      const SW={doc:'NFG FACMAN July 2026',pg:'6-4-8',pa:'d · Wave Offs · p. 6-4-4'};
+      return [
+        fcCard('pm-11p56','PAR · 11.56 NM · intermediate segment begins','The intermediate segment for the PAR is located between 11.56NM to 5.56NM from the runway point of intercept (RPI).','PAR','parmile',SF),
+        fcCard('pm-int-desc','PAR · intermediate segment (11.56–5.56 NM) · descent','Aircraft requesting a PAR approach and within the intermediate approach segment boundaries depicted on the video map, may be descended to 2700\' and 2200\' as appropriate to aid in glidepath interception.','PAR','parmile',SF),
+        fcCard('pm-8','PAR · 8.00 NM · step-down fix','A step down fix is located at 8.00NM from RPI.','PAR','parmile',SF),
+        fcCard('pm-76-viscom','GCA final (PAR/ASR) · 7 mi jets / 6 mi helo-prop · VISCOM','At seven miles for jets, or six miles for helicopters and propeller aircraft, the final controller will activate buttons for type aircraft, duty runway, position, and intentions. Tower will respond by acknowledging the flashing plane figure.','PAR','parmile',SV),
+        fcCard('pm-76-noviscom','GCA final (PAR/ASR) · 7 mi jets / 6 mi helo-prop · no VISCOM','The final controller will coordinate with tower flight data via the interphone and pass the following information: 1. Aircraft position 2. Aircraft callsign and type 3. Intentions\nSIX MILES, (callsign, type aircraft, intentions)','PAR','parmile',SN),
+        fcCard('pm-5p56','PAR · 5.56 NM · final approach fix','The final approach fix for the PAR is located at 5.56NM from RPI.','PAR','parmile',SF),
+        fcCard('pm-43-viscom','GCA final (PAR/ASR) · 4 mi jets / 3 mi helo-prop · VISCOM','At four miles for jets, or three miles for helicopters and propeller aircraft, the final controller will activate the 3/4 button. Tower will respond by acknowledging the flashing plane figure which relays the intentions.','PAR','parmile',SV),
+        fcCard('pm-43-noviscom','GCA final (PAR/ASR) · 4 mi jets / 3 mi helo-prop · no VISCOM','The final controller will coordinate with the local controller for a clearance and pass the following information: 1. Aircraft position 2. Type aircraft 3. Intentions\nTHREE MILES, (type aircraft, intentions)\nThe local controller will respond by issuing one of the following: (a) Clearance (b) Continue (c) Wave off','PAR','parmile',SN),
+        fcCard('pm-34-clnc','GCA final (PAR/ASR) · 3/4-mile check · tower clearance','Clearances will normally be received at the 3/4-mile check.\nRWY 21 WIND (direction and speed), CLEARED TO/FOR (type landing), (other instructions as given by tower).','PAR','parmile',ST),
+        fcCard('pm-2-cont','GCA final (PAR/ASR) · 2 mi · CONT, no clearance','If CONT is relayed and no clearance is received by 2 miles, issue missed approach instructions unless verbal coordination is completed with the tower.','PAR','parmile',SV),
+        fcCard('pm-2-waveoff','GCA final (PAR/ASR) · 2 mi · wave off','Aircraft that are waved off by the tower or have not received a clearance by 2 miles will be issued wave off instructions.\nCLIMB TO 3000 DIRECT NFG TACAN, AT 1 DME TURN LEFT HEADING 050 AND EXPECT RADAR VECTORS.','PAR','parmile',SW)
+      ];
+    })(),
     gcafinal:[
       fcCard('gcf-landing-clnc','Landing clearance duty','Obtaining landing clearance from the tower and relaying to the pilot on final approach.','GCA FINAL','gcafinal',SRC_6201),
       fcCard('gcf-verbatim','Relay verbatim','Relaying traffic information, clearances, restrictions, and other instructions from the tower or Radar Supervisor verbatim.','GCA FINAL','gcafinal',SRC_6201),
@@ -1533,7 +1592,7 @@
      Every source card lands in exactly one part/category by content (QZ_MOVE = card-level moves off its old deck's default).
      QZ_DUPES = cross-set duplicates (same normalized question, same fact) dropped → kept id (longest definition + its cite; tie = first in old order).
      Same question but a different fact (e.g. scratchpad T=TACAN vs T=TOUCH & GO) is NOT a dupe — both kept; the per-card origin tag disambiguates. */
-  const QZ_SRC_ORDER=['idents','diverts','twr-freq','helo','taxi','crash','dial-1939','dial-4779','viscom','gca','gca-freq','par','parjo','asr','asrjo','gcafinal','arrcomp','arrdep','climbout','intercept','final','rfd','handoff','missed','lostcom','fixes','radsup','wake','sep','radio','squadrons','sids','svfr','abbrev','vrp','scratchpad','fdio','termstrip'];
+  const QZ_SRC_ORDER=['idents','diverts','twr-freq','helo','taxi','crash','dial-1939','dial-4779','viscom','gca','gca-freq','par','parjo','asr','asrjo','asrmile','parmile','gcafinal','arrcomp','arrdep','climbout','intercept','final','rfd','handoff','missed','lostcom','fixes','radsup','wake','sep','radio','squadrons','sids','svfr','abbrev','vrp','scratchpad','fdio','termstrip'];
   const QZ_PARTS=[
     {id:'tower',lab:'TOWER',sub:'Clearance/FD · Ground · Local',cats:[
       {k:'qt-sids',lab:'SIDS & DEPARTURES',from:['sids']},
@@ -1548,6 +1607,8 @@
       {k:'qr-gca',lab:'GCA DATA',from:['gca']},
       {k:'qr-par',lab:'PAR',from:['par','parjo']},
       {k:'qr-asr',lab:'ASR',from:['asr','asrjo']},
+      {k:'qr-asrmile',lab:'ASR BY MILE',from:['asrmile']},
+      {k:'qr-parmile',lab:'PAR BY MILE',from:['parmile']},
       {k:'qr-gcafinal',lab:'GCA FINAL',from:['gcafinal']},
       {k:'qr-final',lab:'FINAL / INTERCEPT',from:['intercept','final']},
       {k:'qr-arr',lab:'ARRIVAL / DEP',from:['arrdep','arrcomp','climbout']},
@@ -3094,7 +3155,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.14 · quizlet-3part</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.15 · asr-par-by-mile</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
