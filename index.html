@@ -100,6 +100,15 @@
 #vatc .hero .hstats div b{ font-family:var(--fd); font-size:18px; color:var(--text); display:block;}
 #vatc .hero .hstats div span{ font-size:8.5px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase;}
 #vatc .grp{ font-family:var(--fd); letter-spacing:.2em; font-size:10px; color:var(--amber); text-transform:uppercase; margin:16px 0 8px;}
+/* v0.8.13 home-slim */
+#vatc .stnbar{ font-family:var(--fd); font-size:12px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 2px 10px; margin-bottom:12px; border-bottom:1px solid var(--line); }
+#vatc .pos6{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px; }
+@media(max-width:640px){ #vatc .pos6{ grid-template-columns:1fr 1fr; } }
+#vatc .pcard.ptile{ cursor:pointer; min-height:92px; padding:12px; display:flex; flex-direction:column; justify-content:flex-end; }
+#vatc .pcard.ptile .pn{ font-size:16px; line-height:1.2; padding-right:0; }
+#vatc .pcard.ptile .ptg{ position:absolute; top:10px; left:12px; font-family:var(--fm); font-size:9px; letter-spacing:.16em; color:var(--amber); }
+#vatc .pcard.ptile .pcpct{ font-size:12px; }
+#vatc .pcard.ptile .psub{ font-family:var(--fm); font-size:9.5px; letter-spacing:.06em; color:var(--muted); margin-top:4px; }
 #vatc .pgrid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px;} @media(max-width:640px){#vatc .pgrid{grid-template-columns:1fr;}}
 #vatc .pcard{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--panel); cursor:default; transition:.15s; position:relative;}
 #vatc .pcard:hover{ border-color:var(--green); transform:translateY(-1px);} #vatc .pcard.on{ border-color:var(--green); box-shadow:0 0 0 1px var(--green) inset;}
@@ -3000,9 +3009,9 @@ function vectorAnswerHTML(query, hits){
 
   // ===== chrome =====
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
-    <div class="stnchip"><div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>
+    <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.12 · ask-all-pubs</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.13 · home-slim</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -3120,23 +3129,19 @@ function vidsStrip(){
 
   // ===== views =====
   function homeView(){
-    const board=g=>POS.filter(p=>p.g===g).map(p=>{
+    /* v0.8.13 home-slim: one-line station bar + first six positions as big tap tiles (POS order). No field stats / TACAN / VIDS on Home. */
+    const tile=p=>{
       const P=posProgress(p.k);
-      const pack=syllabusFor(p.k);
-      const pending=!pack.list.length;
-      return `<div class="pcard ${S.pos===p.k?'on':''}" data-action="poslearn" data-p="${p.k}">
-        <div class="pcard-hd"><span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div></div>
-        <div class="pos-body"><div class="pos-prog">${pending?'ACAD packet pending — paper not in yet.':`${P.learnLabel} ${P.learnDone}/${P.learnTot} · Cards ${P.fcDone}/${P.fcTot}`} · tap → Learn</div>
-          <div class="pos-acts"><button class="qabtn" data-action="poscards" data-p="${p.k}">FLASHCARDS</button><button class="qabtn" data-action="poslearn" data-p="${p.k}">LEARN</button></div>
-        </div></div>`;
-    }).join('');
+      const pending=!syllabusFor(p.k).list.length;
+      return `<div class="pcard ptile ${S.pos===p.k?'on':''}" data-action="poslearn" data-p="${p.k}">
+        <span class="ptg">${p.g==='TOWER'?'TWR':'RDR'}</span><span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div>${pending?'<div class="psub">ACAD pending</div>':''}</div>`;
+    };
+    const first6=POS.slice(0,6), rest=POS.slice(6);
     const quiz=`<div class="grp">KNFG Quizlets</div>
       ${fcSetChipRow(false)}`;
-    return `<div class="hero reveal"><div class="hk">KNFG</div><div class="hn">MCAS Camp Pendleton · Munn Field · Oceanside, CA</div>
-        <div class="hstats"><div><b>RWY 21</b><span>Primary</span></div><div><b>78 ft</b><span>Field Elev</span></div><div><b>3 / 21</b><span>Runways</span></div><div><b>Ch 55</b><span>NFG TACAN</span></div><div><b>${POS.length}</b><span>Positions</span></div></div>
-        <div class="qa"><button class="qabtn" data-action="tab" data-t="ask">${I.ask} Ask a question</button><button class="qabtn" data-action="tab" data-t="reference">${I.file} Charts & routes</button><button class="qabtn" data-action="goscope">${I.sim} Run the scope</button><button class="qabtn" data-action="acads">${I.grad} Academics</button></div></div>
-      <div class="grp">Tower positions</div><div class="pgrid">${board('TOWER')}</div>
-      <div class="grp">Radar positions</div><div class="pgrid">${board('RADAR')}</div>
+    return `<div class="stnbar">MCAS Camp Pendleton (KNFG)</div>
+      <div class="pos6">${first6.map(tile).join('')}</div>
+      ${rest.length?`<div class="pos6">${rest.map(tile).join('')}</div>`:''}
       ${quiz}`; }
 
   function askView(){
@@ -3997,7 +4002,7 @@ function pdfPaneHTML(){
   function appScreen(){ let inner='';
     if(S.tab==='home')inner=homeView(); else if(S.tab==='ask')inner=askView(); else if(S.tab==='learn'||S.tab==='train')inner=learnView();
     else if(S.tab==='sim')inner=simView(); else if(S.tab==='reference')inner=refView();
-    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${S.tab==='home'?'':trackbar()}${vidsStrip()}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
+    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${S.tab==='home'?'':trackbar()}${S.tab==='home'?'':vidsStrip()}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
 
   function doAsk(){
     const inp=document.getElementById('reflk')||document.getElementById('askq');

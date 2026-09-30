@@ -623,7 +623,10 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.12 ask-all-pubs', /v0\.8\.12 · ask-all-pubs/.test(html));
+ok('statusbar v0.8.13 home-slim', /v0\.8\.13 · home-slim/.test(html));
+ok('home-slim: VIDS strip off Home only', /S\.tab==='home'\?'':vidsStrip\(\)/.test(html) && /function vidsStrip\(\)/.test(html));
+ok('home-slim: topbar station text hidden on Home', /<div class="stnchip">\$\{S\.tab==='home'\?'':/.test(html));
+ok('home-slim: first six positions tiles', /const first6=POS\.slice\(0,6\)/.test(html) && /class="pos6"/.test(html));
 ok('askScanPubOrder helper', /function\s+askScanPubOrder\s*\(/.test(html));
 ok('diversifyAskHits helper', /function\s+diversifyAskHits\s*\(/.test(html));
 ok('Ask always queues cross-pub find', /tab==='ask'\s*\|\|\s*!hits\.length\)\s*queueCrossPubFind/.test(html));
@@ -752,8 +755,11 @@ if (sm) {
 
       const home = typeof V.homeView === 'function' ? V.homeView() : '';
       ok('homeView pcard percent', /pcpct/.test(home) && /%/.test(home));
-      ok('home cards go Learn', /data-action="poslearn"/.test(home) && /tap → Learn/.test(home));
-      ok('empty syllabus pending sentence', /ACAD packet pending — paper not in yet\./.test(home));
+      ok('home-slim: station bar one line', /class="stnbar">MCAS Camp Pendleton \(KNFG\)<\/div>/.test(home));
+      ok('home-slim: no TACAN / field stats on Home', !/NFG TACAN|Ch 55|Field Elev|class="hstats"/.test(home));
+      ok('home-slim: six poslearn tiles', (home.match(/class="pcard ptile/g)||[]).length === 6 && (home.match(/data-action="poslearn"/g)||[]).length === 6);
+      ok('home cards go Learn', /data-action="poslearn"/.test(home));
+      ok('empty syllabus pending marker (home-slim tile)', (home.match(/ACAD pending/g)||[]).length === ['cd','gnd','lcl','rfd','fin','arr'].filter(k=>!V.syllabusFor(k).list.length).length);
       if (V.S) { V.S.pos='fin'; V.S.learnMode='acad'; V.S.trainMode='practice'; V.S.rfcTopic=0; }
       const learn = typeof V.learnView === 'function' ? V.learnView() : '';
       ok('Learn lists ACAD-0520', /ACAD-0520/.test(learn), 'learn len=' + (learn&&learn.length));
