@@ -623,7 +623,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.16 fac2026-sync', /v0\.8\.16 · fac2026-sync/.test(html) && !/v0\.8\.15 · asr-par-by-mile<\/span>/.test(html));
+ok('statusbar v0.8.17 fac2026-reader', /v0\.8\.17 · fac2026-reader<\/span>/.test(html) && !/v0\.8\.16 · fac2026-sync<\/span>/.test(html));
 // v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
 {
   const OLD25=[/2,?200 via heading 211/i,/CLIMB AND MAINTAIN 2200 VIA/i,/ten \(10\) feet/,/±\s?10 feet/,/±\s?50 feet of the azimuth/,/between 51 and 100 feet/,/between 11 and 25 feet/,/between 26 and 50 feet/,/MAINTAIN 3800, PROCEED DIRECT ONTOS/i,/ONE THOUSAND TWO HUNDRED THEN TURN LEFT/,/UPWIND NUMBERS AND LEAVING/,/RS with ADC/,/RS, ADC, RD/,/H-1 departures only/,/between Bravo and Delta taxiways/,/Between 11 and 7 miles on final/,/go-around \(VFR\) or missed approach \(IFR\)/];
@@ -840,10 +840,10 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         const srcCards=[].concat(...(V.QZ_SRC_ORDER||[]).map(k=>FS[k]||[]));
         const partN=QP.map(p=>(QD['q-'+p.id]||[]).length);
         const catSum=QP.map(p=>p.cats.reduce((a,c)=>a+(QD[c.k]||[]).length,0));
-        ok('quizlet source total 701 (712 − 11 July-2025-only cards removed/merged)', srcCards.length===701, 'n='+srcCards.length);
+        ok('quizlet source total 703 (712 − 11 July-2025-only cards removed/merged + 2 fac2026-reader cards)', srcCards.length===703, 'n='+srcCards.length);
         ok('quizlet dupes removed 23', Object.keys(DU).length===23, 'n='+Object.keys(DU).length);
-        ok('part counts TOWER 97 / RADAR 332 / LOCAL 249', partN.join('/')==='97/332/249', partN.join('/'));
-        ok('part counts sum = source − dupes = 678', partN.reduce((a,b)=>a+b,0)===srcCards.length-Object.keys(DU).length && partN.reduce((a,b)=>a+b,0)===678, partN.join('+'));
+        ok('part counts TOWER 97 / RADAR 334 / LOCAL 249', partN.join('/')==='97/334/249', partN.join('/'));
+        ok('part counts sum = source − dupes = 680', partN.reduce((a,b)=>a+b,0)===srcCards.length-Object.keys(DU).length && partN.reduce((a,b)=>a+b,0)===680, partN.join('+'));
         ok('category counts sum to part counts', catSum.join('/')===partN.join('/'), catSum.join('/'));
         // v0.8.16 fac2026-sync: runtime sweep — every 2026-cited Home quizlet + Learn card is free of July-2025-only text
         {
@@ -855,7 +855,44 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           const badL=learn.filter(c=>c.src && /July 2026/.test(c.src.doc||'') && OLD25.test((c.q||'')+' '+(c.a||''))).map(c=>c.id);
           ok('fac2026-sync: no 2025-only text in 2026-cited Learn cards', badL.length===0, badL.join(','));
           const cat=k=>(QD[k]||[]).length;
-          ok('fac2026-sync chip counts: PAR 15 / GCA FINAL 10 / ARRIVAL-DEP 24 / MISSED-LOST COM 18', cat('qr-par')===15 && cat('qr-gcafinal')===10 && cat('qr-arr')===24 && cat('qr-missed')===18, ['qr-par','qr-gcafinal','qr-arr','qr-missed'].map(k=>k+'='+cat(k)).join(' '));
+          ok('fac2026 chip counts: PAR 15 / GCA FINAL 10 / ARRIVAL-DEP 25 / MISSED-LOST COM 19', cat('qr-par')===15 && cat('qr-gcafinal')===10 && cat('qr-arr')===25 && cat('qr-missed')===19, ['qr-par','qr-gcafinal','qr-arr','qr-missed'].map(k=>k+'='+cat(k)).join(' '));
+        }
+        // v0.8.17 fac2026-reader: BOOK paragraphs re-copied from the July 2026 PDF; no duplicate paragraph display; 2 new cards
+        {
+          const B=V.BOOK||{};
+          const facPara=Object.entries(B).filter(([k,e])=>e && e.kind==='para' && /^NFG FACMAN July 2026$/.test(e.doc||''));
+          const src25=facPara.filter(([k,e])=>/2025/.test(String(e.src_file||''))).map(([k])=>k);
+          ok('fac2026-reader: no July 2026 FACMAN paragraph sourced from the July 2025 file', src25.length===0, src25.slice(0,8).join(','));
+          const ocr=facPara.filter(([k,e])=>/\bl{1,2}\d?NM\b|\bl\dNM\b/.test(String(e.text||''))).map(([k])=>k);
+          ok('fac2026-reader: no OCR artifacts (llNM / l4NM / l1NM) in BOOK paragraphs', ocr.length===0, ocr.join(','));
+          const twinBad=Object.keys(B).filter(k=>B['FACMAN '+k] && (B[k].cite!==B['FACMAN '+k].cite || B[k].text!==B['FACMAN '+k].text));
+          ok('fac2026-reader: bare-key twins share the FACMAN cite + text (no duplicate paragraph display)', twinBad.length===0, twinBad.slice(0,8).join(','));
+          const dupQ=['crash phone','flight progress strips','video map assignments','CWT category on strips','lost communications procedures','climbout instructions','time share procedures','PAR trainee weather minimums'].filter(q=>{ const hs=(V.askHits(q)||[]).filter(h=>h.book); const cs=hs.map(h=>h.book.cite); const ts=hs.map(h=>String(h.book.text||'').slice(0,400)).filter(Boolean); return new Set(cs).size!==cs.length || new Set(ts).size!==ts.length; });
+          const byTxt={}; Object.values(B).forEach(e=>{ const t=String(e.text||'').trim(); if(t.length>40){ (byTxt[t]=byTxt[t]||new Set()).add(e.cite); } });
+          const multi=Object.values(byTxt).filter(st=>st.size>1).map(st=>[...st].join('='));
+          ok('fac2026-reader: no BOOK paragraph text stored under two different cites', multi.length===0, multi.slice(0,5).join(' | '));
+          ok('fac2026-reader: Ask/reader hits never show the same paragraph twice', dupQ.length===0, dupQ.join(' | '));
+          const T=k=>String((B['FACMAN '+k]||{}).text||'');
+          const both=k=>B['FACMAN '+k] && /NFG-FACMAN-July-2026\.pdf/.test(B['FACMAN '+k].src_file||'') && (!B[k] || !/FACMAN/.test(B[k].doc||'') || B[k].text===B['FACMAN '+k].text);
+          const re17=['4-1-10','4-1-12','4-1-13','5-1-1','5-1-2','5-1-18','5-1-23','5-4-3','6-1-10','6-2-10','6-4-5','6-4-13','6-5-5','6-5-9','8-2-3'];
+          ok('fac2026-reader: 15 changed paragraphs re-copied from the July 2026 PDF (both keys)', re17.every(both), re17.filter(k=>!both(k)).join(','));
+          ok('fac2026-reader: 5-1-1 has no Basilone light item (removed in July 2026)', !/Basilone/.test(T('5-1-1')) && /NITEX excluded/.test(T('5-1-1')));
+          ok('fac2026-reader: 5-1-18 PIREPs = JO 7110.65 only', /Procedures for soliciting and disseminating PIREPs are covered in FAAO JO 7110\.65\./.test(T('5-1-18')) && !/forward/i.test(T('5-1-18')));
+          ok('fac2026-reader: 6-1-10 block 8 I = IFR flight plan; no GCA table bleed', /identify approaches conducted on an IFR flight plan/.test(T('6-1-10')) && !/\bIMC\b/.test(T('6-1-10')) && !/Decision Altitude|PAR Final Approach/.test(T('6-1-10')));
+          ok('fac2026-reader: 8-2-3 video maps 1-5 (Lima/Golf/Longrifle/Class D & E/Low Altitude Airways)', /Map 1 - Lima[\s\S]*Map 5 - Low Altitude Airways/.test(T('8-2-3')) && !/\b(236\.3|339\.8|Map 82|Map 143)\b/.test(T('8-2-3')));
+          ok('fac2026-reader: 6-5-5 PAR trainee wx 3-mile / 1-mile visibility', /1000 feet\s+ceiling and\/or 3-mile visibility/.test(T('6-5-5')) && /1-mile visibility/.test(T('6-5-5')));
+          ok('fac2026-reader: 4-1-10 = SKILL CHECKS (July 2026)', (B['FACMAN 4-1-10']||{}).pa==='SKILL CHECKS' && /PSCs for lost currency are conducted only by the Training/.test(T('4-1-10').replace(/\s+/g,' ')));
+          ok('fac2026-reader: 6-2-10 low-approach phraseology printed once', (T('6-2-10').match(/SIX HUNDRED/g)||[]).length===1);
+          const t63=JSON.stringify(B['FACMAN TBL 6-3']||{}), c2=JSON.stringify(B['FACMAN TBL C-2']||{});
+          ok('fac2026-reader: TBL 6-3 Copter TACAN = TA21 (no CT21 anywhere)', /"Copter TACAN Approach","TA21"/.test(t63) && !/CT21/.test(html), t63.slice(0,300)+' | html CT21='+/CT21/.test(html));
+          ok('fac2026-reader: TBL C-2 includes COYOTE / HMLA 775 (July 2026)', /"COYOTE","HMLA 775","WR","COY","H-1"/.test(c2));
+          ok('fac2026-reader: no Basilone-light / IMC block-8 / 5-1-23 hand-write test items', !/Basilone Road traffic light for an inbound emergency|Basilone Road traffic light — when|conducted in IMC|I if IMC|IFR\/IMC approaches|shall hand-write/.test(html));
+          const byId={}; Object.values(V.FC_SETS||{}).forEach(a=>(a||[]).forEach(c=>{ byId[c.id]=c; }));
+          const co=byId['co-tacan-ots'], lp=byId['lc-pointout'];
+          ok('fac2026-reader: new card co-tacan-ots = 6-4-11 f verbatim (ARRIVAL / DEP, p. 6-4-6)', !!co && co.pos==='climbout' && co.a==='In the event that the Camp Pendleton TACAN is out of service, controllers shall issue the following climb-outs to all VFR/IFR aircraft requesting to remain in the GCA pattern.\nCLIMB TO 3000 DIRECT OCEANSIDE VORTAC, AT 3 DME TURN LEFT HEADING 050' && co.src && co.src.pg==='6-4-11' && co.src.pa==='f · TACAN out of service · p. 6-4-6' && (QD['qr-arr']||[]).some(c=>c.id==='co-tacan-ots'));
+          ok('fac2026-reader: new card lc-pointout = 6-4-10 c + NOTE verbatim (MISSED / LOST COM, p. 6-4-5)', !!lp && lp.pos==='lostcom' && lp.a==='Controllers will coordinate for a point out with SoCal TRACON for approval to proceed to the initial approach fix (CASPO) if aircraft will execute the complete lost communication procedure.\nNOTE- If communications cannot be reestablished, pilots are expected to hold at ONTOS for five minutes then proceed direct to CASPO at 4900 for the TACAN Z and execute approach as published' && lp.src && lp.src.pg==='6-4-10' && lp.src.pa==='c · Point out / NOTE · p. 6-4-5' && (QD['qr-missed']||[]).some(c=>c.id==='lc-pointout'));
+          const allCards=[].concat(...Object.values(V.FC_SETS||{})).filter(c=>c.id!=='co-tacan-ots'&&c.id!=='lc-pointout');
+          ok('fac2026-reader: no other card already carries the 2 new facts', !allCards.some(c=>/OCEANSIDE VORTAC, AT 3 DME|point out with SoCal TRACON|proceed direct to CASPO/i.test((c.q||'')+' '+(c.a||''))));
         }
         const allIds=[].concat(...QP.map(p=>(QD['q-'+p.id]||[]).map(c=>c.id)));
         ok('each card in exactly one part', allIds.length===new Set(allIds).size);
@@ -1284,7 +1321,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         ok('BOOK 2-4-8 subsequent omit unit', !!(b248 && /identification of the ATC unit may be omitted/.test(String(b248.text||''))));
         ok('BOOK 2-4-8 no running header 2-4-2 Radio and Interphone', !!(b248 && !/2-4-2\s+Radio and Interphone/.test(String(b248.text||''))));
         const b2117 = (V.BOOK && (V.BOOK['FACMAN 2-1-17'] || V.BOOK['2-1-17'])) || (V.bookResolve && V.bookResolve('2-1-17'));
-        ok('BOOK 2-1-17 hangar space not available', !!(b2117 && /hangar space for transient aircraft is\s+not available/.test(String(b2117.text||''))), b2117 && String((b2117.text||'')).slice(0,80));
+        ok('BOOK 2-1-17 hangar space not available', !!(b2117 && /hangar space for transient aircraft is\s+not\s+available/.test(String(b2117.text||''))), b2117 && String((b2117.text||'')).slice(0,80));
         const b552 = (V.BOOK && (V.BOOK['FACMAN 5-5-2'] || V.BOOK['5-5-2'])) || (V.bookResolve && V.bookResolve('FACMAN 5-5-2'));
         ok('BOOK FACMAN 5-5-2 squawk 7600 course rules', !!(b552 && /squawk 7600/.test(String(b552.text||'')) && /course rules/.test(String(b552.text||'')) && /orbit\s+northwest/.test(String(b552.text||''))), b552 && String((b552.text||'')).slice(0,120));
         const c3 = V.bookResolve && V.bookResolve('TBL C-3');
@@ -1761,7 +1798,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         const t51rest_b512 = V.BOOK && (V.BOOK['FACMAN 5-1-12'] || V.BOOK['5-1-12']);
         ok('BOOK FACMAN 5-1-12 NITEX nonempty', !!(t51rest_b512 && /NITEX|night vision/i.test(String(t51rest_b512.text||'')) && /C-12/.test(String(t51rest_b512.text||''))), t51rest_b512 && String(t51rest_b512.text||'').slice(0,120));
         const t51rest_b523 = V.BOOK && (V.BOOK['FACMAN 5-1-23'] || V.BOOK['5-1-23']);
-        ok('BOOK FACMAN 5-1-23 CWT tower nonempty', !!(t51rest_b523 && /hand write|CWT category/i.test(String(t51rest_b523.text||''))), t51rest_b523 && String(t51rest_b523.text||'').slice(0,160));
+        ok('BOOK FACMAN 5-1-23 CWT tower = July 2026 CWT statement (no 2025 hand-write sentence)', !!(t51rest_b523 && /Consolidated Wake Turbulence \(CWT\) separation\s+standards contained in the FAAO JO 3760\.1, 7110\.126, and 7110\.65\./.test(String(t51rest_b523.text||'')) && !/hand write/i.test(String(t51rest_b523.text||''))), t51rest_b523 && String(t51rest_b523.text||'').slice(0,160));
         ok('5-1-23 does not invent CAT A-I numbers', !!(t51rest_b523 && !/\bCAT [A-I]\b/.test(String(t51rest_b523.text||''))));
         const t51rest_svfrExp = V.expandAsk('SVFR operations');
         ok('SVFR operations expandAsk prefers 5-1-7', (t51rest_svfrExp.prefer||[]).some(p => /5-1-7/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(t51rest_svfrExp.prefer));
@@ -1770,7 +1807,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         const t51rest_nitexExp = V.expandAsk('NITEX');
         ok('NITEX expandAsk prefers 5-1-12', (t51rest_nitexExp.prefer||[]).some(p => /5-1-12/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(t51rest_nitexExp.prefer));
         const t51rest_cwtExp = V.expandAsk('hand write CWT');
-        ok('hand write CWT expandAsk prefers 5-1-23', (t51rest_cwtExp.prefer||[]).some(p => /5-1-23/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(t51rest_cwtExp.prefer));
+        ok('hand write CWT expandAsk prefers 6-1-17 (July 2026 home of the write-CWT-on-strips rule)', (t51rest_cwtExp.prefer||[]).some(p => /6-1-17/.test((p.pg||'')+' '+(p.key||''))) && !(t51rest_cwtExp.prefer||[]).some(p => /5-1-23/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(t51rest_cwtExp.prefer));
         const t51rest_longOpsExp = V.expandAsk('Longrifle operations');
         ok('Longrifle operations prefers 5-1-13 not 8-3-4', (t51rest_longOpsExp.prefer||[]).some(p => /5-1-13/.test((p.pg||'')+' '+(p.key||''))) && !(t51rest_longOpsExp.prefer||[]).some(p => /8-3-4/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(t51rest_longOpsExp.prefer));
         const t51rest_svfrD = (V.FC_SETS && V.FC_SETS.svfr) || [];
