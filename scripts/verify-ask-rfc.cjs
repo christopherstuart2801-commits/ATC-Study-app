@@ -224,8 +224,8 @@ ok('BOOK has FACMAN 6-2-9 key', /"FACMAN 6-2-9":/.test(html));
 ok('BOOK has 6-2-9 dual key', /"6-2-9":/.test(html));
 ok('BOOK 6-2-1 has landing clearance', /"FACMAN 6-2-1":[\s\S]{0,800}landing clearance/.test(html));
 ok('BOOK 6-2-2 has YOUR CONTROL', /"FACMAN 6-2-2":[\s\S]{0,1200}YOUR CONTROL/.test(html));
-ok('BOOK 6-2-3 has LOW ALTITUDE ALERT', /"FACMAN 6-2-3":[\s\S]{0,1200}LOW ALTITUDE ALERT/.test(html));
-ok('BOOK 6-2-3 has TOWER DIRECTS', /"FACMAN 6-2-3":[\s\S]{0,4000}TOWER DIRECTS/.test(html));
+ok('BOOK 6-2-3 (July 2026) listing JO 7110.65 + procedures NAVAIR 00-80T-114', /"FACMAN 6-2-3":[\s\S]{0,600}A listing of final approach abnormalities are found in the FAA JO 7110\.65/.test(html) && /"FACMAN 6-2-3":[\s\S]{0,700}NAVAIR 00-80T-114/.test(html));
+ok('BOOK 6-2-3 no 2025 safe-limit text (LOW ALTITUDE ALERT / TOWER DIRECTS)', !/"FACMAN 6-2-3":\{[^}]*LOW ALTITUDE ALERT/.test(html) && !/"FACMAN 6-2-3":\{[^}]*TOWER DIRECTS/.test(html));
 ok('BOOK 6-2-3 no Radar running header', !/"FACMAN 6-2-3":\{[^}]*Radar - /.test(html) && !/"FACMAN 6-2-3":[\s\S]{0,3500}Radar - Radar Final Control/.test(html));
 ok('BOOK 6-2-4 cites 6-4-8', /"FACMAN 6-2-4":[\s\S]{0,400}6-4-8/.test(html));
 ok('BOOK 6-2-5 cites 6-4-9', /"FACMAN 6-2-5":[\s\S]{0,400}6-4-9/.test(html));
@@ -271,15 +271,15 @@ ok('BOOK has bare 5-10-3 dual', /"5-10-3":/.test(html));
 ok('BOOK has bare 5-10-11 dual', /"5-10-11":/.test(html));
 ok('BOOK has bare 6-2-10 dual', /"6-2-10":/.test(html));
 ok('BOOK has bare 6-2-13 dual', /"6-2-13":/.test(html));
-ok('BOOK 6-4-8 has CLIMB AND MAINTAIN 2200', /"FACMAN 6-4-8":[\s\S]{0,2500}CLIMB AND MAINTAIN 2200/.test(html));
-ok('BOOK 6-4-8 has HEADING 211', /"FACMAN 6-4-8":[\s\S]{0,2500}HEADING 211/.test(html));
+ok('BOOK 6-4-8 has CLIMB TO 3000 DIRECT NFG TACAN (July 2026)', /"FACMAN 6-4-8":[\s\S]{0,2500}CLIMB TO 3000 DIRECT NFG TACAN, AT 1 DME/.test(html));
+ok('BOOK 6-4-8 has HEADING 050, no 2200 / heading 211', /"FACMAN 6-4-8":[\s\S]{0,2500}HEADING 050/.test(html) && !/"FACMAN 6-4-8":\{[^}]*(2200|HEADING\s+211|heading\s+211)/.test(html));
 ok('BOOK 6-4-8 no JULY 2025 footer', !/"FACMAN 6-4-8":[\s\S]{0,2500}JULY 2025/.test(html));
 ok('BOOK 6-4-8 no Radar- Arrival footer', !/"FACMAN 6-4-8":[\s\S]{0,2500}Radar- Arrival/.test(html));
 ok('BOOK 6-4-9 has STOP SQUAWK', /"FACMAN 6-4-9":[\s\S]{0,1200}STOP SQUAWK/.test(html));
 ok('BOOK 6-4-9 has REMAIN THIS FREQUENCY', /"FACMAN 6-4-9":[\s\S]{0,1200}REMAIN THIS FREQUENCY/.test(html));
 ok('BOOK 6-4-9 keeps transient parenthetical', /"FACMAN 6-4-9":[\s\S]{0,1200}frequency for transient aircraft/.test(html));
-ok('ASK_ALIASES has climb and maintain 2200', /climb and maintain 2200 via heading 211/.test(aliases));
-ok('2200/211 alias prefer 6-4-8', /climb and maintain 2200 via heading 211[\s\S]*?prefer:\[\{pg:'6-4-8'/.test(aliases));
+ok('ASK_ALIASES has climb to 3000 direct NFG TACAN (6-4-8, July 2026)', /climb \(to\|and maintain\) 3000 direct NFG TACAN/.test(aliases) && !/2200 via heading 211/.test(aliases));
+ok('3000/NFG TACAN alias prefer 6-4-8', /climb \(to\|and maintain\) 3000 direct NFG TACAN[\s\S]*?prefer:\[\{pg:'6-4-8'/.test(aliases));
 ok('ASK_ALIASES has STOP SQUAWK / remain this frequency', /AFTER LANDING[, ]\+STOP SQUAWK/.test(aliases) || /REMAIN THIS FREQUENCY FOR DEPARTURE CONTROL/.test(aliases));
 ok('STOP SQUAWK alias prefer 6-4-9', /REMAIN THIS FREQUENCY FOR DEPARTURE CONTROL[\s\S]*?prefer:\[\{pg:'6-4-9'/.test(aliases) || /approach completion full stop phraseology[\s\S]*?prefer:\[\{pg:'6-4-9'/.test(aliases));
 ok('wave-off-GCA still prefer 6-2-4 after 6-4 aliases', /wave\[- \]\?off instructions GCA[\s\S]*?prefer:\[\{pg:'6-2-4'/.test(aliases) || /missed approach wave[\s\S]*?prefer:\[\{pg:'6-2-4'/.test(aliases));
@@ -318,7 +318,7 @@ ok('BOOK 6-4-4 RWY 21 freqs 323.0 / 127.3', /"FACMAN 6-4-4":[\s\S]{0,3500}323\.0
 ok('BOOK 6-4-4 RWY 3 freqs 236.3 / 128.45', /"FACMAN 6-4-4":[\s\S]{0,3500}236\.3/.test(html) && /"FACMAN 6-4-4":[\s\S]{0,3500}128\.45/.test(html));
 ok('BOOK 6-4-4 no JULY 2025 footer', !/"FACMAN 6-4-4":[\s\S]{0,3500}JULY 2025/.test(html));
 ok('BOOK 6-4-5 crosswind 050 / 1200', /"FACMAN 6-4-5":[\s\S]{0,1200}heading 050/.test(html) && /"FACMAN 6-4-5":[\s\S]{0,1200}1200 feet/.test(html));
-ok('BOOK 6-4-5 altitudes 2600 / 2000', /"FACMAN 6-4-5":[\s\S]{0,2000}2600/.test(html) && /"FACMAN 6-4-5":[\s\S]{0,2000}2000/.test(html));
+ok('BOOK 6-4-5 July 2026 PAR 11.56/5.56 + STARS 14/8 (no 2025 2600/2000 final)', /"FACMAN 6-4-5":[\s\S]{0,2600}11\.56NM to 5\.56NM/.test(html) && /"FACMAN 6-4-5":[\s\S]{0,2600}14NM[\s\S]{0,4}to 8NM/.test(html) && !/"FACMAN 6-4-5":\{[^}]*Between 11 and 7 miles/.test(html));
 ok('BOOK 6-4-6 SCT TACAN VOR GPS clearances', /"FACMAN 6-4-6":[\s\S]{0,600}TACAN, VOR\/DME, or GPS/.test(html));
 ok('BOOK 6-4-14 IFR ODO not authorized', /"FACMAN 6-4-14":[\s\S]{0,500}IFR ODO are not authorized/.test(html));
 ok('BOOK 6-4-15 MVA Chart video map', /"FACMAN 6-4-15":[\s\S]{0,400}MVA Chart/.test(html));
@@ -623,7 +623,22 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.15 asr-par-by-mile', /v0\.8\.15 · asr-par-by-mile/.test(html) && !/v0\.8\.14 · quizlet-3part<\/span>/.test(html));
+ok('statusbar v0.8.16 fac2026-sync', /v0\.8\.16 · fac2026-sync/.test(html) && !/v0\.8\.15 · asr-par-by-mile<\/span>/.test(html));
+// v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
+{
+  const OLD25=[/2,?200 via heading 211/i,/CLIMB AND MAINTAIN 2200 VIA/i,/ten \(10\) feet/,/±\s?10 feet/,/±\s?50 feet of the azimuth/,/between 51 and 100 feet/,/between 11 and 25 feet/,/between 26 and 50 feet/,/MAINTAIN 3800, PROCEED DIRECT ONTOS/i,/ONE THOUSAND TWO HUNDRED THEN TURN LEFT/,/UPWIND NUMBERS AND LEAVING/,/RS with ADC/,/RS, ADC, RD/,/H-1 departures only/,/between Bravo and Delta taxiways/,/Between 11 and 7 miles on final/,/go-around \(VFR\) or missed approach \(IFR\)/];
+  const hits=OLD25.filter(r=>r.test(html)).map(String);
+  ok('fac2026-sync: no July 2025-only text in app (missed 2200/211, PAR ±10/±50, 3800 lost comm, 1200/1600 climbout, ADC, H-1, 6-4-5 2600/2000, go-around VFR)', hits.length===0, hits.join(' | '));
+  const re26=['2-1-15','5-5-23','6-2-3','6-2-7','6-2-8','6-2-11','6-2-12','6-4-5','6-4-8','6-4-10','6-4-11','6-5-3','6-5-4'];
+  const bad=re26.filter(p=>{ const a=new RegExp('"FACMAN '+p.replace(/-/g,'\\-')+'":\\{[^}]*"src_file":"NFG-FACMAN-July-2026\\.pdf"'); const b=new RegExp('"'+p.replace(/-/g,'\\-')+'":\\{[^}]*"src_file":"NFG-FACMAN-July-2026\\.pdf"'); return !(a.test(html)&&b.test(html)); });
+  ok('fac2026-sync: 13 BOOK paragraphs re-spliced from the July 2026 PDF (both keys)', bad.length===0, bad.join(','));
+  ok('fac2026-sync: SRC_648C / SRC_648D page cite p. 6-4-4', /SRC_648C=\{doc:'NFG FACMAN July 2026',pg:'6-4-8',pa:'c · Helicopters · p\. 6-4-4'\}/.test(html) && /SRC_648D=\{doc:'NFG FACMAN July 2026',pg:'6-4-8',pa:'d · Wave Offs · p\. 6-4-4'\}/.test(html));
+  ok('fac2026-sync: removed ids gone', !/fcCard\('(par-on-gs|par-slightly-gs|par-above-gs|par-well-gs|par-on-course|par-lr-course|par-well-course|gcf-low-alt|gcf-safe-limit|gcf-rdr-lost|ad-alt-11-7|ad-alt-7-5|co-ifr-asr)'/.test(html));
+  ok('fac2026-sync: Ask KB helo spot ops = 5-5-23 July 2026', /t:'Helo spot operations',a:'<b>Papa spots 1, 3, and 4<\/b> — shall only be used for H1 arrivals and departures\./.test(html));
+  ok('fac2026-sync: Learn papa-14 = H1 arrivals and departures', /fcCard\('papa-14','Papa 1, 3, and 4','H1 arrivals and departures only\. FACMAN 5-5-23\.'/.test(html));
+  ok('fac2026-sync: PACK/SYL PAR items refer to NAVAIR 00-80T-114', /"a":"NAVAIR 00-80T-114\. \(FACMAN 6-2-11\)"/.test(html) && /"a":"Criteria for issuing PAR approach phraseology is contained in FAAO JO 7110\.65\. Criteria for providing precise glidepath and azimuth information is contained in the NAVAIR 00-80T-114\."/.test(html));
+  ok('fac2026-sync: PACK wave-off = 3000 direct NFG TACAN', /"a":"Climb to 3000 direct NFG TACAN, at 1 DME turn left heading 050 and expect radar vectors\. \(FACMAN 6-4-8\)"/.test(html));
+}
 ok('home-slim: VIDS strip off Home only', /S\.tab==='home'\?'':vidsStrip\(\)/.test(html) && /function vidsStrip\(\)/.test(html));
 ok('home-slim: topbar station text hidden on Home', /<div class="stnchip">\$\{S\.tab==='home'\?'':/.test(html));
 ok('home-slim: first six positions tiles', /const first6=POS\.slice\(0,6\)/.test(html) && /class="pos6"/.test(html));
@@ -825,11 +840,23 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         const srcCards=[].concat(...(V.QZ_SRC_ORDER||[]).map(k=>FS[k]||[]));
         const partN=QP.map(p=>(QD['q-'+p.id]||[]).length);
         const catSum=QP.map(p=>p.cats.reduce((a,c)=>a+(QD[c.k]||[]).length,0));
-        ok('quizlet source total 712 (676 + 25 ASR/11 PAR by mile)', srcCards.length===712, 'n='+srcCards.length);
+        ok('quizlet source total 701 (712 − 11 July-2025-only cards removed/merged)', srcCards.length===701, 'n='+srcCards.length);
         ok('quizlet dupes removed 23', Object.keys(DU).length===23, 'n='+Object.keys(DU).length);
-        ok('part counts TOWER 97 / RADAR 343 / LOCAL 249', partN.join('/')==='97/343/249', partN.join('/'));
-        ok('part counts sum = source − dupes = 689', partN.reduce((a,b)=>a+b,0)===srcCards.length-Object.keys(DU).length && partN.reduce((a,b)=>a+b,0)===689, partN.join('+'));
+        ok('part counts TOWER 97 / RADAR 332 / LOCAL 249', partN.join('/')==='97/332/249', partN.join('/'));
+        ok('part counts sum = source − dupes = 678', partN.reduce((a,b)=>a+b,0)===srcCards.length-Object.keys(DU).length && partN.reduce((a,b)=>a+b,0)===678, partN.join('+'));
         ok('category counts sum to part counts', catSum.join('/')===partN.join('/'), catSum.join('/'));
+        // v0.8.16 fac2026-sync: runtime sweep — every 2026-cited Home quizlet + Learn card is free of July-2025-only text
+        {
+          const OLD25=/2200 via heading 211|HEADING 211 AND EXPECT|ten \(10\) feet|feet of the (glidepath|azimuth) cursor|feet from the (glidepath|azimuth) cursor|MAINTAIN 3800|ONE THOUSAND TWO HUNDRED|ONE THOUSAND SIX HUNDRED|UPWIND NUMBERS|RS with ADC|RS, ADC|H-1 departures only|Bravo and Delta taxiways|LOW ALTITUDE ALERT\. CHECK|safe limit exceeded|RADAR CONTACT LOST\. IF RUNWAY|At or above 2600|At or above 2000\./i;
+          const partCards=[].concat(...QP.map(p=>QD['q-'+p.id]||[]));
+          const bad26=partCards.filter(c=>c.src && /July 2026/.test(c.src.doc||'') && OLD25.test((c.q||'')+' '+(c.a||''))).map(c=>c.id);
+          ok('fac2026-sync: no 2025-only text in 2026-cited Home quizlet cards', bad26.length===0, bad26.join(','));
+          const learn=[].concat(...Object.values(V.FC_POS||{}));
+          const badL=learn.filter(c=>c.src && /July 2026/.test(c.src.doc||'') && OLD25.test((c.q||'')+' '+(c.a||''))).map(c=>c.id);
+          ok('fac2026-sync: no 2025-only text in 2026-cited Learn cards', badL.length===0, badL.join(','));
+          const cat=k=>(QD[k]||[]).length;
+          ok('fac2026-sync chip counts: PAR 15 / GCA FINAL 10 / ARRIVAL-DEP 24 / MISSED-LOST COM 18', cat('qr-par')===15 && cat('qr-gcafinal')===10 && cat('qr-arr')===24 && cat('qr-missed')===18, ['qr-par','qr-gcafinal','qr-arr','qr-missed'].map(k=>k+'='+cat(k)).join(' '));
+        }
         const allIds=[].concat(...QP.map(p=>(QD['q-'+p.id]||[]).map(c=>c.id)));
         ok('each card in exactly one part', allIds.length===new Set(allIds).size);
         const idSet=new Set(allIds);
@@ -979,7 +1006,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         const heloD = (V.FC_SETS && V.FC_SETS.helo) || [];
         ok('FC_SETS.helo is array', Array.isArray(heloD) && heloD.length > 0, 'n=' + heloD.length);
         ok('helo Papa 1 adjacent Alpha', heloD.some(c => /Papa 1/.test(idQ(c)+' '+idA(c)) && /Alpha/.test(idQ(c)+' '+idA(c))));
-        ok('helo Papa 1 and 4 H-1', heloD.some(c => /Papa 1 and 4/.test(idQ(c)) && /H-1/.test(idA(c))));
+        ok('helo Papa spots 1, 3, and 4 H1 only (5-5-23 July 2026)', heloD.some(c => /Papa spots 1, 3, and 4/.test(idQ(c)) && /Shall only be used for H1 arrivals and departures/.test(idA(c)) && /5-5-23/.test(idSrc(c))) && !heloD.some(c => /H-1 departures only|Airfield Operations Officer/.test(idA(c))));
         ok('helo Request Papa 1', heloD.some(c => /Request Papa 1/.test(idQ(c)+' '+idA(c))));
         ok('helo 2-1-15 / 5-5-23 cite', heloD.some(c => /2-1-15/.test(idSrc(c))) && heloD.some(c => /5-5-23/.test(idSrc(c))));
         ok('helo only named spots', !heloD.some(c => /Papa 5|Papa 6|Spot 7/i.test(idQ(c)+' '+idA(c))));
@@ -1003,10 +1030,10 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         ok('parjo has ON GLIDEPATH / BEGIN DESCENT', parjoD.some(c => /ON GLIDEPATH/i.test((c.q||'')+' '+(c.a||''))) && parjoD.some(c => /BEGIN DESCENT/i.test((c.q||'')+' '+(c.a||''))));
         ok('parjo cards cite JO 5-12', parjoD.every(c => /5-12-/.test(JSON.stringify(c.src||{}))), parjoD.map(c => (c.src&&c.src.pg)||'?').join(','));
         ok('parjo no intercept 20/30/45', !parjoD.some(c => /20 degrees|30 degrees|45 degrees/i.test((c.q||'')+' '+(c.a||''))));
-        ok('par criteria deck unchanged (FACMAN 6-2-11)', parD.some(c => /ten \(10\) feet|± ten/i.test((c.a||'')+(c.q||''))) || parD.some(c => /10\) feet/.test(c.a||'')));
+        ok('par deck = July 2026 6-2-11 (JO 7110.65 + NAVAIR 00-80T-114), no foot tolerances', parD.some(c => c.id==='par-jo-source' && /FAAO JO 7110\.65/.test(c.a||'')) && parD.some(c => c.id==='par-navair' && c.a==='Criteria for providing precise glidepath and azimuth information is contained in the NAVAIR 00-80T-114.') && !parD.some(c => /feet of the (glidepath|azimuth) cursor|feet from the (glidepath|azimuth) cursor|ten \(10\)/i.test((c.a||'')+(c.q||''))), parD.map(c=>c.id).join(','));
 
         ok('par cite 6-2-11', parD.length > 0 && parD.every(c => /6-2-11/.test(idSrc(c))), parD.slice(0,1).map(idSrc).join(''));
-        ok('par on course or slightly above glidepath', parD.some(c => /On course/i.test(idQ(c))) && parD.some(c => /Slightly above\/below glidepath/i.test(idQ(c))));
+        ok('par 2025-only tolerance cards removed (7)', !['par-on-gs','par-slightly-gs','par-above-gs','par-well-gs','par-on-course','par-lr-course','par-well-course'].some(id => parD.some(c => c.id===id)));
         ok('par no commencing descent invented', !parD.some(c => /commencing descent/i.test(idQ(c)+' '+idA(c))));
         V.S.fcDeck='par'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const parBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
@@ -1071,7 +1098,10 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         ok('missed cite 5-10-11 or 6-4-8', maD.length > 0 && maD.every(c => /5-10-11|6-4-8/.test(idSrc(c))), maD.slice(0,3).map(idSrc).join(' | '));
         ok('missed has JO 5-10-11 cards', maD.some(c => /5-10-11/.test(idSrc(c))));
         ok('missed has FACMAN 6-4-8 cards', maD.some(c => /6-4-8/.test(idSrc(c))));
-        ok('missed helo MAP 2200/211', maD.some(c => /2200/.test(idA(c)) && /211/.test(idA(c)) && /6-4-8/.test(idSrc(c))));
+        ok('missed helo MAP = 6-4-8 c verbatim (3000 direct NFG TACAN, 1 DME, heading 050)', maD.some(c => c.id==='ma-helo-map' && /The procedure is climb to 3000 direct NFG TACAN, at 1 DME turn left heading 050 and expect radar vectors\./.test(idA(c)) && /6-4-8/.test(idSrc(c))));
+        ok('missed helo/wave-off cards cite 6-4-8 c/d p. 6-4-4', ['ma-helo-map','ma-helo-phrase','ma-waveoff-when','ma-waveoff-phrase','ma-waveoff-proc'].every(id => { const c=maD.find(x=>x.id===id); return c && c.src && c.src.doc==='NFG FACMAN July 2026' && c.src.pg==='6-4-8' && /p\. 6-4-4/.test(c.src.pa||''); }));
+        ok('missed wave-off phrase = CLIMB TO 3000 DIRECT NFG TACAN, AT 1 DME TURN LEFT HEADING 050 AND EXPECT RADAR VECTORS.', maD.some(c => c.id==='ma-waveoff-phrase' && idA(c)==='CLIMB TO 3000 DIRECT NFG TACAN, AT 1 DME TURN LEFT HEADING 050 AND EXPECT RADAR VECTORS.') && maD.some(c => c.id==='ma-helo-phrase' && idA(c)==='YOUR MISSED APPROACH PROCEDURE IS CLIMB TO 3000 DIRECT NFG TACAN, AT 1 DME TURN LEFT HEADING 050 AND EXPECT RADAR VECTORS.'));
+        ok('missed no 2025 2200 / heading 211', !maD.some(c => /2200|heading 211|HEADING 211/.test(idA(c))));
         ok('missed YOUR MISSED APPROACH PROCEDURE IS', maD.some(c => /YOUR MISSED APPROACH PROCEDURE IS/.test(idA(c))));
         V.S.fcDeck='missed'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const maBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
@@ -1344,7 +1374,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         ok('pass-a-bay still not 6-1-10 in top 4 after facility aliases', !/6-1-10/.test(bayAfterFacTop), bayAfterFacTop);
 
         const b6211 = (V.BOOK && (V.BOOK['FACMAN 6-2-11'] || V.BOOK['6-2-11'])) || (V.bookResolve && V.bookResolve('FACMAN 6-2-11'));
-        ok('BOOK FACMAN 6-2-11 on glidepath ten feet', !!(b6211 && /ten \(10\) feet/.test(String(b6211.text||'')) && /50 feet/.test(String(b6211.text||''))), b6211 && String((b6211.text||'')).slice(0,80));
+        ok('BOOK FACMAN 6-2-11 July 2026 refers to NAVAIR 00-80T-114, no foot tolerances', !!(b6211 && /precise glidepath and azimuth information is contained in the NAVAIR 00-80T-114/.test(String(b6211.text||'').replace(/\s+/g,' ')) && !/ten \(10\) feet|50 feet/.test(String(b6211.text||''))), b6211 && String((b6211.text||'')).slice(0,80));
         ok('BOOK FACMAN 6-2-11 no Radar footer / no 20 degrees', !!(b6211 && !/Radar - /.test(String(b6211.text||'')) && !/20 degrees/.test(String(b6211.text||''))));
         const b6212 = (V.BOOK && (V.BOOK['FACMAN 6-2-12'] || V.BOOK['6-2-12'])) || (V.bookResolve && V.bookResolve('6-2-12'));
         ok('BOOK FACMAN 6-2-12 14 MILES FROM RUNWAY 3300', !!(b6212 && /14 MILES FROM RUNWAY/.test(String(b6212.text||'')) && /3300/.test(String(b6212.text||''))));
@@ -1375,13 +1405,14 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         const b6201 = (V.BOOK && (V.BOOK['FACMAN 6-2-1'] || V.BOOK['6-2-1']));
         ok('BOOK FACMAN 6-2-1 landing clearance text', !!(b6201 && /landing clearance/.test(String(b6201.text||''))), b6201 && String((b6201.text||'')).slice(0,80));
         const b6203 = (V.BOOK && (V.BOOK['FACMAN 6-2-3'] || V.BOOK['6-2-3']));
-        ok('BOOK FACMAN 6-2-3 LOW ALTITUDE + TOWER DIRECTS', !!(b6203 && /LOW ALTITUDE ALERT/.test(String(b6203.text||'')) && /TOWER DIRECTS/.test(String(b6203.text||''))));
+        ok('BOOK FACMAN 6-2-3 July 2026 (JO 7110.65 listing / 00-80T-114 procedures)', !!(b6203 && /NAVAIR 00-80T-114/.test(String(b6203.text||'')) && !/LOW ALTITUDE ALERT|TOWER DIRECTS/.test(String(b6203.text||''))));
         ok('BOOK FACMAN 6-2-3 no Radar footer', !!(b6203 && !/Radar - /.test(String(b6203.text||''))));
         const b6209 = (V.BOOK && (V.BOOK['FACMAN 6-2-9'] || V.BOOK['6-2-9']));
         ok('BOOK FACMAN 6-2-9 verbatim traffic', !!(b6209 && /verbatim/.test(String(b6209.text||''))));
         const gcfD = (V.FC_SETS && V.FC_SETS.gcafinal) || [];
         ok('FC_SETS.gcafinal is array', Array.isArray(gcfD) && gcfD.length >= 8, 'n=' + gcfD.length);
-        ok('gcafinal has YOUR CONTROL / LOW ALTITUDE / BUTTON ON THE GO', gcfD.some(c => /YOUR CONTROL/i.test((c.q||'')+' '+(c.a||''))) && gcfD.some(c => /LOW ALTITUDE/i.test((c.q||'')+' '+(c.a||''))) && gcfD.some(c => /ON THE GO/i.test((c.q||'')+' '+(c.a||''))));
+        ok('gcafinal has YOUR CONTROL / 6-2-3 abnormalities source / BUTTON ON THE GO', gcfD.some(c => /YOUR CONTROL/i.test((c.q||'')+' '+(c.a||''))) && gcfD.some(c => c.id==='gcf-abn-src' && /NAVAIR 00-80T-114/.test(c.a||'')) && gcfD.some(c => /ON THE GO/i.test((c.q||'')+' '+(c.a||''))));
+        ok('gcafinal no 2025 6-2-3 safe-limit cards', !gcfD.some(c => /LOW ALTITUDE ALERT|safe limit|RADAR CONTACT LOST\. IF/i.test((c.q||'')+' '+(c.a||''))) && !gcfD.some(c => /^(gcf-low-alt|gcf-safe-limit|gcf-rdr-lost)$/.test(c.id)));
         ok('gcafinal cards cite FACMAN 6-2', gcfD.every(c => /6-2-/.test(JSON.stringify(c.src||{}))), gcfD.map(c => (c.src&&c.src.pg)||'?').join(','));
         ok('gcafinal no intercept 20/30/45', !gcfD.some(c => /20 degrees|30 degrees|45 degrees/i.test((c.q||'')+' '+(c.a||''))));
         ok('gcafinal no invented freqs', !gcfD.some(c => /\b1[2-4]\d\.\d/.test((c.q||'')+' '+(c.a||''))));
@@ -1424,10 +1455,10 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         ok('radio does not duplicate 6-2-11 on-glidepath card', !rad2.some(c => /On glidepath/i.test(String(c.q||'')) && /ten \(10\) feet/.test(String(c.a||''))));
         
         const b648 = (V.BOOK && (V.BOOK['FACMAN 6-4-8'] || V.BOOK['6-4-8']));
-        ok('BOOK FACMAN 6-4-8 CLIMB AND MAINTAIN 2200 runtime', !!(b648 && /CLIMB AND MAINTAIN 2200/.test(String(b648.text||'')) && /HEADING 211/.test(String(b648.text||''))), b648 && String((b648.text||'')).slice(0,80));
+        ok('BOOK FACMAN 6-4-8 CLIMB TO 3000 DIRECT NFG TACAN runtime', !!(b648 && /CLIMB TO 3000 DIRECT NFG TACAN/.test(String(b648.text||'')) && /HEADING 050/.test(String(b648.text||'')) && !/2200|HEADING\s+211/.test(String(b648.text||''))), b648 && String((b648.text||'')).slice(0,80));
         ok('BOOK FACMAN 6-4-8 no JULY/Radar footer runtime', !!(b648 && !/JULY 2025/.test(String(b648.text||'')) && !/Radar- Arrival/.test(String(b648.text||''))));
         const b648b = V.BOOK && V.BOOK['6-4-8'];
-        ok('bare 6-4-8 dual resolves', !!(b648b && /CLIMB AND MAINTAIN 2200/.test(String(b648b.text||''))));
+        ok('bare 6-4-8 dual resolves', !!(b648b && /CLIMB TO 3000 DIRECT NFG TACAN/.test(String(b648b.text||''))));
         const b649 = (V.BOOK && (V.BOOK['FACMAN 6-4-9'] || V.BOOK['6-4-9']));
         ok('BOOK FACMAN 6-4-9 STOP SQUAWK + REMAIN THIS FREQUENCY runtime', !!(b649 && /STOP SQUAWK/.test(String(b649.text||'')) && /REMAIN THIS FREQUENCY/.test(String(b649.text||''))));
         ok('BOOK FACMAN 6-4-9 no invented transient freq number', !!(b649 && /frequency for transient aircraft/.test(String(b649.text||'')) && !/CONTACT TOWER \d{2,3}\.\d/.test(String(b649.text||''))));
@@ -1438,7 +1469,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         const b6410 = V.BOOK && (V.BOOK['FACMAN 6-4-10'] || V.BOOK['6-4-10']);
         ok('BOOK FACMAN 6-4-10 has 340.2 / 128.775', !!(b6410 && /340\.2/.test(String(b6410.text||'')) && /128\.775/.test(String(b6410.text||''))));
         const b6411 = V.BOOK && (V.BOOK['FACMAN 6-4-11'] || V.BOOK['6-4-11']);
-        ok('BOOK FACMAN 6-4-11 climbout RWY 21', !!(b6411 && /Runway 21/.test(String(b6411.text||'')) && /CLIMB AND MAINTAIN THREE THOUSAND/.test(String(b6411.text||''))));
+        ok('BOOK FACMAN 6-4-11 climbout RWY 21 (July 2026: CLIMB TO THREE THOUSAND DIRECT NFG TACAN)', !!(b6411 && /Runway 21/.test(String(b6411.text||'')) && /CLIMB TO\s+THREE THOUSAND DIRECT NFG TACAN/.test(String(b6411.text||'')) && !/ONE THOUSAND TWO HUNDRED|UPWIND NUMBERS/.test(String(b6411.text||''))));
         const b6412 = V.BOOK && (V.BOOK['FACMAN 6-4-12'] || V.BOOK['6-4-12']);
         ok('BOOK FACMAN 6-4-12 radar contact lost', !!(b6412 && /radar contact is lost/i.test(String(b6412.text||'')) || (b6412 && /non-radar/i.test(String(b6412.text||'')))));
         const maD2 = (V.FC_SETS && V.FC_SETS.missed) || [];
@@ -1458,14 +1489,15 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         ok('arrdep has SCT release EXAMPLE', adD.some(c => /REQUEST RELEASE/.test((c.q||'')+' '+(c.a||'')) && /6-4-4/.test(JSON.stringify(c.src||{}))));
         ok('arrdep has RWY 21 pub freqs 323.0/127.3', adD.some(c => /323\.0/.test((c.q||'')+' '+(c.a||'')) && /127\.3/.test((c.q||'')+' '+(c.a||''))));
         ok('arrdep has RWY 3 pub freqs 236.3/128.45', adD.some(c => /236\.3/.test((c.q||'')+' '+(c.a||'')) && /128\.45/.test((c.q||'')+' '+(c.a||''))));
-        ok('arrdep has pattern altitudes 2600/2000', adD.some(c => /2600/.test((c.q||'')+' '+(c.a||''))) && adD.some(c => /2000/.test((c.q||'')+' '+(c.a||''))));
+        ok('arrdep keeps 6-4-5 crosswind 1200 card; 2025-only final altitude cards (2600/2000) removed', adD.some(c => c.id==='ad-xw-1200' && /1200 feet/.test(c.a||'')) && !adD.some(c => /^ad-alt-/.test(c.id||'') || /At or above 2600|At or above 2000/.test(c.a||'')));
         ok('arrdep SCT owns TACAN/VOR/GPS clearances', adD.some(c => /TACAN/.test((c.q||'')+' '+(c.a||'')) && /6-4-6/.test(JSON.stringify(c.src||{}))));
         ok('arrdep no intercept 20/30/45', !adD.some(c => /20 degrees|30 degrees|45 degrees/i.test((c.q||'')+' '+(c.a||''))));
         ok('arrdep no Papa 1', !adD.some(c => /Papa 1/i.test((c.q||'')+' '+(c.a||''))));
         const coD = (V.FC_SETS && V.FC_SETS.climbout) || [];
         ok('FC_SETS.climbout is array', Array.isArray(coD) && coD.length >= 6, 'n=' + coD.length);
         ok('climbout cards cite 6-4-11', coD.every(c => /6-4-11/.test(JSON.stringify(c.src||{}))), coD.map(c => (c.src&&c.src.pg)||'?').join(','));
-        ok('climbout has 1200 PAR and 1600 ASR', coD.some(c => /ONE THOUSAND TWO HUNDRED|1200/.test((c.q||'')+' '+(c.a||''))) && coD.some(c => /ONE THOUSAND SIX HUNDRED|1600/.test((c.q||'')+' '+(c.a||''))));
+        ok('climbout July 2026: VFR PAR / IFR PAR-ASR / VFR ASR = THREE THOUSAND DIRECT NFG TACAN, 1 DME, 050', ['co-vfr-par','co-ifr-par','co-vfr-asr'].every(id => { const c=coD.find(x=>x.id===id); return c && /CLIMB TO THREE THOUSAND DIRECT NFG TACAN, AT 1 DME THEN TURN LEFT HEADING 050 EXPECT RADAR VECTORS\./.test(c.a||''); }) && coD.some(c => c.id==='co-ifr-par' && /IFR PAR\/ASR/.test(c.q||'')) && !coD.some(c => c.id==='co-ifr-asr'));
+        ok('climbout no 2025 1200/1600 runway-heading text', !coD.some(c => /ONE THOUSAND TWO HUNDRED|ONE THOUSAND SIX HUNDRED|UPWIND NUMBERS|FLY RUNWAY HEADING/.test((c.q||'')+' '+(c.a||''))));
         ok('climbout multiple IFR RWY 3 not authorized', coD.some(c => /not authorized/i.test((c.q||'')+' '+(c.a||'')) && /runway 3/i.test((c.q||'')+' '+(c.a||''))));
         ok('climbout no intercept 20/30/45', !coD.some(c => /20 degrees|30 degrees|45 degrees/i.test((c.q||'')+' '+(c.a||''))));
         const lcD = (V.FC_SETS && V.FC_SETS.lostcom) || [];
@@ -1473,16 +1505,17 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         ok('lostcom cards cite 6-4-10', lcD.every(c => /6-4-10/.test(JSON.stringify(c.src||{}))), lcD.map(c => (c.src&&c.src.pg)||'?').join(','));
         ok('lostcom has 340.2 / 128.775', lcD.some(c => /340\.2/.test((c.q||'')+' '+(c.a||'')) && /128\.775/.test((c.q||'')+' '+(c.a||''))));
         ok('lostcom helo CORRI 4200', lcD.some(c => /4200/.test((c.q||'')+' '+(c.a||'')) && /CORRI/.test((c.q||'')+' '+(c.a||''))));
-        ok('lostcom FW/V-22 ONTOS 3800', lcD.some(c => /3800/.test((c.q||'')+' '+(c.a||'')) && /ONTOS/.test((c.q||'')+' '+(c.a||''))));
-        ok('lostcom RWY 03 circle', lcD.some(c => /CIRCLE TO RUNWAY 3/.test((c.q||'')+' '+(c.a||''))));
+        ok('lostcom FW/V-22 July 2026: 4900 ONTOS AND HOLD, EFC 5 min', lcD.some(c => c.id==='lc-fw' && c.a==='CLIMB AND MAINTAIN 4900, PROCEED DIRECT ONTOS AND HOLD, EXPECT FURTHER CLEARANCE WITHIN 5 MINUTES, IF NOT RECEIVED, EXECUTE APPROACH.'));
+        ok('lostcom RWY 03 July 2026: 4900 ONTOS AND HOLD', lcD.some(c => c.id==='lc-rwy03' && c.a==='CLIMB AND MAINTAIN 4900, PROCEED DIRECT ONTOS AND HOLD, EXPECT FURTHER CLEARANCE WITHIN 5 MINUTES IF NOT RECEIVED, EXECUTE APPROACH.'));
+        ok('lostcom no 2025 3800 / circle-to-3 text', !lcD.some(c => /3800|CIRCLE TO RUNWAY 3/.test((c.q||'')+' '+(c.a||''))));
         ok('lostcom TACAN OTS ask intentions', lcD.some(c => /intentions/i.test((c.q||'')+' '+(c.a||''))));
         ok('lostcom no intercept 20/30/45', !lcD.some(c => /20 degrees|30 degrees|45 degrees/i.test((c.q||'')+' '+(c.a||''))));
         V.S.fcDeck='arrdep'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const adBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody arrdep shows 6-4-1 or 6-4-4', /6-4-1|6-4-4/.test(adBody), (adBody||'').slice(0,220));
 
-        const climbExp = V.expandAsk('climb and maintain 2200 via heading 211');
-        ok('climb 2200/211 expandAsk prefers 6-4-8', (climbExp.prefer||[]).some(p => /6-4-8/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(climbExp.prefer));
+        const climbExp = V.expandAsk('climb to 3000 direct NFG TACAN');
+        ok('climb 3000 direct NFG TACAN expandAsk prefers 6-4-8', (climbExp.prefer||[]).some(p => /6-4-8/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(climbExp.prefer));
         const remExp = V.expandAsk('REMAIN THIS FREQUENCY FOR DEPARTURE CONTROL');
         ok('REMAIN THIS FREQUENCY expandAsk prefers 6-4-9', (remExp.prefer||[]).some(p => /6-4-9/.test((p.pg||'')+' '+(p.key||''))), JSON.stringify(remExp.prefer));
         const wo2 = V.expandAsk('wave-off instructions GCA');
