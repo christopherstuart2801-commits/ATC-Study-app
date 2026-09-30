@@ -177,7 +177,7 @@ ok('BOOK has 7110.65 5-10-14 key', /"7110.65 5-10-14":/.test(html));
 ok('BOOK 5-12-4 has ON GLIDEPATH', /"7110.65 5-12-4":\{[^}]*"text":"[^"]*ON GLIDEPATH/.test(html) || /"7110.65 5-12-4":[\s\S]{0,400}ON GLIDEPATH/.test(html));
 ok('BOOK 5-12-3 has BEGIN DESCENT', /"7110.65 5-12-3":[\s\S]{0,400}BEGIN DESCENT/.test(html));
 ok('FC_SET_LAB parjo PAR JO', /parjo:'PAR JO'/.test(html));
-ok('FC_CHIP_GROUPS GCA includes parjo', /id:'gca'[\s\S]*?parjo/.test(html));
+ok('QZ_PARTS RADAR maps parjo', /id:'radar'[\s\S]*?'parjo'[\s\S]*?id:'local'/.test(html));
 ok('JO extract file referenced or Section 12 present', /JO-7110\.65-ch5-par-5-12/.test(html) || /5-12-1/.test(html));
 
 ok('ASK_ALIASES has recommended altitudes', /recommended altitudes/.test(aliases));
@@ -205,7 +205,7 @@ ok('BOOK has 5-10-15 dual key', /"5-10-15":/.test(html));
 ok('BOOK 5-11-1 has RECOMMENDED ALTITUDES', /"7110.65 5-11-1":[\s\S]{0,1200}RECOMMENDED ALTITUDES/.test(html));
 ok('BOOK 5-11-4 has DESCEND TO YOUR MINIMUM DESCENT ALTITUDE', /"7110.65 5-11-4":[\s\S]{0,800}DESCEND TO YOUR MINIMUM DESCENT ALTITUDE/.test(html));
 ok('FC_SET_LAB asrjo ASR JO', /asrjo:'ASR JO'/.test(html));
-ok('FC_CHIP_GROUPS GCA includes asrjo', /id:'gca'[\s\S]*?asrjo/.test(html));
+ok('QZ_PARTS RADAR maps asrjo', /id:'radar'[\s\S]*?'asrjo'[\s\S]*?id:'local'/.test(html));
 ok('JO ASR extract file referenced or Section 11 present', /JO-7110\.65-ch5-asr-5-11/.test(html) || /5-11-1/.test(html));
 
 ok('BOOK has FACMAN 6-2-1 key', /"FACMAN 6-2-1":/.test(html));
@@ -252,7 +252,7 @@ ok('on-glidepath still prefer 6-2-11 after GCA FINAL aliases', /on glidepath[\s\
 ok('begin-descent still prefer 5-12-3 after GCA FINAL aliases', /begin descent[\s\S]*?prefer:\[\{pg:'5-12-3'/.test(aliases));
 ok('9-miles still prefer 6-2-12 after GCA FINAL aliases', /9 miles from runway[\s\S]*?prefer:\[\{pg:'6-2-12'/.test(aliases));
 ok('FC_SET_LAB gcafinal GCA FINAL', /gcafinal:'GCA FINAL'/.test(html));
-ok('FC_CHIP_GROUPS GCA includes gcafinal', /id:'gca'[\s\S]*?gcafinal/.test(html));
+ok('QZ_PARTS RADAR maps gcafinal', /id:'radar'[\s\S]*?'gcafinal'[\s\S]*?id:'local'/.test(html));
 
 ok('BOOK has FACMAN 6-4-7 key', /"FACMAN 6-4-7":/.test(html));
 ok('BOOK has 6-4-7 dual key', /"6-4-7":/.test(html));
@@ -290,7 +290,7 @@ ok('on-glidepath still prefer 6-2-11 after 6-4 aliases', /on glidepath[\s\S]*?pr
 ok('begin-descent still prefer 5-12-3 after 6-4 aliases', /begin descent[\s\S]*?prefer:\[\{pg:'5-12-3'/.test(aliases));
 ok('9-miles still prefer 6-2-12 after 6-4 aliases', /9 miles from runway[\s\S]*?prefer:\[\{pg:'6-2-12'/.test(aliases));
 ok('FC_SET_LAB arrcomp ARR COMP', /arrcomp:'ARR COMP'/.test(html));
-ok('FC_CHIP_GROUPS GCA includes arrcomp', /id:'gca'[\s\S]*?arrcomp/.test(html));
+ok('QZ_PARTS RADAR maps arrcomp', /id:'radar'[\s\S]*?'arrcomp'[\s\S]*?id:'local'/.test(html));
 ok('SRC_648 FACMAN 6-4-8', /SRC_648=\{doc:'NFG FACMAN July 2026',pg:'6-4-8'/.test(html));
 ok('SRC_649 FACMAN 6-4-9', /SRC_649=\{doc:'NFG FACMAN July 2026',pg:'6-4-9'/.test(html));
 
@@ -344,9 +344,9 @@ ok('JO 5-10-11 still present after arrdep aliases', /missed approach phraseology
 ok('FC_SET_LAB arrdep ARR DEP', /arrdep:'ARR DEP'/.test(html));
 ok('FC_SET_LAB climbout CLIMBOUT', /climbout:'CLIMBOUT'/.test(html));
 ok('FC_SET_LAB lostcom LOST COM', /lostcom:'LOST COM'/.test(html));
-ok('FC_CHIP_GROUPS GCA includes arrdep', /id:'gca'[\s\S]*?arrdep/.test(html));
-ok('FC_CHIP_GROUPS GCA includes climbout', /id:'gca'[\s\S]*?climbout/.test(html));
-ok('FC_CHIP_GROUPS RADAR includes lostcom', /id:'radar'[\s\S]*?lostcom/.test(html));
+ok('QZ_PARTS RADAR maps arrdep', /id:'radar'[\s\S]*?'arrdep'[\s\S]*?id:'local'/.test(html));
+ok('QZ_PARTS RADAR maps climbout', /id:'radar'[\s\S]*?'climbout'[\s\S]*?id:'local'/.test(html));
+ok('QZ_PARTS RADAR maps lostcom', /id:'radar'[\s\S]*?'lostcom'[\s\S]*?id:'local'/.test(html));
 
 ok('BOOK has FACMAN 6-1-1 key', /"FACMAN 6-1-1":/.test(html));
 ok('BOOK has 6-1-1 dual key', /"6-1-1":/.test(html));
@@ -402,7 +402,7 @@ ok('begin-descent still prefer 5-12-3 after 6-1 aliases', /begin descent[\s\S]*?
 ok('9-miles still prefer 6-2-12 after 6-1 aliases', /9 miles from runway[\s\S]*?prefer:\[\{pg:'6-2-12'/.test(aliases));
 ok('wave-off-GCA still prefer 6-2-4 after 6-1 aliases', /wave\[- \]\?off instructions GCA[\s\S]*?prefer:\[\{pg:'6-2-4'/.test(aliases) || /missed approach wave[\s\S]*?prefer:\[\{pg:'6-2-4'/.test(aliases));
 ok('FC_SET_LAB fixes FIXES', /fixes:'FIXES'/.test(html));
-ok('FC_CHIP_GROUPS RADAR includes fixes', /id:'radar'[\s\S]*?fixes/.test(html));
+ok('QZ_PARTS RADAR maps fixes', /id:'radar'[\s\S]*?'fixes'[\s\S]*?id:'local'/.test(html));
 ok('SRC_612 FACMAN 6-1-2', /SRC_612=\{doc:'NFG FACMAN July 2026',pg:'6-1-2'/.test(html));
 ok('FC_SETS.fixes present in source', /fixes:\s*\[/.test(html) && /fx-bondo/.test(html));
 
@@ -442,7 +442,7 @@ ok('on-glidepath still prefer 6-2-11 after radsup aliases', /on glidepath[\s\S]*
 ok('begin-descent still prefer 5-12-3 after radsup aliases', /begin descent[\s\S]*?prefer:\[\{pg:'5-12-3'/.test(aliases));
 ok('9-miles still prefer 6-2-12 after radsup aliases', /9 miles from runway[\s\S]*?prefer:\[\{pg:'6-2-12'/.test(aliases));
 ok('FC_SET_LAB radsup RAD SUP', /radsup:'RAD SUP'/.test(html));
-ok('FC_CHIP_GROUPS RADAR includes radsup', /id:'radar'[\s\S]*?radsup/.test(html));
+ok('QZ_PARTS RADAR maps radsup', /id:'radar'[\s\S]*?'radsup'[\s\S]*?id:'local'/.test(html));
 ok('SRC_651 FACMAN 6-5-1', /SRC_651=\{doc:'NFG FACMAN July 2026',pg:'6-5-1'/.test(html));
 ok('SRC_655 FACMAN 6-5-5', /SRC_655=\{doc:'NFG FACMAN July 2026',pg:'6-5-5'/.test(html));
 ok('SRC_659 FACMAN 6-5-9', /SRC_659=\{doc:'NFG FACMAN July 2026',pg:'6-5-9'/.test(html));
@@ -472,8 +472,8 @@ ok('BOOK has FACMAN TBL 8-3 key', /"FACMAN TBL 8-3":/.test(html));
 ok('BOOK has TBL 8-3 dual key', /"TBL 8-3":/.test(html));
 ok('BOOK has FACMAN TBL 8-5 key', /"FACMAN TBL 8-5":/.test(html));
 ok('BOOK has TBL 8-5 dual key', /"TBL 8-5":/.test(html));
-ok('FC_CHIP_GROUPS STRIPS includes termstrip', /id:'strips'[\s\S]*?termstrip/.test(html));
-ok('FC_CHIP_GROUPS LOCAL still includes taxi', /id:'local'[\s\S]*?'taxi'/.test(html));
+ok('QZ_PARTS RADAR maps termstrip (radar-side strips)', /id:'radar'[\s\S]*?'termstrip'[\s\S]*?id:'local'/.test(html));
+ok('QZ_PARTS LOCAL maps taxi (airfield)', /id:'local'[\s\S]*?from:\['taxi','helo'\]/.test(html));
 ok('FC_SET_LAB termstrip TERM STRIP', /termstrip:'TERM STRIP'/.test(html));
 ok('work-speed re includes duty priority', /duty priority/.test(html) && /id:'work-speed'[\s\S]{0,400}duty priority/.test(html));
 ok('scan re includes re-identify', /id:'scan'[\s\S]{0,250}re-\?identif/.test(html));
@@ -623,7 +623,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.13 home-slim', /v0\.8\.13 · home-slim/.test(html));
+ok('statusbar v0.8.14 quizlet-3part', /v0\.8\.14 · quizlet-3part/.test(html) && !/v0\.8\.13 · home-slim<\/span>/.test(html));
 ok('home-slim: VIDS strip off Home only', /S\.tab==='home'\?'':vidsStrip\(\)/.test(html) && /function vidsStrip\(\)/.test(html));
 ok('home-slim: topbar station text hidden on Home', /<div class="stnchip">\$\{S\.tab==='home'\?'':/.test(html));
 ok('home-slim: first six positions tiles', /const first6=POS\.slice\(0,6\)/.test(html) && /class="pos6"/.test(html));
@@ -675,7 +675,7 @@ if (sm) {
   let code = sm[1];
   code = code.replace(
     /document\.getElementById\('vatc'\)\.addEventListener\('click'[\s\S]*render\(\);\s*\}\)\(\);/,
-    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcSetChipRow,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,diversifyAskHits,pubIdForDoc,queueCrossPubFind};\n})();'
+    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcSetChipRow,QZ_PARTS,QZ_DECKS,QZ_DUPES,QZ_MOVE,QZ_SRC_ORDER,QZ_CAT_OF,qzPartOf,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,diversifyAskHits,pubIdForDoc,queueCrossPubFind};\n})();'
   );
   try {
     eval(code);
@@ -808,9 +808,57 @@ if (sm) {
       ok('gca PAR FAF 5.56 not 4.98', /5\.56/.test(gcaBlob) && !/4\.98/.test(gcaBlob), gcaBlob);
       ok('gca does not include Approach Gate', !/approach gate/i.test(gcaBlob));
       const home2 = typeof V.homeView === 'function' ? V.homeView() : '';
-      ok('homeView KNFG Quizlets chips', /KNFG Quizlets/.test(home2) && /3-LETTER IDENTS/.test(home2) && /1939 LINE/.test(home2) && /4779 LINE/.test(home2) && /VISCOM/.test(home2) && /SIDS/.test(home2) && /SVFR/.test(home2) && /ABBREV/.test(home2) && /data-d="vrp"/.test(home2) && /data-d="scratchpad"/.test(home2) && /data-d="fdio"/.test(home2) && /data-d="twr-freq"/.test(home2) && /data-d="helo"/.test(home2) && /data-d="crash"/.test(home2) && /data-d="par"/.test(home2) && /data-d="asr"/.test(home2) && /data-d="radio"/.test(home2) && /data-d="rfd"/.test(home2) && /data-d="handoff"/.test(home2) && /data-d="missed"/.test(home2) && /data-d="final"/.test(home2) && /data-d="wake"/.test(home2) && /data-d="sep"/.test(home2) && /TWR FREQ/.test(home2) && /CRASH/.test(home2) && /RFD/.test(home2) && /HANDOFF/.test(home2) && /MISSED/.test(home2) && /data-d="final">FINAL/.test(home2) && /data-d="wake">WAKE/.test(home2) && /data-d="sep">SEP/.test(home2) && /data-d="intercept">INTERCEPT/.test(home2));
-      ok('home chip UI group label LOCAL or GCA', /<summary[^>]*>LOCAL<\/summary>/.test(home2) || /<summary[^>]*>GCA<\/summary>/.test(home2), (home2.match(/<summary[^>]*>[^<]+<\/summary>/g)||[]).slice(0,6).join(' | '));
-ok('home GCA group closed by default', !/<details class="fc-crt" open><summary data-action="fcgrp" data-g="gca">GCA<\/summary>/.test(home2));
+      // v0.8.14 quizlet-3part: Home quizlets = exactly TOWER · RADAR · LOCAL (collapsed), each with ALL + category chips.
+      const homeSums=(home2.match(/<summary[^>]*data-g="(\w+)"/g)||[]).map(x=>x.replace(/.*data-g="(\w+)".*/,'$1'));
+      ok('homeView KNFG Quizlets three parts', /KNFG Quizlets/.test(home2) && homeSums.join(',')==='tower,radar,local', homeSums.join(','));
+      ok('home three part labels', /class="qz-lab">TOWER</.test(home2) && /class="qz-lab">RADAR</.test(home2) && /class="qz-lab">LOCAL</.test(home2));
+      ok('home old four sets gone', !/data-g="gca"/.test(home2) && !/data-g="strips"/.test(home2) && !/<summary[^>]*>GCA<\/summary>/.test(home2) && !/<summary[^>]*>STRIPS<\/summary>/.test(home2));
+      ok('home ALL chips per part', /data-d="q-tower"[^>]*>ALL TOWER/.test(home2) && /data-d="q-radar"[^>]*>ALL RADAR/.test(home2) && /data-d="q-local"[^>]*>ALL LOCAL/.test(home2));
+      ok('home LOCAL has buttons/squadrons/airfield', /data-d="ql-freq"[^>]*>FREQS &amp; BUTTONS|data-d="ql-freq"[^>]*>FREQS & BUTTONS/.test(home2) && /data-d="ql-sqdn"[^>]*>SQUADRONS/.test(home2) && /data-d="ql-field"[^>]*>AIRFIELD/.test(home2));
+ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test(home2));
+      {
+        const QP=V.QZ_PARTS||[], QD=V.QZ_DECKS||{}, DU=V.QZ_DUPES||{}, FS=V.FC_SETS||{};
+        ok('QZ_PARTS exactly tower/radar/local', QP.map(p=>p.id).join(',')==='tower,radar,local');
+        const fromAll=[].concat(...QP.map(p=>[].concat(...p.cats.map(c=>c.from))));
+        const srcKeys=Object.keys(FS);
+        ok('every source deck mapped to exactly one category', fromAll.length===new Set(fromAll).size && srcKeys.every(k=>fromAll.includes(k)) && fromAll.every(k=>srcKeys.includes(k)) && (V.QZ_SRC_ORDER||[]).length===srcKeys.length, 'from='+fromAll.length+' src='+srcKeys.length);
+        const srcCards=[].concat(...(V.QZ_SRC_ORDER||[]).map(k=>FS[k]||[]));
+        const partN=QP.map(p=>(QD['q-'+p.id]||[]).length);
+        const catSum=QP.map(p=>p.cats.reduce((a,c)=>a+(QD[c.k]||[]).length,0));
+        ok('quizlet source total 676', srcCards.length===676, 'n='+srcCards.length);
+        ok('quizlet dupes removed 23', Object.keys(DU).length===23, 'n='+Object.keys(DU).length);
+        ok('part counts TOWER 97 / RADAR 307 / LOCAL 249', partN.join('/')==='97/307/249', partN.join('/'));
+        ok('part counts sum = source − dupes = 653', partN.reduce((a,b)=>a+b,0)===srcCards.length-Object.keys(DU).length && partN.reduce((a,b)=>a+b,0)===653, partN.join('+'));
+        ok('category counts sum to part counts', catSum.join('/')===partN.join('/'), catSum.join('/'));
+        const allIds=[].concat(...QP.map(p=>(QD['q-'+p.id]||[]).map(c=>c.id)));
+        ok('each card in exactly one part', allIds.length===new Set(allIds).size);
+        const idSet=new Set(allIds);
+        const lost=srcCards.filter(c=>!idSet.has(c.id) && !(DU[c.id] && idSet.has(DU[c.id]))).map(c=>c.id);
+        ok('no source card lost (kept or deduped into a kept card)', lost.length===0, lost.join(','));
+        const byId={}; srcCards.forEach(c=>{ byId[c.id]=byId[c.id]||c; });
+        const nq=t=>String(t||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+        const badDupe=Object.keys(DU).filter(d=>{ const a=byId[d], k=byId[DU[d]]; return !a||!k||nq(a.q)!==nq(k.q)||String(k.a).length<String(a.a).length; });
+        ok('dupes: same normalized question, kept def is longest', badDupe.length===0, badDupe.join(','));
+        const citeDrift=[].concat(...QP.map(p=>QD['q-'+p.id]||[])).filter(c=>{ const o=byId[c.id]; return !o || JSON.stringify(o.src)!==JSON.stringify(c.src) || o.a!==c.a || o.q!==c.q; }).map(c=>c.id);
+        ok('part cards keep original q/a/cite', citeDrift.length===0, citeDrift.slice(0,5).join(','));
+        const qt=QD['q-tower']||[], qr=QD['q-radar']||[], ql=QD['q-local']||[];
+        ok('LOCAL has squadrons + buttons + airfield', ql.some(c=>c.o==='squadrons') && ql.some(c=>c.o==='gca-freq') && ql.some(c=>c.id==='sp-3') && ql.some(c=>c.id==='taxi-papa-where') && ql.some(c=>c.id==='gca-elev'));
+        ok('TOWER has crash/svfr/sids/fdio + tower ops moves', qt.some(c=>c.o==='crash') && qt.some(c=>c.o==='svfr') && qt.some(c=>c.id==='ab-quntn') && qt.some(c=>c.o==='fdio') && qt.some(c=>c.id==='helo-echo-2-to'));
+        ok('RADAR has PAR/ASR/RFD/strips, not moved-out cards', qr.some(c=>c.o==='parjo') && qr.some(c=>c.o==='asr') && qr.some(c=>c.o==='rfd') && qr.some(c=>c.o==='termstrip') && !qr.some(c=>/^sp-\d+$/.test(c.id)) && !qr.some(c=>c.id==='gca-elev'));
+        ok('distinct facts sharing a question kept (T=TACAN & T=TOUCH & GO)', qr.some(c=>c.id==='sp-ap-t') && qr.some(c=>c.id==='sp-int-t'));
+        if (V.S) {
+          const keep={d:V.S.fcDeck,f:V.S.fcFlip,i:V.S.fcIdx,o:V.S.fcOrder};
+          V.S.fcDeck='q-local'; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcFlip=true;
+          const rb=V.fcBody();
+          ok('reveal: q-local card revealed w/ small source + big answer', /class="fcard is-revealed" data-action="fcflip"/.test(rb) && /class="fcsrc fccitebtn"/.test(rb) && /class="a (big|def)"/.test(rb) && /tap to reveal/.test(rb) && /data-action="fcshuffle"/.test(rb), rb.slice(0,200));
+          ok('reveal: prog shows ALL LOCAL count', new RegExp('LOCAL · 1 / '+ql.length).test(rb));
+          V.S.fcDeck='ql-sqdn'; V.S.fcFlip=false;
+          const sb=V.fcBody();
+          ok('category deck labels part · category', /LOCAL · SQUADRONS · 1 \//.test(sb) && !/class="fcard is-revealed"/.test(sb));
+          V.S.fcDeck=keep.d; V.S.fcFlip=keep.f; V.S.fcIdx=keep.i; V.S.fcOrder=keep.o;
+        }
+      }
+      ok('CSS: source small/muted, answer hero', /button\.fcsrc\{[^}]*font-size:10px/.test(html) && /\.fcface \.a\.big\{[^}]*font-weight:700/.test(html) && /\.fcface \.a\.def\{[^}]*font-weight:700/.test(html));
       const priorFcKeys=['idents','gca','gca-freq','squadrons','diverts','dial-1939','dial-4779','viscom','sids','svfr','abbrev','vrp','scratchpad','fdio','twr-freq','helo','crash','par','asr','radio','rfd','handoff','missed','final','wake','sep','intercept','taxi'];
       const missingFc=priorFcKeys.filter(k=>!(V.FC_SETS && Array.isArray(V.FC_SETS[k]) && V.FC_SETS[k].length));
       ok('all prior FC_SETS keys still exist', missingFc.length===0, missingFc.join(','));
@@ -818,8 +866,8 @@ ok('home GCA group closed by default', !/<details class="fc-crt" open><summary d
         V.S.fcDeck='idents'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.trainMode = 'cards'; V.S.fcIdx = 0; V.S.fcFlip = false; V.S.pos = 'fin';
         const idBody = typeof V.fcBody === 'function' ? V.fcBody() : (typeof V.rfcTrain === 'function' ? V.rfcTrain() : '');
         ok('fcBody idents deck shows C-1 card', /TBL C-1/.test(idBody) && /POGGI|PGY/.test(idBody), (idBody||'').slice(0,180));
-        ok('fcBody named deck chips', /3-LETTER IDENTS/.test(idBody) && /GCA DATA/.test(idBody) && /GCA FREQ/.test(idBody) && /SQUADRONS/.test(idBody) && /DIVERTS/.test(idBody) && /1939 LINE/.test(idBody) && /4779 LINE/.test(idBody) && /VISCOM/.test(idBody) && /SIDS/.test(idBody) && /SVFR/.test(idBody) && /ABBREV/.test(idBody) && /data-d="vrp"/.test(idBody) && /data-d="scratchpad"/.test(idBody) && /data-d="fdio"/.test(idBody) && /data-d="twr-freq"/.test(idBody) && /data-d="helo"/.test(idBody) && /data-d="crash"/.test(idBody) && /data-d="par"/.test(idBody) && /data-d="asr"/.test(idBody) && /data-d="radio"/.test(idBody) && /data-d="rfd"/.test(idBody) && /data-d="handoff"/.test(idBody) && /data-d="missed"/.test(idBody) && /data-d="final"/.test(idBody) && /data-d="wake"/.test(idBody) && /data-d="sep"/.test(idBody) && /TWR FREQ/.test(idBody) && /RFD/.test(idBody) && /HANDOFF/.test(idBody) && /MISSED/.test(idBody) && /data-d="final">FINAL/.test(idBody) && /data-d="wake">WAKE/.test(idBody) && /data-d="sep">SEP/.test(idBody) && /data-d="intercept">INTERCEPT/.test(idBody));
-        ok('train chip UI group label LOCAL or GCA', /<summary[^>]*>LOCAL<\/summary>/.test(idBody) || /<summary[^>]*>GCA<\/summary>/.test(idBody), (idBody.match(/<summary[^>]*>[^<]+<\/summary>/g)||[]).slice(0,6).join(' | '));
+        ok('fcBody named deck chips (three parts)', /data-d="q-tower"/.test(idBody) && /data-d="q-radar"/.test(idBody) && /data-d="q-local"/.test(idBody) && /data-d="ql-idents"[^>]*>IDENTIFIERS/.test(idBody) && /data-d="qr-strips"[^>]*>RADAR STRIPS/.test(idBody) && /data-d="qt-viscom"[^>]*>VISCOM/.test(idBody));
+        ok('train chip UI group label TOWER/RADAR/LOCAL', /<summary[^>]*data-g="local"/.test(idBody) && /<summary[^>]*data-g="tower"/.test(idBody));
         ok('train pos chip first when present', /fc-poschip[\s\S]*fc-chip-groups/.test(idBody) && /data-d="pos"/.test(idBody));
         const d1939 = (V.FC_SETS && V.FC_SETS['dial-1939']) || [];
         ok('FC_SETS.dial-1939 is array', Array.isArray(d1939) && d1939.length > 0, 'n=' + d1939.length);
@@ -1045,8 +1093,8 @@ ok('home GCA group closed by default', !/<details class="fc-crt" open><summary d
         V.S.fcDeck='taxi'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const taxiBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody taxi shows 2-1-15 or Papa taxiway', /2-1-15|Papa taxiway/.test(taxiBody), (taxiBody||'').slice(0,220));
-        ok('homeView TAXI chip', /data-d="taxi"/.test(home2) && /TAXI/.test(home2));
-        ok('fcBody TAXI chip', /data-d="taxi"/.test(idBody) && />TAXI</.test(idBody));
+        ok('homeView AIRFIELD chip (taxi)', /data-d="ql-field"/.test(home2) && /AIRFIELD/.test(home2));
+        ok('fcBody AIRFIELD chip (taxi)', /data-d="ql-field"/.test(idBody) && />AIRFIELD</.test(idBody));
         const tsD = (V.FC_SETS && V.FC_SETS.termstrip) || [];
         ok('FC_SETS.termstrip is array', Array.isArray(tsD) && tsD.length > 0, 'n=' + tsD.length);
         ok('termstrip arrival box 6 previous fix', tsD.some(c => /Arrival box 6/.test(idQ(c)) && /previous fix/.test(idA(c)) && /TBL 2-3-3/.test(idSrc(c))));
@@ -1057,8 +1105,8 @@ ok('home GCA group closed by default', !/<details class="fc-crt" open><summary d
         V.S.fcDeck='termstrip'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const tsBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody termstrip shows TBL 2-3-3 or arrival', /TBL 2-3-3|Arrival vs departure/.test(tsBody), (tsBody||'').slice(0,220));
-        ok('homeView TERM STRIP chip', /data-d="termstrip"/.test(home2) && /TERM STRIP/.test(home2));
-        ok('fcBody TERM STRIP chip', /data-d="termstrip"/.test(idBody) && /TERM STRIP/.test(idBody));
+        ok('homeView RADAR STRIPS chip (termstrip)', /data-d="qr-strips"/.test(home2) && /RADAR STRIPS/.test(home2));
+        ok('fcBody RADAR STRIPS chip (termstrip)', /data-d="qr-strips"/.test(idBody) && /RADAR STRIPS/.test(idBody));
         V.S.fcDeck='pos'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0;
 
         const finSyl = (V.SYLLABUS && V.SYLLABUS.fin) || [];

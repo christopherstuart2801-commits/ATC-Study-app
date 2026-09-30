@@ -100,7 +100,7 @@
 #vatc .hero .hstats div b{ font-family:var(--fd); font-size:18px; color:var(--text); display:block;}
 #vatc .hero .hstats div span{ font-size:8.5px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase;}
 #vatc .grp{ font-family:var(--fd); letter-spacing:.2em; font-size:10px; color:var(--amber); text-transform:uppercase; margin:16px 0 8px;}
-/* v0.8.13 home-slim */
+/* v0.8.13 home-slim · v0.8.14 quizlet-3part */
 #vatc .stnbar{ font-family:var(--fd); font-size:12px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 2px 10px; margin-bottom:12px; border-bottom:1px solid var(--line); }
 #vatc .pos6{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px; }
 @media(max-width:640px){ #vatc .pos6{ grid-template-columns:1fr 1fr; } }
@@ -207,7 +207,7 @@
 #vatc .findhits.slim .findhit{ padding:8px 10px; text-align:left;}
 #vatc .findhits.slim .fh-quote{ display:none;}
 #vatc .lkempty.vector{ border:1px dashed var(--line); border-radius:12px; padding:14px; font-size:13px; line-height:1.45; color:var(--muted);}
-/* flashcard — Quizlet tap-to-reveal (memorization) · v0.8.12 ask-all-pubs · reveal-lock kept */
+/* flashcard — Quizlet tap-to-reveal (memorization) · v0.8.14 quizlet-3part · reveal-lock kept */
 #vatc .fcard{ margin-bottom:12px; position:relative; height:min(48vh,320px); min-height:240px; cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none;}
 #vatc .fcard .fcface{ position:absolute; inset:0; border:1px solid var(--line); border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:22px 18px; box-sizing:border-box; background:var(--panel); text-align:center; overflow:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;}
 #vatc .fcard .fcface.front{ opacity:1; visibility:visible; pointer-events:auto; z-index:1;}
@@ -226,6 +226,25 @@
 #vatc .fc-nav .btn.sec{ flex:0 0 auto; min-width:72px; }
 #vatc .fc-prog{ font-size:11px; letter-spacing:.08em; color:var(--muted); text-align:center; margin:0 0 8px;}
 #vatc button.srcchip.fccitebtn{ margin-top:10px; flex:none; }
+/* v0.8.14 quizlet-3part: answer is the hero; source is a small muted line */
+#vatc .fcface .a.big{ font-family:var(--fd); font-size:clamp(24px,7.4vw,34px); font-weight:700; letter-spacing:.03em; color:var(--green); line-height:1.2; text-shadow:0 0 18px rgba(57,240,160,.25); white-space:pre-wrap; overflow-wrap:anywhere;}
+#vatc .fcface .a.def{ font-family:var(--fm); font-size:clamp(15px,4.3vw,18px); font-weight:700; color:var(--green); line-height:1.45; white-space:pre-wrap; overflow-wrap:anywhere;}
+#vatc .fcface .qsm{ font-family:var(--fd); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); line-height:1.3; max-width:100%; overflow-wrap:anywhere;}
+#vatc .fcface.back{ gap:10px; }
+#vatc button.fcsrc{ all:unset; box-sizing:border-box; max-width:100%; font-family:var(--fm); font-size:10px; line-height:1.4; color:#5f7469; text-align:center; white-space:normal; overflow-wrap:anywhere; cursor:pointer; text-decoration:underline dotted rgba(125,148,137,.45); text-underline-offset:3px; padding:2px 4px; margin-top:2px;}
+#vatc button.fcsrc:hover, #vatc button.fcsrc:focus-visible{ color:var(--muted); }
+#vatc .fc-prog{ font-family:var(--fm); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;}
+#vatc .qz-part summary{ display:flex; align-items:baseline; gap:10px; padding:12px 14px; font-size:13px; letter-spacing:.14em; }
+#vatc .qz-part summary::after{ margin-left:2px; }
+#vatc .qz-part .qz-sub{ font-family:var(--fm); font-size:9.5px; letter-spacing:.04em; text-transform:none; color:var(--muted); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#vatc .qz-part .qz-n{ font-family:var(--fm); font-size:11px; letter-spacing:.02em; color:var(--green); }
+#vatc .fc-crt.qz-part{ border-radius:10px; background:var(--panel); }
+#vatc .qz-part .fc-chips{ margin:10px 12px 12px; gap:6px; }
+#vatc .chip.qz-all{ color:var(--green); border-color:var(--green-dim); }
+#vatc .fc-chip-groups{ gap:8px; }
+#vatc .fc-nav .btn{ justify-content:center; min-height:44px; padding:10px 14px; }
+#vatc .fc-nav .btn svg{ width:16px; height:16px; flex:none; }
+#vatc .fcard{ border-radius:14px; }
 /* reference */
 #vatc .refgrid{ display:grid; grid-template-columns:1fr 1fr; gap:12px;} @media(max-width:640px){#vatc .refgrid{grid-template-columns:1fr;}}
 #vatc .freqrow{ display:flex; align-items:baseline; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--line);} #vatc .freqrow:last-child{border-bottom:none;}
@@ -1486,7 +1505,7 @@
       fcCard('ts-10-18','Boxes 10–18','Enter data as specified by a facility directive. Arrival/radar: need not enter except when nonradar procedures are used or radio recording equipment is inoperative. Departure items may include departure time, runway used for takeoff, check marks for information forwarded or relayed.','Strip','termstrip',SRC_TBL234)
     ]
   };
-  function activeFcDeck(){ const d=S.fcDeck; if(d && d!=='pos' && FC_SETS[d]) return FC_SETS[d]; return posDeck(S.pos); }
+  function activeFcDeck(){ const d=S.fcDeck; if(d && d!=='pos' && QZ_DECKS[d]) return QZ_DECKS[d]; if(d && d!=='pos' && FC_SETS[d]) return FC_SETS[d]; return posDeck(S.pos); }
   function fcDeckKey(){ return (S.fcDeck && S.fcDeck!=='pos') ? S.fcDeck : S.pos; }
   function fcOrderedDeck(){
     const deck=activeFcDeck()||[];
@@ -1510,41 +1529,105 @@
     for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; }
     a._key=key; return a;
   }
-  const FC_CHIP_GROUPS=[
-    {id:'local',lab:'LOCAL',sets:['idents','diverts','twr-freq','helo','taxi','crash','dial-1939','dial-4779','viscom']},
-    {id:'gca',lab:'GCA',sets:['gca','gca-freq','par','parjo','asr','asrjo','gcafinal','arrcomp','arrdep','climbout','intercept','final']},
-    {id:'radar',lab:'RADAR',sets:['rfd','handoff','missed','lostcom','fixes','radsup','wake','sep','radio']},
-    {id:'strips',lab:'STRIPS',sets:['squadrons','sids','svfr','abbrev','vrp','scratchpad','fdio','termstrip']}
+  /* v0.8.14 quizlet-3part: Home quizlets = TOWER · RADAR · LOCAL (station). Built at load from FC_SETS (source decks untouched, cites unchanged).
+     Every source card lands in exactly one part/category by content (QZ_MOVE = card-level moves off its old deck's default).
+     QZ_DUPES = cross-set duplicates (same normalized question, same fact) dropped → kept id (longest definition + its cite; tie = first in old order).
+     Same question but a different fact (e.g. scratchpad T=TACAN vs T=TOUCH & GO) is NOT a dupe — both kept; the per-card origin tag disambiguates. */
+  const QZ_SRC_ORDER=['idents','diverts','twr-freq','helo','taxi','crash','dial-1939','dial-4779','viscom','gca','gca-freq','par','parjo','asr','asrjo','gcafinal','arrcomp','arrdep','climbout','intercept','final','rfd','handoff','missed','lostcom','fixes','radsup','wake','sep','radio','squadrons','sids','svfr','abbrev','vrp','scratchpad','fdio','termstrip'];
+  const QZ_PARTS=[
+    {id:'tower',lab:'TOWER',sub:'Clearance/FD · Ground · Local',cats:[
+      {k:'qt-sids',lab:'SIDS & DEPARTURES',from:['sids']},
+      {k:'qt-fdio',lab:'FDIO',from:['fdio']},
+      {k:'qt-svfr',lab:'SVFR',from:['svfr']},
+      {k:'qt-vrp',lab:'VFR POINTS',from:['vrp']},
+      {k:'qt-viscom',lab:'VISCOM',from:['viscom']},
+      {k:'qt-crash',lab:'CRASH PHONE',from:['crash']},
+      {k:'qt-ops',lab:'TOWER OPS',from:[]}
+    ]},
+    {id:'radar',lab:'RADAR',sub:'RFD · Final/GCA · Arrival',cats:[
+      {k:'qr-gca',lab:'GCA DATA',from:['gca']},
+      {k:'qr-par',lab:'PAR',from:['par','parjo']},
+      {k:'qr-asr',lab:'ASR',from:['asr','asrjo']},
+      {k:'qr-gcafinal',lab:'GCA FINAL',from:['gcafinal']},
+      {k:'qr-final',lab:'FINAL / INTERCEPT',from:['intercept','final']},
+      {k:'qr-arr',lab:'ARRIVAL / DEP',from:['arrdep','arrcomp','climbout']},
+      {k:'qr-missed',lab:'MISSED / LOST COM',from:['missed','lostcom']},
+      {k:'qr-rfd',lab:'RFD',from:['rfd']},
+      {k:'qr-strips',lab:'RADAR STRIPS',from:['abbrev','scratchpad','termstrip']},
+      {k:'qr-handoff',lab:'HANDOFF',from:['handoff']},
+      {k:'qr-fixes',lab:'FIXES',from:['fixes']},
+      {k:'qr-wakesep',lab:'WAKE / SEP',from:['wake','sep']},
+      {k:'qr-radio',lab:'RADIO',from:['radio']},
+      {k:'qr-radsup',lab:'RAD SUP',from:['radsup']}
+    ]},
+    {id:'local',lab:'LOCAL',sub:'Station facts',cats:[
+      {k:'ql-freq',lab:'FREQS & BUTTONS',from:['twr-freq','gca-freq']},
+      {k:'ql-phone',lab:'PHONE LINES',from:['dial-1939','dial-4779']},
+      {k:'ql-sqdn',lab:'SQUADRONS',from:['squadrons']},
+      {k:'ql-field',lab:'AIRFIELD',from:['taxi','helo']},
+      {k:'ql-idents',lab:'IDENTIFIERS',from:['idents']},
+      {k:'ql-diverts',lab:'DIVERTS',from:['diverts']}
+    ]}
   ];
-  function fcDeckGroup(k){
-    if(!k||k==='pos') return 'gca';
-    const g=FC_CHIP_GROUPS.find(x=>x.sets.indexOf(k)>=0);
-    return g?g.id:'gca';
+  const QZ_MOVE={
+    /* tower procedures / phraseology that lived in LOCAL airfield decks */
+    'taxi-fuel':'qt-ops','taxi-vip':'qt-ops','helo-papa-1-4-h1':'qt-ops','helo-foxtrot-2-land':'qt-ops','helo-echo-2-to':'qt-ops','helo-request-papa-1':'qt-ops',
+    'radio-fac-twr':'qt-ops',
+    /* departure-procedure strip abbreviations (TBL 6-3) sit with the SIDs */
+    'ab-quntn':'qt-sids','ab-bldg':'qt-sids','ab-corri':'qt-sids','ab-munn':'qt-sids',
+    /* airfield facts from GCA critical data */
+    'gca-elev':'ql-field','gca-th21':'ql-field','gca-th3':'ql-field',
+    /* scratchpad frequency buttons 1–10 */
+    'sp-1':'ql-freq','sp-2':'ql-freq','sp-3':'ql-freq','sp-4':'ql-freq','sp-5':'ql-freq','sp-6':'ql-freq','sp-7':'ql-freq','sp-8':'ql-freq','sp-9':'ql-freq','sp-10':'ql-freq'
+  };
+  const QZ_DUPES={
+    'miramar':'div-nkx','french-valley':'div-f70','oceanside':'div-okb','fallbrook':'div-l18','palomar':'div-crq',
+    'gca-base-ops':'twr-base-ops','twr-guard':'gca-guard',
+    'fin-gate-2mi':'int-gate-2mi','fin-gate-wx':'int-gate-wx','fin-gate-pilot':'int-gate-pilot','fin-rnav-except':'int-rnav',
+    'fin-intercept-hdg':'int-hdg','fin-dev-outside':'int-dev-out','fin-dev-inside':'int-dev-in','fin-dev-phrase':'int-phrase',
+    'sids-quntn':'ab-quntn','sids-bldg':'ab-bldg','sids-corri':'ab-corri','sids-munn':'ab-munn','sids-quentin-rev':'sids-vot-quentin',
+    'ab-tg':'vis-tg','sp-int-i':'ab-i','sp-int-v':'ab-v'
+  };
+  const QZ_DECKS={}, QZ_LAB={}, QZ_CAT_OF={};
+  (function buildQuizParts(){
+    const deckCat={};
+    QZ_PARTS.forEach(P=>{ P.cats.forEach(c=>{ c.part=P.id; QZ_LAB[c.k]=c.lab; QZ_DECKS[c.k]=[]; c.from.forEach(f=>{ deckCat[f]=c.k; }); }); QZ_LAB['q-'+P.id]=P.lab; });
+    QZ_SRC_ORDER.forEach(dk=>{
+      (FC_SETS[dk]||[]).forEach(c=>{
+        if(!c||!c.id||QZ_DUPES[c.id]) return;
+        const ck=QZ_MOVE[c.id]||deckCat[dk];
+        if(!ck||!QZ_DECKS[ck]) return;
+        QZ_CAT_OF[c.id]=ck;
+        QZ_DECKS[ck].push(Object.assign({}, c, {o:dk}));
+      });
+    });
+    QZ_PARTS.forEach(P=>{ QZ_DECKS['q-'+P.id]=[].concat.apply([], P.cats.map(c=>QZ_DECKS[c.k])); P.n=QZ_DECKS['q-'+P.id].length; });
+  })();
+  function qzPartOf(k){
+    if(!k||k==='pos') return '';
+    const m=/^q-(\w+)$/.exec(k); if(m) return m[1];
+    const P=QZ_PARTS.find(p=>p.cats.some(c=>c.k===k||c.from.indexOf(k)>=0));
+    return P?P.id:'';
   }
+  function fcDeckGroup(k){ return qzPartOf(k); }
   function fcOpenGroup(){ return S.fcGrp||''; }
   function fcOpenMap(){ return S.fcOpen||{}; }
   function fcSetChipRow(includePos){
+    /* v0.8.14 quizlet-3part: three collapsible parts; each opens with ALL <part> then its categories. */
     const cur=S.fcDeck||'pos';
     const openMap=fcOpenMap();
     const countOf=k=>{
       if(k==='pos') return (posDeck(S.pos)||[]).length;
-      return (FC_SETS[k]||[]).length;
+      return (QZ_DECKS[k]||FC_SETS[k]||[]).length;
     };
-    const chipOf=(k,lab)=>{
-      const n=countOf(k);
-      return `<span class="chip ${cur===k?'on':''}" data-action="fcdeck" data-d="${k}">${lab}<span class="fc-n">${n}</span></span>`;
-    };
+    const chipOf=(k,lab,cls)=>`<span class="chip${cls?' '+cls:''} ${cur===k?'on':''}" data-action="fcdeck" data-d="${k}">${lab}<span class="fc-n">${countOf(k)}</span></span>`;
     const pos=POS.find(p=>p.k===S.pos);
     const posChip=includePos?`<div class="askchips fc-chips fc-poschip">${chipOf('pos',(pos&&pos.sn||PN[S.pos]||'POSITION').toUpperCase())}</div>`:'';
-    const grouped=new Set();
-    const groups=FC_CHIP_GROUPS.map(g=>{
-      const keys=g.sets.filter(k=>FC_SETS[k]);
-      keys.forEach(k=>grouped.add(k));
-      const chips=keys.map(k=>chipOf(k,FC_SET_LAB[k]||k.toUpperCase())).join('');
-      return `<details class="fc-crt"${openMap[g.id]?' open':''}><summary data-action="fcgrp" data-g="${g.id}">${g.lab}</summary><div class="askchips fc-chips">${chips}</div></details>`;
+    const groups=QZ_PARTS.map(P=>{
+      const all=chipOf('q-'+P.id,'ALL '+P.lab,'qz-all');
+      const chips=P.cats.filter(c=>QZ_DECKS[c.k]&&QZ_DECKS[c.k].length).map(c=>chipOf(c.k,c.lab)).join('');
+      return `<details class="fc-crt qz-part"${openMap[P.id]?' open':''}><summary data-action="fcgrp" data-g="${P.id}"><span class="qz-lab">${P.lab}</span><span class="qz-sub">${P.sub}</span><span class="qz-n">${P.n}</span></summary><div class="askchips fc-chips">${all}${chips}</div></details>`;
     });
-    const extra=Object.keys(FC_SETS).filter(k=>!grouped.has(k));
-    if(extra.length) groups.push(`<details class="fc-crt"><summary>MORE</summary><div class="askchips fc-chips">${extra.map(k=>chipOf(k,FC_SET_LAB[k]||k.toUpperCase())).join('')}</div></details>`);
     return `<div class="fc-chip-wrap">${posChip}<div class="fc-chip-groups">${groups.join('')}</div></div>`;
   }
 
@@ -3011,7 +3094,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.13 · home-slim</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.14 · quizlet-3part</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -3284,7 +3367,10 @@ function vidsStrip(){
     activeFcDeck(); // deck source
     const {deck, key, ord, cards}=fcOrderedDeck();
     const named=S.fcDeck && S.fcDeck!=='pos';
-    const lab=named?(FC_SET_LAB[S.fcDeck]||S.fcDeck):((PN[S.pos]||S.pos).toUpperCase());
+    const partId=named?qzPartOf(S.fcDeck):'';
+    const partLab=partId?(QZ_PARTS.find(p=>p.id===partId)||{}).lab:'';
+    const deckLab=named?(QZ_LAB[S.fcDeck]||FC_SET_LAB[S.fcDeck]||S.fcDeck):((PN[S.pos]||S.pos).toUpperCase());
+    const lab=(partLab && !/^q-/.test(S.fcDeck) && QZ_LAB[S.fcDeck])?(partLab+' · '+deckLab):deckLab;
     if(!cards.length){
       return chips+`<div class="qmeta"><span class="pill warn">FLASHCARDS · ${lab}</span></div><div class="explain">No sourced cards for this ${named?'deck':'position'} yet.</div>`;
     }
@@ -3295,10 +3381,14 @@ function vidsStrip(){
     const title=escTxt(String(card.src&&card.src.pa||card.tag||''));
     const q=escTxt(String(card.q||''));
     const a=escTxt(String(card.a||''));
-    const tag=escTxt(String(card.tag||''));
-    const citeBtn=cite?`<button type="button" class="srcchip fccitebtn" data-action="fccite" data-cite="${escTxt(cite)}" data-title="${title}">${I.ext} ${escTxt(citeLab)}</button>`:'';
+    /* per-card origin tag (old set label) when it adds info beyond the card tag */
+    const oLab=card.o?(FC_SET_LAB[card.o]||card.o):'';
+    const tagTxt=String(card.tag||'')+(oLab && String(oLab).toLowerCase()!==String(card.tag||'').toLowerCase()?' · '+oLab:'');
+    const tag=escTxt(tagTxt);
+    const aCls=String(card.a||'').length<=48?'a big':'a def';
+    const citeBtn=cite?`<button type="button" class="fcsrc fccitebtn" data-action="fccite" data-cite="${escTxt(cite)}" data-title="${title}">${escTxt(citeLab)}</button>`:'';
     const front=`<div class="fcface front" data-answer="${a}"><div class="tag">${tag}</div><div class="q">${q}</div><div class="fchint">tap to reveal</div></div>`;
-    const back=`<div class="fcface back revealed" data-answer="${a}"><div class="tag">${tag}</div><div class="a def">${a}</div>${citeBtn}<div class="fchint">tap · hide · or Next</div></div>`;
+    const back=`<div class="fcface back revealed" data-answer="${a}"><div class="qsm">${q}</div><div class="${aCls}">${a}</div>${citeBtn}</div>`;
     const nav=`<div class="fc-nav"><button type="button" class="btn sec" data-action="fcprev">PREV</button><button type="button" class="btn" data-action="fcnext">NEXT ${I.arrow}</button><button type="button" class="btn sec" data-action="fcshuffle">SHUFFLE</button></div>`;
     return chips+`<div class="fc-prog">${lab} · ${i+1} / ${cards.length}</div><div class="fcard${S.fcFlip?' is-revealed':''}" data-action="fcflip">${front}${back}</div>${nav}`;
   }
@@ -4098,11 +4188,11 @@ function pdfPaneHTML(){
     if(a==='scnnext')return set({scnIdx:S.scnIdx+1,scnAns:false,scnSel:null});
     if(a==='scnrestart')return set({scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='src')return set({source:+el.dataset.i});
-    if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({}, S.fcOpen||{}); o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null});}
+    if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({}, S.fcOpen||{}); if(g) o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null});}
     if(a==='fcjump'){const i=Math.max(0,parseInt(el.dataset.i,10)||0); return set({fcIdx:i,fcFlip:false});}
     if(a==='jumptbl'){ jumpTblRef(el.dataset.tbl||el.textContent||''); return; }
     if(a==='wxrefresh'){ fetchKnfgMetar(true); return; }
-    if(a==='fcgrp'){ const g=el.dataset.g||'gca'; setTimeout(()=>{ const o=Object.assign({gca:false,local:false,radar:false,strips:false},S.fcOpen||{}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
+    if(a==='fcgrp'){ const g=el.dataset.g||'tower'; setTimeout(()=>{ const o=Object.assign({tower:false,radar:false,local:false},S.fcOpen||{}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
     if(a==='openpub'){const page=Math.max(1,parseInt(el.dataset.page,10)||1);const same=S.pub===el.dataset.id; if(!same){resetCitePdfFind();} return set({tab:'reference',pub:el.dataset.id,pubPage:page,pubQ:same?S.pubQ:'',pubGuessNote:'',pubPreferPage:page,pubCiteSec:same?S.pubCiteSec:''});}
     if(a==='pdfclose'){ if(S.learnReturn) return leavePdfToLearn(); resetCitePdfFind(); return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:''}); }
     if(a==='pdfprev'){ S.pubPage=Math.max(1,(S.pubPage||1)-1); pdfDraw(); return; }
