@@ -102,7 +102,7 @@
 #vatc .hero .hstats div b{ font-family:var(--fd); font-size:18px; color:var(--text); display:block;}
 #vatc .hero .hstats div span{ font-size:8.5px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase;}
 #vatc .grp{ font-family:var(--fd); letter-spacing:.2em; font-size:10px; color:var(--amber); text-transform:uppercase; margin:16px 0 8px;}
-/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile · v0.8.16 fac2026-sync · v0.8.17 fac2026-reader · v0.8.18 brief-polish · v0.8.19 fqr-trim · v0.8.20 fc-clean-answers */
+/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile · v0.8.16 fac2026-sync · v0.8.17 fac2026-reader · v0.8.18 brief-polish · v0.8.19 fqr-trim · v0.8.20 fc-clean-answers · v0.8.21 fc-answer-only */
 #vatc .stnbar{ font-family:var(--fd); font-size:12px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 2px 10px; margin-bottom:12px; border-bottom:1px solid var(--line); }
 #vatc .pos6{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px; }
 @media(max-width:640px){ #vatc .pos6{ grid-template-columns:1fr 1fr; } }
@@ -543,9 +543,12 @@
 #vatc .fbyou{ font-size:11px; margin-top:6px; overflow-wrap:anywhere; }
 #vatc .fc-over{ font-size:10px; }
 #vatc .fc-prog{ margin:0 0 8px; }
-#vatc .fcface .fcdet{ font-family:var(--fm); font-size:11px; line-height:1.4; color:var(--muted); font-weight:400; margin-top:8px; max-width:92%; white-space:pre-line; }
 #vatc .fc-nav.two .btn{ flex:1; justify-content:center; }
 #vatc .fc-nav .btn:disabled{ opacity:.35; pointer-events:none; }
+#vatc .fc-progrow{ position:relative; display:flex; align-items:center; justify-content:center; min-height:28px; margin:0 0 8px; padding:0 36px; }
+#vatc .fc-progrow .fc-prog{ margin:0; }
+#vatc .fc-shuf{ position:absolute; right:0; top:50%; transform:translateY(-50%); width:28px; height:28px; display:flex; align-items:center; justify-content:center; padding:0; border-radius:8px; border:1px solid var(--line); background:transparent; color:var(--muted); font-size:15px; line-height:1; cursor:pointer; }
+#vatc .fc-shuf:hover, #vatc .fc-shuf:focus-visible{ color:var(--green); border-color:var(--green2); }
 #vatc .fc-note{ display:block; text-transform:none; letter-spacing:.02em; font-size:11px; line-height:1.4; padding:7px 10px; border-radius:8px; margin:0 0 8px; }
 /* mobile: full-bleed, five tabs fit, no duplicate station text */
 @media(max-width:640px){
@@ -1719,7 +1722,7 @@
     'ab-tg':'vis-tg','sp-int-i':'ab-i','sp-int-v':'ab-v'
   };
   /* v0.8.20 fc-clean-answers: flashcard backs show only the core answer in green.
-     Reference / elaboration that was inside the answer moves to c.d (small grey line under it); the clickable
+     Reference / elaboration that was inside the answer moves to c.d (v0.8.21: kept as data only, not rendered on cards); the clickable
      grey source link is unchanged. Original text kept in c.full (Ask/lookup search still sees it). Hand-reviewed per card. */
   const FC_CLEAN={
     "tower-freq": [
@@ -3704,7 +3707,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.20 · fc-clean-answers</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.21 · fc-answer-only</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -3927,7 +3930,7 @@ function vectorAnswerHTML(query, hits){
     function sortStart(ids, stats, rng, lastId, opts){
       opts=opts||{};
       const pool=(ids||[]).filter(id=>opts.includeKnown || status(stats,id)!==KN);
-      return {mode:'sort', round:1, queue:avoidFirst(opts.keepOrder?pool.slice():shuffle(pool,rng), lastId), i:0, known:[], learning:[], done:pool.length===0, finished:pool.length===0, lastId:lastId||null};
+      return {mode:'sort', round:1, queue:avoidFirst(opts.keepOrder?pool.slice():shuffle(pool,rng), lastId), i:0, known:[], learning:[], skipped:[], done:pool.length===0, finished:pool.length===0, lastId:lastId||null};
     }
     function sortCurrent(st){ return (!st||st.done)?null:st.queue[st.i]; }
     function sortMark(st, stats, know, now){
@@ -3936,28 +3939,40 @@ function vectorAnswerHTML(query, hits){
       if(know){ st.known.push(id); touch(stats,id,{status:KN, times_correct:s.times_correct+1},now); }
       else { st.learning.push(id); touch(stats,id,{status:SL, times_missed:s.times_missed+1},now); }
       st.lastId=id; st.i++;
-      if(st.i>=st.queue.length){ st.done=true; st.finished=st.learning.length===0; }
+      if(st.i>=st.queue.length){ st.done=true; st.finished=st.learning.length===0 && !(st.skipped||[]).length; }
+      return st;
+    }
+    /* v0.8.21 NEXT: advance without changing the card's status; it lands in the pile matching its current status
+       (KNOWN → Know, STILL_LEARNING → Still learning, NEW → skipped, carried into the next round with Still learning) */
+    function sortSkip(st, stats){
+      const id=sortCurrent(st); if(id==null) return st;
+      if(!st.skipped) st.skipped=[];
+      const s=status(stats,id);
+      if(s===KN) st.known.push(id); else if(s===SL) st.learning.push(id); else st.skipped.push(id);
+      st.lastId=id; st.i++;
+      if(st.i>=st.queue.length){ st.done=true; st.finished=st.learning.length===0 && st.skipped.length===0; }
       return st;
     }
     /* PREV: step back one card in the round; it leaves its pile and is re-marked */
     function sortBack(st){
       if(!st || st.i<=0) return st;
       st.i--; const id=st.queue[st.i];
-      st.known=st.known.filter(x=>x!==id); st.learning=st.learning.filter(x=>x!==id);
+      st.known=st.known.filter(x=>x!==id); st.learning=st.learning.filter(x=>x!==id); st.skipped=(st.skipped||[]).filter(x=>x!==id);
       st.done=false; st.finished=false; return st;
     }
     /* tap a card in the set list: it is shown next (moved up if still ahead in the round, else re-added) */
     function sortJump(st, id){
       if(!st || id==null) return st;
-      st.known=st.known.filter(x=>x!==id); st.learning=st.learning.filter(x=>x!==id);
+      st.known=st.known.filter(x=>x!==id); st.learning=st.learning.filter(x=>x!==id); st.skipped=(st.skipped||[]).filter(x=>x!==id);
       const j=st.done?-1:st.queue.indexOf(id, st.i);
       if(j>=0) st.queue.splice(j,1);
       st.queue.splice(st.i,0,id);
       st.done=false; st.finished=false; return st;
     }
     function sortNextRound(st, rng){
-      if(!st.learning.length){ st.finished=true; return st; }
-      return {mode:'sort', round:st.round+1, queue:avoidFirst(shuffle(st.learning,rng), st.lastId), i:0, known:[], learning:[], done:false, finished:false, lastId:st.lastId};
+      const carry=st.learning.concat(st.skipped||[]);
+      if(!carry.length){ st.finished=true; return st; }
+      return {mode:'sort', round:st.round+1, queue:avoidFirst(shuffle(carry,rng), st.lastId), i:0, known:[], learning:[], skipped:[], carried:(st.skipped||[]).length, done:false, finished:false, lastId:st.lastId};
     }
     /* ---- LEARN ---- */
     function stageOf(stats, id){ return stat(stats,id).mc_ok?'written':'mc'; }
@@ -4044,7 +4059,7 @@ function vectorAnswerHTML(query, hits){
       const sim=1-lev(la,lu)/Math.max(la.length,lu.length);
       return sim>=0.8?{ok:true, typo:true, strict:false, sim}:{ok:false, typo:false, strict:false, sim};
     }
-    return {NEW, SL, KN, ROUND, shuffle, blank, stat, status, counts, touch, avoidFirst, sortStart, sortCurrent, sortMark, sortBack, sortJump, sortNextRound, stageOf, learnPick, learnStart, learnCurrent, learnAnswer, learnOverride, learnContinue, learnNextRound, mcChoices, normAns, lev, isStrict, grade};
+    return {NEW, SL, KN, ROUND, shuffle, blank, stat, status, counts, touch, avoidFirst, sortStart, sortCurrent, sortMark, sortSkip, sortBack, sortJump, sortNextRound, stageOf, learnPick, learnStart, learnCurrent, learnAnswer, learnOverride, learnContinue, learnNextRound, mcChoices, normAns, lev, isStrict, grade};
   })();
   /* FCQ:END */
   /* ===== v0.8.18 brief-polish: flashcard progress (localStorage per card id) + Cards / Sort / Learn ===== */
@@ -4092,8 +4107,7 @@ function vectorAnswerHTML(query, hits){
     const aCls=String(card.a||'').length<=48?'a big':'a def';
     const citeBtn=cite?`<button type="button" class="fcsrc fccitebtn" data-action="fccite" data-cite="${escTxt(cite)}" data-title="${title}">${escTxt(citeLab)}</button>`:'';
     const front=`<div class="fcface front" data-answer="${a}"><div class="tag">${tag}</div><div class="q">${q}</div><div class="fchint">tap to reveal</div></div>`;
-    const det=card.d?`<div class="fcdet">${escTxt(String(card.d))}</div>`:'';
-    const back=`<div class="fcface back revealed" data-answer="${a}"><div class="qsm">${q}</div><div class="${aCls}">${a}</div>${det}${citeBtn}</div>`;
+    const back=`<div class="fcface back revealed" data-answer="${a}"><div class="qsm">${q}</div><div class="${aCls}">${a}</div>${citeBtn}</div>`;
     return `<div class="fcard${S.fcFlip?' is-revealed':''}" data-action="fcflip">${front}${back}</div>`;
   }
   function fcSession(mode, ids, key){
@@ -4119,16 +4133,16 @@ function vectorAnswerHTML(query, hits){
         <div class="fc-row2"><button type="button" class="btn sec" data-action="fcrestart">GO AGAIN</button><button type="button" class="btn" data-action="fcresetset">RESET DECK</button></div></div>`;
     }
     if(st.done){
-      const n=st.learning.length;
+      const n=st.learning.length, sk=(st.skipped||[]).length;
       return `<div class="fc-panel"><div class="fc-cap">ROUND ${st.round} COMPLETE</div>
-        <div class="fc-piles"><div class="pile k"><b>${st.known.length}</b><span>Know</span></div><div class="pile l"><b>${n}</b><span>Still learning</span></div></div>
-        <div class="fc-row2"><button type="button" class="btn sec" data-action="fcprev">BACK</button><button type="button" class="btn" data-action="fcsortnext">NEXT ROUND · ${n} STILL LEARNING ${I.arrow}</button></div></div>`;
+        <div class="fc-piles"><div class="pile k"><b>${st.known.length}</b><span>Know</span></div><div class="pile l"><b>${n}</b><span>Still learning</span></div>${sk?`<div class="pile n"><b>${sk}</b><span>Not marked</span></div>`:''}</div>
+        <div class="fc-row2"><button type="button" class="btn sec" data-action="fcprev">BACK</button><button type="button" class="btn" data-action="fcsortnext">NEXT ROUND · ${sk?`${n+sk} NOT KNOWN`:`${n} STILL LEARNING`} ${I.arrow}</button></div></div>`;
     }
     const id=FCQ.sortCurrent(st), card=byId[id]||{}, cur=FCQ.status(S.fcStats,id);
-    const prog=st.round===1?`${lab} · ${st.i+1} / ${st.queue.length}`:`${lab} · ROUND ${st.round} · ${st.i+1} / ${st.queue.length} · STILL LEARNING ONLY`;
-    return `<div class="fc-prog">${prog}</div>${fcFaceHTML(card)}
+    const prog=st.round===1?`${lab} · ${st.i+1} / ${st.queue.length}`:`${lab} · ROUND ${st.round} · ${st.i+1} / ${st.queue.length} · ${st.carried?'NOT KNOWN YET':'STILL LEARNING ONLY'}`;
+    return `<div class="fc-progrow"><div class="fc-prog">${prog}</div><button type="button" class="fc-shuf" data-action="fcshuffle" aria-label="Shuffle" title="Shuffle">⇄</button></div>${fcFaceHTML(card)}
       <div class="fc-mark"><button type="button" class="btn sec fc-sl${cur==='STILL_LEARNING'?' on':''}" data-action="fcrate" data-k="0">STILL LEARNING</button><button type="button" class="btn fc-kn${cur==='KNOWN'?' on':''}" data-action="fcrate" data-k="1">KNOW ${I.chk}</button></div>
-      <div class="fc-nav two"><button type="button" class="btn sec" data-action="fcprev"${st.i<=0?' disabled':''}>PREV</button><button type="button" class="btn sec" data-action="fcshuffle">SHUFFLE</button></div>`;
+      <div class="fc-nav two"><button type="button" class="btn sec" data-action="fcprev"${st.i<=0?' disabled':''}>‹ PREV</button><button type="button" class="btn sec" data-action="fcnext" title="Next card (no mark)">NEXT ›</button></div>`;
   }
   function fcLearnHTML(ids, byId, key, cnt, deckCards){
     const ss=fcSession('learn', ids, key), st=ss.st;
@@ -4875,6 +4889,7 @@ function pdfPaneHTML(){
       fcKeep({fcFlip:false}); return true;
     }
     if(a==='fcsortnext'){ if(ss&&ss.st){ ss.st=FCQ.sortNextRound(ss.st); } fcKeep({fcFlip:false}); return true; }
+    if(a==='fcnext'){ if(ss&&ss.st&&S.fcMode!=='practice'){ FCQ.sortSkip(ss.st, S.fcStats); S.fcLastId=ss.st.lastId; } fcKeep({fcFlip:false}); return true; }
     if(a==='fcprev'){ if(ss&&ss.st&&S.fcMode!=='practice'){ FCQ.sortBack(ss.st); } fcKeep({fcFlip:false}); return true; }
     if(a==='fcrestart'){ fcKeep({fcSess:null, fcIdx:0, fcFlip:false}); return true; }
     if(a==='fcmc'){

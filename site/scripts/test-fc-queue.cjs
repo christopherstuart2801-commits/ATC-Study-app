@@ -74,6 +74,28 @@ const mkIds = n => Array.from({ length: n }, (_, i) => 'c' + i);
   ok('cards: all marked Know → finished (UI offers Reset deck / Go again)', nx.finished && ids.every(id => FCQ.status(s2, id) === 'KNOWN'));
 }
 
+/* ---------- CARDS tab NEXT (v0.8.21): advance without marking ---------- */
+{
+  const ids = mkIds(5), stats = { c1: { status: 'KNOWN' }, c2: { status: 'STILL_LEARNING' } };
+  const before = JSON.stringify(stats);
+  const a = FCQ.sortStart(ids, stats, rngFrom(1), null, { keepOrder: true, includeKnown: true });
+  FCQ.sortSkip(a, stats);
+  ok('next: advances one card without changing any status', FCQ.sortCurrent(a) === 'c1' && JSON.stringify(stats) === before && a.skipped.join() === 'c0');
+  FCQ.sortSkip(a, stats); FCQ.sortSkip(a, stats);
+  ok('next: card lands in the pile of its current status (KNOWN → Know, STILL_LEARNING → Still learning)', a.known.join() === 'c1' && a.learning.join() === 'c2');
+  FCQ.sortBack(a);
+  ok('next then PREV: steps back and clears its pile', FCQ.sortCurrent(a) === 'c2' && !a.learning.includes('c2'));
+  FCQ.sortSkip(a, stats); FCQ.sortMark(a, stats, true, 1); FCQ.sortSkip(a, stats);
+  ok('next on the last card ends the round (summary), not finished while unmarked cards remain', a.done && !a.finished && a.skipped.join() === 'c0,c4');
+  const nx = FCQ.sortNextRound(a, rngFrom(4));
+  ok('next round = Still learning + unmarked cards', nx.round === 2 && nx.queue.slice().sort().join() === 'c0,c2,c4' && nx.carried === 2);
+  while (!nx.done) FCQ.sortMark(nx, stats, true, 1);
+  ok('next: all marked Know afterwards → finished', nx.finished);
+  const b = FCQ.sortStart(['k1', 'k2'], { k1: { status: 'KNOWN' }, k2: { status: 'KNOWN' } }, rngFrom(1), null, { keepOrder: true, includeKnown: true });
+  FCQ.sortSkip(b, {k1:{status:'KNOWN'},k2:{status:'KNOWN'}}); FCQ.sortSkip(b, {k1:{status:'KNOWN'},k2:{status:'KNOWN'}});
+  ok('next through an all-KNOWN deck → finished', b.done && b.finished);
+}
+
 /* ---------- LEARN ---------- */
 {
   // reinsertion 2–3 later

@@ -614,7 +614,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.20 fc-clean-answers', /v0\.8\.20 · fc-clean-answers<\/span>/.test(html) && !/v0\.8\.19 · fqr-trim<\/span>/.test(html));
+ok('statusbar v0.8.21 fc-answer-only', /v0\.8\.21 · fc-answer-only<\/span>/.test(html) && !/v0\.8\.20 · fc-clean-answers<\/span>/.test(html));
 // v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
 {
   const OLD25=[/2,?200 via heading 211/i,/CLIMB AND MAINTAIN 2200 VIA/i,/ten \(10\) feet/,/±\s?10 feet/,/±\s?50 feet of the azimuth/,/between 51 and 100 feet/,/between 11 and 25 feet/,/between 26 and 50 feet/,/MAINTAIN 3800, PROCEED DIRECT ONTOS/i,/ONE THOUSAND TWO HUNDRED THEN TURN LEFT/,/UPWIND NUMBERS AND LEAVING/,/RS with ADC/,/RS, ADC, RD/,/H-1 departures only/,/between Bravo and Delta taxiways/,/Between 11 and 7 miles on final/,/go-around \(VFR\) or missed approach \(IFR\)/];
@@ -690,7 +690,7 @@ if (sm) {
   let code = sm[1];
   code = code.replace(
     /document\.getElementById\('vatc'\)\.addEventListener\('click'[\s\S]*render\(\);\s*\}\)\(\);/,
-    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcSetChipRow,QZ_PARTS,QZ_DECKS,QZ_DUPES,QZ_MOVE,QZ_SRC_ORDER,QZ_CAT_OF,qzPartOf,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,diversifyAskHits,pubIdForDoc,queueCrossPubFind};\n})();'
+    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcFaceHTML,fcSetChipRow,QZ_PARTS,QZ_DECKS,QZ_DUPES,QZ_MOVE,QZ_SRC_ORDER,QZ_CAT_OF,qzPartOf,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,diversifyAskHits,pubIdForDoc,queueCrossPubFind};\n})();'
   );
   try {
     eval(code);
@@ -954,7 +954,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           V.S.sqShow='cs'; const csN=V.activeFcDeck().length; V.S.sqShow='all'; const allN=V.activeFcDeck().length; V.S.sqShow='cs'; V.S.sqTbl='TBL C-3'; const c3N=V.activeFcDeck().length; V.S.sqTbl='';
           ok('v0.8.18: squadron filter narrows deck (cs < all, C-3 subset)', csN>0 && csN<allN && allN===sqAll && c3N>0 && c3N<csN, 'cs='+csN+' all='+allN+' c3='+c3N);
           V.S.fcDeck='q-local'; V.S.fcMode='cards'; V.S.fcSess=null; const so=V.fcBody();
-          ok('v0.8.19: CARDS tab = flip card + Know / Still learning + PREV / SHUFFLE + set list', /data-action="fcrate" data-k="1"/.test(so) && /data-action="fcrate" data-k="0"/.test(so) && /data-action="fcprev"/.test(so) && /data-action="fcshuffle"/.test(so) && /data-action="fcjump" data-id=/.test(so) && (so.match(/data-action="fcmode"/g)||[]).length===2);
+          ok('v0.8.21: CARDS tab = flip card + Know / Still learning + PREV | NEXT row + compact ⇄ shuffle + set list', /data-action="fcrate" data-k="1"/.test(so) && /data-action="fcrate" data-k="0"/.test(so) && /<div class="fc-nav two"><button type="button" class="btn sec" data-action="fcprev"[^>]*>‹ PREV<\/button><button type="button" class="btn sec" data-action="fcnext"[^>]*>NEXT ›<\/button><\/div>/.test(so) && /class="fc-shuf" data-action="fcshuffle" aria-label="Shuffle" title="Shuffle"/.test(so) && !/>SHUFFLE</.test(so) && /data-action="fcjump" data-id=/.test(so) && (so.match(/data-action="fcmode"/g)||[]).length===2);
           V.S.fcMode='practice'; V.S.fcSess=null; const le=V.fcBody();
           ok('v0.8.19: PRACTICE tab starts with multiple choice (4 options)', /PRACTICE · ROUND 1 · MULTIPLE CHOICE/.test(le) && (le.match(/data-action="fcmc"/g)||[]).length===4, le.slice(0,200));
           V.S.fcMode='cards'; V.S.fcSess=null;
@@ -1148,12 +1148,14 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         { // v0.8.20 fc-clean-answers
           const allC = [].concat(...Object.values(V.FC_SETS||{}), ...Object.values(V.FC_POS||{}), ...Object.values(V.QZ_DECKS||{}));
           const aip = allC.filter(c => c.id==='asr-info-pass');
-          ok('fc-clean: asr-info-pass green = Final, 6-4-7 moved to grey detail', aip.length>0 && aip.every(c => c.a==='Final' && /6-4-7/.test(c.d||'') && /issue 6-4-7 info prior to final descent/.test(c.full||'')), aip.length);
+          ok('fc-clean: asr-info-pass green = Final, 6-4-7 kept as note data (c.d)', aip.length>0 && aip.every(c => c.a==='Final' && /6-4-7/.test(c.d||'') && /issue 6-4-7 info prior to final descent/.test(c.full||'')), aip.length);
           ok('fc-clean: tower-freq green = 128.775 / 340.2 (numbers intact)', allC.filter(c=>c.id==='tower-freq').every(c => c.a==='128.775 / 340.2'));
           ok('fc-clean: helo MAP green keeps 3000 / 1 DME / 050', allC.filter(c=>c.id==='ma-helo-map').every(c => /3000/.test(c.a) && /1 DME/.test(c.a) && /050/.test(c.a)));
           ok('fc-clean: fdio reverse cards untouched', allC.some(c=>c.id==='fdio-nfgt' && c.a==='NFG Tower') && allC.some(c=>c.id==='fdio-radar' && c.a==='NF1A, NF1D'));
           ok('fc-clean: no green answer still ends with FLIP plate header', !allC.some(c => /FLIP plate header\.?$/.test(c.a||'')));
-          ok('fc-clean: fcFaceHTML renders grey fcdet line', /class="fcdet"/.test(html) && /\.fcface \.fcdet/.test(html));
+          ok('v0.8.21: no grey note line rendered on cards (fcdet gone)', !/fcdet/.test(html));
+          { const card=allC.find(c=>c.id==='asr-info-pass'); const fh=V.fcFaceHTML?V.fcFaceHTML(card):null;
+            ok('v0.8.21: revealed ASR brief card = question + green Final + source link only', !!fh && (/<div class="a big">Final<\/div><button type="button" class="fcsrc fccitebtn"/.test(fh) && !/6-4-7 info/.test(fh)), fh===null?'fcFaceHTML not exported (html-only check)':''); }
         }
         ok('missed helo/wave-off cards cite 6-4-8 c/d p. 6-4-4', ['ma-helo-map','ma-helo-phrase','ma-waveoff-when','ma-waveoff-phrase','ma-waveoff-proc'].every(id => { const c=maD.find(x=>x.id===id); return c && c.src && c.src.doc==='NFG FACMAN July 2026' && c.src.pg==='6-4-8' && /p\. 6-4-4/.test(c.src.pa||''); }));
         ok('missed wave-off phrase = CLIMB TO 3000 DIRECT NFG TACAN, AT 1 DME TURN LEFT HEADING 050 AND EXPECT RADAR VECTORS.', maD.some(c => c.id==='ma-waveoff-phrase' && idA(c)==='CLIMB TO 3000 DIRECT NFG TACAN, AT 1 DME TURN LEFT HEADING 050 AND EXPECT RADAR VECTORS.') && maD.some(c => c.id==='ma-helo-phrase' && idA(c)==='YOUR MISSED APPROACH PROCEDURE IS CLIMB TO 3000 DIRECT NFG TACAN, AT 1 DME TURN LEFT HEADING 050 AND EXPECT RADAR VECTORS.'));
