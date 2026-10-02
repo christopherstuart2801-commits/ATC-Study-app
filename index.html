@@ -7,6 +7,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VECTOR ATC — KNFG</title>
+<link rel="icon" href="data:,">
 </head>
 <body style="margin:0;background:#070d0c;">
 <style>
@@ -100,7 +101,7 @@
 #vatc .hero .hstats div b{ font-family:var(--fd); font-size:18px; color:var(--text); display:block;}
 #vatc .hero .hstats div span{ font-size:8.5px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase;}
 #vatc .grp{ font-family:var(--fd); letter-spacing:.2em; font-size:10px; color:var(--amber); text-transform:uppercase; margin:16px 0 8px;}
-/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile · v0.8.16 fac2026-sync · v0.8.17 fac2026-reader */
+/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile · v0.8.16 fac2026-sync · v0.8.17 fac2026-reader · v0.8.18 brief-polish */
 #vatc .stnbar{ font-family:var(--fd); font-size:12px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 2px 10px; margin-bottom:12px; border-bottom:1px solid var(--line); }
 #vatc .pos6{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px; }
 @media(max-width:640px){ #vatc .pos6{ grid-template-columns:1fr 1fr; } }
@@ -494,6 +495,113 @@
 #vatc .cite-dd-wrap .muted{font-size:9px;letter-spacing:.1em}
 #vatc .cite-dd{flex:1;min-width:0;max-width:100%;font-family:var(--fm);font-size:11px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:#0a1211;color:var(--ink)}
 #vatc .citestep-aa{width:100%}
+/* ===== v0.8.18 brief-polish ===== */
+#vatc .seg{ max-width:100%; }
+#vatc .seg button{ min-height:40px; }
+/* progress check-off + reviewing checkbox */
+#vatc .rfc-check{ width:22px; height:22px; font-size:13px; border-radius:5px; border-color:#2b4a40; }
+#vatc .rfc-item .rfc-check{ margin-top:-2px; }
+#vatc .mkdone{ display:inline-flex; align-items:center; gap:8px; font-family:var(--fm); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--text); border:1px solid var(--green-dim); background:rgba(57,240,160,.06); padding:7px 11px; border-radius:8px; cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent; }
+#vatc .mkdone input{ width:18px; height:18px; accent-color:#39f0a0; margin:0; cursor:pointer; }
+#vatc .mkdone:has(input:checked){ border-color:var(--green); color:var(--green); background:rgba(57,240,160,.12); }
+#vatc .lesson .lh{ flex-wrap:wrap; }
+#vatc .citestep .mkdone{ margin-left:auto; }
+#vatc .ex-done{ display:flex; justify-content:flex-end; margin:0 0 10px; }
+/* flashcards */
+#vatc .fc-sets{ border:1px solid var(--line); border-radius:10px; background:var(--panel); margin:0 0 10px; }
+#vatc .fc-sets > summary{ list-style:none; cursor:pointer; padding:10px 12px; display:flex; align-items:center; gap:8px; font-size:12px; }
+#vatc .fc-sets > summary::-webkit-details-marker{ display:none; }
+#vatc .fc-sets > summary .muted{ font-size:9px; letter-spacing:.16em; }
+#vatc .fc-sets > summary b{ font-family:var(--fd); letter-spacing:.08em; font-weight:600; color:var(--green); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#vatc .fc-sets .fc-chg{ font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:12px; padding:3px 9px; }
+#vatc .fc-sets[open] .fc-chg{ color:var(--green); border-color:var(--green2); }
+#vatc .fc-sets .fc-chip-wrap{ margin:0; padding:0 10px 10px; }
+#vatc .fc-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin:0 0 10px; }
+#vatc .fc-head .seg{ margin:0; }
+#vatc .fc-counts{ font-size:11px; letter-spacing:.04em; display:flex; gap:6px; align-items:center; }
+#vatc .fc-counts .ck{ color:var(--green); } #vatc .fc-counts .cl{ color:var(--amber); } #vatc .fc-counts .cn{ color:var(--muted); } #vatc .fc-counts .dot2{ color:#3a5249; }
+#vatc .fc-filters{ display:grid; grid-template-columns:1.4fr 1fr 1.2fr; gap:8px; margin:0 0 10px; }
+#vatc .fsel{ display:flex; flex-direction:column; gap:4px; min-width:0; }
+#vatc .fsel span{ font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--amber); }
+#vatc .fsel select{ width:100%; min-width:0; font-family:var(--fm); font-size:13px; color:var(--text); background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:9px 8px; min-height:40px; }
+#vatc .fsel select:focus{ outline:none; border-color:var(--green2); }
+#vatc .fc-mark{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 0 8px; }
+#vatc .fc-mark .btn{ justify-content:center; min-height:46px; }
+#vatc .fc-mark .btn svg{ width:16px; height:16px; }
+#vatc .fc-mark .fc-sl{ color:var(--amber); border-color:#5a431d; }
+#vatc .fc-mark .fc-sl.on{ background:rgba(255,178,77,.12); border-color:var(--amber); }
+#vatc .fc-mark .fc-kn.on{ box-shadow:0 0 0 2px rgba(57,240,160,.35); }
+#vatc .fc-nav .btn.sec{ min-width:0; }
+#vatc .fc-tools{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin:12px 0 16px; }
+#vatc .fc-chk{ display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--text); cursor:pointer; }
+#vatc .fc-chk input{ width:18px; height:18px; accent-color:#39f0a0; margin:0; }
+#vatc .fc-tools .btn-ghost{ font-size:10px; padding:8px 10px; }
+#vatc .fc-listhd{ display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin:0 0 6px; padding-top:12px; border-top:1px solid var(--line); }
+#vatc .fc-listhd .muted{ letter-spacing:.04em; text-transform:none; }
+#vatc .fc-list{ border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--panel); }
+#vatc .fc-row{ display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border-bottom:1px solid var(--line); }
+#vatc .fc-row:last-child{ border-bottom:0; }
+#vatc .fc-row.tap{ cursor:pointer; -webkit-tap-highlight-color:transparent; }
+#vatc .fc-row.tap:hover{ background:rgba(57,240,160,.05); }
+#vatc .fc-row.on{ background:rgba(57,240,160,.10); box-shadow:inset 3px 0 0 var(--green); }
+#vatc .fc-i{ font-size:10px; color:var(--muted); min-width:22px; padding-top:2px; }
+#vatc .fc-td{ flex:1; min-width:0; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.3fr); gap:10px; }
+#vatc .fc-term{ font-family:var(--fd); letter-spacing:.04em; font-size:13px; line-height:1.3; color:var(--text); overflow-wrap:anywhere; }
+#vatc .fc-def{ font-size:12px; line-height:1.4; color:var(--muted); overflow-wrap:anywhere; }
+#vatc .fcm{ flex:none; width:22px; text-align:center; font-size:14px; line-height:1.2; }
+#vatc .fcm.k{ color:var(--green); } #vatc .fcm.l{ color:var(--amber); } #vatc .fcm.n{ color:#3f5a50; }
+#vatc .fc-panel{ border:1px solid var(--line); border-radius:14px; background:var(--panel); padding:18px 16px; margin:0 0 10px; text-align:center; }
+#vatc .fc-panel.left{ text-align:left; }
+#vatc .fc-big{ font-family:var(--fd); font-size:22px; letter-spacing:.06em; color:var(--green); margin-bottom:4px; }
+#vatc .fc-cap{ font-family:var(--fd); font-size:12px; letter-spacing:.2em; color:var(--amber); margin-bottom:12px; }
+#vatc .fc-piles{ display:flex; gap:10px; justify-content:center; margin:6px 0 4px; }
+#vatc .fc-piles .pile{ flex:1; max-width:160px; border:1px solid var(--line); border-radius:12px; padding:12px 8px; background:var(--panel2); display:flex; flex-direction:column; gap:2px; }
+#vatc .fc-piles .pile b{ font-family:var(--fd); font-size:30px; line-height:1; }
+#vatc .fc-piles .pile span{ font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+#vatc .fc-piles .pile.k b{ color:var(--green); } #vatc .fc-piles .pile.l b{ color:var(--amber); } #vatc .fc-piles .pile.n b{ color:var(--muted); }
+#vatc .fc-piles.sm .pile b{ font-size:22px; }
+#vatc .fc-row2{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px; }
+#vatc .fc-panel.left .fc-row2{ justify-content:flex-end; }
+#vatc .fc-row2 .btn{ justify-content:center; min-height:44px; }
+#vatc .fc-row2 .btn svg, #vatc .fc-panel .btn svg{ width:16px; height:16px; flex:none; }
+#vatc .tag2{ font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+#vatc .qbig{ font-family:var(--fd); font-size:clamp(17px,4.6vw,22px); letter-spacing:.04em; line-height:1.3; margin-bottom:14px; overflow-wrap:anywhere; }
+#vatc .qsm2{ font-family:var(--fd); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; overflow-wrap:anywhere; }
+#vatc .fc-mc .ch{ min-height:48px; line-height:1.35; overflow-wrap:anywhere; }
+#vatc .fc-mc{ margin-bottom:10px; }
+#vatc .fc-wr{ display:flex; gap:8px; }
+#vatc .fc-wr input{ flex:1; min-width:0; font-family:var(--fm); font-size:16px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:12px; outline:none; }
+#vatc .fc-wr input:focus{ border-color:var(--green2); }
+#vatc .fc-dk{ margin-top:10px; font-size:10px; }
+#vatc .fbk{ font-family:var(--fd); letter-spacing:.06em; font-size:15px; margin:4px 0 6px; }
+#vatc .fbk.ok{ color:var(--green); } #vatc .fbk.no{ color:var(--red); }
+#vatc .fbk b{ font-family:var(--fm); font-weight:700; }
+#vatc .fbans{ font-family:var(--fm); font-size:15px; color:var(--green); line-height:1.45; white-space:pre-wrap; overflow-wrap:anywhere; }
+#vatc .fbyou{ font-size:11px; margin-top:6px; overflow-wrap:anywhere; }
+#vatc .fc-over{ font-size:10px; }
+#vatc .fc-prog{ margin:0 0 8px; }
+#vatc .fc-note{ display:block; text-transform:none; letter-spacing:.02em; font-size:11px; line-height:1.4; padding:7px 10px; border-radius:8px; margin:0 0 8px; }
+/* mobile: full-bleed, five tabs fit, no duplicate station text */
+@media(max-width:640px){
+  #vatc{ border:none; border-radius:0; box-shadow:none; min-height:100vh; min-height:100dvh; }
+  #vatc .top{ padding:10px 14px; }
+  #vatc .brand .sub{ letter-spacing:.24em; }
+  #vatc .stnchip > div{ display:none; }
+  #vatc .tabs{ gap:4px; padding:6px 6px 0; overflow-x:visible; }
+  #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"], #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{ flex:1 1 0; justify-content:center; font-size:11px; letter-spacing:.06em; padding:11px 2px; min-width:0; }
+  #vatc .tab svg{ display:none; }
+  #vatc .trackbar{ padding:8px 12px; gap:5px; }
+  #vatc .body{ padding:14px 12px 18px; }
+  #vatc .status{ padding:8px 12px; }
+  #vatc .fc-td{ grid-template-columns:1fr; gap:3px; }
+  #vatc .fc-filters{ grid-template-columns:1fr 1fr; }
+  #vatc .fc-filters .fsel:first-child{ grid-column:1/-1; }
+  #vatc .fc-head{ flex-direction:column; align-items:stretch; }
+  #vatc .fc-head .seg{ display:flex; }
+  #vatc .fc-head .seg button{ flex:1; }
+  #vatc .fcard{ height:min(42vh,300px); min-height:220px; }
+}
+
 </style>
 
 <div id="vatc"><div class="grid-bg"></div><div class="wrap"><div id="app"></div></div></div>
@@ -1559,8 +1667,8 @@
       fcCard('ts-10-18','Boxes 10–18','Enter data as specified by a facility directive. Arrival/radar: need not enter except when nonradar procedures are used or radio recording equipment is inoperative. Departure items may include departure time, runway used for takeoff, check marks for information forwarded or relayed.','Strip','termstrip',SRC_TBL234)
     ]
   };
-  function activeFcDeck(){ const d=S.fcDeck; if(d && d!=='pos' && QZ_DECKS[d]) return QZ_DECKS[d]; if(d && d!=='pos' && FC_SETS[d]) return FC_SETS[d]; return posDeck(S.pos); }
-  function fcDeckKey(){ return (S.fcDeck && S.fcDeck!=='pos') ? S.fcDeck : S.pos; }
+  function activeFcDeck(){ const d=S.fcDeck; let deck; if(d && d!=='pos' && QZ_DECKS[d]) deck=QZ_DECKS[d]; else if(d && d!=='pos' && FC_SETS[d]) deck=FC_SETS[d]; else deck=posDeck(S.pos); return isSqDeck(d)?sqFilter(deck):deck; }
+  function fcDeckKey(){ const b=(S.fcDeck && S.fcDeck!=='pos') ? S.fcDeck : S.pos; return isSqDeck(S.fcDeck)?b+'|'+(S.sqShow||'cs')+'|'+(S.sqType||'')+'|'+(S.sqTbl||''):b; }
   function fcOrderedDeck(){
     const deck=activeFcDeck()||[];
     const key=fcDeckKey();
@@ -2445,6 +2553,7 @@
     // Missing / blocked pubs (00-80T, 00-80T-114, etc.): never open wrong JO/FACMAN p.1
     if(!info.pub || (info.book && info.book.missing)){
       const why=(info.book && info.book.note) ? info.book.note : 'Pub PDF not loaded in app — blocked until paper lands.';
+      if(opts.from==='fc') return fcKeep({fcNote:rawCite+' — '+why}); /* stay on the card; don't dump to the ACAD list */
       resetCitePdfFind();
       return set({tab:'learn', learnMode:'acad', pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', pubPreferPage:0, pubCiteSec:'', learnReturn:null, learnBlockedNote:rawCite+' — '+why, lkFocus:false, refQ:''});
     }
@@ -2454,7 +2563,12 @@
     const needle=resolveCiteNeedle({cite:rawCite, book:info.book, title:opts.title, needle:needleForCite(rawCite, opts.title)}).needle || needleForCite(rawCite, opts.title);
     const ban=citeBannerFromBook(info.book, rawCite, opts.title);
     let guessNote='';
-    const lr={pos:S.pos, rfcTopic:S.rfcTopic, cite:rawCite};
+    /* Remember where the cite was opened (ACAD list vs flashcards) + scroll, so Back lands on the same spot */
+    const prevLr=(S.pub && S.learnReturn)?S.learnReturn:null;
+    const smNow=document.querySelector('#vatc .scrollmain');
+    const lr=prevLr
+      ?{pos:prevLr.pos, rfcTopic:(prevLr.from==='fc'?prevLr.rfcTopic:S.rfcTopic), cite:rawCite, from:prevLr.from, learnMode:prevLr.learnMode, trainMode:prevLr.trainMode, scroll:prevLr.scroll}
+      :{pos:S.pos, rfcTopic:S.rfcTopic, cite:rawCite, from:(opts.from||'acad'), learnMode:S.learnMode, trainMode:S.trainMode, scroll:(smNow&&smNow.scrollTop)||0};
     // Every checklist cite click: clear stale Find hits / in-flight scan so 2nd+ cites re-jump.
     resetCitePdfFind();
     set({tab:'learn', learnMode:'acad', pub, pubPage:page, pubQ:needle, pubGuessNote:guessNote, pubCiteLab:ban.lab, pubCiteQuote:ban.quote, pubPreferPage:page, pubCiteSec:info.sec||'', learnReturn:lr, learnBlockedNote:'', lkFocus:false, refQ:''});
@@ -2478,15 +2592,19 @@
     const n=i+delta;
     if(n<0 || n>=pack.refs.length) return;
     const r=pack.refs[n];
-    const k=pack.T.n+':'+r[0];
-    markRfcChk(k,true);
     S.pos=lr.pos; S.rfcTopic=lr.rfcTopic;
     openLearnCite(r[0], {title:r[1]||''});
   }
   function leavePdfToLearn(){
-    const lr=S.learnReturn;
+    const lr=S.learnReturn||{};
     resetCitePdfFind();
-    return set({tab:'learn', pos:lr.pos, rfcTopic:lr.rfcTopic, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', pubPreferPage:0, pubCiteSec:'', learnReturn:null, learnBlockedNote:'', refQ:''});
+    const o={tab:'learn', pos:lr.pos||S.pos, rfcTopic:lr.rfcTopic, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', pubPreferPage:0, pubCiteSec:'', learnReturn:null, learnBlockedNote:'', refQ:''};
+    if(lr.learnMode) o.learnMode=lr.learnMode;
+    if(lr.trainMode) o.trainMode=lr.trainMode;
+    set(o);
+    if(o.learnMode==='cards') fcAfterPaint();
+    const y=+lr.scroll||0, sm=document.querySelector('#vatc .scrollmain');
+    if(sm && y){ sm.scrollTop=y; requestAnimationFrame(()=>{ sm.scrollTop=y; }); }
   }
 
   const STUDY_MARKS_KEY='vatc.studymarks';
@@ -2894,7 +3012,7 @@ function vectorAnswerHTML(query, hits){
         const citeR=(t.refs||[]).filter(r=>!(r&&r[2]==='hdr'));
         const refDone=citeR.filter(r=>S.rfcChk[t.n+':'+r[0]]).length;
         const refTot=citeR.length;
-        return `<div class="rfc-topic rfc-topic-slim"><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button><div data-action="acad" data-n="${t.n}" class="rfc-topic-body"><span class="rfc-n">${t.n}</span>${codes}<span class="rfc-tt">${t.t}</span><span class="muted rfc-prog">${refDone}/${refTot}</span></div></div>`;
+        return `<div class="rfc-topic rfc-topic-slim"><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button><div data-action="acad" data-n="${t.n}" class="rfc-topic-body"><span class="rfc-n">${t.n}</span>${codes}<span class="rfc-tt">${t.t}</span><span class="muted rfc-prog" data-topic="${t.n}">${refDone}/${refTot}</span></div></div>`;
       }).join('');
       const posLab=(PN[S.pos]||'POSITION').toUpperCase();
       const head=pack.demo
@@ -2933,7 +3051,7 @@ function vectorAnswerHTML(query, hits){
     }).join('');
     const refDd=`<label class="cite-dd-wrap"><span class="muted">REFS</span><select class="cite-dd" data-action="citesel" data-n="${T.n}" aria-label="All references"><option value="">Jump to reference…</option>${refOpts}</select></label>`;
     /* Topic detail: AA chips + refs dropdown stay reachable; Topics button returns to list */
-    return `${demoBanner}<div class="lesson"><div class="lh"><div class="lt"><span class="rfc-n">${T.n}</span> <span class="rfc-acad">${T.id}</span><span class="muted rfc-prog">${done}/${citeRefs.length}</span><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button></div><button class="mc" data-action="rfclist">Topics</button></div>
+    return `${demoBanner}<div class="lesson"><div class="lh"><div class="lt"><span class="rfc-n">${T.n}</span> <span class="rfc-acad">${T.id}</span><span class="muted rfc-prog" data-topic="${T.n}">${done}/${citeRefs.length}</span>${mkDoneHTML(tk)}</div><button class="mc" data-action="rfclist">Topics</button></div>
         <div class="rfc-tt rfc-tt-slim">${T.full}</div>
         <div class="muted" style="font-size:10px;margin:0 0 8px;line-height:1.35">${T.req}</div>
         <div class="learn-sticky">${aaChips}${refDd}</div>
@@ -2956,6 +3074,7 @@ function vectorAnswerHTML(query, hits){
     const demoTag=pack.demo?' · SAMPLE':'';
     return `${acadChipRow()}<div class="qmeta"><span class="pill warn">TEST ${T.n} EXERCISE · ${T.id}</span><span class="muted" style="font-size:11px">${i+1}/${qs.length} · fill-in${demoTag}</span></div>
       <div class="progressbar"><i style="width:${pct}%"></i></div>
+      <div class="ex-done">${mkDoneHTML('topic:'+S.pos+':'+T.n)}</div>
       <div class="qstem reveal">${item.q}</div>
       <textarea class="fillbox" id="rfcans" placeholder="Short answer — then reveal" ${S.rfcReveal?'disabled':''}></textarea>
       ${after}
@@ -2989,6 +3108,27 @@ function vectorAnswerHTML(query, hits){
     if(d[k]) delete d[k]; else d[k]=true;
     S.rfcChk=d; saveRfcChk(d);
   }
+  /* Reviewing checkbox (reader / topic / exercise) — same store as the list check-offs */
+  function mkDoneHTML(k){ const on=!!(S.rfcChk&&S.rfcChk[k]); return `<label class="mkdone"><input type="checkbox" data-action="mkdone" data-k="${escTxt(k)}"${on?' checked':''}> Mark complete</label>`; }
+  /* Update every check-off for key k in place (no re-render → no scroll jump) */
+  function syncChk(k){
+    const on=!!S.rfcChk[k];
+    document.querySelectorAll('#vatc [data-k]').forEach(el=>{
+      if(el.dataset.k!==k) return;
+      if(el.classList.contains('rfc-check')){ el.classList.toggle('on',on); el.textContent=on?'✓':''; }
+      if(el.classList.contains('rfc-item')) el.classList.toggle('on',on);
+      if(el.matches('input[data-action="mkdone"]')) el.checked=on;
+    });
+    const m=/^(\d+):/.exec(String(k||''));
+    if(m){
+      const n=+m[1], T=(syllabusFor(S.pos).list||[]).find(t=>t.n===n);
+      if(T){
+        const refs=(T.refs||[]).filter(r=>!(r&&r[2]==='hdr'));
+        const done=refs.filter(r=>S.rfcChk[n+':'+r[0]]).length;
+        document.querySelectorAll('#vatc .rfc-prog[data-topic="'+n+'"]').forEach(sp=>{ sp.textContent=done+'/'+refs.length; });
+      }
+    }
+  }
   function markRfcChk(k, on){
     if(!k) return;
     const d=Object.assign({}, S.rfcChk);
@@ -2997,8 +3137,23 @@ function vectorAnswerHTML(query, hits){
   }
 
 
+  /* v0.8.18 brief-polish: one-time progress reset — clears check-offs / flashcard progress saved by older builds.
+     Keeps highlights (vatc.studymarks) and settings (vatc.trainee). Runs once per PROGRESS_VER. */
+  const PROGRESS_VER_KEY='vector_progress_ver', PROGRESS_VER='2026-10-02';
+  (function oneTimeProgressReset(){
+    try{
+      if(localStorage.getItem(PROGRESS_VER_KEY)===PROGRESS_VER) return;
+      const kill=['vatc.rfcChk','vatc.lessonsDone','vatc.fcStats','vatc.fcRated'];
+      for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k && /^vatc\.(rfcChk|lessonsDone|fc)/.test(k) && kill.indexOf(k)<0) kill.push(k); }
+      kill.forEach(k=>{ try{ localStorage.removeItem(k); }catch(_){} });
+      localStorage.setItem(PROGRESS_VER_KEY, PROGRESS_VER);
+    }catch(_){}
+  })();
+  const FC_STATS_KEY='vatc.fcStats';
+  function loadFcStats(){ try{ const o=JSON.parse(localStorage.getItem(FC_STATS_KEY)||'{}'); return (o&&typeof o==='object')?o:{}; }catch(_){ return {}; } }
+  function saveFcStats(){ try{ localStorage.setItem(FC_STATS_KEY, JSON.stringify(S.fcStats||{})); }catch(_){} }
   const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'acad',
-    pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcRated:{},fcDeck:'pos',fcGrp:'',fcOpen:{},fcOrder:null,
+    pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcDeck:'pos',fcGrp:'',fcOpen:{},fcOrder:null,fcMode:'cards',fcOnlyNot:false,fcStats:loadFcStats(),fcSess:null,fcLastId:null,fcSetsOpen:false,sqShow:'cs',sqType:'',sqTbl:'',
     lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'' };
   function set(o, opts){
     const keep=opts&&opts.keepScroll;
@@ -3023,7 +3178,14 @@ function vectorAnswerHTML(query, hits){
       }
     }
   }
-  function fcKeep(o){ return set(o,{keepScroll:true}); }
+  /* fcKeep: flashcard updates repaint only #fcwrap — scroll position never jumps */
+  function fcKeep(o){
+    if(!o || !('fcNote' in o)) S.fcNote='';
+    Object.assign(S, o||{});
+    const w=(S.tab==='learn'&&!S.pub)?document.getElementById('fcwrap'):null;
+    if(w && w.parentNode){ w.outerHTML=fcBody(); fcAfterPaint(); return; }
+    set({}, {keepScroll:true}); fcAfterPaint();
+  }
   const TRAINEE_KEY='vatc.trainee';
   function loadTrainee(){
     try{
@@ -3150,7 +3312,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> OFFLINE-CAPABLE · NO CONTROLLED DATA LOADED</span><span>CODE OPEN-SOURCE · DOCS ON-DEVICE · v0.8.17 · fac2026-reader</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.18 · brief-polish</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -3159,73 +3321,7 @@ function vectorAnswerHTML(query, hits){
     out+='<span class="grplbl">RDR</span>'+POS.filter(p=>p.g==='RADAR').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
     return `<div class="trackbar">${out}</div>`; }
   
-  // ===== Home NOAA METAR (KNFG) — public aviationweather.gov; sample fallback only =====
-  const WX_SAMPLE={ live:false, label:'SAMPLE · offline', raw:'VRB05KT 10SM BKN023 20/14 A3004',
-    wind:'VRB / 5', altimeter:'30.04', tempdp:'20 / 14', vis:'10SM', cover:'BKN023', atis:'—', fltCat:'—' };
-  let WX=Object.assign({}, WX_SAMPLE);
-  let wxFetchGen=0;
-  function decodeMetarRaw(raw, json){
-    const r=String(raw||'').trim();
-    const out={ live:true, label:'LIVE · KNFG', raw:r, wind:'—', altimeter:'—', tempdp:'—', vis:'—', cover:'—', atis:'—', fltCat:'—' };
-    if(json){
-      if(json.wdir!=null || json.wspd!=null) out.wind=(json.wdir!=null?json.wdir:'VRB')+' / '+(json.wspd!=null?json.wspd:'—');
-      if(json.altim!=null){ const inhg=Number(json.altim)/33.8639; if(isFinite(inhg)) out.altimeter=inhg.toFixed(2); }
-      if(json.temp!=null || json.dewp!=null) out.tempdp=Math.round(json.temp!=null?json.temp:'—')+' / '+Math.round(json.dewp!=null?json.dewp:'—');
-      if(json.visib!=null) out.vis=String(json.visib)+(String(json.visib).match(/SM|km/i)?'':' SM');
-      if(json.cover) out.cover=json.cover;
-      else if(json.clouds && json.clouds.length) out.cover=json.clouds.map(c=>(c.cover||'')+(c.base!=null?String(c.base).padStart(3,'0'):'')).filter(Boolean).join(' ')||'—';
-      if(json.fltCat) out.fltCat=json.fltCat;
-    }
-    // Prefer raw decode when json sparse
-    const wm=r.match(/\b(\d{3}|VRB)(\d{2,3})(G\d{2,3})?KT\b/);
-    if(wm) out.wind=(wm[1]==='VRB'?'VRB':wm[1])+' / '+String(parseInt(wm[2],10))+(wm[3]?' G'+parseInt(wm[3].slice(1),10):'');
-    const am=r.match(/\bA(\d{4})\b/);
-    if(am) out.altimeter=(parseInt(am[1],10)/100).toFixed(2);
-    const tm=r.match(/\b(M?\d{2})\/(M?\d{2})\b/);
-    if(tm){
-      const t=tm[1][0]==='M'?-parseInt(tm[1].slice(1),10):parseInt(tm[1],10);
-      const d=tm[2][0]==='M'?-parseInt(tm[2].slice(1),10):parseInt(tm[2],10);
-      out.tempdp=t+' / '+d;
-    }
-    const vm=r.match(/\b(\d{1,2}(?:\s+\d\/\d)?|\d\/\d|P?\d+)SM\b/);
-    if(vm) out.vis=vm[0];
-    const cm=r.match(/\b((?:FEW|SCT|BKN|OVC|VV)\d{3}|CLR|SKC|CAVOK)(?:\s+(?:FEW|SCT|BKN|OVC)\d{3})*/);
-    if(cm) out.cover=cm[0];
-    return out;
-  }
-  async function fetchKnfgMetar(force){
-    const gen=++wxFetchGen;
-    try{
-      const url='https://aviationweather.gov/api/data/metar?ids=KNFG&format=json';
-      const res=await fetch(url, {cache: force?'reload':'no-cache'});
-      if(!res.ok) throw new Error('HTTP '+res.status);
-      const data=await res.json();
-      const row=Array.isArray(data)?data[0]:data;
-      if(!row || !row.rawOb) throw new Error('empty');
-      if(gen!==wxFetchGen) return;
-      WX=decodeMetarRaw(row.rawOb, row);
-      const strip=document.querySelector('#vatc .vids');
-      if(strip){ /* soft refresh without full render when possible */ try{ render(); }catch(_){ } }
-    }catch(err){
-      if(gen!==wxFetchGen) return;
-      WX=Object.assign({}, WX_SAMPLE, { label:'SAMPLE · offline' });
-      try{ render(); }catch(_){ }
-    }
-  }
-
-function vidsStrip(){
-    const w=WX||WX_SAMPLE;
-    const lab=w.live?('METAR · LIVE'):('METAR · '+w.label);
-    return `<div class="vids">
-    <div class="cell"><span class="cl">VIDS · KNFG</span><span class="cv amb">DUTY RWY 21</span></div>
-    <div class="cell"><span class="cl">Wind</span><span class="cv">${escTxt(w.wind||'—')}</span></div>
-    <div class="cell"><span class="cl">Altimeter</span><span class="cv">${escTxt(w.altimeter||'—')}</span></div>
-    <div class="cell"><span class="cl">Flight cat</span><span class="cv">${escTxt(w.fltCat||'—')}</span></div>
-    <div class="cell"><span class="cl">Temp / DP</span><span class="cv">${escTxt(w.tempdp||'—')}</span></div>
-    <div class="cell metar"><span class="cl">${escTxt(lab)}</span><span class="cv">${escTxt(w.cover||'—')} · ${escTxt(w.vis||'—')}</span></div>
-    <div class="cell wx-refresh" data-action="wxrefresh" title="Refresh KNFG METAR"><span class="cl">Refresh</span><span class="cv">NOAA</span></div>
-    <div class="wx-raw">${escTxt(w.raw||'')}</div></div>`;
-  }
+  /* v0.8.18: VIDS/METAR strip removed — aviationweather.gov blocks browser (CORS) fetches, so it only ever showed a sample METAR. */
 
   /** Position ACAD packet only — empty until paper uploaded (no stand-in). */
   function syllabusFor(k){
@@ -3235,7 +3331,7 @@ function vidsStrip(){
   function posProgress(k){
     const parts=[];
     const deck=posDeck(k);
-    const fcDone=deck.filter(c=>S.fcRated[k+':'+c.id]).length;
+    const fcDone=deck.filter(c=>FCQ.status(S.fcStats,c.id)==='KNOWN').length;
     const fcTot=deck.length;
     const fcPct=fcTot?Math.round(fcDone/fcTot*100):0;
     if(fcTot) parts.push(fcDone/fcTot);
@@ -3418,37 +3514,314 @@ function vidsStrip(){
       return `<div class="reveal" style="text-align:center"><div class="score">${score}/${QZ.length}</div><div class="muted" style="font-size:11px;letter-spacing:.2em">${pct}% · QUIZ COMPLETE · BEST ${S.quizBest}%</div></div><h2 class="sec" style="margin-top:18px">${I.target} WEAK-AREA BREAKDOWN</h2>${tr}<h2 class="sec" style="margin-top:18px">${I.file} REVIEW</h2>${mr}<div class="navrow"><span></span><button class="btn" data-action="qreset">RETAKE ${I.arrow}</button></div>`; }
     const q=QZ[S.qIdx],pct=Math.round(S.qIdx/QZ.length*100); const choices=q.c.map((c,i)=>`<button class="ch ${S.qSel===i?'sel':''}" data-action="qchoose" data-i="${i}"><span class="key">${String.fromCharCode(65+i)}</span>${c}</button>`).join('');
     return `<div class="progressbar"><i style="width:${pct}%"></i></div><div class="qmeta"><span class="pill">GRADED — feedback at end</span><span class="muted" style="font-size:11px">Q ${S.qIdx+1}/${QZ.length}</span></div><div class="qstem reveal">${q.q}</div><div class="choices">${choices}</div><div class="navrow"><span></span><button class="btn ${S.qSel===null?'sec':''}" ${S.qSel===null?'disabled style="opacity:.4;cursor:not-allowed"':''} data-action="qnext">${S.qIdx===QZ.length-1?'FINISH':'NEXT'} ${I.arrow}</button></div>`; }
+  /* FCQ:BEGIN — Quizlet-style queue logic (pure; node-tested by scripts/test-fc-queue.cjs).
+     Status per card id: NEW · STILL_LEARNING · KNOWN, plus times_correct / times_missed / last_seen.
+     SORT: shuffle → flip → Know / Still learning → round summary → next round = STILL_LEARNING only → until all KNOWN.
+     LEARN: rounds of 7 (STILL_LEARNING first, then NEW) · first exposure multiple choice · then written ·
+            KNOWN only after correct in BOTH · a miss is re-inserted 2–3 cards later in the same round.
+     Never the same card twice in a row (Learn pads a 1-card round with a review card; Sort's only exception is a
+     single STILL_LEARNING card left, which is separated by the round summary). */
+  const FCQ=(function(){
+    const NEW='NEW', SL='STILL_LEARNING', KN='KNOWN', ROUND=7;
+    function shuffle(arr, rng){ rng=rng||Math.random; const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(rng()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+    function blank(){ return {status:NEW, times_correct:0, times_missed:0, last_seen:0, mc_ok:false, written_ok:false}; }
+    function stat(stats, id){ const s=stats&&stats[id]; return s?Object.assign(blank(), s):blank(); }
+    function status(stats, id){ return (stats&&stats[id]&&stats[id].status)||NEW; }
+    function counts(ids, stats){ const o={KNOWN:0, STILL_LEARNING:0, NEW:0}; (ids||[]).forEach(id=>{ o[status(stats,id)]++; }); return o; }
+    function touch(stats, id, patch, now){ const s=Object.assign(stat(stats,id), patch||{}); s.last_seen=now||Date.now(); stats[id]=s; return s; }
+    function avoidFirst(q, lastId){ if(q.length>1 && q[0]===lastId){ const t=q[0]; q[0]=q[1]; q[1]=t; } return q; }
+    /* ---- SORT ---- */
+    function sortStart(ids, stats, rng, lastId){
+      const pool=(ids||[]).filter(id=>status(stats,id)!==KN);
+      return {mode:'sort', round:1, queue:avoidFirst(shuffle(pool,rng), lastId), i:0, known:[], learning:[], done:pool.length===0, finished:pool.length===0, lastId:lastId||null};
+    }
+    function sortCurrent(st){ return (!st||st.done)?null:st.queue[st.i]; }
+    function sortMark(st, stats, know, now){
+      const id=sortCurrent(st); if(id==null) return st;
+      const s=stat(stats,id);
+      if(know){ st.known.push(id); touch(stats,id,{status:KN, times_correct:s.times_correct+1},now); }
+      else { st.learning.push(id); touch(stats,id,{status:SL, times_missed:s.times_missed+1},now); }
+      st.lastId=id; st.i++;
+      if(st.i>=st.queue.length){ st.done=true; st.finished=st.learning.length===0; }
+      return st;
+    }
+    function sortNextRound(st, rng){
+      if(!st.learning.length){ st.finished=true; return st; }
+      return {mode:'sort', round:st.round+1, queue:avoidFirst(shuffle(st.learning,rng), st.lastId), i:0, known:[], learning:[], done:false, finished:false, lastId:st.lastId};
+    }
+    /* ---- LEARN ---- */
+    function stageOf(stats, id){ return stat(stats,id).mc_ok?'written':'mc'; }
+    function learnPick(ids, stats, n){
+      const sl=(ids||[]).filter(id=>status(stats,id)===SL)
+        .sort((a,b)=>(stat(stats,b).times_missed-stat(stats,a).times_missed)||(stat(stats,a).last_seen-stat(stats,b).last_seen));
+      const nw=(ids||[]).filter(id=>status(stats,id)===NEW);
+      return sl.concat(nw).slice(0, n||ROUND);
+    }
+    function learnStart(ids, stats, rng, lastId, round){
+      const q=avoidFirst(learnPick(ids,stats), lastId);
+      /* one card left and it was the last one shown → lead with a review card so it is never shown twice in a row */
+      if(q.length===1 && q[0]===lastId){
+        const other=(ids||[]).filter(id=>id!==lastId).sort((a,b)=>stat(stats,a).last_seen-stat(stats,b).last_seen)[0];
+        if(other!=null) q.unshift(other);
+      }
+      const finished=(ids||[]).length>0 && (ids||[]).every(id=>status(stats,id)===KN);
+      return {mode:'learn', round:round||1, queue:q, pending:[], lastId:lastId||null, fb:null, done:q.length===0, finished, answered:0};
+    }
+    function learnCurrent(st){ return (!st||st.fb||!st.queue.length)?null:st.queue[0]; }
+    function learnAnswer(st, stats, correct, rng, now){
+      const id=st.queue[0]; if(id==null) return st;
+      const s=stat(stats,id); const stage=s.mc_ok?'written':'mc';
+      st.queue.shift(); st.lastId=id; st.answered++;
+      st.pending=(st.pending||[]).filter(x=>x!==id);
+      let reinsertAt=-1;
+      if(correct){
+        const patch={times_correct:s.times_correct+1};
+        if(stage==='mc'){ patch.mc_ok=true; patch.status=s.status===KN?KN:SL; }
+        else { patch.written_ok=true; patch.status=s.mc_ok?KN:SL; }
+        touch(stats,id,patch,now);
+      } else {
+        touch(stats,id,{times_missed:s.times_missed+1, status:SL},now);
+        let k=2+Math.floor((rng||Math.random)()*2); /* 2 or 3 cards later */
+        if(st.pending.indexOf(st.queue[2])>=0) k=3; /* never push an earlier missed card past its 2–3 slot */
+        if(st.queue.length){ reinsertAt=Math.min(k, st.queue.length); st.queue.splice(reinsertAt,0,id); st.pending.push(id); }
+      }
+      st.fb={id, correct:!!correct, stage, reinsertAt};
+      if(!st.queue.length) st.done=true;
+      return st;
+    }
+    function learnOverride(st, stats, now){
+      const fb=st&&st.fb; if(!fb||fb.correct) return st;
+      const id=fb.id, s=stat(stats,id);
+      if(fb.reinsertAt>=0 && st.queue[fb.reinsertAt]===id) st.queue.splice(fb.reinsertAt,1);
+      else { const k=st.queue.indexOf(id); if(k>=0) st.queue.splice(k,1); }
+      st.pending=(st.pending||[]).filter(x=>x!==id);
+      const patch={times_missed:Math.max(0,s.times_missed-1), times_correct:s.times_correct+1};
+      if(fb.stage==='mc'){ patch.mc_ok=true; patch.status=SL; } else { patch.written_ok=true; patch.status=s.mc_ok?KN:SL; }
+      touch(stats,id,patch,now); fb.correct=true; fb.override=true;
+      if(!st.queue.length) st.done=true;
+      return st;
+    }
+    function learnContinue(st, ids, stats){ st.fb=null; if(!st.queue.length){ st.done=true; st.finished=(ids||[]).every(id=>status(stats,id)===KN); } return st; }
+    function learnNextRound(st, ids, stats, rng){ return learnStart(ids, stats, rng, st.lastId, (st.round||1)+1); }
+    function mcChoices(id, cards, rng){
+      const norm=s=>String(s||'').trim().toLowerCase();
+      const me=(cards||[]).find(c=>c.id===id); if(!me) return [];
+      const seen=new Set([norm(me.a)]); const out=[];
+      shuffle((cards||[]).filter(c=>c.id!==id), rng).forEach(c=>{ const n=norm(c.a); if(out.length<3 && n && !seen.has(n)){ seen.add(n); out.push(c.a); } });
+      return shuffle([me.a].concat(out), rng);
+    }
+    /* ---- written grading ---- */
+    function normAns(s){ return String(s||'').toLowerCase().replace(/[\u2018\u2019]/g,"'").replace(/[\u201c\u201d]/g,'"').replace(/[\u2010-\u2015\u2212]/g,'-').replace(/\s+/g,' ').trim().replace(/[.;,:]+$/,''); }
+    function loose(s){ return normAns(s).replace(/[^a-z0-9.\/ ]+/g,' ').replace(/\s+/g,' ').trim(); }
+    /* Levenshtein with adjacent transpositions (optimal string alignment): "coyoet" → "coyote" = 1 edit */
+    function lev(a, b){ a=String(a); b=String(b); if(a===b) return 0; if(!a.length) return b.length; if(!b.length) return a.length;
+      const d=[]; for(let i=0;i<=a.length;i++){ d[i]=[i]; } for(let j=0;j<=b.length;j++) d[0][j]=j;
+      for(let i=1;i<=a.length;i++){ for(let j=1;j<=b.length;j++){ const c=a[i-1]===b[j-1]?0:1;
+        d[i][j]=Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1]+c);
+        if(i>1 && j>1 && a[i-1]===b[j-2] && a[i-2]===b[j-1]) d[i][j]=Math.min(d[i][j], d[i-2][j-2]+1); } }
+      return d[a.length][b.length]; }
+    /* short or numeric answers (freqs, altitudes, headings, squadron numbers): exact after case/space normalizing */
+    function isStrict(ans){ const c=normAns(ans).replace(/\s+/g,''); const d=(c.match(/\d/g)||[]).length; return c.length<=4 || (d>0 && c.length<=16) || d/Math.max(1,c.length)>=0.4; }
+    function grade(input, answer){
+      const u=normAns(input), a=normAns(answer);
+      const strict=isStrict(answer);
+      if(!u) return {ok:false, typo:false, strict};
+      if(strict) return {ok:u.replace(/\s+/g,'')===a.replace(/\s+/g,''), typo:false, strict:true};
+      const lu=loose(input), la=loose(answer);
+      if(lu===la) return {ok:true, typo:false, strict:false};
+      const dg=s=>(s.match(/\d+(?:\.\d+)?/g)||[]).join('|');
+      if(dg(la)!==dg(lu)) return {ok:false, typo:false, strict:false, digits:true}; /* a digit typo is a wrong ATC answer */
+      const sim=1-lev(la,lu)/Math.max(la.length,lu.length);
+      return sim>=0.8?{ok:true, typo:true, strict:false, sim}:{ok:false, typo:false, strict:false, sim};
+    }
+    return {NEW, SL, KN, ROUND, shuffle, blank, stat, status, counts, touch, avoidFirst, sortStart, sortCurrent, sortMark, sortNextRound, stageOf, learnPick, learnStart, learnCurrent, learnAnswer, learnOverride, learnContinue, learnNextRound, mcChoices, normAns, lev, isStrict, grade};
+  })();
+  /* FCQ:END */
+  /* ===== v0.8.18 brief-polish: flashcard progress (localStorage per card id) + Cards / Sort / Learn ===== */
+  /* Squadrons (FACMAN TBL C-2 / C-3 only): filter the existing cards by pairing / type / table — no new content. */
+  const SQ_SHOW=[
+    ['cs','Squadron → Callsign'],['sq','Callsign → Squadron'],
+    ['ab','Callsign → Strip abbr'],['abrev','Strip abbr → Callsign'],
+    ['mx','Callsign → Modex (C-2)'],['mxrev','Modex → Callsign (C-2)'],
+    ['typ','Callsign → Aircraft type (C-2)'],['all','All pairings (mixed)']
+  ];
+  const SQ_TBL=[['','Both tables'],['TBL C-2','TBL C-2 · Tenant squadrons'],['TBL C-3','TBL C-3 · Local Navy/Marine squadrons']];
+  const SQ_UNIT={}; /* slug → squadron designation, read from the existing "— squadron" cards */
+  (FC_SETS.squadrons||[]).forEach(c=>{ const m=/^sq-(.+)-sq$/.exec(c.id); if(m) SQ_UNIT[m[1]]=String(c.a||''); });
+  const SQ_TYPES=[...new Set(Object.values(SQ_UNIT).map(u=>(u.match(/^[A-Z]+/)||[''])[0]).filter(Boolean))];
+  function isSqDeck(d){ return d==='ql-sqdn'||d==='squadrons'; }
+  function sqParse(id){ const m=/^sq-(.+)-(sq|cs|ab|abrev|mx|mxrev|typ)$/.exec(String(id||'')); return m?{slug:m[1], kind:m[2]}:null; }
+  function sqFilter(cards){
+    const show=S.sqShow||'cs', type=S.sqType||'', tbl=S.sqTbl||'';
+    return (cards||[]).filter(c=>{
+      const p=sqParse(c.id); if(!p) return show==='all' && !type && !tbl;
+      if(show!=='all' && p.kind!==show) return false;
+      if(type && (String(SQ_UNIT[p.slug]||'').match(/^[A-Z]+/)||[''])[0]!==type) return false;
+      if(tbl && String(c.src&&c.src.pg||'')!==tbl) return false;
+      return true;
+    });
+  }
+  function sqBarHTML(){
+    if(!isSqDeck(S.fcDeck)) return '';
+    const opt=(v,l,cur)=>`<option value="${escTxt(v)}"${cur===v?' selected':''}>${escTxt(l)}</option>`;
+    return `<div class="fc-filters">
+      <label class="fsel"><span>Show</span><select data-action="sqshow" aria-label="Show front → back">${SQ_SHOW.map(o=>opt(o[0],o[1],S.sqShow||'cs')).join('')}</select></label>
+      <label class="fsel"><span>Type</span><select data-action="sqtype" aria-label="Squadron type">${opt('','All types',S.sqType||'')}${SQ_TYPES.map(t=>opt(t,t,S.sqType||'')).join('')}</select></label>
+      <label class="fsel"><span>Table</span><select data-action="sqtbl" aria-label="FACMAN table">${SQ_TBL.map(o=>opt(o[0],o[1],S.sqTbl||'')).join('')}</select></label>
+    </div>`;
+  }
+  function fcUniq(cards){ const seen=new Set(), out=[]; (cards||[]).forEach(c=>{ if(c&&c.id&&!seen.has(c.id)){ seen.add(c.id); out.push(c); } }); return out; }
+  function fcMark(st){ return st==='KNOWN'?'<span class="fcm k" title="Known">✓</span>':st==='STILL_LEARNING'?'<span class="fcm l" title="Still learning">◐</span>':'<span class="fcm n" title="New">○</span>'; }
+  function fcFaceHTML(card){
+    const citeLab=card.src?`${card.src.doc} · ${card.src.pg||''}${card.src.pa?' · '+card.src.pa:''}`:'';
+    const cite=fcCiteStr(card.src);
+    const title=escTxt(String(card.src&&card.src.pa||card.tag||''));
+    const q=escTxt(String(card.q||'')), a=escTxt(String(card.a||''));
+    const oLab=card.o?(FC_SET_LAB[card.o]||card.o):'';
+    const tag=escTxt(String(card.tag||'')+(oLab && String(oLab).toLowerCase()!==String(card.tag||'').toLowerCase()?' · '+oLab:''));
+    const aCls=String(card.a||'').length<=48?'a big':'a def';
+    const citeBtn=cite?`<button type="button" class="fcsrc fccitebtn" data-action="fccite" data-cite="${escTxt(cite)}" data-title="${title}">${escTxt(citeLab)}</button>`:'';
+    const front=`<div class="fcface front" data-answer="${a}"><div class="tag">${tag}</div><div class="q">${q}</div><div class="fchint">tap to reveal</div></div>`;
+    const back=`<div class="fcface back revealed" data-answer="${a}"><div class="qsm">${q}</div><div class="${aCls}">${a}</div>${citeBtn}</div>`;
+    return `<div class="fcard${S.fcFlip?' is-revealed':''}" data-action="fcflip">${front}${back}</div>`;
+  }
+  function fcSession(mode, ids, key){
+    const k=key+'|'+mode;
+    let ss=S.fcSess;
+    if(!ss || ss.k!==k){
+      const st=mode==='sort'?FCQ.sortStart(ids, S.fcStats, null, S.fcLastId):FCQ.learnStart(ids, S.fcStats, null, S.fcLastId, 1);
+      ss={k, st, choices:null, chId:null, pick:-1, typed:'', grade:null};
+      S.fcSess=ss;
+    }
+    return ss;
+  }
+  function fcCountsHTML(c){ return `<span class="ck">${c.KNOWN} known</span><span class="dot2">·</span><span class="cl">${c.STILL_LEARNING} learning</span><span class="dot2">·</span><span class="cn">${c.NEW} new</span>`; }
+  function fcSortHTML(ids, byId, key, cnt){
+    const ss=fcSession('sort', ids, key), st=ss.st;
+    if(st.finished && (st.done || !st.queue.length)){
+      return `<div class="fc-panel"><div class="fc-big">All ${ids.length} cards KNOWN</div><div class="muted">Sort complete for this set.</div><div class="fc-row2"><button type="button" class="btn" data-action="fcresetset">RESET DECK</button></div></div>`;
+    }
+    if(st.done){
+      return `<div class="fc-panel"><div class="fc-cap">ROUND ${st.round} COMPLETE</div>
+        <div class="fc-piles"><div class="pile k"><b>${st.known.length}</b><span>Know</span></div><div class="pile l"><b>${st.learning.length}</b><span>Still learning</span></div></div>
+        <div class="fc-row2"><button type="button" class="btn" data-action="fcsortnext">NEXT ROUND · ${st.learning.length} CARD${st.learning.length===1?'':'S'} ${I.arrow}</button></div></div>`;
+    }
+    const card=byId[FCQ.sortCurrent(st)];
+    return `<div class="fc-prog">SORT · ROUND ${st.round} · ${st.i+1} / ${st.queue.length}</div>${fcFaceHTML(card)}
+      <div class="fc-mark"><button type="button" class="btn sec fc-sl" data-action="fcsort" data-k="0">STILL LEARNING</button><button type="button" class="btn fc-kn" data-action="fcsort" data-k="1">KNOW ${I.chk}</button></div>`;
+  }
+  function fcLearnHTML(ids, byId, key, cnt, deckCards){
+    const ss=fcSession('learn', ids, key), st=ss.st;
+    const prog=`<div class="fc-piles sm"><div class="pile k"><b>${cnt.KNOWN}</b><span>Known</span></div><div class="pile l"><b>${cnt.STILL_LEARNING}</b><span>Learning</span></div><div class="pile n"><b>${cnt.NEW}</b><span>New</span></div></div>`;
+    if(st.finished && !st.fb){
+      return `<div class="fc-panel"><div class="fc-big">All ${ids.length} cards KNOWN</div><div class="muted">Each card passed multiple choice and written.</div>${prog}<div class="fc-row2"><button type="button" class="btn" data-action="fcresetset">RESET DECK</button></div></div>`;
+    }
+    if(st.fb){
+      const card=byId[st.fb.id]||{};
+      const g=ss.grade;
+      let msg;
+      if(st.fb.correct) msg=(g&&g.typo)?`<div class="fbk ok">Correct — check spelling: <b>${escTxt(card.a)}</b></div>`:`<div class="fbk ok">Correct</div>`;
+      else msg=`<div class="fbk no">${st.fb.stage==='written'&&ss.typed?'Not quite':'Missed'} — correct answer:</div><div class="fbans">${escTxt(card.a)}</div>${ss.typed?`<div class="muted fbyou">You wrote: ${escTxt(ss.typed)}</div>`:''}`;
+      const choices=(st.fb.stage==='mc'&&ss.choices)?`<div class="choices fc-mc">${ss.choices.map((c,i)=>`<button type="button" class="ch ${c===card.a?'correct':(i===ss.pick?'wrong':'')}" disabled><span class="key">${String.fromCharCode(65+i)}</span>${escTxt(c)}</button>`).join('')}</div>`:'';
+      const over=(!st.fb.correct && st.fb.stage==='written' && ss.typed)?`<button type="button" class="btn-ghost fc-over" data-action="fcoverride">Override: I was right</button>`:'';
+      return `<div class="fc-prog">LEARN · ROUND ${st.round} · ${st.fb.stage==='mc'?'MULTIPLE CHOICE':'WRITTEN'}</div>
+        <div class="fc-panel left"><div class="qsm2">${escTxt(card.q||'')}</div>${choices}${msg}<div class="fc-row2">${over}<button type="button" class="btn" data-action="fclearncont" id="fccont">CONTINUE ${I.arrow}</button></div></div>`;
+    }
+    if(st.done){
+      return `<div class="fc-panel"><div class="fc-cap">ROUND ${st.round} COMPLETE</div>${prog}<div class="fc-row2"><button type="button" class="btn" data-action="fclearnnext">NEXT ROUND ${I.arrow}</button></div></div>`;
+    }
+    const id=FCQ.learnCurrent(st), card=byId[id];
+    const stage=FCQ.stageOf(S.fcStats, id);
+    const head=`<div class="fc-prog">LEARN · ROUND ${st.round} · ${stage==='mc'?'MULTIPLE CHOICE':'WRITTEN'} · ${st.queue.length} LEFT</div>`;
+    if(stage==='mc'){
+      if(ss.chId!==id){ ss.choices=FCQ.mcChoices(id, deckCards, null); ss.chId=id; ss.pick=-1; }
+      return `${head}<div class="fc-panel left"><div class="tag2">${escTxt(card.tag||'')}</div><div class="qbig">${escTxt(card.q||'')}</div>
+        <div class="choices fc-mc">${ss.choices.map((c,i)=>`<button type="button" class="ch" data-action="fcmc" data-i="${i}"><span class="key">${String.fromCharCode(65+i)}</span>${escTxt(c)}</button>`).join('')}</div></div>`;
+    }
+    return `${head}<div class="fc-panel left"><div class="tag2">${escTxt(card.tag||'')}</div><div class="qbig">${escTxt(card.q||'')}</div>
+      <div class="fc-wr"><input id="fcwr" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type the answer" enterkeyhint="done"><button type="button" class="btn" data-action="fcwrcheck">CHECK</button></div>
+      <button type="button" class="btn-ghost fc-dk" data-action="fcwrdk">Don't know</button></div>`;
+  }
   function fcBody(){
     const chips=fcSetChipRow(true);
     activeFcDeck(); // deck source
-    const {deck, key, ord, cards}=fcOrderedDeck();
+    const {deck, key, ord, cards:ordered}=fcOrderedDeck();
     const named=S.fcDeck && S.fcDeck!=='pos';
     const partId=named?qzPartOf(S.fcDeck):'';
     const partLab=partId?(QZ_PARTS.find(p=>p.id===partId)||{}).lab:'';
     const deckLab=named?(QZ_LAB[S.fcDeck]||FC_SET_LAB[S.fcDeck]||S.fcDeck):((PN[S.pos]||S.pos).toUpperCase());
     const lab=(partLab && !/^q-/.test(S.fcDeck) && QZ_LAB[S.fcDeck])?(partLab+' · '+deckLab):deckLab;
-    if(!cards.length){
-      return chips+`<div class="qmeta"><span class="pill warn">FLASHCARDS · ${lab}</span></div><div class="explain">No sourced cards for this ${named?'deck':'position'} yet.</div>`;
+    const sets=`<details class="fc-sets"${S.fcSetsOpen?' open':''}><summary data-action="fcsets"><span class="muted">SET</span> <b>${escTxt(lab)}</b><span class="fc-chg">change</span></summary>${chips}</details>`;
+    const deckCards=fcUniq(deck);
+    const ids=deckCards.map(c=>c.id);
+    const byId={}; deckCards.forEach(c=>{ byId[c.id]=c; });
+    const cnt=FCQ.counts(ids, S.fcStats);
+    const mode=S.fcMode||'cards';
+    const seg=`<div class="seg fc-modes">${[['cards','CARDS'],['sort','SORT'],['learn','LEARN']].map(m=>`<button type="button" class="${mode===m[0]?'on':''}" data-action="fcmode" data-m="${m[0]}">${m[1]}</button>`).join('')}</div>`;
+    const head=`<div class="fc-head"><div class="fc-counts">${fcCountsHTML(cnt)}</div>${seg}</div>`;
+    const sq=sqBarHTML();
+    if(!deckCards.length){
+      return `<div id="fcwrap">${sets}${sq}<div class="qmeta"><span class="pill warn">FLASHCARDS · ${lab}</span></div><div class="explain">${isSqDeck(S.fcDeck)?'No cards for this combination — TBL C-3 lists no modex or aircraft type.':'No sourced cards for this '+(named?'deck':'position')+' yet.'}</div></div>`;
     }
-    const i=((S.fcIdx%cards.length)+cards.length)%cards.length;
-    const card=cards[i];
-    const citeLab=card.src?`${card.src.doc} · ${card.src.pg||''}${card.src.pa?' · '+card.src.pa:''}`:'';
-    const cite=fcCiteStr(card.src);
-    const title=escTxt(String(card.src&&card.src.pa||card.tag||''));
-    const q=escTxt(String(card.q||''));
-    const a=escTxt(String(card.a||''));
-    /* per-card origin tag (old set label) when it adds info beyond the card tag */
-    const oLab=card.o?(FC_SET_LAB[card.o]||card.o):'';
-    const tagTxt=String(card.tag||'')+(oLab && String(oLab).toLowerCase()!==String(card.tag||'').toLowerCase()?' · '+oLab:'');
-    const tag=escTxt(tagTxt);
-    const aCls=String(card.a||'').length<=48?'a big':'a def';
-    const citeBtn=cite?`<button type="button" class="fcsrc fccitebtn" data-action="fccite" data-cite="${escTxt(cite)}" data-title="${title}">${escTxt(citeLab)}</button>`:'';
-    const front=`<div class="fcface front" data-answer="${a}"><div class="tag">${tag}</div><div class="q">${q}</div><div class="fchint">tap to reveal</div></div>`;
-    const back=`<div class="fcface back revealed" data-answer="${a}"><div class="qsm">${q}</div><div class="${aCls}">${a}</div>${citeBtn}</div>`;
-    const nav=`<div class="fc-nav"><button type="button" class="btn sec" data-action="fcprev">PREV</button><button type="button" class="btn" data-action="fcnext">NEXT ${I.arrow}</button><button type="button" class="btn sec" data-action="fcshuffle">SHUFFLE</button></div>`;
-    return chips+`<div class="fc-prog">${lab} · ${i+1} / ${cards.length}</div><div class="fcard${S.fcFlip?' is-revealed':''}" data-action="fcflip">${front}${back}</div>${nav}`;
+    const cards=(mode==='cards' && S.fcOnlyNot)?ordered.filter(c=>FCQ.status(S.fcStats,c.id)!=='KNOWN'):ordered;
+    let main='', i=-1;
+    if(mode==='sort') main=fcSortHTML(ids, byId, key, cnt);
+    else if(mode==='learn') main=fcLearnHTML(ids, byId, key, cnt, deckCards);
+    else if(!cards.length){
+      main=`<div class="fc-panel"><div class="fc-big">All cards KNOWN</div><div class="muted">Turn off “Not known only” or reset the set.</div></div>`;
+    } else {
+      i=((S.fcIdx%cards.length)+cards.length)%cards.length;
+      const card=cards[i];
+      const nav=`<div class="fc-nav"><button type="button" class="btn sec" data-action="fcprev">PREV</button><button type="button" class="btn" data-action="fcnext">NEXT ${I.arrow}</button><button type="button" class="btn sec" data-action="fcshuffle">SHUFFLE</button></div>`;
+      const st=FCQ.status(S.fcStats, card.id);
+      const mark=`<div class="fc-mark"><button type="button" class="btn sec fc-sl${st==='STILL_LEARNING'?' on':''}" data-action="fcrate" data-k="0">STILL LEARNING</button><button type="button" class="btn fc-kn${st==='KNOWN'?' on':''}" data-action="fcrate" data-k="1">KNOW ${I.chk}</button></div>`;
+      main=`<div class="fc-prog">${lab} · ${i+1} / ${cards.length}</div>${fcFaceHTML(card)}${mark}${nav}`;
+    }
+    const tools=`<div class="fc-tools">${mode==='cards'?`<label class="fc-chk"><input type="checkbox" data-action="fconlynot"${S.fcOnlyNot?' checked':''}> Not known only</label>`:'<span></span>'}<button type="button" class="btn-ghost" data-action="fcresetset">Reset set progress</button></div>`;
+    const listCards=mode==='cards'?cards:deckCards;
+    const curId=(mode==='cards'&&i>=0)?cards[i].id:(mode==='sort'&&S.fcSess&&S.fcSess.st?FCQ.sortCurrent(S.fcSess.st):(mode==='learn'&&S.fcSess&&S.fcSess.st?FCQ.learnCurrent(S.fcSess.st):null));
+    const rows=listCards.map((c,ix)=>{
+      const click=mode==='cards'?` data-action="fcjump" data-i="${ix}"`:'';
+      return `<div class="fc-row${c.id===curId?' on':''}${mode==='cards'?' tap':''}"${click}><span class="fc-i">${ix+1}</span><div class="fc-td"><div class="fc-term">${escTxt(c.q||'')}</div><div class="fc-def">${mode==='learn'?'<span class="muted">answer hidden in Learn</span>':escTxt(c.a||'')}</div></div>${fcMark(FCQ.status(S.fcStats,c.id))}</div>`;
+    }).join('');
+    const list=`<div class="fc-listhd"><span>ALL CARDS IN THIS SET · ${listCards.length}</span><span class="muted">✓ known · ◐ learning · ○ new</span></div><div class="fc-list">${rows}</div>`;
+    const note=S.fcNote?`<div class="pill warn fc-note">${escTxt(S.fcNote)}</div>`:'';
+    return `<div id="fcwrap">${sets}${head}${sq}${note}${main}${tools}${list}</div>`;
   }
-
+  function fcEnsureCardVisible(smooth){
+    const sm=document.querySelector('#vatc .scrollmain');
+    const card=document.querySelector('#vatc #fcwrap .fc-prog')||document.querySelector('#vatc .fcard');
+    if(!sm||!card) return;
+    const cr=card.getBoundingClientRect(), sr=sm.getBoundingClientRect();
+    if(cr.top<sr.top+4 || cr.top>sr.bottom-120){
+      const to=sm.scrollTop+(cr.top-sr.top)-10;
+      try{ sm.scrollTo({top:to, behavior:smooth?'smooth':'auto'}); }catch(_){ sm.scrollTop=to; }
+    }
+  }
+  function fcAfterPaint(){
+    bindFcGroups();
+    const wr=document.getElementById('fcwr');
+    if(wr){
+      wr.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); fcWrittenSubmit(false); } });
+      try{ wr.focus({preventScroll:true}); }catch(_){}
+    }
+    const cont=document.getElementById('fccont');
+    if(cont){ try{ cont.focus({preventScroll:true}); }catch(_){} }
+  }
+  function fcLearnIds(){ const {deck}=fcOrderedDeck(); return fcUniq(deck).map(c=>c.id); }
+  function fcWrittenSubmit(dontKnow){
+    const ss=S.fcSess; if(!ss||!ss.st) return;
+    const id=FCQ.learnCurrent(ss.st); if(id==null) return;
+    const {deck}=fcOrderedDeck(); const card=fcUniq(deck).find(c=>c.id===id); if(!card) return;
+    const wr=document.getElementById('fcwr');
+    const typed=dontKnow?'':String(wr?wr.value:'').trim();
+    if(!dontKnow && !typed){ if(wr) wr.focus({preventScroll:true}); return; }
+    const g=dontKnow?{ok:false,typo:false}:FCQ.grade(typed, card.a);
+    ss.typed=typed; ss.grade=g;
+    FCQ.learnAnswer(ss.st, S.fcStats, g.ok);
+    S.fcLastId=id; saveFcStats();
+    fcKeep({});
+  }
   function simView(){ if(PSIM[S.pos]==='scope') return scopeView(); return scnView(); }
   function scopeView(){ const brief=S.pos==='fin'?'<b>RADAR FINAL — RWY 21.</b> Vector each target to intercept the final (inbound <b>211°</b>), descend it, and clear the approach once established. Hold <b>3 NM / 1,000 ft</b>. Traffic streams in continuously.':'<b>ARRIVAL — KNFG.</b> Feed inbounds from the northeast toward the RWY 21 final, build the sequence, and hand each established aircraft the approach. Hold <b>3 NM / 1,000 ft</b>.';
     const debrief=`<div class="debrief"><span class="dlbl">DEBRIEF</span>${skillChipHTML('skillchip')}</div>`;
@@ -3758,9 +4131,9 @@ function pdfPaneHTML(){
     const guess=(S.pubGuessNote?`<div class="note">${escTxt(S.pubGuessNote)}</div>`:'');
     // No excerpt overview / Highlight-Underline bar — PDF is the book section.
     const learnCite=!!S.learnReturn;
-    const backTitle=learnCite?'Back to Learn checklist':'Back to hits';
+    const backTitle=learnCite?(S.learnReturn.from==='fc'?'Back to flashcards':'Back to Learn checklist'):'Back to hits';
     let citeStep='';
-    if(learnCite){
+    if(learnCite && S.learnReturn.from!=='fc'){
       const pack=acadTopicRefs(S.learnReturn.pos, S.learnReturn.rfcTopic);
       if(pack){
         const cite=String(S.learnReturn.cite||'');
@@ -3783,7 +4156,7 @@ function pdfPaneHTML(){
           return `<button type="button" class="chip aa-chip" data-action="citeaa" data-cite="${escTxt(jump).replace(/"/g,'&quot;')}" data-title="${escTxt(title).replace(/"/g,'&quot;')}">${escTxt(String(h[0]).replace(/^ACAD-/,''))}</button>`;
         }).join('');
         const opts=pack.refs.map((r,ix)=>`<option value="${escTxt(r[0]).replace(/"/g,'&quot;')}" ${ix===i?'selected':''}>${escTxt(r[0])} · ${escTxt(r[1]||'')}</option>`).join('');
-        citeStep=`<div class="citestep"><button type="button" class="btn-ghost" data-action="citeprev"${prevDis}>PREV</button><span class="muted">${at}/${tot}</span><button type="button" class="btn-ghost" data-action="citenext"${nextDis}>NEXT</button><label class="cite-dd-wrap"><span class="muted">REFS</span><select class="cite-dd" data-action="citesel" aria-label="All references">${opts}</select></label>${aaChips?`<div class="aa-nav citestep-aa">${aaChips}</div>`:''}<span class="citestep-lab">${escTxt(lab)}</span></div>`;
+        citeStep=`<div class="citestep"><button type="button" class="btn-ghost" data-action="citeprev"${prevDis}>PREV</button><span class="muted">${at}/${tot}</span><button type="button" class="btn-ghost" data-action="citenext"${nextDis}>NEXT</button><label class="cite-dd-wrap"><span class="muted">REFS</span><select class="cite-dd" data-action="citesel" aria-label="All references">${opts}</select></label>${aaChips?`<div class="aa-nav citestep-aa">${aaChips}</div>`:''}<span class="citestep-lab">${escTxt(lab)}</span>${mkDoneHTML(pack.T.n+':'+cur[0])}</div>`;
       }
     }
     // Learn ACAD cite: clean PDF-only (no FIND / tables bar). Reference keeps FIND + dropdowns.
@@ -4148,7 +4521,7 @@ function pdfPaneHTML(){
   function appScreen(){ let inner='';
     if(S.tab==='home')inner=homeView(); else if(S.tab==='ask')inner=askView(); else if(S.tab==='learn'||S.tab==='train')inner=learnView();
     else if(S.tab==='sim')inner=simView(); else if(S.tab==='reference')inner=refView();
-    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${S.tab==='home'?'':trackbar()}${S.tab==='home'?'':vidsStrip()}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
+    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${S.tab==='home'?'':trackbar()}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
 
   function doAsk(){
     const inp=document.getElementById('reflk')||document.getElementById('askq');
@@ -4163,11 +4536,18 @@ function pdfPaneHTML(){
     if(out) out.innerHTML=askResultHTML(r,inp.value);
   }
 
-  function render(){ if(S.screen==='station'){root.innerHTML=stationScreen();return;} root.innerHTML=appScreen();
+  /* Same view re-rendered (check-off, card mark, reveal…) → keep the scroll position instead of jumping to top */
+  let lastViewKey='';
+  function viewKey(){ return [S.screen,S.tab,S.learnMode,S.trainMode,S.rfcTopic,S.pub,S.pos,S.fcDeck,S.aaFocus,S.rfcQi,S.qIdx,S.pIdx,S.scnIdx,S.qDone].join('|'); }
+  function render(){ if(S.screen==='station'){root.innerHTML=stationScreen();lastViewKey='';return;}
+    const vk=viewKey(), smOld=document.querySelector('#vatc .scrollmain'), yOld=(smOld&&smOld.scrollTop)||0;
+    root.innerHTML=appScreen();
+    if(vk===lastViewKey && yOld){ const smNew=document.querySelector('#vatc .scrollmain'); if(smNew) smNew.scrollTop=yOld; }
+    lastViewKey=vk;
     if(S.tab==='sim'&&PSIM[S.pos]==='scope')Scope.mount();
     if(S.tab==='ask'||S.tab==='reference'){ bindLookup(); bindPdf(); if(S.tab==='reference'&&!S.pub){ document.querySelectorAll('#vatc .scrollmain details.pos-acads').forEach(d=>{ d.open=false; }); } if(S.tab==='ask'||S.lkFocus){ S.lkFocus=false; setTimeout(()=>focusLookup(),20); } if(S.tab==='reference'&&(S.refQ||'').trim()) drawLookup(S.refQ); }
     if(S.tab==='learn'&&S.pub&&S.learnReturn){ bindPdf(); }
-    bindFcGroups(); }
+    bindFcGroups(); if(document.getElementById('fcwr')) fcAfterPaint(); }
 
   // ===== events =====
   document.getElementById('vatc').addEventListener('change',e=>{
@@ -4180,11 +4560,62 @@ function pdfPaneHTML(){
       const title=(opt && opt.getAttribute('data-title')) || (opt && String(opt.text||'').split(' · ').slice(1).join(' · ')) || '';
       const n=+(el.dataset.n||S.rfcTopic||0);
       if(n) S.rfcTopic=n;
-      markRfcChk((S.rfcTopic||n)+':'+cite,true);
       openLearnCite(cite,{title});
       return;
     }
+    if(a==='mkdone'){ markRfcChk(el.dataset.k, !!el.checked); syncChk(el.dataset.k); return; }
+    if(a==='fconlynot'){ return fcKeep({fcOnlyNot:!!el.checked, fcIdx:0, fcFlip:false}); }
+    if(a==='sqshow'||a==='sqtype'||a==='sqtbl'){
+      const o={fcIdx:0, fcFlip:false, fcOrder:null, fcSess:null};
+      o[a==='sqshow'?'sqShow':(a==='sqtype'?'sqType':'sqTbl')]=String(el.value||'');
+      return fcKeep(o);
+    }
   });
+  /* ===== flashcard actions (Cards / Sort / Learn) ===== */
+  function fcCardsView(){ const {cards}=fcOrderedDeck(); return S.fcOnlyNot?cards.filter(c=>FCQ.status(S.fcStats,c.id)!=='KNOWN'):cards; }
+  function fcAction(a, el){
+    if(a==='fcmode'){ return fcKeep({fcMode:el.dataset.m||'cards', fcFlip:false}), true; }
+    if(a==='fcsets'){ setTimeout(()=>{ const d=document.querySelector('#vatc details.fc-sets'); S.fcSetsOpen=!!(d&&d.open); },0); return true; }
+    if(a==='fcrate'){
+      const cards=fcCardsView(); if(!cards.length) return true;
+      const i=((S.fcIdx%cards.length)+cards.length)%cards.length, card=cards[i], know=el.dataset.k==='1';
+      const s0=FCQ.stat(S.fcStats, card.id);
+      FCQ.touch(S.fcStats, card.id, know?{status:FCQ.KN, times_correct:s0.times_correct+1}:{status:FCQ.SL, times_missed:s0.times_missed+1});
+      saveFcStats(); S.fcLastId=card.id;
+      const ni=(S.fcOnlyNot&&know)?i:i+1;
+      fcKeep({fcIdx:ni, fcFlip:false, fcSess:null}); return true;
+    }
+    const ss=S.fcSess;
+    if(a==='fcsort'){
+      if(!ss||!ss.st) return true;
+      const id=FCQ.sortCurrent(ss.st); if(id==null) return true;
+      FCQ.sortMark(ss.st, S.fcStats, el.dataset.k==='1'); S.fcLastId=id; saveFcStats();
+      fcKeep({fcFlip:false}); return true;
+    }
+    if(a==='fcsortnext'){ if(ss&&ss.st){ ss.st=FCQ.sortNextRound(ss.st); } fcKeep({fcFlip:false}); return true; }
+    if(a==='fcmc'){
+      if(!ss||!ss.st||!ss.choices) return true;
+      const id=FCQ.learnCurrent(ss.st); if(id==null) return true;
+      const card=fcUniq(fcOrderedDeck().deck).find(c=>c.id===id); if(!card) return true;
+      const pick=+el.dataset.i; ss.pick=pick; ss.typed=''; ss.grade=null;
+      FCQ.learnAnswer(ss.st, S.fcStats, ss.choices[pick]===card.a); S.fcLastId=id; saveFcStats();
+      fcKeep({}); return true;
+    }
+    if(a==='fcwrcheck'){ fcWrittenSubmit(false); return true; }
+    if(a==='fcwrdk'){ fcWrittenSubmit(true); return true; }
+    if(a==='fcoverride'){ if(ss&&ss.st){ FCQ.learnOverride(ss.st, S.fcStats); ss.grade={ok:true, typo:false, override:true}; saveFcStats(); } fcKeep({}); return true; }
+    if(a==='fclearncont'){ if(ss&&ss.st){ FCQ.learnContinue(ss.st, fcLearnIds(), S.fcStats); ss.typed=''; ss.grade=null; ss.pick=-1; } fcKeep({}); return true; }
+    if(a==='fclearnnext'){ if(ss&&ss.st){ ss.st=FCQ.learnNextRound(ss.st, fcLearnIds(), S.fcStats); ss.typed=''; ss.grade=null; ss.pick=-1; ss.chId=null; } fcKeep({}); return true; }
+    if(a==='fcresetset'){
+      const ids=fcLearnIds();
+      let ok=true; try{ ok=window.confirm('Reset progress for all '+ids.length+' cards in this set?'); }catch(_){}
+      if(!ok) return true;
+      ids.forEach(id=>{ delete S.fcStats[id]; }); saveFcStats();
+      fcKeep({fcSess:null, fcIdx:0, fcFlip:false, fcLastId:null}); return true;
+    }
+    if(a==='fcjump'){ const i=Math.max(0,parseInt(el.dataset.i,10)||0); fcKeep({fcIdx:i, fcFlip:false}); fcEnsureCardVisible(true); return true; }
+    return false;
+  }
   document.getElementById('vatc').addEventListener('click',e=>{ const el=e.target.closest('[data-action]'); if(!el)return; const a=el.dataset.action;
     if(a==='simstart')return Scope.start();
     if(a==='simreset')return Scope.reset();
@@ -4210,7 +4641,7 @@ function pdfPaneHTML(){
     if(a==='citeprev'){ stepLearnCite(-1); return; }
     if(a==='citenext'){ stepLearnCite(1); return; }
     if(a==='aafocus'){ return set({aaFocus:String(el.dataset.aa||''),tab:'learn',learnMode:'acad'}); }
-    if(a==='citeaa'){ const cite=el.dataset.cite||''; if(!cite) return; markRfcChk((S.rfcTopic||0)+':'+cite,true); openLearnCite(cite,{title:el.dataset.title||''}); return; }
+    if(a==='citeaa'){ const cite=el.dataset.cite||''; if(!cite) return; openLearnCite(cite,{title:el.dataset.title||''}); return; }
     if(a==='citesel'){ return; }
     if(a==='goscope')return set({tab:'sim',pos:(PSIM[S.pos]==='scope'?S.pos:'fin')});
     if(a==='stations')return set({screen:'station'});
@@ -4235,19 +4666,17 @@ function pdfPaneHTML(){
       if(card){ card.classList.toggle('is-revealed', !!S.fcFlip); return; }
       return fcKeep({fcFlip:S.fcFlip});
     }
-    if(a==='fcnext'){const n=(fcOrderedDeck().cards||[]).length||1; return fcKeep({fcIdx:(S.fcIdx+1+n)%n,fcFlip:false});}
-    if(a==='fcprev'){const n=(fcOrderedDeck().cards||[]).length||1; return fcKeep({fcIdx:(S.fcIdx-1+n)%n,fcFlip:false});}
+    if(fcAction(a, el)) return;
+    if(a==='fcnext'){const n=fcCardsView().length||1; return fcKeep({fcIdx:(S.fcIdx+1+n)%n,fcFlip:false});}
+    if(a==='fcprev'){const n=fcCardsView().length||1; return fcKeep({fcIdx:(S.fcIdx-1+n)%n,fcFlip:false});}
     if(a==='fcshuffle'){const {deck,key}=fcOrderedDeck(); return fcKeep({fcOrder:fcShuffleOrder(deck.length,key),fcIdx:0,fcFlip:false});}
-    if(a==='fccite'){const cite=el.dataset.cite||''; if(!cite)return; openLearnCite(cite,{title:el.dataset.title||''}); return;}
-    if(a==='rate'){const deck=activeFcDeck(); const i=deck.length?((S.fcIdx%deck.length)+deck.length)%deck.length:0; const card=deck[i]; const r=Object.assign({},S.fcRated); if(card) r[fcDeckKey()+':'+card.id]=el.dataset.r; return fcKeep({fcRated:r,fcIdx:deck.length?(i+1)%deck.length:0,fcFlip:false});}
+    if(a==='fccite'){const cite=el.dataset.cite||''; if(!cite)return; openLearnCite(cite,{title:el.dataset.title||'', from:'fc'}); return;}
     if(a==='scn'){if(S.scnAns)return;const steps=SCN[S.pos]||SCN.rfd;const i=+el.dataset.i;return set({scnSel:i,scnAns:true,scnScore:S.scnScore+(i===steps[S.scnIdx].ans?1:0)});}
     if(a==='scnnext')return set({scnIdx:S.scnIdx+1,scnAns:false,scnSel:null});
     if(a==='scnrestart')return set({scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='src')return set({source:+el.dataset.i});
-    if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({}, S.fcOpen||{}); if(g) o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null});}
-    if(a==='fcjump'){const i=Math.max(0,parseInt(el.dataset.i,10)||0); return set({fcIdx:i,fcFlip:false});}
+    if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({}, S.fcOpen||{}); if(g) o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null,fcSess:null,fcSetsOpen:false});}
     if(a==='jumptbl'){ jumpTblRef(el.dataset.tbl||el.textContent||''); return; }
-    if(a==='wxrefresh'){ fetchKnfgMetar(true); return; }
     if(a==='fcgrp'){ const g=el.dataset.g||'tower'; setTimeout(()=>{ const o=Object.assign({tower:false,radar:false,local:false},S.fcOpen||{}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
     if(a==='openpub'){const page=Math.max(1,parseInt(el.dataset.page,10)||1);const same=S.pub===el.dataset.id; if(!same){resetCitePdfFind();} return set({tab:'reference',pub:el.dataset.id,pubPage:page,pubQ:same?S.pubQ:'',pubGuessNote:'',pubPreferPage:page,pubCiteSec:same?S.pubCiteSec:''});}
     if(a==='pdfclose'){ if(S.learnReturn) return leavePdfToLearn(); resetCitePdfFind(); return set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:''}); }
@@ -4260,8 +4689,8 @@ function pdfPaneHTML(){
     if(a==='skillchip'){const q=el.dataset.q||''; if(S.tab==='reference'&&document.getElementById('reflk')){const inp=document.getElementById('reflk'); inp.value=q; S.refQ=q; drawLookup(q); return;} return set({tab:'reference',refQ:q,lkFocus:true});}
     if(a==='rfctopic')return set({rfcTopic:+el.dataset.n,tab:'learn'});
     if(a==='rfclist')return set({rfcTopic:0,tab:'learn',aaFocus:''});
-    if(a==='rfcref'){const cite=el.dataset.cite||''; markRfcChk(el.dataset.k,true); openLearnCite(cite,{title:el.dataset.title||''}); return;}
-    if(a==='acadcheck'){ toggleRfcChk(el.dataset.k); return set({});}
+    if(a==='rfcref'){const cite=el.dataset.cite||''; openLearnCite(cite,{title:el.dataset.title||''}); return;}
+    if(a==='acadcheck'){ toggleRfcChk(el.dataset.k); syncChk(el.dataset.k); return; }
     if(a==='rfctest')return set({rfcTopic:+(el.dataset.n||S.rfcTopic||1),tab:'learn',learnMode:'acad',trainMode:'rfc',rfcQi:0,rfcReveal:false});
     if(a==='rfcreveal')return set({rfcReveal:true});
     if(a==='rfcnext')return set({rfcQi:S.rfcQi+1,rfcReveal:false});
@@ -4302,7 +4731,6 @@ function pdfPaneHTML(){
     }
   });
 
-  fetchKnfgMetar(false);
   render();
 })();
 </script>

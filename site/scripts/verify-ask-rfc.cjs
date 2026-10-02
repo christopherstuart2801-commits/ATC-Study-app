@@ -551,7 +551,7 @@ ok('fc chips gray counts', /fc-n/.test(html) && /countOf/.test(html));
 ok('clickable TBL refs', /function linkifyTblRefs\(/.test(html) && /data-action="jumptbl"/.test(html) && /function jumpTblRef\(/.test(html));
 ok('slim Reference STRIPS MORE App D', /MORE · OTP/.test(html) && /Open Appendix D/.test(html));
 ok('App D sref-labels use FIG identity not SAMPLE', /sref-label">FIG D-4 · ATLAS40 IFR DEPARTURE</.test(html) && /sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</.test(html) && !/sref-label">SAMPLE ·/.test(html));
-ok('Home NOAA METAR KNFG', /fetchKnfgMetar/.test(html) && /aviationweather\.gov\/api\/data\/metar/.test(html) && /SAMPLE · offline/.test(html));
+ok('v0.8.18: CORS-blocked METAR/VIDS strip removed (no fake sample wx)', !/fetchKnfgMetar/.test(html) && !/aviationweather\.gov\/api\/data\/metar/.test(html) && !/function vidsStrip\(\)/.test(html));
 ok('ACAD checkboxes persist localStorage', /vatc\.rfcChk/.test(html) && /data-action="acadcheck"/.test(html) && /loadRfcChk/.test(html));
 ok('FIG D-4 CORRI OTP slash-through R not checkmark', html.includes("CORRI3 CORRI · ↑OTP/38 · <span class=\"fps-slash\">R</span>") && html.split("CORRI3 CORRI · ↑OTP/38 · <span class=\"fps-slash\">R</span>").length-1===2 && !html.includes('↑OTP/38 · ✓/'));
 ok('facmanStripBlock cite-first no App D mock grid', /6-1-11\. ABBREVIATIONS/.test(html) && /FIG D-4/.test(html) && !/fps fps-dep/.test(html) && !/fps fps-arr/.test(html));
@@ -623,7 +623,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.17 fac2026-reader', /v0\.8\.17 · fac2026-reader<\/span>/.test(html) && !/v0\.8\.16 · fac2026-sync<\/span>/.test(html));
+ok('statusbar v0.8.18 brief-polish', /v0\.8\.18 · brief-polish<\/span>/.test(html) && !/v0\.8\.17 · fac2026-reader<\/span>/.test(html));
 // v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
 {
   const OLD25=[/2,?200 via heading 211/i,/CLIMB AND MAINTAIN 2200 VIA/i,/ten \(10\) feet/,/±\s?10 feet/,/±\s?50 feet of the azimuth/,/between 51 and 100 feet/,/between 11 and 25 feet/,/between 26 and 50 feet/,/MAINTAIN 3800, PROCEED DIRECT ONTOS/i,/ONE THOUSAND TWO HUNDRED THEN TURN LEFT/,/UPWIND NUMBERS AND LEAVING/,/RS with ADC/,/RS, ADC, RD/,/H-1 departures only/,/between Bravo and Delta taxiways/,/Between 11 and 7 miles on final/,/go-around \(VFR\) or missed approach \(IFR\)/];
@@ -639,7 +639,16 @@ ok('statusbar v0.8.17 fac2026-reader', /v0\.8\.17 · fac2026-reader<\/span>/.tes
   ok('fac2026-sync: PACK/SYL PAR items refer to NAVAIR 00-80T-114', /"a":"NAVAIR 00-80T-114\. \(FACMAN 6-2-11\)"/.test(html) && /"a":"Criteria for issuing PAR approach phraseology is contained in FAAO JO 7110\.65\. Criteria for providing precise glidepath and azimuth information is contained in the NAVAIR 00-80T-114\."/.test(html));
   ok('fac2026-sync: PACK wave-off = 3000 direct NFG TACAN', /"a":"Climb to 3000 direct NFG TACAN, at 1 DME turn left heading 050 and expect radar vectors\. \(FACMAN 6-4-8\)"/.test(html));
 }
-ok('home-slim: VIDS strip off Home only', /S\.tab==='home'\?'':vidsStrip\(\)/.test(html) && /function vidsStrip\(\)/.test(html));
+ok('home-slim: trackbar off Home only, no VIDS strip', /S\.tab==='home'\?'':trackbar\(\)/.test(html) && !/vidsStrip\(\)/.test(html));
+ok('v0.8.18: one-time progress reset (rfcChk/lessonsDone/fc*) keyed vector_progress_ver', /PROGRESS_VER_KEY='vector_progress_ver'/.test(html) && /\^vatc\\\.\(rfcChk\|lessonsDone\|fc\)/.test(html) && !/removeItem\('vatc\.studymarks'\)/.test(html));
+ok('v0.8.18: no auto-mark on opening a cite', !/markRfcChk\([^)]*,true\)/.test(html));
+ok('v0.8.18: check-off updates in place (syncChk, no set({}))', /if\(a==='acadcheck'\)\{ toggleRfcChk\(el\.dataset\.k\); syncChk\(el\.dataset\.k\); return; \}/.test(html) && /function syncChk\(/.test(html));
+ok('v0.8.18: Mark complete checkbox (reader + topic + exercise)', /data-action="mkdone"/.test(html) && (html.match(/mkDoneHTML\(/g)||[]).length>=4 && /if\(a==='mkdone'\)/.test(html));
+ok('v0.8.18: Back restores flashcards + scroll', /from:\(opts\.from\|\|'acad'\)/.test(html) && /openLearnCite\(cite,\{title:el\.dataset\.title\|\|'', from:'fc'\}\)/.test(html) && /sm\.scrollTop=y/.test(html));
+ok('v0.8.18: flashcard stats per card id in localStorage', /FC_STATS_KEY='vatc\.fcStats'/.test(html) && /fcStats:loadFcStats\(\)/.test(html) && !/S\.fcRated/.test(html));
+ok('v0.8.18: FCQ queue module (markers for node tests)', /\/\* FCQ:BEGIN/.test(html) && /\/\* FCQ:END \*\//.test(html));
+ok('v0.8.18: Cards / Sort / Learn toggle', /data-action="fcmode"/.test(html) && /\['sort','SORT'\]/.test(html) && /\['learn','LEARN'\]/.test(html));
+ok('v0.8.18: squadron dropdowns (show / type / table)', /data-action="sqshow"/.test(html) && /data-action="sqtype"/.test(html) && /data-action="sqtbl"/.test(html));
 ok('home-slim: topbar station text hidden on Home', /<div class="stnchip">\$\{S\.tab==='home'\?'':/.test(html));
 ok('home-slim: first six positions tiles', /const first6=POS\.slice\(0,6\)/.test(html) && /class="pos6"/.test(html));
 ok('askScanPubOrder helper', /function\s+askScanPubOrder\s*\(/.test(html));
@@ -949,6 +958,15 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           V.S.fcDeck='ql-sqdn'; V.S.fcFlip=false;
           const sb=V.fcBody();
           ok('category deck labels part · category', /LOCAL · SQUADRONS · 1 \//.test(sb) && !/class="fcard is-revealed"/.test(sb));
+          ok('v0.8.18: squadron deck shows Show/Type/Table selects + set list', /data-action="sqshow"/.test(sb) && /ALL CARDS IN THIS SET/.test(sb) && /class="fc-row/.test(sb) && /data-action="fcrate" data-k="1"/.test(sb), sb.slice(0,160));
+          const sqAll=(V.FC_SETS.squadrons||[]).length;
+          V.S.sqShow='cs'; const csN=V.activeFcDeck().length; V.S.sqShow='all'; const allN=V.activeFcDeck().length; V.S.sqShow='cs'; V.S.sqTbl='TBL C-3'; const c3N=V.activeFcDeck().length; V.S.sqTbl='';
+          ok('v0.8.18: squadron filter narrows deck (cs < all, C-3 subset)', csN>0 && csN<allN && allN===sqAll && c3N>0 && c3N<csN, 'cs='+csN+' all='+allN+' c3='+c3N);
+          V.S.fcDeck='q-local'; V.S.fcMode='sort'; V.S.fcSess=null; const so=V.fcBody();
+          ok('v0.8.18: Sort mode renders term card + Know / Still learning', /SORT · ROUND 1 · 1 \//.test(so) && /data-action="fcsort" data-k="1"/.test(so) && /data-action="fcsort" data-k="0"/.test(so));
+          V.S.fcMode='learn'; V.S.fcSess=null; const le=V.fcBody();
+          ok('v0.8.18: Learn mode starts with multiple choice (4 options)', /LEARN · ROUND 1 · MULTIPLE CHOICE/.test(le) && (le.match(/data-action="fcmc"/g)||[]).length===4, le.slice(0,200));
+          V.S.fcMode='cards'; V.S.fcSess=null;
           V.S.fcDeck=keep.d; V.S.fcFlip=keep.f; V.S.fcIdx=keep.i; V.S.fcOrder=keep.o;
         }
       }
