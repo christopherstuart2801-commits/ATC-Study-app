@@ -102,7 +102,7 @@
 #vatc .hero .hstats div b{ font-family:var(--fd); font-size:18px; color:var(--text); display:block;}
 #vatc .hero .hstats div span{ font-size:8.5px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase;}
 #vatc .grp{ font-family:var(--fd); letter-spacing:.2em; font-size:10px; color:var(--amber); text-transform:uppercase; margin:16px 0 8px;}
-/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile · v0.8.16 fac2026-sync · v0.8.17 fac2026-reader · v0.8.18 brief-polish · v0.8.19 fqr-trim */
+/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile · v0.8.16 fac2026-sync · v0.8.17 fac2026-reader · v0.8.18 brief-polish · v0.8.19 fqr-trim · v0.8.20 fc-clean-answers */
 #vatc .stnbar{ font-family:var(--fd); font-size:12px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 2px 10px; margin-bottom:12px; border-bottom:1px solid var(--line); }
 #vatc .pos6{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px; }
 @media(max-width:640px){ #vatc .pos6{ grid-template-columns:1fr 1fr; } }
@@ -543,6 +543,7 @@
 #vatc .fbyou{ font-size:11px; margin-top:6px; overflow-wrap:anywhere; }
 #vatc .fc-over{ font-size:10px; }
 #vatc .fc-prog{ margin:0 0 8px; }
+#vatc .fcface .fcdet{ font-family:var(--fm); font-size:11px; line-height:1.4; color:var(--muted); font-weight:400; margin-top:8px; max-width:92%; white-space:pre-line; }
 #vatc .fc-nav.two .btn{ flex:1; justify-content:center; }
 #vatc .fc-nav .btn:disabled{ opacity:.35; pointer-events:none; }
 #vatc .fc-note{ display:block; text-transform:none; letter-spacing:.02em; font-size:11px; line-height:1.4; padding:7px 10px; border-radius:8px; margin:0 0 8px; }
@@ -1717,6 +1718,431 @@
     'sids-quntn':'ab-quntn','sids-bldg':'ab-bldg','sids-corri':'ab-corri','sids-munn':'ab-munn','sids-quentin-rev':'sids-vot-quentin',
     'ab-tg':'vis-tg','sp-int-i':'ab-i','sp-int-v':'ab-v'
   };
+  /* v0.8.20 fc-clean-answers: flashcard backs show only the core answer in green.
+     Reference / elaboration that was inside the answer moves to c.d (small grey line under it); the clickable
+     grey source link is unchanged. Original text kept in c.full (Ask/lookup search still sees it). Hand-reviewed per card. */
+  const FC_CLEAN={
+    "tower-freq": [
+    "128.775 / 340.2",
+    "",
+    "128.775 / 340.2. FLIP plate header."
+    ],
+    "gnd-freq": [
+    "134.675 / 360.2",
+    "",
+    "134.675 / 360.2. FLIP plate header."
+    ],
+    "cd-freq": [
+    "134.675 / 271.6",
+    "",
+    "134.675 / 271.6. FLIP plate header."
+    ],
+    "atis-freq": [
+    "UHF 285.45",
+    "",
+    "UHF 285.45. FACMAN 2-1-15 / 5-4-6."
+    ],
+    "socal-freq": [
+    "127.3 / 323.0",
+    "",
+    "127.3 / 323.0. FLIP plate header."
+    ],
+    "ocn-vortac": [
+    "115.3 · Ch 100",
+    "",
+    "115.3 · Ch 100. FACMAN 2-1-15."
+    ],
+    "nfg-tacan": [
+    "Ch 55",
+    "",
+    "Ch 55. FACMAN 2-1-15."
+    ],
+    "rwy-primary": [
+    "RWY 21",
+    "Runways 3 / 21.",
+    "RWY 21 (runways 3 / 21)."
+    ],
+    "papa-1": [
+    "Papa taxiway adjacent to Alpha",
+    "“Request Papa 1.”",
+    "Papa taxiway adjacent to Alpha. “Request Papa 1.” FACMAN 2-1-15 / 5-5-3."
+    ],
+    "vrp-north-initial": [
+    "NFG R-032 @ 9",
+    "Rwy 21 Inbound / Rwy 3 Outbound. Mandatory Reporting Point.",
+    "NFG R-032 @ 9. Rwy 21 Inbound / Rwy 3 Outbound. Mandatory Reporting Point. FACMAN TBL 5-1"
+    ],
+    "vrp-intersection": [
+    "NFG R-360 @ 5",
+    "Inbound / Outbound. Mandatory Reporting Point.",
+    "NFG R-360 @ 5. Inbound / Outbound. Mandatory Reporting Point. FACMAN TBL 5-1"
+    ],
+    "vrp-lcac": [
+    "NFG R-249 @ 2.3",
+    "Inbound. Mandatory Reporting Point.",
+    "NFG R-249 @ 2.3. Inbound. Mandatory Reporting Point. FACMAN TBL 5-1"
+    ],
+    "vrp-mass3": [
+    "NFG TACAN Site",
+    "Inbound. Secondary Reporting Point.",
+    "NFG TACAN Site. Inbound. Secondary Reporting Point. FACMAN TBL 5-1"
+    ],
+    "vrp-lake-oneill": [
+    "NFG R-032 @ 4.8",
+    "Rwy 21 Inbound / Rwy 3 Outbound. Secondary Reporting Point.",
+    "NFG R-032 @ 4.8. Rwy 21 Inbound / Rwy 3 Outbound. Secondary Reporting Point. FACMAN TBL 5-1"
+    ],
+    "vrp-point-canyon": [
+    "NFG R-017 @ 6.7",
+    "Inbound / Outbound. Mandatory Reporting Point.",
+    "NFG R-017 @ 6.7. Inbound / Outbound. Mandatory Reporting Point. FACMAN TBL 5-1"
+    ],
+    "vrp-morro-hill": [
+    "NFG 062 @ 6.2",
+    "Outbound. Mandatory Reporting Point.",
+    "NFG 062 @ 6.2. Outbound. Mandatory Reporting Point. FACMAN TBL 5-1"
+    ],
+    "vrp-ocn-south": [
+    "NFG R-210 @ 2.3",
+    "Fixed-wing initial for Overhead Break. Mandatory Reporting Point.",
+    "NFG R-210 @ 2.3. Fixed-wing initial for Overhead Break. Mandatory Reporting Point. FACMAN TBL 5-1"
+    ],
+    "sid-corri": [
+    "RWY 21: hdg 211° to 1300, climbing left 3800, NFG R-047 to CORRI",
+    "RADAR required. Not CAT D/E.",
+    "RWY 21: hdg 211° to 1300, climbing left 3800, NFG R-047 to CORRI. RADAR required. Not CAT D/E."
+    ],
+    "sids-rt-corri-four-corri4-corri": [
+    "RWY 21: hdg 211° to 1300 → climbing left to 3800 → NFG R-047 to CORRI",
+    "RADAR required. Not CAT D/E.",
+    "RWY 21: hdg 211° to 1300 → climbing left to 3800 → NFG R-047 to CORRI. RADAR required. Not CAT D/E."
+    ],
+    "relay-verbatim": [
+    "Relay clearances verbatim",
+    "",
+    "Relay clearances verbatim. 7110.65 4-2-4."
+    ],
+    "fdio-nfgt": [
+    "NFGT",
+    "NFG Tower = NFGT.",
+    "NFG Tower = NFGT. FACMAN 5-1-11."
+    ],
+    "fdio-radar": [
+    "NF1A, NF1D",
+    "NFG Radar = NF1A, NF1D.",
+    "NFG Radar = NF1A, NF1D. FACMAN 5-1-11."
+    ],
+    "sid-abbrev": [
+    "Quentin QUNTN# · Corri CORRI# · Bulldog BLDG# · Munn MUNN#",
+    "",
+    "Quentin QUNTN# · Corri CORRI# · Bulldog BLDG# · Munn MUNN#. FACMAN TBL 5-3."
+    ],
+    "twy-widths": [
+    "Bravo / Delta / Foxtrot 1 / Papa: 100 ft. Alpha / Echo 1: 75 ft.",
+    "",
+    "Bravo / Delta / Foxtrot 1 / Papa: 100 ft. Alpha / Echo 1: 75 ft. FACMAN 2-1-15."
+    ],
+    "hot-pits": [
+    "SW end. In via Foxtrot 2, out via Echo 2.",
+    "No live ordnance.",
+    "SW end. In via Foxtrot 2, out via Echo 2. No live ordnance. FACMAN 2-1-15."
+    ],
+    "papa-14": [
+    "H1 arrivals and departures only",
+    "",
+    "H1 arrivals and departures only. FACMAN 5-5-23."
+    ],
+    "crash-phone": [
+    "Tower Supervisor responsible; Flight Data normally activates",
+    "Daily test: five minutes prior to airfield opening.",
+    "Tower Supervisor responsible; Flight Data normally activates. Daily test: five minutes prior to airfield opening. FACMAN 5-1-2."
+    ],
+    "fig-d3-twr-svfr": [
+    "Dep STI76 · H/SUCO · SW + ↓15 · B · 1752 · EXIT CLASS D 1759. Arr ATL40 · H/UH1Y · SW/entry + ↓15 · B · 1936 · ARR 1945. Pattern ATL40 · circled W + ↓15 · B · 1658 · 1741.",
+    "SVFR abbrevs TBL 5-5.",
+    "Dep STI76 · H/SUCO · SW + ↓15 · B · 1752 · EXIT CLASS D 1759. Arr ATL40 · H/UH1Y · SW/entry + ↓15 · B · 1936 · ARR 1945. Pattern ATL40 · circled W + ↓15 · B · 1658 · 1741. SVFR abbrevs TBL 5-5."
+    ],
+    "fig-d4-dep": [
+    "ATLAS40 · H/H1/P · 4774 · P1900 · 50 · NFG · BLDG2 VISTA V458 BONDO / NKX / ↑40 · circled R · 1900/02/B/04",
+    "Altitude in Blk9 when handwritten.",
+    "ATLAS40 · H/H1/P · 4774 · P1900 · 50 · NFG · BLDG2 VISTA V458 BONDO / NKX / ↑40 · circled R · 1900/02/B/04. Altitude in Blk9 when handwritten."
+    ],
+    "fig-d4-otp": [
+    "Vista OTP ATLAS22 · H/H1/P · 7252 · P2300 · 40 · NFG · BLDG2 VISTA · ↑OTP/40 · 2303/05/B/05. CORRI RWY21 STI26 · 4543 · P1815 · OTP/38 · CORRI3 · ↑OTP/38 · slash-through R · 2303/03/—/05 (no CLNC B). CORRI RWY3 ATLAS22 · 4540 · P2300 · OTP/38 · CORRI3 · ↑OTP/38 · slash-through R · 2303/05/—/05 (no CLNC B).",
+    "Altitude in Blk9 when handwritten.",
+    "Vista OTP ATLAS22 · H/H1/P · 7252 · P2300 · 40 · NFG · BLDG2 VISTA · ↑OTP/40 · 2303/05/B/05. CORRI RWY21 STI26 · 4543 · P1815 · OTP/38 · CORRI3 · ↑OTP/38 · slash-through R · 2303/03/—/05 (no CLNC B). CORRI RWY3 ATLAS22 · 4540 · P2300 · OTP/38 · CORRI3 · ↑OTP/38 · slash-through R · 2303/05/—/05 (no CLNC B). Altitude in Blk9 when handwritten."
+    ],
+    "pass-final": [
+    "Position; callsign (primary-only if so); type; approach/intentions; frequency or button",
+    "",
+    "Position; callsign (primary-only if so); type; approach/intentions; frequency or button. FACMAN 6-3-6."
+    ],
+    "tower-nlt-10": [
+    "Usually NLT 10 flying miles. Verbal for TACAN RWY 3 and non-standard.",
+    "",
+    "Usually NLT 10 flying miles. Verbal for TACAN RWY 3 and non-standard. FACMAN 6-3-7."
+    ],
+    "pending-strips": [
+    "On the inactive board",
+    "Pending departure and arrival strips go on the inactive board.",
+    "Pending departure and arrival strips go on the inactive board. FACMAN 6-3-4."
+    ],
+    "fac-intercept": [
+    "Headings that intercept on a track not exceeding TBL 5-9-1 angles",
+    "",
+    "Headings that intercept on a track not exceeding TBL 5-9-1 angles. 7110.65 5-9-2."
+    ],
+    "viscom": [
+    "Final ↔ Tower. Jets 7 NM then 4 NM (3/4); helo/prop 6 NM then 3 NM.",
+    "",
+    "Final ↔ Tower. Jets 7 NM then 4 NM (3/4); helo/prop 6 NM then 3 NM. FACMAN 6-2-7."
+    ],
+    "viscom-ots": [
+    "Interphone. 7/6 NM: position, callsign/type, intentions. 4/3 NM: Local for clearance / continue / wave off.",
+    "",
+    "Interphone. 7/6 NM: position, callsign/type, intentions. 4/3 NM: Local for clearance / continue / wave off. FACMAN 6-2-8."
+    ],
+    "lima-golf": [
+    "IFR authority is assigned to RATCF by SCT in airspace known as Lima and Golf",
+    "",
+    "IFR authority is assigned to RATCF by SCT in airspace known as Lima and Golf. FACMAN 5-1-8."
+    ],
+    "gca-vhf-128-775": [
+    "GCA *128.775",
+    "RATCF only with tower's concurrence.",
+    "GCA *128.775 · RATCF only with tower's concurrence"
+    ],
+    "sq-stampede-mx": [
+    "Blank",
+    "Modex is blank in TBL C-2.",
+    "(blank in TBL C-2)"
+    ],
+    "par-jo-source": [
+    "FAAO JO 7110.65",
+    "Criteria for issuing PAR approach phraseology.",
+    "Criteria for issuing PAR approach phraseology is contained in FAAO JO 7110.65."
+    ],
+    "par-navair": [
+    "NAVAIR 00-80T-114",
+    "Criteria for providing precise glidepath and azimuth information.",
+    "Criteria for providing precise glidepath and azimuth information is contained in the NAVAIR 00-80T-114."
+    ],
+    "gcf-00-80t-114": [
+    "NAVAIR 00-80T-114",
+    "",
+    "Additional duties are outlined in NAVAIR 00-80T-114."
+    ],
+    "parjo-on-glidepath": [
+    "Issue when the aircraft is on glidepath (with course guidance)",
+    "Transmissions on precision final ~ every 5 seconds.",
+    "Issue when the aircraft is on glidepath (with course guidance). Transmissions on precision final ~ every 5 seconds."
+    ],
+    "parjo-elev-fail": [
+    "If elevation fails on precision approach: discontinue PAR; take over visually or execute missed",
+    "Phraseology includes IF RUNWAY, APPROACH/RUNWAY LIGHTS, NOT IN SIGHT, EXECUTE MISSED APPROACH/(alternative).",
+    "If elevation fails on precision approach: discontinue PAR; take over visually or execute missed. Phraseology includes IF RUNWAY, APPROACH/RUNWAY LIGHTS, NOT IN SIGHT, EXECUTE MISSED APPROACH/(alternative)."
+    ],
+    "asr-info-pass": [
+    "Final",
+    "Issue 6-4-7 info prior to final descent.",
+    "Final · issue 6-4-7 info prior to final descent"
+    ],
+    "asr-fin-yc": [
+    "YOUR CONTROL",
+    "Final initiates comms.",
+    "YOUR CONTROL — Final initiates comms"
+    ],
+    "asrjo-rec-alts": [
+    "RECOMMENDED ALTITUDES WILL BE PROVIDED FOR EACH MILE ON FINAL TO MINIMUM DESCENT ALTITUDE/CIRCLING MINIMUM DESCENT ALTITUDE.",
+    "If pilot requests recommended altitudes.",
+    "RECOMMENDED ALTITUDES WILL BE PROVIDED FOR EACH MILE ON FINAL TO MINIMUM DESCENT ALTITUDE/CIRCLING MINIMUM DESCENT ALTITUDE. (If pilot requests recommended altitudes.)"
+    ],
+    "asrjo-report-in-sight": [
+    "REPORT (runway, approach/runway lights or airport) IN SIGHT.",
+    "Aircraft may be requested to report the runway, approach/runway lights, or airport in sight.",
+    "Aircraft may be requested to report the runway, approach/runway lights, or airport in sight. PHRASEOLOGY: REPORT (runway, approach/runway lights or airport) IN SIGHT."
+    ],
+    "asrjo-prepare-descend": [
+    "Issue advance notice of where descent will begin; issue straight-in MDA prior to final descent.",
+    "PHRASEOLOGY: PREPARE TO DESCEND IN (number) MILE(S). MINIMUM DESCENT ALTITUDE (altitude).",
+    "Issue advance notice of where descent will begin; issue straight-in MDA prior to final descent. PHRASEOLOGY: PREPARE TO DESCEND IN (number) MILE(S). MINIMUM DESCENT ALTITUDE (altitude)."
+    ],
+    "asrjo-course": [
+    "HEADING (heading), ON COURSE, or SLIGHTLY/WELL LEFT/RIGHT OF COURSE.",
+    "Transmissions on surveillance final ~ every 15 seconds.",
+    "HEADING (heading), ON COURSE, or SLIGHTLY/WELL LEFT/RIGHT OF COURSE. Transmissions on surveillance final ~ every 15 seconds."
+    ],
+    "asrjo-each-mile": [
+    "Inform distance from runway/airport/heliport or MAP each mile on final.",
+    "PHRASEOLOGY: (Number) MILE(S) FROM RUNWAY/AIRPORT/HELIPORT OR MISSED APPROACH POINT.",
+    "Inform distance from runway/airport/heliport or MAP each mile on final. PHRASEOLOGY: (Number) MILE(S) FROM RUNWAY/AIRPORT/HELIPORT OR MISSED APPROACH POINT."
+    ],
+    "asrjo-alt-should-be": [
+    "If recommended altitudes requested: ALTITUDE SHOULD BE (altitude).",
+    "Per 5-11-1 / 5-11-5.",
+    "If recommended altitudes requested: ALTITUDE SHOULD BE (altitude). (Per 5-11-1 / 5-11-5.)"
+    ],
+    "am-c3-vfr-when": [
+    "Final controller shall issue circling instructions at 2 miles or as directed by the tower.",
+    "TURN RIGHT, CIRCLE NORTHWEST FOR LEFT DOWNWIND RUNWAY THREE. CONTACT TOWER.",
+    "Final controller shall issue circling instructions at 2 miles or as directed by the tower.\nTURN RIGHT, CIRCLE NORTHWEST FOR LEFT DOWNWIND RUNWAY THREE. CONTACT TOWER."
+    ],
+    "am-c3-ifr": [
+    "OVER MISSED APPROACH POINT. TURN RIGHT, CIRCLE NORTHWEST FOR LEFT DOWNWIND RUNWAY 3, (Observe aircraft turn) CONTACT TOWER.\nor,\nIF RUNWAY NOT IN SIGHT, EXECUTE MISSED APPROACH.",
+    "If the airport is IFR, continue the approach to one mile before issuing circling instructions.",
+    "If the airport is IFR, continue the approach to one mile before issuing circling instructions:\nOVER MISSED APPROACH POINT. TURN RIGHT, CIRCLE NORTHWEST FOR LEFT DOWNWIND RUNWAY 3, (Observe aircraft turn) CONTACT TOWER.\nor,\nIF RUNWAY NOT IN SIGHT, EXECUTE MISSED APPROACH."
+    ],
+    "gcf-dogleg-rc": [
+    "(callsign), (position), RADAR CONTACT.",
+    "When the aircraft is on dogleg, final advises arrival of radar contact.",
+    "When the aircraft is on dogleg, final advises arrival of radar contact. PHRASEOLOGY: (callsign), (position), RADAR CONTACT."
+    ],
+    "gcf-ma-wo": [
+    "Paragraph 6-4-8",
+    "Issue appropriate missed approach or wave off instructions per Paragraph 6-4-8.",
+    "Issue appropriate missed approach or wave off instructions per Paragraph 6-4-8."
+    ],
+    "gcf-completion": [
+    "Paragraph 6-4-9",
+    "After each radar approach, issue completion instructions per Paragraph 6-4-9.",
+    "After each radar approach, issue completion instructions per Paragraph 6-4-9."
+    ],
+    "gcf-button-go": [
+    "T&G/low approach remain with GCA: BUTTON (number) ON THE GO. Full stop: BUTTON (number) CLEAR.",
+    "Also: MADE A FULL STOP / ENTERED TOWER PATTERN / ON THE GO (WITH or NO) CLIMBOUT INSTRUCTIONS.",
+    "T&G/low approach remain with GCA: BUTTON (number) ON THE GO. Full stop: BUTTON (number) CLEAR. Also: MADE A FULL STOP / ENTERED TOWER PATTERN / ON THE GO (WITH or NO) CLIMBOUT INSTRUCTIONS."
+    ],
+    "ad-pattern-note": [
+    "None",
+    "Each controller limits pattern size by judgment; supervisors consider abilities, limitations, and projected traffic.",
+    "None. Each controller limits pattern size by judgment; supervisors consider abilities, limitations, and projected traffic."
+    ],
+    "ad-transfer": [
+    "The arrival controller",
+    "RFD completes handoffs / point outs only at the direction of the arrival controller.",
+    "The arrival controller. RFD completes handoffs / point outs only at the direction of the arrival controller."
+    ],
+    "ad-xw-1200": [
+    "Not until the aircraft has passed 1200 feet for runway 21 departures",
+    "Crosswind: ~1 NM from end of RWY 21, left heading 050 climbing to 3000.",
+    "Not until the aircraft has passed 1200 feet for runway 21 departures. Crosswind: ~1 NM from end of RWY 21, left heading 050 climbing to 3000."
+    ],
+    "ad-sct-clr": [
+    "SCT",
+    "SCT shall provide arrival information to GCA per the LOA.",
+    "SCT. SCT shall provide arrival information to GCA per the LOA."
+    ],
+    "lc-pointout": [
+    "Controllers will coordinate for a point out with SoCal TRACON for approval to proceed to the initial approach fix (CASPO) if aircraft will execute the complete lost communication procedure.",
+    "NOTE- If communications cannot be reestablished, pilots are expected to hold at ONTOS for five minutes then proceed direct to CASPO at 4900 for the TACAN Z and execute approach as published",
+    "Controllers will coordinate for a point out with SoCal TRACON for approval to proceed to the initial approach fix (CASPO) if aircraft will execute the complete lost communication procedure.\nNOTE- If communications cannot be reestablished, pilots are expected to hold at ONTOS for five minutes then proceed direct to CASPO at 4900 for the TACAN Z and execute approach as published"
+    ],
+    "lc-jo-ref": [
+    "FAAO JO 7110.65",
+    "",
+    "FAAO JO 7110.65 (Camp Pendleton procedures in FACMAN 6-4-10)."
+    ],
+    "rs-duties": [
+    "RS is directly responsible to the FWO for ATC service.",
+    "Primary duties listed in NAVAIR 00-80T-114 (pub not in app). Also opening/closing Appendix A + Chapter 2.",
+    "RS is directly responsible to the FWO for ATC service. Primary duties listed in NAVAIR 00-80T-114 (pub not in app). Also opening/closing Appendix A + Chapter 2."
+    ],
+    "rs-relief": [
+    "RS shall ensure watch checklists and position relief checklists are used during relief briefings (Appendix A at each position).",
+    "High error risk in first minutes after assuming watch.",
+    "RS shall ensure watch checklists and position relief checklists are used during relief briefings (Appendix A at each position). High error risk in first minutes after assuming watch."
+    ],
+    "rs-manning": [
+    "One qualified controller for each operating position: RS, AR, RD, and 2 final controllers.",
+    "Reduced manning weekends/holidays per 6-5-4.",
+    "One qualified controller for each operating position: RS, AR, RD, and 2 final controllers. Reduced manning weekends/holidays per 6-5-4."
+    ],
+    "rs-combine-ok": [
+    "During limited ops (FWO authorize): RS with AR; RS with RD; AR with RD.",
+    "Evaluate training, traffic, weather, abilities. Safety of flight never compromised.",
+    "During limited ops (FWO authorize): RS with AR; RS with RD; AR with RD. Evaluate training, traffic, weather, abilities. Safety of flight never compromised."
+    ],
+    "rs-debrief": [
+    "RS ensures instructors provide debriefs after trainees receive time on position.",
+    "Also standardize training; OJT + classroom through syllabi; annotate performance evaluation sheets.",
+    "RS ensures instructors provide debriefs after trainees receive time on position. Also standardize training; OJT + classroom through syllabi; annotate performance evaluation sheets."
+    ],
+    "rs-par-wx": [
+    "PAR trainees shall not work when weather < 1000 ft ceiling and/or 3-mile visibility.",
+    "Except certain situations. With Radar Chief written approval, near-qual or prior RFC rating may work under supervision when weather not less than 500 ft ceiling and/or 1-mile visibility.",
+    "Except certain situations: PAR trainees shall not work when weather < 1000 ft ceiling and/or 3-mile visibility. With Radar Chief written approval, near-qual or prior RFC rating may work under supervision when weather not less than 500 ft ceiling and/or 1-mile visibility."
+    ],
+    "rs-timeshare-manning": [
+    "ATNAVICS midfield: CIC + 2 final controllers.",
+    "CIC current/qualified on FC and RD and designated in writing by ATCFO. RS forwards hourly wx sequence, ATIS code, known airport conditions.",
+    "ATNAVICS midfield: CIC + 2 final controllers. CIC current/qualified on FC and RD and designated in writing by ATCFO. RS forwards hourly wx sequence, ATIS code, known airport conditions."
+    ],
+    "rs-timeshare-miss": [
+    "(callsign) EXECUTING MISSED APPROACH.",
+    "When aircraft executes missed approach, CIC advises RATCF. Return-to-pattern coord with Arrival per 6-2-6; tower verbal coord per 6-2-8.",
+    "When aircraft executes missed approach, CIC advises RATCF: (callsign) EXECUTING MISSED APPROACH. Return-to-pattern coord with Arrival per 6-2-6; tower verbal coord per 6-2-8."
+    ],
+    "rs-extend": [
+    ">30 minutes needs Operations department approval; <30 may be FWO.",
+    "FWO may only keep field open for aircraft established on final or close proximity at scheduled close. RS (as directed) notifies ATCMD, Longrifle, SCT.",
+    ">30 minutes needs Operations department approval; <30 may be FWO. FWO may only keep field open for aircraft established on final or close proximity at scheduled close. RS (as directed) notifies ATCMD, Longrifle, SCT."
+    ],
+    "radio-req-standby": [
+    "STAND BY.",
+    "“STAND BY” is not an approval or denial.",
+    "STAND BY. “STAND BY” is not an approval or denial."
+    ],
+    "rfd-subsequent": [
+    "The final controllers",
+    "In accordance with Paragraphs 6-2-7 and 6-2-8.",
+    "Conducted by the final controllers in accordance with Paragraphs 6-2-7 and 6-2-8."
+    ],
+    "ma-fw-iap": [
+    "Published on the IAP.",
+    "SCT protects the published missed approach on the first approach after handoff (unless alternate MAP instructions are coordinated).",
+    "Published on the IAP. SCT protects the published missed approach on the first approach after handoff (unless alternate MAP instructions are coordinated)."
+    ],
+    "ma-fw-radar": [
+    "The letter of agreement (LOA) with SCT",
+    "Missed approach procedures for fixed-wing aircraft conducting radar approaches are outlined in the letter of agreement with SCT. Arrival issues the MAP to FW on ASR/PAR in accordance with the LOA.",
+    "Missed approach procedures for fixed-wing aircraft conducting radar approaches are outlined in the letter of agreement with SCT. Arrival issues the MAP to FW on ASR/PAR in accordance with the LOA."
+    ],
+    "ma-helo-map": [
+    "Climb to 3000 direct NFG TACAN, at 1 DME turn left heading 050 and expect radar vectors.",
+    "Arrival control shall vector helicopters executing missed approach from instrument approaches to remain within Lima airspace. Arrival shall issue the radar missed approach procedure to all helicopters conducting radar approaches.",
+    "Arrival control shall vector helicopters executing missed approach from instrument approaches to remain within Lima airspace. Arrival shall issue the radar missed approach procedure to all helicopters conducting radar approaches. The procedure is climb to 3000 direct NFG TACAN, at 1 DME turn left heading 050 and expect radar vectors."
+    ],
+    "wake-land-sm-lg": [
+    "4 miles",
+    "Ensure the minima will exist at the time the preceding aircraft is over the landing threshold (same runway, or one making a touch-and-go, stop-and-go, or low approach).",
+    "4 miles. Ensure the minima will exist at the time the preceding aircraft is over the landing threshold (same runway, or one making a touch-and-go, stop-and-go, or low approach)."
+    ],
+    "wake-land-sm-hv": [
+    "6 miles",
+    "Ensure the minima will exist at the time the preceding aircraft is over the landing threshold.",
+    "6 miles. Ensure the minima will exist at the time the preceding aircraft is over the landing threshold."
+    ],
+    "taxi-papa-where": [
+    "Located southeast of and parallel to the runway.",
+    "Linked to the runway by Alpha, Bravo, Delta, Echo 1, and Foxtrot 1 taxiways.",
+    "Located southeast of and parallel to the runway. Linked to the runway by Alpha, Bravo, Delta, Echo 1, and Foxtrot 1 taxiways."
+    ],
+    "taxi-papa-south": [
+    "Aircraft with wingspans larger than the C-130 wingspan of 133 feet are prohibited from taxiing on Papa south of Alpha.",
+    "C-17s, C-5s, and B-747s have wingspans greater than the width of taxiway Papa.",
+    "Aircraft with wingspans larger than the C-130 wingspan of 133 feet are prohibited from taxiing on Papa south of Alpha. C-17s, C-5s, and B-747s have wingspans greater than the width of taxiway Papa."
+    ],
+    "taxi-vip": [
+    "All aircraft require prior coordination before permission is granted for taxi to the base of the control tower (VIP parking).",
+    "Flight Clearance (Beast 03) will contact Ground Control to assist aircraft in parking.",
+    "All aircraft require prior coordination before permission is granted for taxi to the base of the control tower (VIP parking). Flight Clearance (Beast 03) will contact Ground Control to assist aircraft in parking."
+    ]
+    };
+  (function applyFcClean(){
+    const fix=c=>{ if(!c||!c.id||c.full!==undefined) return; const t=FC_CLEAN[c.id]; if(!t || c.a!==t[2]) return; /* only the exact card reviewed (ids are reused by reverse cards) */ c.full=c.a; c.a=t[0]; if(t[1]) c.d=t[1]; };
+    Object.values(FC_POS).forEach(d=>(d||[]).forEach(fix));
+    Object.values(FC_SETS).forEach(d=>(d||[]).forEach(fix));
+  })();
   const QZ_DECKS={}, QZ_LAB={}, QZ_CAT_OF={};
   (function buildQuizParts(){
     const deckCat={};
@@ -2116,7 +2542,8 @@
         (FC_SETS[dk]||[]).forEach(c=>{
           if(!c||!c.q) return;
           const src=c.src||{};
-          out.push({q:c.q, a:stripHtml(c.a||''), reason:c.reason||'', src:src, keys:(c.q+' '+(c.a||'')+' '+(c.tag||'')+' '+dk), origin:'fc'});
+          const full=c.full!==undefined?c.full:(c.a||'');
+          out.push({q:c.q, a:stripHtml(full), reason:c.reason||'', src:src, keys:(c.q+' '+full+' '+(c.tag||'')+' '+dk), origin:'fc'});
         });
       });
     }
@@ -3277,7 +3704,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.19 · fqr-trim</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.20 · fc-clean-answers</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -3665,7 +4092,8 @@ function vectorAnswerHTML(query, hits){
     const aCls=String(card.a||'').length<=48?'a big':'a def';
     const citeBtn=cite?`<button type="button" class="fcsrc fccitebtn" data-action="fccite" data-cite="${escTxt(cite)}" data-title="${title}">${escTxt(citeLab)}</button>`:'';
     const front=`<div class="fcface front" data-answer="${a}"><div class="tag">${tag}</div><div class="q">${q}</div><div class="fchint">tap to reveal</div></div>`;
-    const back=`<div class="fcface back revealed" data-answer="${a}"><div class="qsm">${q}</div><div class="${aCls}">${a}</div>${citeBtn}</div>`;
+    const det=card.d?`<div class="fcdet">${escTxt(String(card.d))}</div>`:'';
+    const back=`<div class="fcface back revealed" data-answer="${a}"><div class="qsm">${q}</div><div class="${aCls}">${a}</div>${det}${citeBtn}</div>`;
     return `<div class="fcard${S.fcFlip?' is-revealed':''}" data-action="fcflip">${front}${back}</div>`;
   }
   function fcSession(mode, ids, key){
