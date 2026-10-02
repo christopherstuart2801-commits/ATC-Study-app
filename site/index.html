@@ -46,6 +46,7 @@
 #vatc .card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; }
 #vatc .reveal{ animation:rise .45s both; } @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 #vatc h2.sec{ font-family:var(--fd); font-size:12px; letter-spacing:.22em; color:var(--green); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+#vatc h2.sec svg{ width:15px; height:15px; flex:none; }
 #vatc .pill{ font-size:9px; letter-spacing:.14em; padding:3px 8px; border-radius:20px; border:1px solid var(--line); color:var(--muted); text-transform:uppercase; }
 #vatc .pill.warn{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.06);} #vatc .pill.ok{ color:var(--green); border-color:var(--green-dim);}
 #vatc .pill.sample{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.08); }
@@ -101,7 +102,7 @@
 #vatc .hero .hstats div b{ font-family:var(--fd); font-size:18px; color:var(--text); display:block;}
 #vatc .hero .hstats div span{ font-size:8.5px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase;}
 #vatc .grp{ font-family:var(--fd); letter-spacing:.2em; font-size:10px; color:var(--amber); text-transform:uppercase; margin:16px 0 8px;}
-/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile · v0.8.16 fac2026-sync · v0.8.17 fac2026-reader · v0.8.18 brief-polish */
+/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile · v0.8.16 fac2026-sync · v0.8.17 fac2026-reader · v0.8.18 brief-polish · v0.8.19 fqr-trim */
 #vatc .stnbar{ font-family:var(--fd); font-size:12px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 2px 10px; margin-bottom:12px; border-bottom:1px solid var(--line); }
 #vatc .pos6{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px; }
 @media(max-width:640px){ #vatc .pos6{ grid-template-columns:1fr 1fr; } }
@@ -255,41 +256,6 @@
 #vatc .ggrid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px;} @media(max-width:640px){#vatc .ggrid{grid-template-columns:1fr 1fr;}}
 #vatc .gg{ border:1px solid var(--line); border-radius:8px; padding:9px 10px; background:var(--panel2);} #vatc .gg .gn{ font-family:var(--fd); letter-spacing:.06em; font-size:12px; color:var(--amber);} #vatc .gg .gd{ font-size:10px; color:var(--muted); line-height:1.45; margin-top:3px;}
 
-/* strip field reference */
-#vatc .sref-pos{ font-family:var(--fd); font-size:12px; letter-spacing:.18em; text-transform:uppercase; padding:7px 12px; border-radius:6px; display:inline-flex; align-items:center; gap:9px; margin:4px 0 12px; }
-#vatc .sref-pos .sdot{ width:8px; height:8px; border-radius:50%; flex:none; }
-#vatc .sref-pos.rfd{ background:rgba(180,100,255,.12); color:#c97fff; border:1px solid #3a1f5a; } #vatc .sref-pos.rfd .sdot{ background:#c97fff; box-shadow:0 0 8px #c97fff; }
-#vatc .sref-pos.arr{ background:rgba(57,240,160,.14); color:var(--green); border:1px solid var(--green2); } #vatc .sref-pos.arr .sdot{ background:var(--green); box-shadow:0 0 8px var(--green); }
-#vatc .sref-pos.lc{ background:rgba(57,240,160,.10); color:var(--green); border:1px solid var(--green-dim); } #vatc .sref-pos.lc .sdot{ background:var(--green); box-shadow:0 0 8px var(--green); }
-#vatc .sref-pos.cd{ background:rgba(255,178,77,.10); color:var(--amber); border:1px solid #5a431d; } #vatc .sref-pos.cd .sdot{ background:var(--amber); box-shadow:0 0 8px var(--amber); }
-#vatc .sref-label{ font-size:9px; letter-spacing:.2em; color:var(--muted); text-transform:uppercase; margin-bottom:10px; }
-#vatc .sref-mock{ background:#0a1f14; border:1.5px solid var(--green2); border-radius:6px; padding:10px; margin-bottom:14px; overflow-x:auto; }
-#vatc .sref-row{ display:grid; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:4px; overflow:hidden; grid-auto-flow:column; grid-auto-columns:minmax(52px, 1fr); min-width:max-content; }
-#vatc .sref-cell{ background:var(--panel); padding:6px 7px; font-size:9.5px; }
-#vatc .sref-cell.head{ background:#0a1a12; font-size:8px; letter-spacing:.16em; color:var(--muted); text-transform:uppercase; }
-#vatc .sref-cell .val{ color:var(--green); font-weight:700; font-size:11px; }
-#vatc .sref-cell .val.amb{ color:var(--amber); } #vatc .sref-cell .val.sky{ color:var(--sky); } #vatc .sref-cell .val.pur{ color:#c97fff; } #vatc .sref-cell .val.muted{ color:var(--muted); }
-#vatc .sref-table{ width:100%; border-collapse:collapse; font-size:11px; margin-top:4px; }
-#vatc .sref-table th{ font-family:var(--fd); font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); padding:6px 10px; border-bottom:1px solid var(--line); text-align:left; }
-#vatc .sref-table td{ padding:8px 10px; border-bottom:1px dashed var(--line); vertical-align:top; }
-#vatc .sref-table tr:last-child td{ border-bottom:none; }
-#vatc .sref-table .fname{ color:var(--green); font-weight:700; white-space:nowrap; }
-#vatc .sref-table .fname.amb{ color:var(--amber); } #vatc .sref-table .fname.sky{ color:var(--sky); } #vatc .sref-table .fname.pur{ color:#c97fff; } #vatc .sref-table .fname.red{ color:#ff9090; }
-#vatc .sref-table .fwhat{ color:var(--text); } #vatc .sref-table .fex{ color:var(--muted); font-size:10px; margin-top:3px; }
-#vatc .sref-table .ftag{ display:inline-block; font-size:8px; letter-spacing:.12em; padding:2px 7px; border-radius:20px; margin-top:4px; }
-#vatc .sref-table .ftag.req{ color:#ff9090; border:1px solid #5a2424; background:rgba(255,99,99,.07); }
-#vatc .sref-table .ftag.ann{ color:var(--amber); border:1px solid #5a431d; background:rgba(255,178,77,.07); }
-#vatc .sref-table .ftag.opt{ color:var(--muted); border:1px solid #2a3f38; }
-#vatc .sref-rule{ background:var(--bg); border-left:3px solid var(--amber); border-radius:0 6px 6px 0; padding:10px 14px; font-size:10.5px; line-height:1.65; margin-top:12px; color:var(--text); }
-#vatc .sref-rule b{ color:var(--amber); }
-#vatc .sref-hr{ border:none; border-top:1px solid var(--line); margin:20px 0; }
-#vatc .sref-ann{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; } @media(max-width:640px){#vatc .sref-ann{grid-template-columns:1fr;}}
-#vatc .sref-ac{ background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:12px; }
-#vatc .sref-ac .ac-title{ font-size:9px; letter-spacing:.2em; color:var(--muted); text-transform:uppercase; margin-bottom:8px; }
-#vatc .sref-ac .ac-item{ display:flex; gap:8px; align-items:flex-start; margin-bottom:6px; font-size:10.5px; }
-#vatc .sref-ac .ac-item:last-child{ margin-bottom:0; }
-#vatc .sref-ac .ac-sym{ font-family:var(--fd); font-size:13px; font-weight:700; width:28px; flex:none; text-align:center; }
-#vatc .sref-ac .ac-desc{ color:var(--text); line-height:1.5; } #vatc .sref-ac .ac-desc .ex{ color:var(--muted); font-size:9.5px; display:block; }
 /* learn */
 #vatc .lesson{ border:1px solid var(--line); border-radius:12px; background:var(--panel); padding:16px; margin-bottom:12px;} #vatc .lesson.done{ border-color:var(--green-dim);}
 #vatc .lesson .lh{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px;}
@@ -387,7 +353,6 @@
 #vatc .rfc-topic-slim{ padding:10px 12px; margin-bottom:6px; gap:8px; }
 #vatc .rfc-topic-body{ flex:1; display:flex; align-items:center; gap:6px; flex-wrap:wrap; cursor:pointer; }
 #vatc .rfc-prog{ font-size:10px; margin-left:auto; }
-#vatc .sref-rule-slim{ margin-top:8px; padding:6px 10px; font-size:10px; line-height:1.4; }
 #vatc .lesson .lh .lt{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
 #vatc .fps-acad > summary{ font-size:11px; }
 
@@ -420,8 +385,6 @@
 #vatc .rfc-topic{ display:flex; align-items:center; gap:4px; }
 #vatc .vids .cell.wx-refresh{ cursor:pointer; }
 #vatc .vids .wx-raw{ font-size:10px; color:var(--muted); grid-column:1/-1; padding:2px 0 0; font-family:var(--fm); }
-#vatc .sref-more{ margin-top:10px; }
-#vatc .sref-more > summary{ cursor:pointer; color:var(--muted); font-size:11px; letter-spacing:.08em; }
 
 #vatc .pcard.chip{ padding:10px 12px; }
 #vatc .pcard.chip .pd, #vatc .pcard.chip .pt{ display:none; }
@@ -580,6 +543,8 @@
 #vatc .fbyou{ font-size:11px; margin-top:6px; overflow-wrap:anywhere; }
 #vatc .fc-over{ font-size:10px; }
 #vatc .fc-prog{ margin:0 0 8px; }
+#vatc .fc-nav.two .btn{ flex:1; justify-content:center; }
+#vatc .fc-nav .btn:disabled{ opacity:.35; pointer-events:none; }
 #vatc .fc-note{ display:block; text-transform:none; letter-spacing:.02em; font-size:11px; line-height:1.4; padding:7px 10px; border-radius:8px; margin:0 0 8px; }
 /* mobile: full-bleed, five tabs fit, no duplicate station text */
 @media(max-width:640px){
@@ -3312,7 +3277,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.18 · brief-polish</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.19 · fqr-trim</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -3516,8 +3481,8 @@ function vectorAnswerHTML(query, hits){
     return `<div class="progressbar"><i style="width:${pct}%"></i></div><div class="qmeta"><span class="pill">GRADED — feedback at end</span><span class="muted" style="font-size:11px">Q ${S.qIdx+1}/${QZ.length}</span></div><div class="qstem reveal">${q.q}</div><div class="choices">${choices}</div><div class="navrow"><span></span><button class="btn ${S.qSel===null?'sec':''}" ${S.qSel===null?'disabled style="opacity:.4;cursor:not-allowed"':''} data-action="qnext">${S.qIdx===QZ.length-1?'FINISH':'NEXT'} ${I.arrow}</button></div>`; }
   /* FCQ:BEGIN — Quizlet-style queue logic (pure; node-tested by scripts/test-fc-queue.cjs).
      Status per card id: NEW · STILL_LEARNING · KNOWN, plus times_correct / times_missed / last_seen.
-     SORT: shuffle → flip → Know / Still learning → round summary → next round = STILL_LEARNING only → until all KNOWN.
-     LEARN: rounds of 7 (STILL_LEARNING first, then NEW) · first exposure multiple choice · then written ·
+     CARDS (sort): flip → Know / Still learning → round summary → next round = STILL_LEARNING only (shuffled) → until all KNOWN.
+     PRACTICE (learn): rounds of 7 (STILL_LEARNING first, then NEW) · first exposure multiple choice · then written ·
             KNOWN only after correct in BOTH · a miss is re-inserted 2–3 cards later in the same round.
      Never the same card twice in a row (Learn pads a 1-card round with a review card; Sort's only exception is a
      single STILL_LEARNING card left, which is separated by the round summary). */
@@ -3531,9 +3496,11 @@ function vectorAnswerHTML(query, hits){
     function touch(stats, id, patch, now){ const s=Object.assign(stat(stats,id), patch||{}); s.last_seen=now||Date.now(); stats[id]=s; return s; }
     function avoidFirst(q, lastId){ if(q.length>1 && q[0]===lastId){ const t=q[0]; q[0]=q[1]; q[1]=t; } return q; }
     /* ---- SORT ---- */
-    function sortStart(ids, stats, rng, lastId){
-      const pool=(ids||[]).filter(id=>status(stats,id)!==KN);
-      return {mode:'sort', round:1, queue:avoidFirst(shuffle(pool,rng), lastId), i:0, known:[], learning:[], done:pool.length===0, finished:pool.length===0, lastId:lastId||null};
+    /* opts.keepOrder: round 1 in the given (deck / shuffled-by-user) order · opts.includeKnown: review KNOWN cards too */
+    function sortStart(ids, stats, rng, lastId, opts){
+      opts=opts||{};
+      const pool=(ids||[]).filter(id=>opts.includeKnown || status(stats,id)!==KN);
+      return {mode:'sort', round:1, queue:avoidFirst(opts.keepOrder?pool.slice():shuffle(pool,rng), lastId), i:0, known:[], learning:[], done:pool.length===0, finished:pool.length===0, lastId:lastId||null};
     }
     function sortCurrent(st){ return (!st||st.done)?null:st.queue[st.i]; }
     function sortMark(st, stats, know, now){
@@ -3544,6 +3511,22 @@ function vectorAnswerHTML(query, hits){
       st.lastId=id; st.i++;
       if(st.i>=st.queue.length){ st.done=true; st.finished=st.learning.length===0; }
       return st;
+    }
+    /* PREV: step back one card in the round; it leaves its pile and is re-marked */
+    function sortBack(st){
+      if(!st || st.i<=0) return st;
+      st.i--; const id=st.queue[st.i];
+      st.known=st.known.filter(x=>x!==id); st.learning=st.learning.filter(x=>x!==id);
+      st.done=false; st.finished=false; return st;
+    }
+    /* tap a card in the set list: it is shown next (moved up if still ahead in the round, else re-added) */
+    function sortJump(st, id){
+      if(!st || id==null) return st;
+      st.known=st.known.filter(x=>x!==id); st.learning=st.learning.filter(x=>x!==id);
+      const j=st.done?-1:st.queue.indexOf(id, st.i);
+      if(j>=0) st.queue.splice(j,1);
+      st.queue.splice(st.i,0,id);
+      st.done=false; st.finished=false; return st;
     }
     function sortNextRound(st, rng){
       if(!st.learning.length){ st.finished=true; return st; }
@@ -3634,7 +3617,7 @@ function vectorAnswerHTML(query, hits){
       const sim=1-lev(la,lu)/Math.max(la.length,lu.length);
       return sim>=0.8?{ok:true, typo:true, strict:false, sim}:{ok:false, typo:false, strict:false, sim};
     }
-    return {NEW, SL, KN, ROUND, shuffle, blank, stat, status, counts, touch, avoidFirst, sortStart, sortCurrent, sortMark, sortNextRound, stageOf, learnPick, learnStart, learnCurrent, learnAnswer, learnOverride, learnContinue, learnNextRound, mcChoices, normAns, lev, isStrict, grade};
+    return {NEW, SL, KN, ROUND, shuffle, blank, stat, status, counts, touch, avoidFirst, sortStart, sortCurrent, sortMark, sortBack, sortJump, sortNextRound, stageOf, learnPick, learnStart, learnCurrent, learnAnswer, learnOverride, learnContinue, learnNextRound, mcChoices, normAns, lev, isStrict, grade};
   })();
   /* FCQ:END */
   /* ===== v0.8.18 brief-polish: flashcard progress (localStorage per card id) + Cards / Sort / Learn ===== */
@@ -3686,29 +3669,38 @@ function vectorAnswerHTML(query, hits){
     return `<div class="fcard${S.fcFlip?' is-revealed':''}" data-action="fcflip">${front}${back}</div>`;
   }
   function fcSession(mode, ids, key){
-    const k=key+'|'+mode;
-    let ss=S.fcSess;
-    if(!ss || ss.k!==k){
-      const st=mode==='sort'?FCQ.sortStart(ids, S.fcStats, null, S.fcLastId):FCQ.learnStart(ids, S.fcStats, null, S.fcLastId, 1);
+    const k=key+'|'+mode+(mode==='cards'?'|'+(S.fcOnlyNot?1:0)+'|'+ids.join('.'):'');
+    /* one live session per set+mode, so CARDS ↔ PRACTICE keeps each one's place; fcSess:null = reset request */
+    if(S.fcSess===null || !S.fcSessMap) S.fcSessMap={};
+    let ss=S.fcSessMap[k];
+    if(!ss){
+      const st=mode==='cards'?FCQ.sortStart(ids, S.fcStats, null, S.fcLastId, {keepOrder:true, includeKnown:!S.fcOnlyNot}):FCQ.learnStart(ids, S.fcStats, null, S.fcLastId, 1);
       ss={k, st, choices:null, chId:null, pick:-1, typed:'', grade:null};
-      S.fcSess=ss;
+      S.fcSessMap[k]=ss;
     }
+    S.fcSess=ss;
     return ss;
   }
   function fcCountsHTML(c){ return `<span class="ck">${c.KNOWN} known</span><span class="dot2">·</span><span class="cl">${c.STILL_LEARNING} learning</span><span class="dot2">·</span><span class="cn">${c.NEW} new</span>`; }
-  function fcSortHTML(ids, byId, key, cnt){
-    const ss=fcSession('sort', ids, key), st=ss.st;
-    if(st.finished && (st.done || !st.queue.length)){
-      return `<div class="fc-panel"><div class="fc-big">All ${ids.length} cards KNOWN</div><div class="muted">Sort complete for this set.</div><div class="fc-row2"><button type="button" class="btn" data-action="fcresetset">RESET DECK</button></div></div>`;
+  /* CARDS = flip + Know / Still learning (Sort rules): round 1 in deck order (SHUFFLE to mix), then Still-learning-only rounds */
+  function fcCardsHTML(orderedIds, byId, key, cnt, lab){
+    const ss=fcSession('cards', orderedIds, key), st=ss.st;
+    if(st.done && st.finished){
+      const all=cnt.KNOWN===orderedIds.length;
+      return `<div class="fc-panel"><div class="fc-big">${all?`All ${orderedIds.length} cards KNOWN`:'Nothing left in Still learning'}</div><div class="muted">${all?'Every card in this set is marked Know.':'Every card in this round was marked Know.'}</div>
+        <div class="fc-row2"><button type="button" class="btn sec" data-action="fcrestart">GO AGAIN</button><button type="button" class="btn" data-action="fcresetset">RESET DECK</button></div></div>`;
     }
     if(st.done){
+      const n=st.learning.length;
       return `<div class="fc-panel"><div class="fc-cap">ROUND ${st.round} COMPLETE</div>
-        <div class="fc-piles"><div class="pile k"><b>${st.known.length}</b><span>Know</span></div><div class="pile l"><b>${st.learning.length}</b><span>Still learning</span></div></div>
-        <div class="fc-row2"><button type="button" class="btn" data-action="fcsortnext">NEXT ROUND · ${st.learning.length} CARD${st.learning.length===1?'':'S'} ${I.arrow}</button></div></div>`;
+        <div class="fc-piles"><div class="pile k"><b>${st.known.length}</b><span>Know</span></div><div class="pile l"><b>${n}</b><span>Still learning</span></div></div>
+        <div class="fc-row2"><button type="button" class="btn sec" data-action="fcprev">BACK</button><button type="button" class="btn" data-action="fcsortnext">NEXT ROUND · ${n} STILL LEARNING ${I.arrow}</button></div></div>`;
     }
-    const card=byId[FCQ.sortCurrent(st)];
-    return `<div class="fc-prog">SORT · ROUND ${st.round} · ${st.i+1} / ${st.queue.length}</div>${fcFaceHTML(card)}
-      <div class="fc-mark"><button type="button" class="btn sec fc-sl" data-action="fcsort" data-k="0">STILL LEARNING</button><button type="button" class="btn fc-kn" data-action="fcsort" data-k="1">KNOW ${I.chk}</button></div>`;
+    const id=FCQ.sortCurrent(st), card=byId[id]||{}, cur=FCQ.status(S.fcStats,id);
+    const prog=st.round===1?`${lab} · ${st.i+1} / ${st.queue.length}`:`${lab} · ROUND ${st.round} · ${st.i+1} / ${st.queue.length} · STILL LEARNING ONLY`;
+    return `<div class="fc-prog">${prog}</div>${fcFaceHTML(card)}
+      <div class="fc-mark"><button type="button" class="btn sec fc-sl${cur==='STILL_LEARNING'?' on':''}" data-action="fcrate" data-k="0">STILL LEARNING</button><button type="button" class="btn fc-kn${cur==='KNOWN'?' on':''}" data-action="fcrate" data-k="1">KNOW ${I.chk}</button></div>
+      <div class="fc-nav two"><button type="button" class="btn sec" data-action="fcprev"${st.i<=0?' disabled':''}>PREV</button><button type="button" class="btn sec" data-action="fcshuffle">SHUFFLE</button></div>`;
   }
   function fcLearnHTML(ids, byId, key, cnt, deckCards){
     const ss=fcSession('learn', ids, key), st=ss.st;
@@ -3724,7 +3716,7 @@ function vectorAnswerHTML(query, hits){
       else msg=`<div class="fbk no">${st.fb.stage==='written'&&ss.typed?'Not quite':'Missed'} — correct answer:</div><div class="fbans">${escTxt(card.a)}</div>${ss.typed?`<div class="muted fbyou">You wrote: ${escTxt(ss.typed)}</div>`:''}`;
       const choices=(st.fb.stage==='mc'&&ss.choices)?`<div class="choices fc-mc">${ss.choices.map((c,i)=>`<button type="button" class="ch ${c===card.a?'correct':(i===ss.pick?'wrong':'')}" disabled><span class="key">${String.fromCharCode(65+i)}</span>${escTxt(c)}</button>`).join('')}</div>`:'';
       const over=(!st.fb.correct && st.fb.stage==='written' && ss.typed)?`<button type="button" class="btn-ghost fc-over" data-action="fcoverride">Override: I was right</button>`:'';
-      return `<div class="fc-prog">LEARN · ROUND ${st.round} · ${st.fb.stage==='mc'?'MULTIPLE CHOICE':'WRITTEN'}</div>
+      return `<div class="fc-prog">PRACTICE · ROUND ${st.round} · ${st.fb.stage==='mc'?'MULTIPLE CHOICE':'WRITTEN'}</div>
         <div class="fc-panel left"><div class="qsm2">${escTxt(card.q||'')}</div>${choices}${msg}<div class="fc-row2">${over}<button type="button" class="btn" data-action="fclearncont" id="fccont">CONTINUE ${I.arrow}</button></div></div>`;
     }
     if(st.done){
@@ -3732,7 +3724,7 @@ function vectorAnswerHTML(query, hits){
     }
     const id=FCQ.learnCurrent(st), card=byId[id];
     const stage=FCQ.stageOf(S.fcStats, id);
-    const head=`<div class="fc-prog">LEARN · ROUND ${st.round} · ${stage==='mc'?'MULTIPLE CHOICE':'WRITTEN'} · ${st.queue.length} LEFT</div>`;
+    const head=`<div class="fc-prog">PRACTICE · ROUND ${st.round} · ${stage==='mc'?'MULTIPLE CHOICE':'WRITTEN'} · ${st.queue.length} LEFT</div>`;
     if(stage==='mc'){
       if(ss.chId!==id){ ss.choices=FCQ.mcChoices(id, deckCards, null); ss.chId=id; ss.pick=-1; }
       return `${head}<div class="fc-panel left"><div class="tag2">${escTxt(card.tag||'')}</div><div class="qbig">${escTxt(card.q||'')}</div>
@@ -3756,33 +3748,24 @@ function vectorAnswerHTML(query, hits){
     const ids=deckCards.map(c=>c.id);
     const byId={}; deckCards.forEach(c=>{ byId[c.id]=c; });
     const cnt=FCQ.counts(ids, S.fcStats);
-    const mode=S.fcMode||'cards';
-    const seg=`<div class="seg fc-modes">${[['cards','CARDS'],['sort','SORT'],['learn','LEARN']].map(m=>`<button type="button" class="${mode===m[0]?'on':''}" data-action="fcmode" data-m="${m[0]}">${m[1]}</button>`).join('')}</div>`;
+    const mode=S.fcMode==='practice'?'practice':'cards';
+    const seg=`<div class="seg fc-modes">${[['cards','CARDS'],['practice','PRACTICE']].map(m=>`<button type="button" class="${mode===m[0]?'on':''}" data-action="fcmode" data-m="${m[0]}">${m[1]}</button>`).join('')}</div>`;
     const head=`<div class="fc-head"><div class="fc-counts">${fcCountsHTML(cnt)}</div>${seg}</div>`;
     const sq=sqBarHTML();
     if(!deckCards.length){
       return `<div id="fcwrap">${sets}${sq}<div class="qmeta"><span class="pill warn">FLASHCARDS · ${lab}</span></div><div class="explain">${isSqDeck(S.fcDeck)?'No cards for this combination — TBL C-3 lists no modex or aircraft type.':'No sourced cards for this '+(named?'deck':'position')+' yet.'}</div></div>`;
     }
-    const cards=(mode==='cards' && S.fcOnlyNot)?ordered.filter(c=>FCQ.status(S.fcStats,c.id)!=='KNOWN'):ordered;
-    let main='', i=-1;
-    if(mode==='sort') main=fcSortHTML(ids, byId, key, cnt);
-    else if(mode==='learn') main=fcLearnHTML(ids, byId, key, cnt, deckCards);
-    else if(!cards.length){
-      main=`<div class="fc-panel"><div class="fc-big">All cards KNOWN</div><div class="muted">Turn off “Not known only” or reset the set.</div></div>`;
-    } else {
-      i=((S.fcIdx%cards.length)+cards.length)%cards.length;
-      const card=cards[i];
-      const nav=`<div class="fc-nav"><button type="button" class="btn sec" data-action="fcprev">PREV</button><button type="button" class="btn" data-action="fcnext">NEXT ${I.arrow}</button><button type="button" class="btn sec" data-action="fcshuffle">SHUFFLE</button></div>`;
-      const st=FCQ.status(S.fcStats, card.id);
-      const mark=`<div class="fc-mark"><button type="button" class="btn sec fc-sl${st==='STILL_LEARNING'?' on':''}" data-action="fcrate" data-k="0">STILL LEARNING</button><button type="button" class="btn fc-kn${st==='KNOWN'?' on':''}" data-action="fcrate" data-k="1">KNOW ${I.chk}</button></div>`;
-      main=`<div class="fc-prog">${lab} · ${i+1} / ${cards.length}</div>${fcFaceHTML(card)}${mark}${nav}`;
-    }
+    const orderedIds=fcUniq(ordered).map(c=>c.id);
+    const start=orderedIds.length?((S.fcIdx%orderedIds.length)+orderedIds.length)%orderedIds.length:0;
+    const roundIds=orderedIds.slice(start).concat(orderedIds.slice(0,start));
+    const main=mode==='practice'?fcLearnHTML(ids, byId, key, cnt, deckCards):fcCardsHTML(roundIds, byId, key, cnt, lab);
     const tools=`<div class="fc-tools">${mode==='cards'?`<label class="fc-chk"><input type="checkbox" data-action="fconlynot"${S.fcOnlyNot?' checked':''}> Not known only</label>`:'<span></span>'}<button type="button" class="btn-ghost" data-action="fcresetset">Reset set progress</button></div>`;
-    const listCards=mode==='cards'?cards:deckCards;
-    const curId=(mode==='cards'&&i>=0)?cards[i].id:(mode==='sort'&&S.fcSess&&S.fcSess.st?FCQ.sortCurrent(S.fcSess.st):(mode==='learn'&&S.fcSess&&S.fcSess.st?FCQ.learnCurrent(S.fcSess.st):null));
+    const listCards=fcUniq(ordered);
+    const st=S.fcSess&&S.fcSess.st;
+    const curId=st?(mode==='practice'?FCQ.learnCurrent(st):FCQ.sortCurrent(st)):null;
     const rows=listCards.map((c,ix)=>{
-      const click=mode==='cards'?` data-action="fcjump" data-i="${ix}"`:'';
-      return `<div class="fc-row${c.id===curId?' on':''}${mode==='cards'?' tap':''}"${click}><span class="fc-i">${ix+1}</span><div class="fc-td"><div class="fc-term">${escTxt(c.q||'')}</div><div class="fc-def">${mode==='learn'?'<span class="muted">answer hidden in Learn</span>':escTxt(c.a||'')}</div></div>${fcMark(FCQ.status(S.fcStats,c.id))}</div>`;
+      const click=mode==='cards'?` data-action="fcjump" data-id="${escTxt(c.id)}"`:'';
+      return `<div class="fc-row${c.id===curId?' on':''}${mode==='cards'?' tap':''}"${click}><span class="fc-i">${ix+1}</span><div class="fc-td"><div class="fc-term">${escTxt(c.q||'')}</div><div class="fc-def">${mode==='practice'?'<span class="muted">answer hidden in Practice</span>':escTxt(c.a||'')}</div></div>${fcMark(FCQ.status(S.fcStats,c.id))}</div>`;
     }).join('');
     const list=`<div class="fc-listhd"><span>ALL CARDS IN THIS SET · ${listCards.length}</span><span class="muted">✓ known · ◐ learning · ○ new</span></div><div class="fc-list">${rows}</div>`;
     const note=S.fcNote?`<div class="pill warn fc-note">${escTxt(S.fcNote)}</div>`:'';
@@ -3835,124 +3818,6 @@ function vectorAnswerHTML(query, hits){
     const opts=s.opts.map((o,i)=>{let cls='opt';if(S.scnAns){if(i===s.ans)cls='opt ok';else if(i===S.scnSel)cls='opt no';}return `<button class="${cls}" ${S.scnAns?'disabled':''} data-action="scn" data-i="${i}">${o}</button>`;}).join('');
     return `<div class="qmeta"><span class="pill warn">${PN[S.pos].toUpperCase()} SIM · SAMPLE</span><span class="muted" style="font-size:11px">Step ${S.scnIdx+1}/${steps.length}</span></div><div class="stepcard reveal"><div class="stripstem">${s.stem}<br><span class="strpv">▦ ${s.line}</span></div><div class="opts">${opts}</div>${S.scnAns?`<div class="explain">${s.fb}</div><div class="navrow"><span></span><button class="btn" data-action="scnnext">${S.scnIdx<steps.length-1?'NEXT':'FINISH'} ${I.arrow}</button></div>`:''}</div>`; }
 
-
-  function stripsRef(){
-    const ftag=(k,t)=>`<span class="ftag ${k}">${t}</span>`;
-    const row=(name,cls,what,ex,tag)=>`<tr><td><div class="fname${cls?' '+cls:''}">${name}</div></td><td class="fwhat">${what}${ex?`<div class="fex">${ex}</div>`:''}</td><td>${tag}</td></tr>`;
-    const scell=(v,cls='')=>`<div class="sref-cell"><div class="val${cls?' '+cls:''}">${v}</div></div>`;
-    const heads=hs=>hs.map(h=>`<div class="sref-cell head">${h}</div>`).join('');
-    const depH=['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','CLEARANCE LIMIT / ROUTE / REMARKS / RADAR CONTACT','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME'];
-    const arrH=['CALLSIGN','TYPE/EQPT','CODE','PREVIOUS FIX','COORD FIX','ETA AT COORD FIX','ACTUAL IFR','INBOUND PASSED','ALTITUDE','RADAR CONTACT / HANDOFF','TYPE APCH','INTENT','BAY'];
-    const more=`<details class="sref-more pos-acads"><summary>MORE · OTP · multi-GCA · tower D-1…D-3 · FIG D-6</summary>
-      <div class="sref-label">FIG D-4 · ATLAS22 IFR EAST LOCAL VFR-ON-TOP — VISTA</div>
-      <div class="sref-mock"><div class="sref-row">${heads(depH)}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('ATLAS22')}${scell('H/H1/P','sky')}${scell('7252','pur')}${scell('P2300','amb')}${scell('40','amb')}${scell('NFG')}${scell('NFG BLDG2 VISTA · ↑OTP/40')}${scell('2303')}${scell('05')}${scell('B','sky')}${scell('05','amb')}</div></div>
-      <div class="sref-label">FIG D-4 · STI26 IFR VFR-ON-TOP RWY21 — CORRI</div>
-      <div class="sref-mock"><div class="sref-row">${heads(depH)}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('STI26')}${scell('H/H1/P','sky')}${scell('4543','pur')}${scell('P1815','amb')}${scell('OTP/38','amb')}${scell('NFG')}${scell('CORRI3 CORRI · ↑OTP/38 · <span class="fps-slash">R</span>')}${scell('2303')}${scell('03')}${scell('—')}${scell('05','amb')}</div></div>
-      <div class="sref-label">FIG D-4 · ATLAS22 IFR VFR-ON-TOP RWY3 — CORRI</div>
-      <div class="sref-mock"><div class="sref-row">${heads(depH)}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('ATLAS22')}${scell('H/H1/P','sky')}${scell('4540','pur')}${scell('P2300','amb')}${scell('OTP/38','amb')}${scell('NFG')}${scell('CORRI3 CORRI · ↑OTP/38 · <span class="fps-slash">R</span>')}${scell('2303')}${scell('05')}${scell('—')}${scell('05','amb')}</div></div>
-      <div class="sref-label">FIG D-5 · ATLAS40 IFR MULTIPLE GCA ARRIVAL</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','RADAR ID FIX','TIME AT ID FIX','ACTUAL IFR','INBOUND PASSED','ALTITUDE','RADAR CONTACT / HANDOFF','TYPE APCH','INTENT','BAY'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4534','pur')}${scell('L18 3N')}${scell('2022','amb')}${scell('I','sky')}${scell('✓')}${scell('28/28/28 · <s>32</s>/20/24 · 24 · C3','amb')}${scell('Ⓡ/Ⓡ/R','sky')}${scell('PA<br>PA<br>SA')}${scell('LAR<br>LAR<br>LAZ')}${scell('1<br>2<br>1')}</div></div>
-      <div class="sref-label">FIG D-5 · ATLAS40 NON-RADAR ARRIVAL</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','FREQ','RADAR ID FIX','TIME AT ID FIX','INBOUND TO TOWER','ALTITUDE','RDR ID STATUS','TYPE APCH','INTENT','BAY'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4534','pur')}${scell('Ⓒ4','sky')}${scell('L18 3N')}${scell('2022','amb')}${scell('✓')}${scell('<s>50</s> <s>40</s> 28','amb')}${scell('CU/42 · 1910/1915 · <span class="fps-slash">Ⓡ</span>','amb')}${scell('<s>PA</s> TZ')}${scell('FS')}${scell('1')}</div></div>
-      <div class="sref-label">FIG D-1 · ATLAS40 IFR DEPARTURE</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','CLEARANCE LIMIT / ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/UH1Y/P','sky')}${scell('4774','pur')}${scell('P1900','amb')}${scell('60','amb')}${scell('NFG')}${scell('NFG QUNTN1 QUNTN SKATE NZY · ↑30')}${scell('1900')}${scell('02')}${scell('B','sky')}${scell('04','amb')}${scell('CA')}</div></div>
-      <div class="sref-label">FIG D-1 · STMPD19 IFR ARRIVAL</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','PREVIOUS FIX','COORD FIX','ETA AT COORD FIX','INTENTIONS / REMARKS','ARR TIME','FLT PLNG'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('STMPD19')}${scell('H/B350/L','sky')}${scell('2252','pur')}${scell('JLI')}${scell('OCN')}${scell('1745','amb')}${scell('PAFS')}${scell('1812','amb')}${scell('RP')}</div></div>
-      <div class="sref-label">FIG D-2 · STI76 VFR DEPARTURE</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','P-TIME','REMARKS','DEST','TYPE STRIP','DEPT TIME','FLT PLNG'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('STI76')}${scell('AH1','sky')}${scell('P1900','amb')}${scell('')}${scell('RIV')}${scell('<span class="fps-vd" title="VFR Departure"><b>V</b><i></i><b>D</b></span>','pur')}${scell('1906','amb')}${scell('CA')}</div></div>
-      <div class="sref-label">FIG D-3 · STI76 SVFR DEPARTURE</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','DEPARTURE ROUTE / ALTITUDE RESTRICTIONS / REMARKS','CLNC ISSUED','INITIAL CONTACT','EXIT CLASS D'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('STI76')}${scell('H/SUCO','sky')}${scell('SW · ↓15')}${scell('B','sky')}${scell('1752','amb')}${scell('1759','amb')}</div></div>
-      <div class="sref-label">FIG D-3 · ATL40 SVFR ARRIVAL</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','ENTRY ROUTE / ALTITUDE RESTRICTIONS / REMARKS','CLNC ISSUED','INITIAL CONTACT','ARR TIME'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('ATL40')}${scell('H/UH1Y','sky')}${scell('SW/entry · ↓15')}${scell('B','sky')}${scell('1936','amb')}${scell('1945','amb')}</div></div>
-      <div class="sref-label">FIG D-3 · ATL40 SVFR PATTERN</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','LOCAL SVFR SYMBOL / ALTITUDE RESTRICTIONS','CLNC ISSUED','INITIAL CONTACT','ARR TIME'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('ATL40')}${scell('H/UH1Y','sky')}${scell('ⒸW · ↓15')}${scell('B','sky')}${scell('1658','amb')}${scell('1741','amb')}</div></div>
-      <div class="sref-label">FIG D-1 · ATLAS22 IFR EAST LOCAL VFR-ON-TOP — VISTA</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','CLEARANCE LIMIT / ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('ATLAS22')}${scell('H/SUCO/P','sky')}${scell('7252','pur')}${scell('P2300','amb')}${scell('OTP/40','amb')}${scell('NFG')}${scell('NFG BLDG2 VISTA · ↑OTP/40')}${scell('2303')}${scell('05')}${scell('B','sky')}${scell('05','amb')}${scell('RP')}</div></div>
-      <div class="sref-label">FIG D-1 · SWIFT13 IFR LIMA VFR-ON-TOP RWY21 — CORRI</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','CLEARANCE LIMIT / ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('SWIFT13')}${scell('G/V22/I','sky')}${scell('4540','pur')}${scell('P1600','amb')}${scell('OTP/38','amb')}${scell('NFG')}${scell('NFG CORRI3 CORRI · ↑OTP/38')}${scell('1558')}${scell('1601')}${scell('B','sky')}${scell('02','amb')}${scell('RP')}</div></div>
-      <div class="sref-label">FIG D-1 · SWIFT22 IFR LIMA VFR-ON-TOP RWY3 — CORRI</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','P-TIME','REQ ALT','DEPT POINT','CLEARANCE LIMIT / ROUTE / REMARKS','REQ RLS','RLS TIME','CLNC ISSUED','DEPT TIME','FLT PLNG'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('SWIFT22')}${scell('G/V22/I','sky')}${scell('4543','pur')}${scell('P1730','amb')}${scell('OTP/38','amb')}${scell('NFG')}${scell('NFG CORRI3 CORRI · ↑OTP/38')}${scell('1732')}${scell('35')}${scell('B','sky')}${scell('37','amb')}${scell('RP')}</div></div>
-      <div class="sref-label">FIG D-6 · N23485 OVERFLIGHT</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','CODE','RADAR ID FIX','TIME AT ID FIX','ROUTE THROUGH LIMA AIRSPACE / ALT','HANDOFF FACILITY','HANDOFF TIME'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('N23485')}${scell('PA34','sky')}${scell('0252','pur')}${scell('TANNR')}${scell('1745','amb')}${scell('TANNR-CRQ · <b>V</b> · Ⓡ · 45','amb')}${scell('RIV','sky')}${scell('1756','amb')}</div></div>
-      <div class="note" style="margin:6px 0 10px">FIG D-6: write a large V in Blk9 if the overflight is VFR; otherwise IFR.</div>
-      <div class="sref-label">FIG D-6 · N4282M POINT OUT</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE/EQPT','CODE','RADAR ID FIX','TIME ENTERING LIMA','ROUTE THROUGH LIMA AIRSPACE / ALT','POINTOUT FACILITY','EXIT LIMA'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('N4282M')}${scell('SR22','sky')}${scell('0255','pur')}${scell('OCN')}${scell('2022','amb')}${scell('OKB–F70 · <b>V</b> · 45','amb')}${scell('PSCT','sky')}${scell('2030','amb')}</div></div>
-      <div class="note" style="margin:6px 0 10px">FIG D-6: write a large V in Blk9 if the point out is VFR; otherwise IFR.</div>
-      <div class="sref-label">FIG D-6 · N234WC FALLBROOK DEPARTURE</div>
-      <div class="sref-mock"><div class="sref-row">${heads(['CALLSIGN','TYPE','CODE','P-TIME','REQ ALT','DEPT POINT','ROUTE OF FLIGHT, CLR LIMIT / VOID','DEP TIME','EXIT LIMA'])}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('N234WC')}${scell('2/AV8','sky')}${scell('5646','pur')}${scell('P1800','amb')}${scell('60','amb')}${scell('L18')}${scell('ROBNN OCN V23 LAX V299 VTU VTU299R SBA · V&lt;1810')}${scell('1811','amb')}${scell('1812','amb')}</div></div>
-    </details>`;
-    return `<div class="card" style="padding:16px;margin-top:12px">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:4px">
-        <h2 class="sec" style="margin-bottom:0">${I.file} STRIPS</h2>
-        <span class="pill warn">FACMAN App D · 6-1-10</span>
-      </div>
-      <div class="note" style="margin-bottom:14px">NFG FACMAN Appendix D + §6-1-10 / §5-1-10. Primary view: one primary each for FIG D-4 departure and FIG D-5 arrival. Open Appendix D in FACMAN for the full figure set. Pass-a-bay still prefers 6-3-4 / 6-3-6 / 6-3-7 + TBL 6-4.</div>
-      <div style="margin:0 0 12px"><button type="button" class="btn-ghost" data-action="openpub" data-id="facman" data-page="148">Open Appendix D · FACMAN p.148</button></div>
-
-      <div class="sref-pos rfd"><span class="sdot"></span>RADAR DEPARTURE — FIG D-4</div>
-      <div class="sref-label">FIG D-4 · ATLAS40 IFR DEPARTURE</div>
-      <div class="sref-mock"><div class="sref-row">${heads(depH)}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('ATLAS40')}${scell('H/H1/P','sky')}${scell('4774','pur')}${scell('P1900','amb')}${scell('50','amb')}${scell('NFG')}${scell('NFG BLDG2 VISTA V458 BONDO · NKX · ↑40 · Ⓡ')}${scell('1900')}${scell('02')}${scell('B','sky')}${scell('04','amb')}</div></div>
-      <table class="sref-table"><tr><th>FIELD (FIG D-4)</th><th>WHAT GOES HERE</th><th>TAG</th></tr>
-        ${row('CALLSIGN / TYPE / CODE','','Blk1 callsign; Blk3 type/eqpt (+CWT); Blk5 beacon.','ATLAS40 · H/H1/P · 4774',ftag('req','6-1-10'))}
-        ${row('P-TIME / REQ ALT / DEPT POINT','amb','Blk6 proposed departure time; Blk7 requested altitude; DEPT POINT (NFG unless other).','P1900 · 50 · NFG',ftag('req','6-1-10'))}
-        ${row('CLEARANCE LIMIT / ROUTE / REMARKS / RADAR CONTACT','','Blk9 clearance limit, route, altitude, remarks; radar contact/handoff symbol if req.','NFG BLDG2 VISTA… · ↑40 · circled R',ftag('req','FIG D-4'))}
-        ${row('REQ RLS / RLS TIME / CLNC ISSUED / DEPT TIME','amb','Blk13 release requested; Blk14 actual release; Blk12 B when clearance broadcast; Blk15 departure time.','1900 · 02 · B · 04',ftag('ann','6-1-10'))}
-      </table>
-
-      <div class="sref-hr"></div>
-
-      <div class="sref-pos arr"><span class="sdot"></span>RADAR ARRIVAL — FIG D-5</div>
-      <div class="sref-label">FIG D-5 · STMPD19 IFR ARRIVAL</div>
-      <div class="sref-mock"><div class="sref-row">${heads(arrH)}</div>
-        <div class="sref-row" style="margin-top:1px">${scell('STMPD19')}${scell('I/B350/L','sky')}${scell('2252','pur')}${scell('SXC')}${scell('OCN')}${scell('1745','amb')}${scell('I','sky')}${scell('✓')}${scell('<s>50</s> <s>40</s> 24 · C7','amb')}${scell('Ⓡ','sky')}${scell('TZ')}${scell('FS')}${scell('1')}</div></div>
-      <table class="sref-table"><tr><th>FIELD (FIG D-5)</th><th>WHAT GOES HERE</th><th>TAG</th></tr>
-        ${row('PREVIOUS FIX / COORD FIX / ETA AT COORD FIX','','Blk6 previous fix; Blk7 coordination fix; ETA at coord fix.','SXC · OCN · 1745',ftag('req','6-1-10'))}
-        ${row('ACTUAL IFR / INBOUND PASSED','sky','I in box 8 for approaches on an IFR flight plan; checkmark when inbound passed to tower.','I · ✓',ftag('ann','FIG D-5'))}
-        ${row('ALTITUDE','amb','Blk9 altitude (hundreds); strike as cleared lower; C/SFA with altitude once checked in.','<s>50</s> <s>40</s> 24 · C7',ftag('req','FIG D-5'))}
-        ${row('RADAR CONTACT / HANDOFF','sky','Circled R for radar contact/handoff (C/SFA stays with altitudes).','circled R',ftag('ann','FIG D-5'))}
-        ${row('TYPE APCH / INTENT / BAY','','Blk10 type apch (checkmark through once cleared); Blk11 intentions; Blk12 bay.','TZ · FS · 1 (figure; checkmark through once cleared)',ftag('ann','FIG D-5'))}
-      </table>
-      <div class="sref-rule"><b>FIG D-5:</b> STMPD19 shows TZ (put a checkmark through TYPE APCH once cleared); I in box 8 for IFR arrivals (IFR + multi-GCA); C around frequency/SFA once checked in. Multi-GCA uses RADAR ID FIX + TIME AT ID FIX (not PREV/COORD/ETA). Non-radar strip has no ACTUAL IFR box (TIME AT ID FIX + INBOUND TO TOWER only). Pass-a-bay coordination prefers FACMAN 6-3-4 / 6-3-6 / 6-3-7 + <span class="grn">TBL 6-4</span>.</div>
-
-      <div class="sref-hr"></div>
-      <div class="sref-pos rfd"><span class="sdot"></span>STRIP ABBREVS — TBL 5-3 / 5-4 / 5-5 (5-1-10) · TBL 6-3 (6-1-11)</div>
-      <div class="note" style="margin-bottom:8px">FACMAN 5-1-10 → TBL 5-3/5-4/5-5 for departure / VFR-on-Top / SVFR marks. FACMAN 6-1-11 → TBL 6-3 for radar strip marking (with JO 7110.65). App D-8 (Tower VFR abbreviations) is listed in the TOC but not in the July 2025 PDF body.</div>
-      <table class="sref-table"><tr><th>TABLE</th><th>ABBREVIATIONS (as printed)</th><th>TAG</th></tr>
-        ${row('TBL 5-3 Departure procedures','','Quentin → QUNTN# · Corri → CORRI# · Bulldog → BLDG# · Munn → MUNN#.','',ftag('req','5-1-10'))}
-        ${row('TBL 5-4 VFR-on-Top limits','amb','VISTA → BLDG# · CORRI (helo) → CORRI# · QUENTIN → QUNTN#.','',ftag('req','5-1-10'))}
-        ${row('TBL 5-5 SVFR routes','sky','Intersection → NW · LCAC → SW · VORTAC → SW · North Initial → NE · Point Canyon → N · Pattern → circled W.','',ftag('ann','5-1-10'))}
-        ${row('TBL 6-3 Approach / intent','pur','SA·PA·TZ·TY·T3·TA21·VA · FS·LA·TG·SG·OPT·3·MA.','',ftag('req','6-1-11'))}
-        ${row('TBL 6-3 Radar / void / SCT','amb','R (contact / terminated / lost / handoff) · P point-out · V&lt; void · SCT · V/I depart.','',ftag('req','6-1-11'))}
-        ${row('TBL 6-3 Dep / fixes','','QUNTN·BLDG·CORRI·MUNN · ON·SC·AM·GO·CO · RNAV.','',ftag('ann','6-1-11'))}
-      </table>
-      <div style="margin:8px 0 4px;display:flex;gap:8px;flex-wrap:wrap">
-        <button type="button" class="btn-ghost" data-action="openpub" data-id="facman" data-page="55">Open TBL 5-3…5-5 · FACMAN p.55</button>
-        <button type="button" class="btn-ghost" data-action="openpub" data-id="facman" data-page="83">Open TBL 6-3 · FACMAN p.83</button>
-      </div>
-
-      ${more}
-
-      <div class="sref-rule" style="margin-top:14px"><b>CARDINAL RULE (6-1-10 / 5-1-10):</b> Maintain current data; write clearly — strips are an official record. Scratchpad codes for Final/Tower coord live in <span class="grn">TBL 6-4</span>.</div>
-    </div>`;
-  }
 
   function appBase(){
     let p='/';
@@ -4508,7 +4373,6 @@ function pdfPaneHTML(){
         <div class="gg"><div class="gn">SoCal</div><div class="gd">Overlying approach (127.3 / 323.0).</div></div>
         <div class="gg"><div class="gn">WX / CRASH</div><div class="gd">Weather; crash hotline.</div></div></div>
         <div class="note" style="margin-top:10px">Mirrors the VCSS landline layout. Discrete internal frequencies are intentionally not listed — only published positions; the full freq load stays in on-device, access-controlled material.</div></div>
-      ${stripsRef()}
       </div></details>`; }
 
   function stationScreen(){ const lock=(c,n)=>`<div class="stn lock"><div class="code">${c}</div><div class="nm">${n}</div><div class="lockrow">${I.lock} Content in validation — coming soon</div></div>`;
@@ -4571,28 +4435,20 @@ function pdfPaneHTML(){
       return fcKeep(o);
     }
   });
-  /* ===== flashcard actions (Cards / Sort / Learn) ===== */
-  function fcCardsView(){ const {cards}=fcOrderedDeck(); return S.fcOnlyNot?cards.filter(c=>FCQ.status(S.fcStats,c.id)!=='KNOWN'):cards; }
+  /* ===== flashcard actions (CARDS · PRACTICE) ===== */
   function fcAction(a, el){
-    if(a==='fcmode'){ return fcKeep({fcMode:el.dataset.m||'cards', fcFlip:false}), true; }
+    if(a==='fcmode'){ fcKeep({fcMode:el.dataset.m==='practice'?'practice':'cards', fcFlip:false}); return true; }
     if(a==='fcsets'){ setTimeout(()=>{ const d=document.querySelector('#vatc details.fc-sets'); S.fcSetsOpen=!!(d&&d.open); },0); return true; }
-    if(a==='fcrate'){
-      const cards=fcCardsView(); if(!cards.length) return true;
-      const i=((S.fcIdx%cards.length)+cards.length)%cards.length, card=cards[i], know=el.dataset.k==='1';
-      const s0=FCQ.stat(S.fcStats, card.id);
-      FCQ.touch(S.fcStats, card.id, know?{status:FCQ.KN, times_correct:s0.times_correct+1}:{status:FCQ.SL, times_missed:s0.times_missed+1});
-      saveFcStats(); S.fcLastId=card.id;
-      const ni=(S.fcOnlyNot&&know)?i:i+1;
-      fcKeep({fcIdx:ni, fcFlip:false, fcSess:null}); return true;
-    }
     const ss=S.fcSess;
-    if(a==='fcsort'){
-      if(!ss||!ss.st) return true;
+    if(a==='fcrate'){
+      if(!ss||!ss.st||S.fcMode==='practice') return true;
       const id=FCQ.sortCurrent(ss.st); if(id==null) return true;
       FCQ.sortMark(ss.st, S.fcStats, el.dataset.k==='1'); S.fcLastId=id; saveFcStats();
       fcKeep({fcFlip:false}); return true;
     }
     if(a==='fcsortnext'){ if(ss&&ss.st){ ss.st=FCQ.sortNextRound(ss.st); } fcKeep({fcFlip:false}); return true; }
+    if(a==='fcprev'){ if(ss&&ss.st&&S.fcMode!=='practice'){ FCQ.sortBack(ss.st); } fcKeep({fcFlip:false}); return true; }
+    if(a==='fcrestart'){ fcKeep({fcSess:null, fcIdx:0, fcFlip:false}); return true; }
     if(a==='fcmc'){
       if(!ss||!ss.st||!ss.choices) return true;
       const id=FCQ.learnCurrent(ss.st); if(id==null) return true;
@@ -4613,7 +4469,7 @@ function pdfPaneHTML(){
       ids.forEach(id=>{ delete S.fcStats[id]; }); saveFcStats();
       fcKeep({fcSess:null, fcIdx:0, fcFlip:false, fcLastId:null}); return true;
     }
-    if(a==='fcjump'){ const i=Math.max(0,parseInt(el.dataset.i,10)||0); fcKeep({fcIdx:i, fcFlip:false}); fcEnsureCardVisible(true); return true; }
+    if(a==='fcjump'){ if(ss&&ss.st&&S.fcMode!=='practice'&&el.dataset.id){ FCQ.sortJump(ss.st, el.dataset.id); } fcKeep({fcFlip:false}); fcEnsureCardVisible(true); return true; }
     return false;
   }
   document.getElementById('vatc').addEventListener('click',e=>{ const el=e.target.closest('[data-action]'); if(!el)return; const a=el.dataset.action;
@@ -4667,8 +4523,6 @@ function pdfPaneHTML(){
       return fcKeep({fcFlip:S.fcFlip});
     }
     if(fcAction(a, el)) return;
-    if(a==='fcnext'){const n=fcCardsView().length||1; return fcKeep({fcIdx:(S.fcIdx+1+n)%n,fcFlip:false});}
-    if(a==='fcprev'){const n=fcCardsView().length||1; return fcKeep({fcIdx:(S.fcIdx-1+n)%n,fcFlip:false});}
     if(a==='fcshuffle'){const {deck,key}=fcOrderedDeck(); return fcKeep({fcOrder:fcShuffleOrder(deck.length,key),fcIdx:0,fcFlip:false});}
     if(a==='fccite'){const cite=el.dataset.cite||''; if(!cite)return; openLearnCite(cite,{title:el.dataset.title||'', from:'fc'}); return;}
     if(a==='scn'){if(S.scnAns)return;const steps=SCN[S.pos]||SCN.rfd;const i=+el.dataset.i;return set({scnSel:i,scnAns:true,scnScore:S.scnScore+(i===steps[S.scnIdx].ans?1:0)});}

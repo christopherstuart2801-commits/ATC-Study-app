@@ -52,6 +52,28 @@ const mkIds = n => Array.from({ length: n }, (_, i) => 'c' + i);
   ok('sort: stats track times_missed + last_seen', s4.x.times_missed === 1 && s4.x.last_seen === 42 && s4.x.status === 'STILL_LEARNING');
 }
 
+/* ---------- CARDS tab (Sort rules merged into Cards) ---------- */
+{
+  const ids = mkIds(6), stats = { c2: { status: 'KNOWN' } };
+  const a = FCQ.sortStart(ids, stats, rngFrom(1), null, { keepOrder: true, includeKnown: true });
+  ok('cards: round 1 keeps deck order and includes KNOWN cards when "Not known only" is off', a.queue.join() === ids.join());
+  const b = FCQ.sortStart(ids, stats, rngFrom(1), null, { keepOrder: true, includeKnown: false });
+  ok('cards: "Not known only" round skips KNOWN cards', b.queue.length === 5 && !b.queue.includes('c2'));
+  FCQ.sortMark(a, stats, false, 1); FCQ.sortMark(a, stats, true, 1);
+  FCQ.sortBack(a);
+  ok('cards: PREV steps back one card and takes it out of its pile', FCQ.sortCurrent(a) === 'c1' && !a.known.includes('c1') && a.learning.join() === 'c0');
+  FCQ.sortJump(a, 'c4');
+  ok('cards: tapping a list row shows that card next', FCQ.sortCurrent(a) === 'c4' && a.queue.filter(x => x === 'c4').length === 1);
+  FCQ.sortJump(a, 'c0');
+  ok('cards: tapping an already-marked card re-adds it and clears its mark', FCQ.sortCurrent(a) === 'c0' && !a.learning.includes('c0'));
+  let st = FCQ.sortStart(ids, {}, rngFrom(2), null, { keepOrder: true, includeKnown: true }); const s2 = {};
+  while (!st.done) FCQ.sortMark(st, s2, FCQ.sortCurrent(st) === 'c3' || FCQ.sortCurrent(st) === 'c5' ? false : true, 1);
+  const nx = FCQ.sortNextRound(st, rngFrom(2));
+  ok('cards: round summary → next round is Still-learning cards only', st.known.length === 4 && st.learning.length === 2 && nx.queue.slice().sort().join() === 'c3,c5' && nx.round === 2);
+  while (!nx.done) FCQ.sortMark(nx, s2, true, 1);
+  ok('cards: all marked Know → finished (UI offers Reset deck / Go again)', nx.finished && ids.every(id => FCQ.status(s2, id) === 'KNOWN'));
+}
+
 /* ---------- LEARN ---------- */
 {
   // reinsertion 2–3 later
