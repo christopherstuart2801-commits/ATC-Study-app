@@ -544,7 +544,7 @@ ok('Ask restore uses askDoneQ not draft', /askDoneQ:''/.test(html) && /if\(S\.as
 ok('Ask Ctrl+F does not hijack while typing', /Ask query field \/ Ask without PDF/.test(html) && /S\.tab==='ask' && \(!S\.pub \|\| \(e\.target && e\.target\.id==='reflk'\)\)\) return;/.test(html));
 ok('instructor lead nitty-gritty (no we-voice essay)', /Dense first-line answer/.test(html) && /Tower open \(App A-1\)/.test(html) && /Radar close \(App A-4\)/.test(html) && !/We open /.test(html) && !/Here is the procedure from /.test(html));
 ok('Reference uses professional Find console', /function refConsole\([\s\S]*?PUBLICATIONS[\s\S]*?Find in publications[\s\S]*?data-action=\"findgo\">FIND/.test(html) && /function askConsole\([\s\S]*?VECTOR · ASK/.test(html));
-ok('Reference skips VECTOR answer card', /box\.innerHTML=\(S\.tab==='ask'\?vectorAnswerHTML/.test(html));
+ok('Reference skips VECTOR answer card', /box\.innerHTML=(?:sjHTML\+)?\(S\.tab==='ask'\?vectorAnswerHTML/.test(html));
 ok('fc chips gray counts', /fc-n/.test(html) && /countOf/.test(html));
 ok('clickable TBL refs', /function linkifyTblRefs\(/.test(html) && /data-action="jumptbl"/.test(html) && /function jumpTblRef\(/.test(html));
 ok('v0.8.18: CORS-blocked METAR/VIDS strip removed (no fake sample wx)', !/fetchKnfgMetar/.test(html) && !/aviationweather\.gov\/api\/data\/metar/.test(html) && !/function vidsStrip\(\)/.test(html));
@@ -614,7 +614,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.21 fc-answer-only', /v0\.8\.21 · fc-answer-only<\/span>/.test(html) && !/v0\.8\.20 · fc-clean-answers<\/span>/.test(html));
+ok('statusbar v0.8.22 ask-section-jump', /v0\.8\.22 · ask-section-jump<\/span>/.test(html) && !/v0\.8\.21 · fc-answer-only<\/span>/.test(html));
 // v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
 {
   const OLD25=[/2,?200 via heading 211/i,/CLIMB AND MAINTAIN 2200 VIA/i,/ten \(10\) feet/,/±\s?10 feet/,/±\s?50 feet of the azimuth/,/between 51 and 100 feet/,/between 11 and 25 feet/,/between 26 and 50 feet/,/MAINTAIN 3800, PROCEED DIRECT ONTOS/i,/ONE THOUSAND TWO HUNDRED THEN TURN LEFT/,/UPWIND NUMBERS AND LEAVING/,/RS with ADC/,/RS, ADC, RD/,/H-1 departures only/,/between Bravo and Delta taxiways/,/Between 11 and 7 miles on final/,/go-around \(VFR\) or missed approach \(IFR\)/];
@@ -690,7 +690,7 @@ if (sm) {
   let code = sm[1];
   code = code.replace(
     /document\.getElementById\('vatc'\)\.addEventListener\('click'[\s\S]*render\(\);\s*\}\)\(\);/,
-    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcFaceHTML,fcSetChipRow,QZ_PARTS,QZ_DECKS,QZ_DUPES,QZ_MOVE,QZ_SRC_ORDER,QZ_CAT_OF,qzPartOf,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,diversifyAskHits,pubIdForDoc,queueCrossPubFind};\n})();'
+    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcFaceHTML,secLookup,secBoxHTML,SEC_IDX,SEC_PUBS,fcSetChipRow,QZ_PARTS,QZ_DECKS,QZ_DUPES,QZ_MOVE,QZ_SRC_ORDER,QZ_CAT_OF,qzPartOf,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,diversifyAskHits,pubIdForDoc,queueCrossPubFind};\n})();'
   );
   try {
     eval(code);
@@ -1154,6 +1154,37 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           ok('fc-clean: fdio reverse cards untouched', allC.some(c=>c.id==='fdio-nfgt' && c.a==='NFG Tower') && allC.some(c=>c.id==='fdio-radar' && c.a==='NF1A, NF1D'));
           ok('fc-clean: no green answer still ends with FLIP plate header', !allC.some(c => /FLIP plate header\.?$/.test(c.a||'')));
           ok('v0.8.21: no grey note line rendered on cards (fcdet gone)', !/fcdet/.test(html));
+        { // v0.8.22 ask-section-jump: paragraph-number lookup from the real pub section index
+          const L=V.secLookup, show=r=>r.hits.map(h=>h.lab+' · '+h.sec+'. '+h.title).join(' | ');
+          const has=(r,pub,sec,re)=>r.hits.some(h=>h.pub===pub && h.sec===sec && re.test(h.title));
+          ok('sec: SEC_IDX built from pubs (FACMAN / JO / Chg 2 / AIM / AOM)', V.SEC_IDX && Object.keys(V.SEC_IDX.facman||{}).length>250 && Object.keys(V.SEC_IDX.jo||{}).length>650 && Object.keys(V.SEC_IDX.aim||{}).length>400 && Object.keys(V.SEC_IDX.jochg2||{}).length>150 && Object.keys(V.SEC_IDX.aom||{}).length>20, Object.entries(V.SEC_IDX||{}).map(([k,v])=>k+'='+Object.keys(v).length).join(' '));
+          const r557=L('557');
+          ok("sec: '557' → FACMAN 5-5-7 + JO 5-5-7 real headings, FACMAN first", r557.isSec && r557.pure && r557.hits[0].pub==='facman' && has(r557,'facman','5-5-7',/^OPPOSITE DIRECTION OPERATIONS \(ODO\)$/) && has(r557,'jo','5-5-7',/^PASSING OR DIVERGING$/) && has(r557,'jochg2','5-5-7',/^PASSING OR DIVERGING$/), show(r557));
+          const rD=L('5-5-7');
+          ok("sec: '5-5-7' = same rows as '557'", show(rD)===show(r557) && show(L('5 5 7'))===show(r557) && show(L('5.5.7'))===show(r557), show(rD));
+          const rF=L('FACMAN 557');
+          ok("sec: 'FACMAN 557' → only FACMAN (primary)", rF.hits.length===1 && rF.hits[0].pub==='facman' && rF.hits[0].primary && rF.hits[0].page===V.SEC_IDX.facman['5-5-7'][1], show(rF));
+          const jo=['7110 5-5-7','.65 557','JO 5-5-7'].map(L);
+          ok("sec: '7110 5-5-7' / '.65 557' / 'JO 5-5-7' → JO only (Chg 2 then Basic)", jo.every(r=>r.hits.length===2 && r.hits[0].pub==='jochg2' && r.hits[1].pub==='jo' && r.hits[0].primary), jo.map(show).join(' || '));
+          const r6=L('6-4-11 f');
+          ok("sec: '6-4-11 f' resolves to FACMAN 6-4-11 CLIMBOUT INSTRUCTIONS (subpara f)", r6.isSec && r6.sub==='f' && has(r6,'facman','6-4-11',/^CLIMBOUT INSTRUCTIONS$/), show(r6));
+          ok("sec: sub-letter forms '5-5-7a' / '557 a' / 'facman 6-4-11(f)'", L('5-5-7a').sub==='a' && L('557 a').sub==='a' && L('facman 6-4-11(f)').sub==='f' && L('5-5-7a').hits.length===r557.hits.length);
+          const r2421=L('2421');
+          ok("sec: ambiguous compact '2421' → every valid split tried, resolves to JO 2-4-21", r2421.keys.includes('2-4-21') && r2421.keys.includes('24-2-1') && r2421.hits.length===1 && r2421.hits[0].sec==='2-4-21' && /^DESCRIPTION OF AIRCRAFT TYPES$/.test(r2421.hits[0].title), show(r2421));
+          ok("sec: compact split helper (1210 → 1-2-10, 2421 → 2-4-21/2-42-1/24-2-1, no zero parts)", (function(){ const a=L('1210').keys, b=L('2421').keys; return a.includes('1-2-10') && !a.some(k=>/(^|-)0/.test(k)) && ['2-4-21','2-42-1','24-2-1'].every(k=>b.includes(k)); })());
+          const r999=L('999'), b999=V.secBoxHTML(r999);
+          ok("sec: non-existent number → plain not-found message, no invented section", r999.isSec && r999.pure && !r999.hits.length && /No section 9-9-9 in the indexed pubs/.test(b999) && !/data-action="opensec"/.test(b999), b999.replace(/<[^>]+>/g,' ').replace(/\s+/g,' '));
+          ok("sec: 'FACMAN 999' → not found in FACMAN", /No section 9-9-9 in FACMAN\./.test(V.secBoxHTML(L('FACMAN 999'))));
+          ok("sec: TBL / FIG / App forms", has(L('TBL 5-3'),'facman','TBL 5-3',/Strip Marking for Departure Procedures/) && has(L('fig D-4'),'facman','FIG D-4',/Radar Departure Strips/) && has(L('App C'),'facman','APP C',/AIRFIELD AND AIRSPACE/) && has(L('AOM 2010'),'aom','2010',/MANIFEST REQUIREMENT/));
+          const mx=L('what is 5-5-7 about');
+          ok("sec: mixed text keeps normal answer (isSec, not pure) + section rows", mx.isSec && !mx.pure && has(mx,'facman','5-5-7',/OPPOSITE/) && L('what is 557 about').isSec);
+          ok('sec: normal word questions / freqs / squadron numbers are not section queries', ['hold short','tower frequency 128.775','HMLA 267 callsign','class d 2500 feet','runway 21 hold short','what is the 3 mile rule'].every(q=>!L(q).isSec));
+          const bx=V.secBoxHTML(r557);
+          ok('sec: rows = "PUB · 5-5-7. HEADING" buttons that open the reader at the section page', /data-action="opensec" data-pub="facman" data-sec="5-5-7" data-page="\d+"/.test(bx) && /<span class="sj-pub">FACMAN<\/span><span class="sj-t">5-5-7\. OPPOSITE DIRECTION OPERATIONS \(ODO\)/.test(bx) && /<span class="sj-pub">JO 7110\.65<\/span><span class="sj-t">5-5-7\. PASSING OR DIVERGING/.test(bx));
+          ok('sec: drawLookup shows section rows first; pure number query skips Find/PDF scan', /const sj=secLookup\(q\), sjHTML=secBoxHTML\(sj\);\s*if\(sj\.isSec && sj\.pure\)\{ box\.innerHTML=sjHTML; return; \}/.test(html) && /box\.innerHTML=sjHTML\+\(S\.tab==='ask'\?vectorAnswerHTML/.test(html));
+          ok('sec: Back from reader restores hits scroll', /function restoreHitsScroll\(y\)/.test(html) && /S\.hitsScroll=\(sm&&sm\.scrollTop\)\|\|0/.test(html) && /const y=S\.hitsScroll; S\.hitsScroll=null; set\(\{pub:null/.test(html));
+          ok('sec: index headings agree with BOOK paragraph titles (FACMAN/JO)', (function(){ let n=0, bad=[]; const nz=t=>String(t||'').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim(); Object.values(V.BOOK).forEach(b=>{ if(b.kind!=='para') return; const pid=/FACMAN/.test(b.doc||'')?'facman':(/7110/.test(b.doc||'')?'jo':null); if(!pid) return; const e=V.SEC_IDX[pid][String(b.pg||'').replace(/[\u2212\u2013]/g,'-')]; if(!e) return; n++; if(nz(e[0])!==nz(b.pa) && nz(e[0])!==nz(b.title) && !nz(e[0]).startsWith(nz(b.pa))) bad.push(b.pg+':'+e[0]+'≠'+b.pa); }); return n>300 && bad.length===0 || (console.log('   bad', bad.slice(0,5)), false); })());
+        }
           { const card=allC.find(c=>c.id==='asr-info-pass'); const fh=V.fcFaceHTML?V.fcFaceHTML(card):null;
             ok('v0.8.21: revealed ASR brief card = question + green Final + source link only', !!fh && (/<div class="a big">Final<\/div><button type="button" class="fcsrc fccitebtn"/.test(fh) && !/6-4-7 info/.test(fh)), fh===null?'fcFaceHTML not exported (html-only check)':''); }
         }
