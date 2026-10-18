@@ -102,7 +102,7 @@
 #vatc .hero .hstats div b{ font-family:var(--fd); font-size:18px; color:var(--text); display:block;}
 #vatc .hero .hstats div span{ font-size:8.5px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase;}
 #vatc .grp{ font-family:var(--fd); letter-spacing:.2em; font-size:10px; color:var(--amber); text-transform:uppercase; margin:16px 0 8px;}
-/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile · v0.8.16 fac2026-sync · v0.8.17 fac2026-reader · v0.8.18 brief-polish · v0.8.19 fqr-trim · v0.8.20 fc-clean-answers · v0.8.21 fc-answer-only · v0.8.22 ask-section-jump */
+/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile · v0.8.16 fac2026-sync · v0.8.17 fac2026-reader · v0.8.18 brief-polish · v0.8.19 fqr-trim · v0.8.20 fc-clean-answers · v0.8.21 fc-answer-only · v0.8.22 ask-section-jump · v0.8.23 pos-usecase */
 #vatc .stnbar{ font-family:var(--fd); font-size:12px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 2px 10px; margin-bottom:12px; border-bottom:1px solid var(--line); }
 #vatc .pos6{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px; }
 @media(max-width:640px){ #vatc .pos6{ grid-template-columns:1fr 1fr; } }
@@ -498,6 +498,16 @@
 #vatc .fc-sets .fc-chg{ font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:12px; padding:3px 9px; }
 #vatc .fc-sets[open] .fc-chg{ color:var(--green); border-color:var(--green2); }
 #vatc .fc-sets .fc-chip-wrap{ margin:0; padding:0 10px 10px; }
+#vatc .fc-guide{ border:1px solid var(--line); border-radius:10px; background:var(--panel); margin:0 0 10px; }
+#vatc .fc-guide > summary{ list-style:none; cursor:pointer; padding:8px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+#vatc .fc-guide > summary::-webkit-details-marker{ display:none; }
+#vatc .fc-guide > summary .muted{ font-size:9px; letter-spacing:.16em; }
+#vatc .fc-guide > summary b{ font-family:var(--fd); letter-spacing:.08em; font-weight:600; color:var(--muted); }
+#vatc .fc-guide .fcg-b{ padding:0 12px 10px; font-size:12px; line-height:1.45; color:var(--text); }
+#vatc .fc-guide .fcg-b p{ margin:0 0 6px; }
+#vatc .fc-guide .fcg-b p:last-child{ margin:0; }
+#vatc .fc-guide .fcg-b span{ display:inline-block; min-width:54px; font-size:9px; letter-spacing:.14em; color:var(--muted); }
+#vatc .fc-poschip .chip.uc{ font-size:10px; }
 #vatc .fc-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin:0 0 10px; }
 #vatc .fc-head .seg{ margin:0; }
 #vatc .fc-counts{ font-size:11px; letter-spacing:.04em; display:flex; gap:6px; align-items:center; }
@@ -1655,8 +1665,8 @@
       fcCard('ts-10-18','Boxes 10–18','Enter data as specified by a facility directive. Arrival/radar: need not enter except when nonradar procedures are used or radio recording equipment is inoperative. Departure items may include departure time, runway used for takeoff, check marks for information forwarded or relayed.','Strip','termstrip',SRC_TBL234)
     ]
   };
-  function activeFcDeck(){ const d=S.fcDeck; let deck; if(d && d!=='pos' && QZ_DECKS[d]) deck=QZ_DECKS[d]; else if(d && d!=='pos' && FC_SETS[d]) deck=FC_SETS[d]; else deck=posDeck(S.pos); return isSqDeck(d)?sqFilter(deck):deck; }
-  function fcDeckKey(){ const b=(S.fcDeck && S.fcDeck!=='pos') ? S.fcDeck : S.pos; return isSqDeck(S.fcDeck)?b+'|'+(S.sqShow||'cs')+'|'+(S.sqType||'')+'|'+(S.sqTbl||''):b; }
+  function activeFcDeck(){ const d=S.fcDeck; let deck; if(d && /^uc-/.test(d)) deck=ucDeck(d)||posDeck(S.pos); else if(d && d!=='pos' && QZ_DECKS[d]) deck=QZ_DECKS[d]; else if(d && d!=='pos' && FC_SETS[d]) deck=FC_SETS[d]; else deck=posDeck(S.pos); return isSqDeck(d)?sqFilter(deck):deck; }
+  function fcDeckKey(){ const b=(S.fcDeck && S.fcDeck!=='pos') ? (/^uc-/.test(S.fcDeck)?S.fcDeck+'@'+S.pos:S.fcDeck) : S.pos; return isSqDeck(S.fcDeck)?b+'|'+(S.sqShow||'cs')+'|'+(S.sqType||'')+'|'+(S.sqTbl||''):b; }
   function fcOrderedDeck(){
     const deck=activeFcDeck()||[];
     const key=fcDeckKey();
@@ -2180,6 +2190,148 @@
     });
     QZ_PARTS.forEach(P=>{ QZ_DECKS['q-'+P.id]=[].concat.apply([], P.cats.map(c=>QZ_DECKS[c.k])); P.n=QZ_DECKS['q-'+P.id].length; });
   })();
+  /* ===== v0.8.23 pos-usecase: per-position flashcard sets by use case (LIVE ON POSITION · CHECKOUT & TEST · NEW TO STATION).
+     Built from FACMAN July 2026 + the position's LQS/ACAD paper. Existing cards are reused by id (same objects → saved progress carries);
+     new cards are ucr-* ids. Each set opens with a guide (what it covers, where it comes from, how to study). RFD first; other positions
+     follow one per night (FACMAN-only until Christopher sends that position's LQS paper). */
+  const UC_KEYS=['uc-live','uc-test','uc-new'];
+  const UC_LAB={'uc-live':'LIVE ON POSITION','uc-test':'CHECKOUT & TEST','uc-new':'NEW TO STATION'};
+  const UC_F=(pg,pa,hl)=>({doc:'NFG FACMAN July 2026',pg:pg,pa:pa,hl:hl});
+  const FC_UC_NEW={
+    rfd:[
+      /* FACMAN 6-3 Radar Flight Data */
+      fcCard('ucr-631-fn','RFD primary function','Coordinate arrival information with the tower and final controllers.','Radar','rfd',UC_F('6-3-1','DUTIES & RESPONSIBILITIES','The primary function of radar flight data is to coordinate arrival information with the tower and final controllers.')),
+      fcCard('ucr-631-brief','RFD duty-limitations brief — from whom?','The arrival controller (a complete brief).','Radar','rfd',UC_F('6-3-1','DUTIES & RESPONSIBILITIES','The data controller shall receive a complete brief from the arrival controller on duty limitations.')),
+      fcCard('ucr-631-approval','RFD handoffs, point outs, or releases need whose approval?','The arrival controller or radar supervisor.','Radar','rfd',UC_F('6-3-1','DUTIES & RESPONSIBILITIES','shall not take action to initiate or accept handoffs, point outs, or releases without approval from the arrival controller or radar supervisor.')),
+      fcCard('ucr-631-duties','RFD additional duties (6-3-1 a–b)','Receive and post current weather and runway in use; update the Equipment Status Board.','Radar','rfd',UC_F('6-3-1','DUTIES & RESPONSIBILITIES','a. Receiving and posting current weather and runway in use. b. Updating the Equipment Status Board')),
+      fcCard('ucr-632-rel','RFD role in IFR releases','Assist the arrival controller, at their discretion (IAW 6-4-4).','Radar','rfd',UC_F('6-3-2','DEPARTURE COORDINATION','Radar data will assist the arrival controller at their discretion in obtaining IFR releases.')),
+      fcCard('ucr-633-who','Who forwards weather to TRACON and GCA?','The tower.','Weather','rfd',UC_F('6-3-3','WEATHER INFORMATION','The tower is responsible for forwarding weather information to TRACON and GCA.')),
+      fcCard('ucr-633-when','RFD updates weather on the control display — how often?','Each hour or as necessary.','Weather','rfd',UC_F('6-3-3','WEATHER INFORMATION','The radar data controller will update the weather on the control display each hour or as necessary.')),
+      fcCard('ucr-633-aware','New weather — RFD makes sure who is aware?','The supervisor, arrival, and final controllers.','Weather','rfd',UC_F('6-3-3','WEATHER INFORMATION','Radar data shall ensure the supervisor, arrival, and final controllers are aware of the new weather information.')),
+      fcCard('ucr-635-dep','RFD forwards departure time — to whom, for which aircraft?','Tower flight data — every IFR departure from the GCA pattern.','Strip','rfd',UC_F('6-3-5','FORWARDING FLIGHT PROGRESS INFORMATION','Radar flight data shall forward the departure time to tower flight data on all aircraft that depart Camp Pendleton on an IFR flight plan from the GCA pattern.')),
+      /* FACMAN 6-4-4 Departures (release flow RFD assists with) */
+      fcCard('ucr-644-tdreq','Who calls Radar to request a Camp Pendleton departure release?','Tower Flight Data calls the Radar Arrival/Departure Controller.','Radar','rfd',UC_F('6-4-4','DEPARTURES','Tower Flight Data will call Radar Arrival/Departure Controller and request release for Camp Pendleton departures.')),
+      fcCard('ucr-644-req','Who initiates the release request with SCT?','The arrival controller; flight data only when directed by arrival.','Radar','rfd',UC_F('6-4-4','DEPARTURES','The arrival controller is responsible for initiating the release request with SCT. The request may be made by the flight data controller when directed by the arrival controller.')),
+      fcCard('ucr-644-items','Release request to SCT — state what?','Callsign, CID, proposed SID, and amendment number.','Radar','rfd',UC_F('6-4-4','DEPARTURES','the controller shall state callsign, CID, the proposed SID and amendment number with the release request.')),
+      fcCard('ucr-644-readback','SCT reads back flight plan routing on a release — treat it as?','A full route or amended clearance: copy verbatim, forward to tower as one.','Radar','rfd',UC_F('6-4-4','DEPARTURES','Any read back of flight plan routing by SCT shall be considered a full route or amended clearance')),
+      fcCard('ucr-644-released','Forwarding the release to tower — phraseology','(Callsign, CID, restrictions, if any) RELEASED.','Phraseology','rfd',UC_F('6-4-4','DEPARTURES','(Callsign, CID, restrictions, if any) RELEASED.')),
+      fcCard('ucr-644-r2503','R-2503D active with fixed-wing and the departure overflies OCN','Coordinate the IFR release with the R-2503D controller.','Radar','rfd',UC_F('6-4-4','DEPARTURES','When R-2503D is active with fixed-wing aircraft and the departing aircraft will overfly the Oceanside VORTAC, coordinate all IFR releases with the R-2503D controller.')),
+      /* FACMAN 6-1-6 Mode 3/A codes */
+      fcCard('ucr-616-lima','Lima airspace beacon codes','4534 to 4543.','Strip','rfd',UC_F('6-1-6','MODE 3/A CODE ASSIGNMENTS','The beacon codes assigned to MCAS Camp Pendleton for use within Lima airspace are 4534 to 4543.')),
+      fcCard('ucr-616-ra','Codes 4001–4037','MCB Camp Pendleton, restricted area (4037 may be used by the tower).','Strip','rfd',UC_F('6-1-6','MODE 3/A CODE ASSIGNMENTS','Codes 4001 to 4037 are assigned to MCB Camp Pendleton for use within the restricted area.')),
+      fcCard('ucr-616-1255','Code 1255','Active firefighting aircraft.','Strip','rfd',UC_F('6-1-6','MODE 3/A CODE ASSIGNMENTS','Code 1255 has been assigned to active firefighting aircraft.')),
+      /* ACAD-0520 FACMAN refs: 5-1-1, 5-1-12, 5-4-2…5-4-6 */
+      fcCard('ucr-511-def','An emergency is either…','A distress or an urgency condition.','Emergency','rfd',UC_F('5-1-1','EMERGENCIES','An emergency can either be a distress or an urgency condition as defined in FAAO JO 7110.65.')),
+      fcCard('ucr-511-inbound','Emergency inbound to NFG — who notifies the Radar Supervisor?','The Tower Supervisor (and the GCA site as necessary).','Emergency','rfd',UC_F('5-1-1','EMERGENCIES','the Tower Supervisor will notify the Radar Supervisor and GCA site as necessary.')),
+      fcCard('ucr-511-lights','Airfield lighting inoperative, sunset to sunrise','ATIS advisory and advise all aircraft (NITEX excluded).','Emergency','rfd',UC_F('5-1-1','EMERGENCIES','broadcast an advisory on the ATIS and ensure all aircraft are advised of the outage (NITEX excluded).')),
+      fcCard('ucr-5112-nvd','NITEX — arriving and departing aircraft use?','Night vision devices.','Airfield','rfd',UC_F('5-1-12','NIGHT VISION OPERATIONS (NITEX)','All aircraft arriving and departing MCAS Camp Pendleton during the affected hours will use night vision devices.')),
+      fcCard('ucr-5112-who','NITEX — who may be in Class D?','Only aircraft in night vision training, except the station C-12.','Airfield','rfd',UC_F('5-1-12','NIGHT VISION OPERATIONS (NITEX)','Only aircraft participating in night vision training are permitted within Class D airspace with the exception of the station C-12.')),
+      fcCard('ucr-542-hourly','Hourly and special weather observations go to','RATCF and SCT.','Weather','rfd',UC_F('5-4-2','WEATHER','Pass hourly and special weather observations to RATCF and SCT.')),
+      fcCard('ucr-542-pirep','PIREPs — posted, then relayed to','The weather office and RATCF.','Weather','rfd',UC_F('5-4-2','WEATHER','Post PIREPs and relay them to the weather office and to RATCF.')),
+      fcCard('ucr-542-vis','Tower visibility observations — pass when?','Whenever visibility is less than four miles.','Weather','rfd',UC_F('5-4-2','WEATHER','Pass tower visibility observations whenever the visibility is less than four miles.')),
+      fcCard('ucr-543-fuel','Cold refuel request — minimum info for Flight Clearance','Callsign, type, side/tail numbers, location, fuel amount (gallons or pounds).','Coordination','rfd',UC_F('5-4-3','FLIGHT CLEARANCE COORDINATION','The minimum information required from the pilot for relay to Flight Clearance is')),
+      fcCard('ucr-544-sct','Flight data coordinates with SCT (5-4-4)','IFR clearances when FDIO is down; IFR releases when RATCF is down; ATIS code and hourly/special weather via GI over FDIO; airfield and NAVAID status.','Coordination','rfd',UC_F('5-4-4','SCT COORDINATION','Flight data will coordinate the following information with SCT')),
+      fcCard('ucr-545-rfd','RATCF coordination items owned by Radar Flight Data (5-4-5)','Emergencies in progress; field status and conditions.','Coordination','rfd',UC_F('5-4-5','RATCF COORDINATION','b. Emergencies in progress (Radar Flight Data).')),
+      fcCard('ucr-545-rel','All IFR releases (5-4-5) — which RATCF position?','The Arrival / Departure Controller.','Coordination','rfd',UC_F('5-4-5','RATCF COORDINATION','a. All IFR releases (Arrival / Departure Controller).')),
+      fcCard('ucr-546-code','Significant field or weather change — ATIS','New broadcast: the code changes, the weather time does not.','Weather','rfd',UC_F('5-4-6','AUTOMATIC TERMINAL INFORMATION SERVICE (ATIS)','In this case the ATIS code will change but not the time of the weather.')),
+      /* ACAD-0532 FACMAN refs: 8-1-2, 8-2-1, 8-2-3, 8-2-4 */
+      fcCard('ucr-812-replaces','VIDS replaces','DASI, VISCOM, time indicator, and wind indicators.','Equipment','rfd',UC_F('8-1-2','VIDS','The VIDS replaces the Digital Altimeter Setting Indicator (DASI), VISCOM, time indicator, and wind indicators.')),
+      fcCard('ucr-812-info','Information available on the VIDS','Altimeter, time, wind, FDIO, ASOS, ATIS, video camera.','Equipment','rfd',UC_F('8-1-2','VIDS','The following information can be derived from this system')),
+      fcCard('ucr-821-asr9','ASR-9 — distance from the ARP, and who gets its data','1.5 miles; the FAA antenna feeds both this facility and TRACON.','Equipment','rfd',UC_F('8-2-1','ASR-9','1.5 miles from the Airport Reference Point. The FAA-owned antenna provides the same data to both this facility and TRACON.')),
+      fcCard('ucr-823-checks','Radar performance checks — when and what','Daily, at least once each watch (traffic permitting); primary and secondary.','Equipment','rfd',UC_F('8-2-3','STARS INDICATOR','shall be accomplished at least once each watch, available traffic permitting. Both primary and secondary radar systems shall be checked.')),
+      fcCard('ucr-823-msaw','MSAW / CA alarms (8-2-3)','Shall not be inhibited.','Equipment','rfd',UC_F('8-2-3','STARS INDICATOR','MSAW / CA alarms shall not be inhibited.')),
+      fcCard('ucr-823-accept','Who determines radar acceptability?','The controller / ATC supervisor — never non-controller personnel.','Equipment','rfd',UC_F('8-2-3','STARS INDICATOR','Acceptability of the radar is a controller / ATC supervisor determination that cannot be usurped by non-controller personnel.')),
+      fcCard('ucr-823-mapver','Verifying video map accuracy','Targets of opportunity over displayed fixes/NAVAIDs; check runway centerline with landing or departing aircraft.','Equipment','rfd',UC_F('8-2-3','STARS INDICATOR','Using ‘targets of opportunity’ flying over displayed fixes, navigation aids, etc., verify runway centerline by observing landing and / or departing aircraft.')),
+      fcCard('ucr-823-return','Usable target return strength along the radar pattern','2 or 3.','Equipment','rfd',UC_F('8-2-3','STARS INDICATOR','Useable target return strength of 2 or 3 will be maintained along the radar pattern.')),
+      fcCard('ucr-823-maps','STARS video maps 1–5','1 Lima · 2 Golf · 3 Longrifle · 4 Class D & E · 5 Low Altitude Airways.','Equipment','rfd',UC_F('8-2-3','STARS INDICATOR','Map 1 - Lima Map 2 - Golf Map 3 - Longrifle Map 4 - Class D & E Map 5 - Low Altitude Airways')),
+      fcCard('ucr-824-range','AN/FPN-68A PAR range','20 miles.','Equipment','rfd',UC_F('8-2-4','FPN-68 PAR','precision approach display with a 20-mile range.')),
+      fcCard('ucr-824-res','PAR display resolution','Deviation to the nearest foot; distance to touchdown to the nearest tenth NM.','Equipment','rfd',UC_F('8-2-4','FPN-68 PAR','Deviation is displayed to the nearest foot. Distance to touchdown displayed to nearest tenth of a nautical mile.')),
+      /* ACAD-0521/0522 FACMAN refs: 8-1-3, 8-1-4, 8-1-6, 6-1-11, 6-1-12 */
+      fcCard('ucr-813-rxtx','ETVS — RX vs TX','RX = monitor only; TX = transmit.','Equipment','rfd',UC_F('8-1-3','ETVS','You may select to either monitor a frequency (indicated by ‘RX’ on the screen) or transmit (indicated by ‘TX’ on the screen).')),
+      fcCard('ucr-813-erad','ERAD PTT (held)','Transmits on the UHF and VHF emergency frequencies.','Equipment','rfd',UC_F('8-1-3','ETVS','The ERAD PTT button, when held, transmits over the UHF and VHF emergency frequencies.')),
+      fcCard('ucr-814-clear','Before using a dial line (1939 / 4779)','Make sure no one else is on it — ask if the line is clear.','Coordination','rfd',UC_F('8-1-4','1939 / 4977 / 4779 LINES','it is standard procedure and professional etiquette to ask if the line is clear prior to dialing a number.')),
+      fcCard('ucr-814-4977','4977 line','Voice-activated line to SCT.','Coordination','rfd',UC_F('8-1-4','1939 / 4977 / 4779 LINES','The 4977 line is a voice activated line for communications with SCT.')),
+      fcCard('ucr-814-limit','1939 / 4977 / 4779 lines — content','All recorded; ATC information only.','Coordination','rfd',UC_F('8-1-4','1939 / 4977 / 4779 LINES','All communications are recorded, and information shall be limited to ATC information.')),
+      fcCard('ucr-814-hand','4779 line on a hand-held receiver','Key it to transmit any message.','Coordination','rfd',UC_F('8-1-4','1939 / 4977 / 4779 LINES','Hand-held receivers shall be keyed to transmit any message.')),
+      fcCard('ucr-816-ids','VISCOM display IDs on the VIDS','FC1 = 01 · FC2 = 02 · FC3 = 03.','Equipment','rfd',UC_F('8-1-6','VISCOM','FC1 = 01 FC2 = 02 FC3 = 03')),
+      fcCard('ucr-6111-abbr','Strip-marking abbreviations at NFG','JO 7110.65 contractions plus FACMAN TBL 6-3.','Strip','rfd',UC_F('6-1-11','ABBREVIATIONS','In addition to the contractions and abbreviations contained in FAAO JO 7110.65, abbreviations contained in Table 6-3 shall be used in strip marking.')),
+      fcCard('ucr-6112-civ','Civilian practice GCAs require','Prior approval from Airfield Operations.','Radar','rfd',UC_F('6-1-12','CIVILIAN PRACTICE GCAs','Civilian aircraft require prior approval from Airfield Operations to conduct practice GCAs.')),
+      /* NEW TO STATION: FACMAN 6-1-1, 6-1-7, 6-1-8, 6-1-13, 6-1-15, 8-1-5, 8-2-5 */
+      fcCard('ucr-611-terrain','Why might aircraft need altitude changes near Camp Pendleton?','Mountainous terrain — to improve radio or radar reception.','Airfield','rfd',UC_F('6-1-1','EMERGENCIES','Due to mountainous terrain in the vicinity of Camp Pendleton, aircraft may require altitude changes to improve radio communication or radar reception.')),
+      fcCard('ucr-617-odp','Obstacle departures published for NFG','Quntn, Bulldog, Corri, and Munn.','Departures','rfd',UC_F('6-1-7','OBSTACLE DEPARTURE PROCEDURES','There are four Obstacle Departures published for MCAS Camp Pendleton: Quntn, Bulldog, Corri, and Munn departures.')),
+      fcCard('ucr-618-iap','Published instrument approaches — which runways?','Runways 21 and 3.','Airfield','rfd',UC_F('6-1-8','INSTRUMENT APPROACH PROCEDURES','The approaches depict procedures for runways 21 and 3.')),
+      fcCard('ucr-6113-macs','ATC company at Camp Pendleton, and its system','MACS-1 Company K, using ATNAVICS.','Airfield','rfd',UC_F('6-1-13','TIME SHARE','MACS-1 Company K is the air traffic control company at Camp Pendleton. The company utilizes the ATNAVICS')),
+      fcCard('ucr-6115-msaw','Who may inhibit STARS MSAW / CA?','Only the Radar Chief.','Equipment','rfd',UC_F('6-1-15','DISABLING OF STARS MSAW AND CA ALARMS','Only the Radar Chief is authorized to temporarily inhibit the MSAW, Approach Path Monitor portion of MSAW, and/or CA functions')),
+      fcCard('ucr-6115-notify','MSAW / CA inhibited — then?','Notify the Facility Officer and FWO ASAP; log it in the Daily Record of Facility Operation.','Equipment','rfd',UC_F('6-1-15','DISABLING OF STARS MSAW AND CA ALARMS','the Facility Officer and Facility Watch Officer shall be notified as soon as possible')),
+      fcCard('ucr-815-dalr','DALR — what and where','Digital Audio Legal Recorder, terminal equipment room, building 2399.','Equipment','rfd',UC_F('8-1-5','DALR','The DALR (Digital Audio Legal Recorder) is in the terminal equipment room of building 2399.')),
+      fcCard('ucr-825-tacan','TACAN monitor — where, and who gets alarms','Radar room between ASR-2 and PAR-1; report all alarms to ATCMD.','Equipment','rfd',UC_F('8-2-5','TACAN MONITOR','The TACAN monitor is in the radar room between ASR-2 and PAR-1. … All alarms shall be reported to ATCMD.'))
+    ]
+  };
+  /* Set recipes: ['#ACAD-xxxx'] switches the origin label shown on the card front (CHECKOUT set); '*deck' pulls a whole FC_SETS deck;
+     '*deck:TBL x' pulls only that deck's cards citing that table. Ids repeat across use cases on purpose (same card, same progress). */
+  const FC_UC_PLAN={
+    rfd:{
+      'uc-live':['ucr-631-fn','ucr-631-brief','ucr-631-approval','ucr-631-duties','*rfd','ucr-632-rel','ucr-633-who','ucr-633-when','ucr-633-aware','ucr-635-dep',
+        'ucr-644-tdreq','ucr-644-req','ucr-644-items','ad-release-ex','ucr-644-readback','ucr-644-released','ucr-644-r2503','ad-sct-auth',
+        'fac-dep-fill','fdio-radar','ucr-616-lima','ucr-616-ra','ucr-616-1255','ad-strip-order','ho-phrase-init','ho-phrase-recv','*scratchpad'],
+      'uc-test':['#ACAD-0520','radio-fmt-4','radio-fmt-subseq','radio-fmt-omit-id','radio-req-approved','radio-req-restr','radio-req-unable','radio-req-standby','radio-fac-twr','radio-fac-app','radio-fac-gca',
+          'ucr-511-def','ucr-511-inbound','ucr-511-lights','crash-who','crash-standby','crash-crash','crash-emer-info','ucr-5112-nvd','ucr-5112-who','div-crq','div-nkx',
+          'ucr-542-hourly','ucr-542-pirep','ucr-542-vis','ucr-543-fuel','ucr-544-sct','ucr-545-rfd','ucr-545-rel','atis-freq','ucr-546-code',
+        '#ACAD-0534','ho-handoff','ho-pointout','ho-radar-contact','ho-po-approved','ho-traffic','ho-traffic-obs','ho-methods','ho-relay-order','ho-doubt',
+          'sep-primary','sep-beacon','sep-mixed','sep-digital','sep-std-plus1','sep-two-plus2','sep-nonstd','int-lt2','int-2mi','int-hdg','relay-verbatim','*gca',
+        '#ACAD-0532','ucr-633-when','ucr-812-replaces','ucr-812-info','ucr-821-asr9','ucr-823-checks','ucr-823-msaw','ucr-823-accept','ucr-823-mapver','ucr-823-return','ucr-823-maps',
+          'ucr-824-range','ucr-824-res','viscom','viscom-ots','*fdio:TBL 5-7','*fdio:TBL 5-6','*abbrev',
+        '#ACAD-0521/0522','ucr-813-rxtx','ucr-813-erad','ucr-814-clear','ucr-814-4977','ucr-814-limit','ucr-814-hand','ucr-816-ids','*viscom:TBL 8-3',
+          'd1939-palomar-tower','d1939-miramar-tower','d1939-miramar-ops','d1939-camp-pendleton-gca','d1939-tracon-area-manager','d1939-palomar-sector','d1939-supervisor','d1939-del-mar-sector','d1939-flight-data',
+          'ucr-616-lima','ucr-616-ra','ucr-616-1255','ucr-6111-abbr','ucr-6112-civ','rfd-pending-strips','*termstrip','fig-d4-dep','fig-d4-otp','fig-d5-arr','fig-d6-ovf','fig-d6-ptout','fig-d6-fallbrook',
+        '#ACAD-0523/0538','rfd-inbound-who','rfd-inbound-elements','rfd-inbound-ex','rfd-changes','rfd-tower-nlt','rfd-verbal-req','rfd-auto-po','ad-combine','ad-interval',
+          'svfr-alt-1500','svfr-one-ac','svfr-helo-v22','svfr-ifr-priority','gca-btn-1','gca-btn-2','gca-btn-3','gca-btn-7','gca-btn-8','gca-star-128-775'],
+      'uc-new':['rwy-primary','field-elev','tower-freq','gnd-freq','cd-freq','atis-freq','socal-freq','nfg-tacan','ocn-vortac','ucr-618-iap','ucr-617-odp','sid-quntn','sid-bldg','sid-corri','sid-munn',
+        'lima-golf','ucr-6113-macs','ucr-611-terrain','rs-manning','rs-combine-ok','rs-combine-no','rs-timeshare-manning',
+        '*diverts','*fixes','ucr-6115-msaw','ucr-6115-notify','ucr-825-tacan','ucr-815-dalr','ucr-814-4977','d1939-flight-data','d1939-camp-pendleton-gca','*gca-freq']
+    }
+  };
+  const FC_UC_GUIDE={
+    rfd:{
+      'uc-live':{covers:'Duties and limits, inbound coordination to Final and Tower, weather, IFR releases, beacon codes, strips, TBL 6-4 scratchpad.',
+        from:'FACMAN July 2026 6-3-1 to 6-3-7, 6-4-4, 6-1-6, 6-1-10; JO 7110.65 5-4-3.',
+        how:'Say each answer out loud the way you would on the line, then PRACTICE until KNOWN.'},
+      'uc-test':{covers:'RFD Topics 1–5: ACAD-0520, 0534, 0532, 0521/0522, 0523/0538 (code on each card).',
+        from:'Your RFD LQS paper refs, checked against FACMAN July 2026 and JO 7110.65BB. No cards for pubs not in the app (00-80T-114, FLIP minima, 7210.3, SCT LOA).',
+        how:'One ACAD block before each test, repeat with Not known only, then that topic\u2019s Test Exercise under ACADS.'},
+      'uc-new':{covers:'Runway, frequencies, NAVAIDs, SIDs, Lima/Golf, manning, diverts, fixes, phone lines, radar-room equipment.',
+        from:'FACMAN July 2026 2-1-13/14, 6-1, 6-5, 8-1, 8-2, TBL 8-1/8-4; FLIP plate header and SIDs.',
+        how:'Work it in your first week; keep fixes and frequencies in rotation until KNOWN.'}
+    }
+  };
+  const FC_UC={}, FC_UC_MISS=[];
+  (function buildUseCaseSets(){
+    const byId={};
+    const put=c=>{ if(c&&c.id&&!byId[c.id]) byId[c.id]=c; };
+    Object.values(FC_UC_NEW).forEach(a=>a.forEach(put));
+    Object.values(FC_SETS).forEach(a=>(a||[]).forEach(put));
+    Object.values(FC_POS).forEach(a=>(a||[]).forEach(put));
+    Object.entries(FC_UC_PLAN).forEach(([pos,plan])=>{
+      FC_UC[pos]={};
+      UC_KEYS.forEach(k=>{
+        const out=[], seen=new Set(); let o='';
+        const add=c=>{ if(!c||!c.id||seen.has(c.id)) return; seen.add(c.id); out.push(o?Object.assign({}, c, {o:o}):c); };
+        (plan[k]||[]).forEach(t=>{
+          if(t[0]==='#'){ o=t.slice(1); return; }
+          if(t[0]==='*'){ const m=t.slice(1).split(':'); const d=FC_SETS[m[0]]; if(!d||!d.length){ FC_UC_MISS.push(pos+'/'+k+'/'+t); return; } d.forEach(c=>{ if(!m[1]||String(c.src&&c.src.pg||'')===m[1]) add(c); }); return; }
+          if(byId[t]) add(byId[t]); else FC_UC_MISS.push(pos+'/'+k+'/'+t);
+        });
+        if(out.length) FC_UC[pos][k]=out;
+      });
+    });
+  })();
+  function ucDeck(k){ const P=FC_UC[S.pos]; return (P&&P[k])||null; }
+  function isUcDeck(k){ return /^uc-/.test(String(k||'')) && !!ucDeck(k); }
+  function fcGuideHTML(){
+    if(!isUcDeck(S.fcDeck)) return '';
+    const g=(FC_UC_GUIDE[S.pos]||{})[S.fcDeck]; if(!g) return '';
+    return `<details class="fc-guide"${S.fcGuideShut?'':' open'}><summary data-action="fcguide"><span class="muted">GUIDE</span> <b>${escTxt(UC_LAB[S.fcDeck]||'')}</b></summary><div class="fcg-b"><p><span>COVERS</span>${escTxt(g.covers)}</p><p><span>FROM</span>${escTxt(g.from)}</p><p><span>STUDY</span>${escTxt(g.how)}</p></div></details>`;
+  }
   function qzPartOf(k){
     if(!k||k==='pos') return '';
     const m=/^q-(\w+)$/.exec(k); if(m) return m[1];
@@ -2195,11 +2347,13 @@
     const openMap=fcOpenMap();
     const countOf=k=>{
       if(k==='pos') return (posDeck(S.pos)||[]).length;
+      if(/^uc-/.test(k)) return (ucDeck(k)||[]).length;
       return (QZ_DECKS[k]||FC_SETS[k]||[]).length;
     };
     const chipOf=(k,lab,cls)=>`<span class="chip${cls?' '+cls:''} ${cur===k?'on':''}" data-action="fcdeck" data-d="${k}">${lab}<span class="fc-n">${countOf(k)}</span></span>`;
     const pos=POS.find(p=>p.k===S.pos);
-    const posChip=includePos?`<div class="askchips fc-chips fc-poschip">${chipOf('pos',(pos&&pos.sn||PN[S.pos]||'POSITION').toUpperCase())}</div>`:'';
+    const ucChips=UC_KEYS.filter(k=>ucDeck(k)).map(k=>chipOf(k,UC_LAB[k],'uc')).join('');
+    const posChip=includePos?`<div class="askchips fc-chips fc-poschip">${chipOf('pos',(pos&&pos.sn||PN[S.pos]||'POSITION').toUpperCase())}${ucChips}</div>`:'';
     const groups=QZ_PARTS.map(P=>{
       const all=chipOf('q-'+P.id,'ALL '+P.lab,'qz-all');
       const chips=P.cats.filter(c=>QZ_DECKS[c.k]&&QZ_DECKS[c.k].length).map(c=>chipOf(c.k,c.lab)).join('');
@@ -3832,7 +3986,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.22 · ask-section-jump</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.23 · pos-usecase</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -4305,10 +4459,11 @@ function vectorAnswerHTML(query, hits){
     const chips=fcSetChipRow(true);
     activeFcDeck(); // deck source
     const {deck, key, ord, cards:ordered}=fcOrderedDeck();
-    const named=S.fcDeck && S.fcDeck!=='pos';
-    const partId=named?qzPartOf(S.fcDeck):'';
+    const uc=isUcDeck(S.fcDeck);
+    const named=S.fcDeck && S.fcDeck!=='pos' && (uc || !/^uc-/.test(S.fcDeck));
+    const partId=named&&!uc?qzPartOf(S.fcDeck):'';
     const partLab=partId?(QZ_PARTS.find(p=>p.id===partId)||{}).lab:'';
-    const deckLab=named?(QZ_LAB[S.fcDeck]||FC_SET_LAB[S.fcDeck]||S.fcDeck):((PN[S.pos]||S.pos).toUpperCase());
+    const deckLab=uc?((PN[S.pos]||S.pos).toUpperCase()+' · '+UC_LAB[S.fcDeck]):named?(QZ_LAB[S.fcDeck]||FC_SET_LAB[S.fcDeck]||S.fcDeck):((PN[S.pos]||S.pos).toUpperCase());
     const lab=(partLab && !/^q-/.test(S.fcDeck) && QZ_LAB[S.fcDeck])?(partLab+' · '+deckLab):deckLab;
     const sets=`<details class="fc-sets"${S.fcSetsOpen?' open':''}><summary data-action="fcsets"><span class="muted">SET</span> <b>${escTxt(lab)}</b><span class="fc-chg">change</span></summary>${chips}</details>`;
     const deckCards=fcUniq(deck);
@@ -4318,7 +4473,7 @@ function vectorAnswerHTML(query, hits){
     const mode=S.fcMode==='practice'?'practice':'cards';
     const seg=`<div class="seg fc-modes">${[['cards','CARDS'],['practice','PRACTICE']].map(m=>`<button type="button" class="${mode===m[0]?'on':''}" data-action="fcmode" data-m="${m[0]}">${m[1]}</button>`).join('')}</div>`;
     const head=`<div class="fc-head"><div class="fc-counts">${fcCountsHTML(cnt)}</div>${seg}</div>`;
-    const sq=sqBarHTML();
+    const sq=sqBarHTML()+fcGuideHTML();
     if(!deckCards.length){
       return `<div id="fcwrap">${sets}${sq}<div class="qmeta"><span class="pill warn">FLASHCARDS · ${lab}</span></div><div class="explain">${isSqDeck(S.fcDeck)?'No cards for this combination — TBL C-3 lists no modex or aircraft type.':'No sourced cards for this '+(named?'deck':'position')+' yet.'}</div></div>`;
     }
@@ -5007,6 +5162,7 @@ function pdfPaneHTML(){
   function fcAction(a, el){
     if(a==='fcmode'){ fcKeep({fcMode:el.dataset.m==='practice'?'practice':'cards', fcFlip:false}); return true; }
     if(a==='fcsets'){ setTimeout(()=>{ const d=document.querySelector('#vatc details.fc-sets'); S.fcSetsOpen=!!(d&&d.open); },0); return true; }
+    if(a==='fcguide'){ setTimeout(()=>{ const d=document.querySelector('#vatc details.fc-guide'); S.fcGuideShut=!(d&&d.open); },0); return true; }
     const ss=S.fcSess;
     if(a==='fcrate'){
       if(!ss||!ss.st||S.fcMode==='practice') return true;

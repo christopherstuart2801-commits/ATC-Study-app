@@ -614,7 +614,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.22 ask-section-jump', /v0\.8\.22 · ask-section-jump<\/span>/.test(html) && !/v0\.8\.21 · fc-answer-only<\/span>/.test(html));
+ok('statusbar v0.8.23 pos-usecase', /v0\.8\.23 · pos-usecase<\/span>/.test(html) && !/v0\.8\.22 · ask-section-jump<\/span>/.test(html));
 // v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
 {
   const OLD25=[/2,?200 via heading 211/i,/CLIMB AND MAINTAIN 2200 VIA/i,/ten \(10\) feet/,/±\s?10 feet/,/±\s?50 feet of the azimuth/,/between 51 and 100 feet/,/between 11 and 25 feet/,/between 26 and 50 feet/,/MAINTAIN 3800, PROCEED DIRECT ONTOS/i,/ONE THOUSAND TWO HUNDRED THEN TURN LEFT/,/UPWIND NUMBERS AND LEAVING/,/RS with ADC/,/RS, ADC, RD/,/H-1 departures only/,/between Bravo and Delta taxiways/,/Between 11 and 7 miles on final/,/go-around \(VFR\) or missed approach \(IFR\)/];
@@ -690,7 +690,7 @@ if (sm) {
   let code = sm[1];
   code = code.replace(
     /document\.getElementById\('vatc'\)\.addEventListener\('click'[\s\S]*render\(\);\s*\}\)\(\);/,
-    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcFaceHTML,secLookup,secBoxHTML,SEC_IDX,SEC_PUBS,fcSetChipRow,QZ_PARTS,QZ_DECKS,QZ_DUPES,QZ_MOVE,QZ_SRC_ORDER,QZ_CAT_OF,qzPartOf,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,diversifyAskHits,pubIdForDoc,queueCrossPubFind};\n})();'
+    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcFaceHTML,secLookup,secBoxHTML,SEC_IDX,SEC_PUBS,fcSetChipRow,QZ_PARTS,QZ_DECKS,QZ_DUPES,QZ_MOVE,QZ_SRC_ORDER,QZ_CAT_OF,qzPartOf,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,diversifyAskHits,pubIdForDoc,queueCrossPubFind,FC_UC,FC_UC_MISS,FC_UC_GUIDE,FC_UC_NEW,isUcDeck,ucDeck};\n})();'
   );
   try {
     eval(code);
@@ -1924,6 +1924,26 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         ok('pass-a-bay top4 still FACMAN 6-3 after diversify', /6-3-4/.test(bayTopShelf) && /6-3-6/.test(bayTopShelf), bayTopShelf);
         ok('queueCrossPubFind still present', typeof V.queueCrossPubFind === 'function');
 
+        /* v0.8.23 pos-usecase: per-position use-case sets */
+        {
+          const U=V.FC_UC||{}, G=V.FC_UC_GUIDE||{};
+          ok('pos-usecase: RFD has LIVE / CHECKOUT / NEW sets', !!(U.rfd && ['uc-live','uc-test','uc-new'].every(k=>Array.isArray(U.rfd[k]) && U.rfd[k].length>=30)), U.rfd?Object.keys(U.rfd).map(k=>k+'='+U.rfd[k].length).join(' '):'none');
+          ok('pos-usecase: every recipe id resolves', Array.isArray(V.FC_UC_MISS) && V.FC_UC_MISS.length===0, (V.FC_UC_MISS||[]).join(','));
+          ok('pos-usecase: every set has a guide (covers/from/how)', Object.entries(U).every(([p,o])=>Object.keys(o).every(k=>G[p]&&G[p][k]&&G[p][k].covers&&G[p][k].from&&G[p][k].how)));
+          const known=new Set(); Object.values(V.FC_SETS||{}).forEach(a=>(a||[]).forEach(c=>known.add(c.id))); Object.values(V.FC_POS||{}).forEach(a=>(a||[]).forEach(c=>known.add(c.id)));
+          const nw=[].concat(...Object.values(V.FC_UC_NEW||{}));
+          ok('pos-usecase: new ucr-* ids do not collide with existing cards', nw.every(c=>/^ucr-/.test(c.id) && !known.has(c.id)), 'n='+nw.length);
+          ok('pos-usecase: new cards cite FACMAN July 2026 with a highlight', nw.every(c=>c.src && c.src.doc==='NFG FACMAN July 2026' && c.src.pg && c.src.hl));
+          const t=U.rfd&&U.rfd['uc-test']||[];
+          ok('pos-usecase: CHECKOUT set covers all 5 RFD ACAD blocks', ['ACAD-0520','ACAD-0534','ACAD-0532','ACAD-0521/0522','ACAD-0523/0538'].every(a=>t.some(c=>c.o===a)));
+          const saveDeck=V.S.fcDeck, savePos=V.S.pos;
+          V.S.pos='rfd'; V.S.fcDeck='uc-live';
+          const bh=V.fcBody();
+          ok('pos-usecase: guide renders on a use-case set', /class="fc-guide"/.test(bh) && /LIVE ON POSITION/.test(bh));
+          V.S.pos='gnd';
+          ok('pos-usecase: position without sets falls back to its POSITION deck', V.activeFcDeck().length===(V.posDeck('gnd')||[]).length && !/class="fc-guide"/.test(V.fcBody()));
+          V.S.fcDeck=saveDeck; V.S.pos=savePos;
+        }
         ok('T2 still 36 / T3 still 12 / T4 still 18', t2t.length === 36 && t3t.length === 12 && t4t.length === 18, 'T2='+t2t.length+' T3='+t3t.length+' T4='+t4t.length);
 
       }
