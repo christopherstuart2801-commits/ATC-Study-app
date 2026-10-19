@@ -614,7 +614,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.23 pos-usecase', /v0\.8\.23 · pos-usecase<\/span>/.test(html) && !/v0\.8\.22 · ask-section-jump<\/span>/.test(html));
+ok('statusbar v0.8.24 fin-usecase', /v0\.8\.24 · fin-usecase<\/span>/.test(html) && !/v0\.8\.23 · pos-usecase<\/span>/.test(html));
 // v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
 {
   const OLD25=[/2,?200 via heading 211/i,/CLIMB AND MAINTAIN 2200 VIA/i,/ten \(10\) feet/,/±\s?10 feet/,/±\s?50 feet of the azimuth/,/between 51 and 100 feet/,/between 11 and 25 feet/,/between 26 and 50 feet/,/MAINTAIN 3800, PROCEED DIRECT ONTOS/i,/ONE THOUSAND TWO HUNDRED THEN TURN LEFT/,/UPWIND NUMBERS AND LEAVING/,/RS with ADC/,/RS, ADC, RD/,/H-1 departures only/,/between Bravo and Delta taxiways/,/Between 11 and 7 miles on final/,/go-around \(VFR\) or missed approach \(IFR\)/];
@@ -1926,20 +1926,40 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
 
         /* v0.8.23 pos-usecase: per-position use-case sets */
         {
+          const OLD25F=[/2,?200 via heading 211/i,/CLIMB AND MAINTAIN 2200 VIA/i,/ten \(10\) feet/,/±\s?10 feet/,/±\s?50 feet of the azimuth/,/MAINTAIN 3800, PROCEED DIRECT ONTOS/i];
           const U=V.FC_UC||{}, G=V.FC_UC_GUIDE||{};
           ok('pos-usecase: RFD has LIVE / CHECKOUT / NEW sets', !!(U.rfd && ['uc-live','uc-test','uc-new'].every(k=>Array.isArray(U.rfd[k]) && U.rfd[k].length>=30)), U.rfd?Object.keys(U.rfd).map(k=>k+'='+U.rfd[k].length).join(' '):'none');
           ok('pos-usecase: every recipe id resolves', Array.isArray(V.FC_UC_MISS) && V.FC_UC_MISS.length===0, (V.FC_UC_MISS||[]).join(','));
           ok('pos-usecase: every set has a guide (covers/from/how)', Object.entries(U).every(([p,o])=>Object.keys(o).every(k=>G[p]&&G[p][k]&&G[p][k].covers&&G[p][k].from&&G[p][k].how)));
           const known=new Set(); Object.values(V.FC_SETS||{}).forEach(a=>(a||[]).forEach(c=>known.add(c.id))); Object.values(V.FC_POS||{}).forEach(a=>(a||[]).forEach(c=>known.add(c.id)));
           const nw=[].concat(...Object.values(V.FC_UC_NEW||{}));
-          ok('pos-usecase: new ucr-* ids do not collide with existing cards', nw.every(c=>/^ucr-/.test(c.id) && !known.has(c.id)), 'n='+nw.length);
-          ok('pos-usecase: new cards cite FACMAN July 2026 with a highlight', nw.every(c=>c.src && c.src.doc==='NFG FACMAN July 2026' && c.src.pg && c.src.hl));
+          ok('pos-usecase: new ucr-*/ucf-* ids do not collide with existing cards', nw.every(c=>/^uc[rf]-/.test(c.id) && !known.has(c.id)) && new Set(nw.map(c=>c.id)).size===nw.length, 'n='+nw.length);
+          ok('pos-usecase: new cards cite FACMAN July 2026 or JO 7110.65BB with a highlight', nw.every(c=>c.src && (c.src.doc==='NFG FACMAN July 2026' || c.src.doc==='JO 7110.65BB') && c.src.pg && c.src.hl), nw.filter(c=>!(c.src&&c.src.hl)).map(c=>c.id).join(','));
           const t=U.rfd&&U.rfd['uc-test']||[];
           ok('pos-usecase: CHECKOUT set covers all 5 RFD ACAD blocks', ['ACAD-0520','ACAD-0534','ACAD-0532','ACAD-0521/0522','ACAD-0523/0538'].every(a=>t.some(c=>c.o===a)));
           const saveDeck=V.S.fcDeck, savePos=V.S.pos;
           V.S.pos='rfd'; V.S.fcDeck='uc-live';
           const bh=V.fcBody();
           ok('pos-usecase: guide renders on a use-case set', /class="fc-guide"/.test(bh) && /LIVE ON POSITION/.test(bh));
+          /* v0.8.24 fin-usecase: Radar Final sets */
+          ok('fin-usecase: Final has LIVE / CHECKOUT / NEW sets', !!(U.fin && ['uc-live','uc-test','uc-new'].every(k=>Array.isArray(U.fin[k]) && U.fin[k].length>=80)), U.fin?Object.keys(U.fin).map(k=>k+'='+U.fin[k].length).join(' '):'none');
+          const ft=U.fin&&U.fin['uc-test']||[];
+          ok('fin-usecase: CHECKOUT covers all 6 RFC ACAD blocks incl. Topic 6 ACAD-0533', ['ACAD-0520','ACAD-0534','ACAD-0532','ACAD-0521/0522','ACAD-0523/0538','ACAD-0533'].every(a=>ft.some(c=>c.o===a)));
+          const t6=ft.filter(c=>c.o==='ACAD-0533').map(c=>c.id);
+          ok('fin-usecase: ACAD-0533 carries Test 6 items (5-6-2, 5-7-2, 5-9-5, 5-10-6, 5-10-11, 5-10-14, ASR RWY 21 by mile)', ['ucf-562-4','ucf-572-4','ucf-595-final','ucf-5106-phr','ma-when','ma-helo-phrase','ucf-51014-4','am-9','am-map-21'].every(i=>t6.includes(i)), t6.length);
+          const fnw=(V.FC_UC_NEW&&V.FC_UC_NEW.fin)||[];
+          ok('fin-usecase: new Final cards are ucf-* tagged pos fin', fnw.length>=100 && fnw.every(c=>/^ucf-/.test(c.id) && c.pos==='fin'), 'n='+fnw.length);
+          const finAll=[].concat(...Object.values(U.fin||{}));
+          ok('fin-usecase: no twin duplicates (asr-21-*/fac-intercept/int-gate-*/gcf-button-go) in Final sets', !finAll.some(c=>/^asr-21-|^asr-3-|^fac-intercept$|^int-gate-|^gcf-button-go$|^fin-dev-|^ma-waveoff-proc$|^ma-helo-map$/.test(c.id)));
+          ok('fin-usecase: reused cards are the same objects (progress carries by id)', (V.FC_SETS.parjo||[]).every(c=>finAll.includes(c)) && (V.FC_SETS.asrmile||[]).every(c=>finAll.includes(c)));
+          ok('fin-usecase: no 2025-only wave-off / tolerance text in Final sets', !finAll.some(c=>OLD25F.some(r=>r.test((c.q||'')+' '+(c.a||'')))));
+          const h52=(V.FC_SETS.asrjo||[]).find(c=>c.id==='asrjo-proceed-visually-heli');
+          ok('fin-usecase: JO 5-11-2 card refined to Chg 2 (powered-lift / VERTIPORT)', !!h52 && /VERTIPORT/.test(h52.a) && /Chg 2/.test(h52.src.doc));
+          V.S.pos='fin'; V.S.fcDeck='uc-test';
+          const fb=V.fcBody();
+          ok('fin-usecase: guide renders on Final CHECKOUT set', /class="fc-guide"/.test(fb) && /CHECKOUT &amp; TEST|CHECKOUT & TEST/.test(fb) && /ACAD-0533/.test(fb));
+          V.S.fcDeck='pos';
+          ok('fin-usecase: Final POSITION deck unchanged (23)', V.activeFcDeck().length===23, V.activeFcDeck().length);
           V.S.pos='gnd';
           ok('pos-usecase: position without sets falls back to its POSITION deck', V.activeFcDeck().length===(V.posDeck('gnd')||[]).length && !/class="fc-guide"/.test(V.fcBody()));
           V.S.fcDeck=saveDeck; V.S.pos=savePos;
