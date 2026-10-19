@@ -617,7 +617,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.30 back-nav', /v0\.8\.30 · back-nav<\/span>/.test(html) && !/v0\.8\.29 · learn-test<\/span>/.test(html));
+ok('statusbar v0.8.31 fc-dedupe', /v0\.8\.31 · fc-dedupe<\/span>/.test(html) && !/v0\.8\.30 · back-nav<\/span>/.test(html));
 ok('history back wired (pushState + popstate + top ← button)', /history\.pushState\(/.test(html) && /addEventListener\('popstate'/.test(html) && /data-action="navback"/.test(html) && /a==='navback'/.test(html));
 ok('type scale documented in CSS variables', /--font-head:[^;]+; --font-body:[^;]+; --font-mono:/.test(html) && /--fs-xs:10px; --fs-sm:11px; --fs-base:13px/.test(html) && /#vatc button,#vatc input,#vatc select,#vatc textarea\{ font-family:inherit; \}/.test(html));
 ok('arr-acad: pending message removed', !/ACAD packet pending/.test(html));
@@ -857,11 +857,11 @@ if (sm) {
       const home2 = typeof V.homeView === 'function' ? V.homeView() : '';
       // v0.8.14 quizlet-3part: Home quizlets = exactly TOWER · RADAR · LOCAL (collapsed), each with ALL + category chips.
       const homeSums=(home2.match(/<summary[^>]*data-g="(\w+)"/g)||[]).map(x=>x.replace(/.*data-g="(\w+)".*/,'$1'));
-      ok('homeView KNFG Quizlets three parts', /KNFG Quizlets/.test(home2) && homeSums.join(',')==='tower,radar,local', homeSums.join(','));
-      ok('home three part labels', /class="qz-lab">TOWER</.test(home2) && /class="qz-lab">RADAR</.test(home2) && /class="qz-lab">LOCAL</.test(home2));
+      ok('homeView KNFG Quizlets three parts (picker dropdowns)', /KNFG Quizlets/.test(home2) && homeSums.join(',')==='tower,radar,general' && /class="pk-dd hq-dd"/.test(home2), homeSums.join(','));
+      ok('home part labels + picker rows', /<span>TOWER /.test(home2) && /<span>RADAR /.test(home2) && /<span>GENERAL /.test(home2) && /class="pk-set"/.test(home2));
       ok('home old four sets gone', !/data-g="gca"/.test(home2) && !/data-g="strips"/.test(home2) && !/<summary[^>]*>GCA<\/summary>/.test(home2) && !/<summary[^>]*>STRIPS<\/summary>/.test(home2));
-      ok('home ALL chips per part', /data-d="q-tower"[^>]*>ALL TOWER/.test(home2) && /data-d="q-radar"[^>]*>ALL RADAR/.test(home2) && /data-d="q-local"[^>]*>ALL LOCAL/.test(home2));
-      ok('home LOCAL has buttons/squadrons/airfield', /data-d="ql-freq"[^>]*>FREQS &amp; BUTTONS|data-d="ql-freq"[^>]*>FREQS & BUTTONS/.test(home2) && /data-d="ql-sqdn"[^>]*>SQUADRONS/.test(home2) && /data-d="ql-field"[^>]*>AIRFIELD/.test(home2));
+      ok('home uses picker sets, no old chip groups', /data-d="pk:sids"/.test(home2) && /data-d="pk:asrmile"/.test(home2) && !/qz-part/.test(home2) && !/data-d="q-tower"/.test(home2));
+      ok('home GENERAL has frequencies/squadrons/airfield', /data-d="pk:ql-freq"[^>]*><span class="pk-t"><b>Frequencies/.test(home2) && /data-d="ql-sqdn"/.test(home2) && /data-d="pk:ql-field"/.test(home2));
 ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test(home2));
       {
         const QP=V.QZ_PARTS||[], QD=V.QZ_DECKS||{}, DU=V.QZ_DUPES||{}, FS=V.FC_SETS||{};
@@ -963,7 +963,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           ok('ASR by mile: STARS fixes 14/11/8 NM (3600\'/3300\')', am.some(c=>c.id==='am-fix-14'&&/3600'/.test(c.a)) && am.some(c=>c.id==='am-fix-11'&&/3300'/.test(c.a)) && am.some(c=>c.id==='am-fix-8'&&/8NM/.test(c.a)));
           ok('PAR by mile: 11.56 / 8.00 / 5.56 NM from RPI + 2026 wave off', pm.some(c=>/11\.56NM/.test(c.a)) && pm.some(c=>/8\.00NM from RPI/.test(c.a)) && pm.some(c=>/5\.56NM from RPI/.test(c.a)) && pm.some(c=>/CLIMB TO 3000 DIRECT NFG TACAN, AT 1 DME TURN LEFT HEADING 050/.test(c.a)));
           ok('PAR by mile: no invented per-mile PAR phraseology', !pm.some(c=>/MILES? FROM TOUCHDOWN|ON GLIDEPATH|SLIGHTLY/i.test(c.a)));
-          ok('home RADAR shows ASR BY MILE / PAR BY MILE chips', /data-d="qr-asrmile"[^>]*>ASR BY MILE<span class="fc-n">25</.test(home2) && /data-d="qr-parmile"[^>]*>PAR BY MILE<span class="fc-n">11</.test(home2));
+          ok('home RADAR shows ASR / PAR Calls by Mile sets', /data-d="pk:asrmile"[^>]*><span class="pk-t"><b>ASR Calls by Mile<\/b><span class="pk-n">25</.test(home2) && /data-d="pk:parmile"[^>]*><span class="pk-t"><b>PAR Calls by Mile<\/b><span class="pk-n">11</.test(home2));
           if (V.S) {
             const k2={d:V.S.fcDeck,f:V.S.fcFlip,i:V.S.fcIdx,o:V.S.fcOrder};
             V.S.fcDeck='qr-asrmile'; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcFlip=true;
@@ -1004,7 +1004,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         { const kp=V.S.fcPick; V.S.fcPick=true; const pk=V.fcBody(); V.S.fcPick=kp;
           const hs=(pk.match(/<details class="pk-dd" data-dd="(quick|bypos|acad)"/g)||[]).length, names=[...pk.matchAll(/<b>([^<]+)<\/b><span class="pk-n">(\d+)<\/span>/g)].map(m=>[m[1].replace(/&amp;/g,'&'),+m[2]]);
           ok('picker: search box + 3 top dropdowns (Quick lookup / By position / ACADs) + per-position sub-dropdowns', /id="pkq"/.test(pk) && hs===3 && !/fc-chip-groups|details class="fc-sets/.test(pk) && ['pos:cd','pos:gnd','pos:lcl','pos:rfd','pos:fin','pos:arr','acad:rfd','acad:fin','acad:arr'].every(k=>pk.indexOf('data-dd="'+k+'"')>=0) && /ontoggle="globalThis\.vatcPkToggle/.test(pk), 'top='+hs);
-          ok('picker: plain names first (Buttons, 3-Letter Identifiers, Completion Instructions)', names[0]&&names[0][0]==='Buttons & Frequencies' && names[1][0]==='3-Letter Identifiers' && names[2][0]==='Completion Instructions', names.slice(0,3).join(' | '));
+          ok('picker: General first (Frequencies, Station Basics, 3-Letter Identifiers)', names[0]&&names[0][0]==='Frequencies' && names[1][0]==='Station Basics' && /^3-Letter Identifiers/.test(names[2][0]), names.slice(0,3).join(' | '));
           { const big=[...pk.matchAll(/data-d="(pk:[^"]*)"[^>]*><span class="pk-t"><b>[^<]*<\/b><span class="pk-n">(\d+)</g)].filter(m=>!/^pk:(ql-|idents|qr-strips)/.test(m[1]) && +m[2]>40); ok('picker: ACAD / on-position sets ≤40 cards', /data-d="pk:arr:ACAD-0536/.test(pk) && big.length===0, big.map(m=>m[1]).join(',')); }
           ok('picker: every set non-empty', names.length>20 && names.every(n=>n[1]>0), names.length+' sets'); }
         ok('in-set header: ← ALL SETS back to picker', /data-action="fcall"/.test(idBody));
@@ -1279,7 +1279,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         V.S.fcDeck='taxi'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const taxiBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody taxi shows 2-1-15 or Papa taxiway', /2-1-15|Papa taxiway/.test(taxiBody), (taxiBody||'').slice(0,220));
-        ok('homeView AIRFIELD chip (taxi)', /data-d="ql-field"/.test(home2) && /AIRFIELD/.test(home2));
+        ok('homeView Airfield set (taxi)', /data-d="pk:ql-field"/.test(home2) && /Airfield/.test(home2));
         { const kp=V.S.fcPick; V.S.fcPick=true; const pk=V.fcBody(); V.S.fcPick=kp; ok('picker: Airfield set (taxi) present', /data-d="pk:ql-field"/.test(pk) && /<b>Airfield Spots &amp; Taxiways<\/b>/.test(pk)); }
         const tsD = (V.FC_SETS && V.FC_SETS.termstrip) || [];
         ok('FC_SETS.termstrip is array', Array.isArray(tsD) && tsD.length > 0, 'n=' + tsD.length);
@@ -1291,8 +1291,8 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         V.S.fcDeck='termstrip'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.fcIdx = 0; V.S.fcFlip = false;
         const tsBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody termstrip shows TBL 2-3-3 or arrival', /TBL 2-3-3|Arrival vs departure/.test(tsBody), (tsBody||'').slice(0,220));
-        ok('homeView RADAR STRIPS chip (termstrip)', /data-d="qr-strips"/.test(home2) && /RADAR STRIPS/.test(home2));
-        { const kp=V.S.fcPick; V.S.fcPick=true; const pk=V.fcBody(); V.S.fcPick=kp; ok('picker: Strip Boxes (termstrip) + Strip Codes present', /data-d="pk:termstrip"/.test(pk) && /data-d="pk:qr-strips"/.test(pk)); }
+        ok('homeView Strip Codes set (termstrip folded in)', /data-d="pk:qr-strips"/.test(home2) && /Strip Codes/.test(home2));
+        { const kp=V.S.fcPick; V.S.fcPick=true; const pk=V.fcBody(); V.S.fcPick=kp; ok('picker: Strip Codes present (strip boxes deduped into it)', /data-d="pk:qr-strips"/.test(pk)); }
         V.S.fcDeck='pos'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0;
 
         const finSyl = (V.SYLLABUS && V.SYLLABUS.fin) || [];

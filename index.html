@@ -562,6 +562,7 @@
 #vatc .navback[disabled]{ opacity:.25; cursor:default; }
 #vatc .pk-dd{ border:1px solid var(--line); border-radius:12px; background:var(--panel); margin:0 0 8px; }
 #vatc .pk-dd[hidden]{ display:none; }
+#vatc .hq-sub{ font-family:var(--font-body,inherit); font-size:var(--fs-xs,11px); color:var(--muted); letter-spacing:0; margin-left:6px; text-transform:none; }
 #vatc .pk-dd>summary{ list-style:none; display:flex; align-items:center; gap:10px; min-height:48px; padding:10px 14px; cursor:pointer; font-family:var(--font-head); font-size:var(--fs-md); letter-spacing:var(--ls-caps); text-transform:uppercase; color:var(--amber); }
 #vatc .pk-dd>summary::-webkit-details-marker{ display:none; }
 #vatc .pk-dd>summary::after{ content:'▸'; margin-left:6px; color:var(--green); transition:transform .15s; }
@@ -4497,7 +4498,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><button type="button" class="navback" data-action="navback" aria-label="Back" title="Back"${(NAV.ready&&NAV.n>0)?'':' disabled'}>←</button><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.30 · back-nav</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.31 · fc-dedupe</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}</div>`; }
@@ -4558,7 +4559,7 @@ function vectorAnswerHTML(query, hits){
     };
     const first6=POS.slice(0,6), rest=POS.slice(6);
     const quiz=`<div class="grp">KNFG Quizlets</div>
-      ${fcSetChipRow(false)}`;
+      ${homeQuizHTML()}`;
     return `<div class="stnbar">MCAS Camp Pendleton (KNFG)</div>
       <div class="pos6">${first6.map(tile).join('')}</div>
       ${rest.length?`<div class="pos6">${rest.map(tile).join('')}</div>`:''}
@@ -4970,7 +4971,7 @@ function vectorAnswerHTML(query, hits){
   /* ===== v0.8.28 fc-picker: one compact, searchable list of every set. Names = what a controller looks for.
      pk:* keys are views over existing cards (ids unchanged, progress shared). Oversized sets split to <=40. */
   const PK_QUICK=[
-    ['ql-freq','Buttons & Frequencies','freq freqs frequency buttons viscom gca radio'],
+    ['ql-freq','Frequencies','freq freqs frequency frequencies buttons gca radio uhf vhf atis tower ground clearance socal guard range departure'],
     ['idents','3-Letter Identifiers','idents identifiers 3 letter location ids'],
     ['arrcomp','Completion Instructions','completion approach complete full stop low approach'],
     ['ql-phone','Phone Lines','phone lines 1939 4779 dial'],
@@ -4992,32 +4993,57 @@ function vectorAnswerHTML(query, hits){
   const PK_ONPOS=[
     ['asrmile','ASR Calls by Mile','asr surveillance mile'],['parmile','PAR Calls by Mile','par precision mile'],['gcafinal','GCA Final','gca final'],
     ['qr-missed','Missed Approach & Lost Comm','missed lost comm'],['handoff','Handoffs','handoff handoffs'],['qr-wakesep','Wake & Separation','wake separation'],
-    ['radio','Radio Phraseology','radio phraseology'],['taxi','Taxi','taxi ground'],['qt-ops','Tower Ops','tower ops helo spots']];
+    ['radio','Radio Phraseology','radio phraseology'],['qt-ops','Taxi & Tower Ops','taxi ground tower ops helo spots']];
   let PK_CACHE=null;
   function pkChunks(cards, max){ const n=Math.ceil(cards.length/max); if(n<=1) return [cards]; const sz=Math.ceil(cards.length/n); const out=[]; for(let i=0;i<cards.length;i+=sz) out.push(cards.slice(i,i+sz)); return out; }
+  /* v0.8.31 fc-dedupe: every fact lives in ONE picker set. Frequencies live only in General → Frequencies.
+     View-level only: card ids, source decks, Learn/TEST banks and progress are untouched.
+     Ownership order: Frequencies → other General sets → shared phraseology sets → per position: ACADs → essentials → live → new.
+     Duplicate = same card id, or same question+answer text under another id. */
+  const PK_FREQ_DROP=new Set([ /* same fact as a kept Frequencies card (reverse freq→name, scratchpad digit = GCA button, core freq copies) */
+    'twr-uhf-340-2','twr-vhf-128-775','twr-uhf-360-2','twr-vhf-134-675-gnd','twr-uhf-271-6','twr-vhf-134-675-clnc',
+    'gca-uhf-236-3','gca-uhf-277-325','gca-uhf-339-8','gca-uhf-319-45','gca-uhf-314-075','gca-uhf-306-175','gca-vhf-128-45','gca-uhf-310-725','gca-uhf-234-325','gca-vhf-134-1',
+    'gca-vhf-128-775','gca-uhf-243-0','gca-uhf-279-3','gca-uhf-310-3','gca-vhf-123-2',
+    'sp-1','sp-2','sp-3','sp-4','sp-5','sp-6','sp-7','sp-8','sp-9','sp-10',
+    'tower-freq','gnd-freq','cd-freq','atis-freq','socal-freq','gca-base-ops']);
+  const PK_FREQ_ADD=['uca-556-freq','ad-rwy21-sw','ad-rwy3-sw','ocn-vortac','nfg-tacan']; /* departure-frequency + NAVAID facts → Frequencies */
+  const PK_STATS={};
   function pkSets(){
     if(PK_CACHE) return PK_CACHE;
     const out=[];
     const subOf=cards=>cards.slice(0,3).map(c=>String(c.q||'').replace(/<[^>]+>/g,'')).join(' · ');
-    const push=(grp,k,name,kw,cards)=>{ cards=fcUniq(cards||[]); if(!cards.length) return; pkChunks(cards,grp==='quick'?999:40).forEach((ch,i,a)=>{ out.push({k:'pk:'+k+(a.length>1?':'+(i+1):''), grp, name:name+(a.length>1?` (${i+1}/${a.length})`:''), sub:subOf(ch), kw:(kw||'').toLowerCase(), cards:ch}); }); };
-    PK_QUICK.forEach(([k,name,kw])=>{ const cards=QZ_DECKS[k]||FC_SETS[k]; if(k==='ql-sqdn') return push('quick',k,name,kw,[]); push('quick',k,name,kw,cards); });
-    if(QZ_DECKS['ql-sqdn']||FC_SETS.squadrons) out.splice(out.findIndex(s=>/fdio/.test(s.k)),0,{k:'ql-sqdn',grp:'quick',name:'Squadrons',sub:'Callsigns, squadrons, modex (filters inside)',kw:'squadrons callsigns modex',cards:QZ_DECKS['ql-sqdn']||FC_SETS.squadrons});
-    ['rfd','fin','arr'].forEach(pos=>{
-      const P=FC_UC[pos]; if(!P||!P['uc-test']) return;
-      const topics=SYLLABUS[pos]||[];
-      const by={}; P['uc-test'].forEach(c=>{ const o=c.o||''; (by[o]=by[o]||[]).push(c); });
-      Object.keys(by).forEach(code=>{
-        const t=topics.find(x=>(x.ids||[x.id]).includes(code)||x.id===code);
-        push('acad',pos+':'+code,`${PN[pos]} · ${code}`,`${PN[pos]} ${code} ${(t&&t.t)||''} acad`,by[code]);
-        const last=out[out.length-1]; if(t) out.filter(s=>s.k.indexOf('pk:'+pos+':'+code)===0).forEach(s=>s.sub=t.t);
-      });
+    const fact=c=>(String(c.q||'')+'|'+String(c.a||'')).toLowerCase().replace(/<[^>]+>/g,'').replace(/[^a-z0-9]/g,'');
+    const byId={}; const reg=cs=>(cs||[]).forEach(c=>{ if(c&&c.id&&!byId[c.id]) byId[c.id]=c; });
+    Object.values(FC_SETS).forEach(reg); Object.values(QZ_DECKS).forEach(reg); Object.values(FC_POS).forEach(reg);
+    Object.values(FC_UC).forEach(P=>Object.values(P||{}).forEach(reg));
+    const gIds=new Set(), gFacts=new Set(); let raw=0, kept=0;
+    const take=(cards, ids, facts)=>{ const res=[]; fcUniq(cards||[]).forEach(c=>{ raw++; const f=fact(c);
+      if(PK_FREQ_DROP.has(c.id) || gIds.has(c.id) || gFacts.has(f) || (ids&&(ids.has(c.id)||facts.has(f)))) return;
+      (ids||gIds).add(c.id); (facts||gFacts).add(f); res.push(c); kept++; }); return res; };
+    const push=(grp,k,name,kw,cards,pos)=>{ if(!cards.length) return; pkChunks(cards,40).forEach((ch,i,a)=>{ out.push({k:'pk:'+k+(a.length>1?':'+(i+1):''), grp, name:name+(a.length>1?` (${i+1}/${a.length})`:''), sub:subOf(ch), kw:(kw||'').toLowerCase(), cards:ch, pos}); }); };
+    const freqSrc=(QZ_DECKS['ql-freq']||[]).concat(PK_FREQ_ADD.map(id=>byId[id]).filter(Boolean));
+    /* squadrons are a whole reference table: claim first so nothing else repeats them */
+    const sq=QZ_DECKS['ql-sqdn']||FC_SETS.squadrons||[]; sq.forEach(c=>{ gIds.add(c.id); gFacts.add(fact(c)); });
+    PK_QUICK.forEach(([k,name,kw])=>{
+      if(k==='ql-sqdn'){ if(sq.length) out.push({k:'ql-sqdn',grp:'quick',name:'Squadrons',sub:'Callsigns, squadrons, modex (filters inside)',kw:'squadrons callsigns modex',cards:sq}); return; }
+      const src=k==='ql-freq'?freqSrc:(QZ_DECKS[k]||FC_SETS[k]); push('quick',k,name,kw,take(src)); });
+    { const n0=out.findIndex(s=>s.grp==='quick'&&s.k!=='pk:ql-freq'); const n1=out.length; push('quick','core','Station Basics','station basics core runway elevation tacan field sids papa initial',take(FC_CORE)); if(out.length>n1&&n0>=0){ const b=out.splice(n1); out.splice(n0,0,...b); } }
+    PK_ONPOS.forEach(([k,name,kw])=>push('onpos',k,name,kw,take(k==='qt-ops'?(FC_SETS.taxi||QZ_DECKS.taxi||[]).concat(QZ_DECKS['qt-ops']||[]):(QZ_DECKS[k]||FC_SETS[k]))));
+    POS.forEach(p=>{ const pos=p.k, ids=new Set(), facts=new Set(); const P=FC_UC[pos];
+      if(P&&P['uc-test']){ const topics=SYLLABUS[pos]||[]; const by={}; P['uc-test'].forEach(c=>{ const o=c.o||''; (by[o]=by[o]||[]).push(c); });
+        Object.keys(by).forEach(code=>{ const t=topics.find(x=>(x.ids||[x.id]).includes(code)||x.id===code);
+          const n0=out.length; push('acad',pos+':'+code,`${PN[pos]} · ${code}`,`${PN[pos]} ${code} ${(t&&t.t)||''} acad`,take(by[code],ids,facts),pos);
+          if(t) out.slice(n0).forEach(s=>s.sub=t.t); }); }
+      /* radar positions: what is left of the position essentials after dedupe opens the Live on position set */
+      if(!P) push('onpos','pos:'+pos,`${PN[pos]} essentials`,(PN[pos]+' position essentials'),take(posDeck(pos),ids,facts),pos);
+      if(P){ push('onpos',pos+':live',`${PN[pos]} · Live on position`,`${PN[pos]} live on position essentials`,take(posDeck(pos).concat(P['uc-live']||[]),ids,facts),pos);
+             push('onpos',pos+':new',`${PN[pos]} · New to station`,`${PN[pos]} new to station`,take(P['uc-new'],ids,facts),pos); }
     });
-    POS.forEach(p=>{ const d=posDeck(p.k)||[]; if(d.length) out.push({k:'pk:pos:'+p.k, grp:'onpos', name:`${PN[p.k]} essentials`, sub:subOf(d), kw:(PN[p.k]+' position essentials').toLowerCase(), cards:d, pos:p.k}); });
-    ['rfd','fin','arr'].forEach(pos=>{ const P=FC_UC[pos]; if(!P) return; push('onpos',pos+':live',`${PN[pos]} · Live on position`,`${PN[pos]} live on position`,P['uc-live']); push('onpos',pos+':new',`${PN[pos]} · New to station`,`${PN[pos]} new to station`,P['uc-new']); });
-    PK_ONPOS.forEach(([k,name,kw])=>push('onpos',k,name,kw,QZ_DECKS[k]||FC_SETS[k]));
+    PK_STATS.raw=raw; PK_STATS.kept=kept; PK_STATS.dropped=raw-kept;
     PK_CACHE=out; return out;
   }
   function pkFind(k){ return pkSets().find(s=>s.k===k)||null; }
+  globalThis.vatcPk=()=>pkSets(); globalThis.vatcPkStats=()=>PK_STATS;
   const PK_GRP=[['quick','QUICK LOOKUP'],['acad','ACADS'],['onpos','ON POSITION & STATION']];
   /* ===== v0.8.29 TEST: per-ACAD tests — LQS packet Test Exercise items (paper order) + Practice (pub-sourced cards tagged to that ACAD) ===== */
   const TST_KEY='vatc.tests.v1';
@@ -5092,6 +5118,19 @@ function vectorAnswerHTML(query, hits){
     if(fb.ok!=null) t.res.push({k:t.order[t.i], ok:fb.ok, typo:fb.typo, u});
     t.fb=fb; set({tst:t, tstNote:''});
   }
+  /* v0.8.31 home-quizlets: Home TOWER / RADAR / GENERAL use the exact Flashcards-tab picker rows (same sets, same deck view). */
+  const HQ_PARTS=[
+    ['tower','TOWER','Clearance/FD · Ground · Local',['pk:pos:cd','pk:pos:gnd','pk:pos:lcl','pk:sids','pk:fdio','pk:svfr','pk:vrp','pk:viscom','pk:crash','pk:qt-ops']],
+    ['radar','RADAR','RFD · Final/GCA · Arrival',['pk:rfd:live','pk:fin:live','pk:arr:live','pk:asrmile','pk:parmile','pk:gcafinal','pk:qr-missed','pk:handoff','pk:qr-wakesep','pk:radio','pk:qr-strips','pk:termstrip','pk:scratchpad','pk:fixes','pk:gca','pk:arrcomp','pk:abbrev']],
+    ['general','GENERAL','Frequencies · station facts',['pk:ql-freq','pk:core','pk:idents','pk:ql-phone','pk:diverts','pk:ql-field','ql-sqdn']]];
+  function homeQuizHTML(){
+    const sets=pkSets(), PKO=pkOpenLoad();
+    const parts=HQ_PARTS.map(([id,lab,sub,keys])=>{ const ss=sets.filter(s=>keys.some(k=>s.k===k||s.k.indexOf(k+':')===0)); if(!ss.length) return '';
+      return `<details class="pk-dd hq-dd" data-dd="home:${id}"${PKO['home:'+id]?' open':''} ontoggle="globalThis.vatcPkToggle&&globalThis.vatcPkToggle(this)"><summary data-g="${id}"><span>${lab} <small class="hq-sub">${sub}</small></span><span class="pk-n">${ss.length}</span></summary><div class="pk-list">${ss.map(pkRowHTML).join('')}</div></details>`; }).join('');
+    return `<div class="fc-picker hq">${parts}</div>`;
+  }
+  function pkRowHTML(s){ const ids=s.cards.map(c=>c.id); const c=FCQ.counts(ids,S.fcStats); const pct=ids.length?Math.round(c.KNOWN/ids.length*100):0;
+      return `<button type="button" class="pk-set" data-action="fcdeck" data-d="${escTxt(s.k)}" data-s="${escTxt((s.name+' '+s.kw+' '+s.sub).toLowerCase())}"><span class="pk-t"><b>${escTxt(s.name)}</b><span class="pk-n">${ids.length}</span></span><span class="pk-sub">${escTxt(s.sub)}</span><span class="pk-bar"><i style="width:${pct}%"></i></span></button>`; }
   function fcPickerHTML(){
     const sets=pkSets();
     const row=s=>{ const ids=s.cards.map(c=>c.id); const c=FCQ.counts(ids,S.fcStats); const pct=ids.length?Math.round(c.KNOWN/ids.length*100):0;
@@ -5105,7 +5144,7 @@ function vectorAnswerHTML(query, hits){
     const other=sets.filter(s=>s.grp==='onpos'&&!posOf(s));
     const posAll=posBlocks+(other.length?dd('pos:other','Phraseology & procedures (all radar / tower)',list(other),other.length,'sub'):'');
     const acadBlocks=POS.map(p=>{ const ss=sets.filter(s=>s.grp==='acad'&&posOf(s)===p.k); return ss.length?dd('acad:'+p.k,PN[p.k],list(ss),ss.length,'sub'):''; }).join('');
-    const grp=dd('quick','Quick lookup',list(quick),quick.length)+dd('bypos','By position',posAll,sets.filter(s=>s.grp==='onpos').length)+dd('acad','ACADs',acadBlocks,sets.filter(s=>s.grp==='acad').length);
+    const grp=dd('quick','General · Quick lookup',list(quick),quick.length)+dd('bypos','By position',posAll,sets.filter(s=>s.grp==='onpos').length)+dd('acad','ACADs',acadBlocks,sets.filter(s=>s.grp==='acad').length);
     return `<div id="fcwrap" class="fc-picker"><input id="pkq" class="pk-q" placeholder="Find a set — buttons, idents, completion…" autocomplete="off" spellcheck="false" oninput="vatcPkFilter(this.value)">${grp}<div class="pk-none muted" hidden>No set matches.</div></div>`;
   }
   const PKO_KEY='vatc.pkOpen.v1';
@@ -5965,7 +6004,7 @@ function pdfPaneHTML(){
     if(a==='tstmissed'){ const t=S.tst; if(!t) return; const miss=t.res.filter(r=>!r.ok).map(r=>r.k); return set({tst:tstStart(t.pos,t.n,t.kind,miss)}); }
     if(a==='tstcite'){ const cite=el.dataset.cite||''; if(!cite) return; openLearnCite(cite,{title:el.dataset.title||'', from:'test'}); return; }
     if(a==='fcall'){ if(navBackIf(p=>p.fcPick&&p.learnMode==='cards'&&p.tab==='learn')) return; return set({fcPick:true, fcSess:null}); }
-    if(a==='fcdeck'){const d0=el.dataset.d||'pos'; const pkp=/^pk:pos:(\w+)$/.exec(d0); if(pkp){ return set({tab:'learn',learnMode:'cards',trainMode:'cards',pos:pkp[1],fcDeck:'pos',fcPick:false,fcIdx:0,fcFlip:false,fcOrder:null,fcSess:null}); } const d=d0; const g=fcDeckGroup(d); const o=Object.assign({}, S.fcOpen||{}); if(g) o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcPick:false,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null,fcSess:null,fcSetsOpen:false});}
+    if(a==='fcdeck'){const d0=el.dataset.d||'pos'; const pkp=/^pk:pos:(\w+)$/.exec(d0); if(pkp){ return set({tab:'learn',learnMode:'cards',trainMode:'cards',pos:pkp[1],fcDeck:d0,fcPick:false,fcIdx:0,fcFlip:false,fcOrder:null,fcSess:null}); } const d=d0; const g=fcDeckGroup(d); const o=Object.assign({}, S.fcOpen||{}); if(g) o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcPick:false,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null,fcSess:null,fcSetsOpen:false});}
     if(a==='jumptbl'){ jumpTblRef(el.dataset.tbl||el.textContent||''); return; }
     if(a==='fcgrp'){ const g=el.dataset.g||'tower'; setTimeout(()=>{ const o=Object.assign({tower:false,radar:false,local:false},S.fcOpen||{}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
     if(a==='openpub'){const page=Math.max(1,parseInt(el.dataset.page,10)||1);const same=S.pub===el.dataset.id; if(!same){resetCitePdfFind();} return set({tab:'reference',pub:el.dataset.id,pubPage:page,pubQ:same?S.pubQ:'',pubGuessNote:'',pubPreferPage:page,pubCiteSec:same?S.pubCiteSec:''});}
