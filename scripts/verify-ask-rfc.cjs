@@ -532,7 +532,7 @@ ok('posProgress function', /function\s+posProgress\s*\(/.test(html));
 ok('rfcTrain FLASHCARDS seg', /function rfcExerciseBody\(\)/.test(html) && /function rfcTrain\(\)/.test(html));
 ok('no Learn TEST EXERCISE toggle', !/TEST EXERCISE/.test(html));
 ok('Learn cite PDF hides shelf', /if\(S\.pub && S\.learnReturn\) return pdfPaneHTML\(\)/.test(html));
-ok('Reference PUBLICATIONS closed by default', /function pubShelfHTML\(/.test(html) && /<details class="pos-acads"><summary>PUBLICATIONS<\/summary>\$\{nest\}<\/details>/.test(html) && !/pos-acads"\$\{S\.pub\?'':' open'\}/.test(html) && !/<details class="pos-acads" open><summary>PUBLICATIONS/.test(html));
+ok('Reference PUBLICATIONS closed by default', /function pubShelfHTML\(/.test(html) && /<details class="pos-acads"><summary>PUBLICATIONS<\/summary>\$\{nest\}\$\{flipShelfHTML\(\)\}<\/details>/.test(html) && !/pos-acads"\$\{S\.pub\?'':' open'\}/.test(html) && !/<details class="pos-acads" open><summary>PUBLICATIONS/.test(html));
 ok('no standalone SECTIONS · FACMAN dropdown', !/<summary>SECTIONS · FACMAN<\/summary>/.test(html) && !/<summary>SECTIONS · 7110\.65<\/summary>/.test(html));
 ok('pub sections nested under each PUBLICATION', /function pubSectionsFor\(/.test(html) && /pub-nest/.test(html));
 ok('fcdeck Quizlet tap-to-reveal', /data-action="fcflip"/.test(html) && /data-action="fcshuffle"/.test(html) && /tap to reveal/.test(html));
@@ -614,7 +614,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.25 arr-usecase', /v0\.8\.25 · arr-usecase<\/span>/.test(html) && !/v0\.8\.24 · fin-usecase<\/span>/.test(html));
+ok('statusbar v0.8.26 flip-tpp', /v0\.8\.26 · flip-tpp<\/span>/.test(html) && !/v0\.8\.25 · arr-usecase<\/span>/.test(html));
 // v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
 {
   const OLD25=[/2,?200 via heading 211/i,/CLIMB AND MAINTAIN 2200 VIA/i,/ten \(10\) feet/,/±\s?10 feet/,/±\s?50 feet of the azimuth/,/between 51 and 100 feet/,/between 11 and 25 feet/,/between 26 and 50 feet/,/MAINTAIN 3800, PROCEED DIRECT ONTOS/i,/ONE THOUSAND TWO HUNDRED THEN TURN LEFT/,/UPWIND NUMBERS AND LEAVING/,/RS with ADC/,/RS, ADC, RD/,/H-1 departures only/,/between Bravo and Delta taxiways/,/Between 11 and 7 miles on final/,/go-around \(VFR\) or missed approach \(IFR\)/];
@@ -690,7 +690,7 @@ if (sm) {
   let code = sm[1];
   code = code.replace(
     /document\.getElementById\('vatc'\)\.addEventListener\('click'[\s\S]*render\(\);\s*\}\)\(\);/,
-    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcFaceHTML,secLookup,secBoxHTML,SEC_IDX,SEC_PUBS,fcSetChipRow,QZ_PARTS,QZ_DECKS,QZ_DUPES,QZ_MOVE,QZ_SRC_ORDER,QZ_CAT_OF,qzPartOf,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,diversifyAskHits,pubIdForDoc,queueCrossPubFind,FC_UC,FC_UC_MISS,FC_UC_GUIDE,FC_UC_NEW,isUcDeck,ucDeck};\n})();'
+    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcFaceHTML,secLookup,secBoxHTML,SEC_IDX,SEC_PUBS,fcSetChipRow,QZ_PARTS,QZ_DECKS,QZ_DUPES,QZ_MOVE,QZ_SRC_ORDER,QZ_CAT_OF,qzPartOf,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,PLATES,plateHits,diversifyAskHits,pubIdForDoc,queueCrossPubFind,FC_UC,FC_UC_MISS,FC_UC_GUIDE,FC_UC_NEW,isUcDeck,ucDeck};\n})();'
   );
   try {
     eval(code);
@@ -1181,7 +1181,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           ok('sec: normal word questions / freqs / squadron numbers are not section queries', ['hold short','tower frequency 128.775','HMLA 267 callsign','class d 2500 feet','runway 21 hold short','what is the 3 mile rule'].every(q=>!L(q).isSec));
           const bx=V.secBoxHTML(r557);
           ok('sec: rows = "PUB · 5-5-7. HEADING" buttons that open the reader at the section page', /data-action="opensec" data-pub="facman" data-sec="5-5-7" data-page="\d+"/.test(bx) && /<span class="sj-pub">FACMAN<\/span><span class="sj-t">5-5-7\. OPPOSITE DIRECTION OPERATIONS \(ODO\)/.test(bx) && /<span class="sj-pub">JO 7110\.65<\/span><span class="sj-t">5-5-7\. PASSING OR DIVERGING/.test(bx));
-          ok('sec: drawLookup shows section rows first; pure number query skips Find/PDF scan', /const sj=secLookup\(q\), sjHTML=secBoxHTML\(sj\);\s*if\(sj\.isSec && sj\.pure\)\{ box\.innerHTML=sjHTML; return; \}/.test(html) && /box\.innerHTML=sjHTML\+\(S\.tab==='ask'\?vectorAnswerHTML/.test(html));
+          ok('sec: drawLookup shows section rows first; pure number query skips Find/PDF scan', /const sj=secLookup\(q\), sjHTML=plateBoxHTML\(q\)\+secBoxHTML\(sj\);\s*if\(sj\.isSec && sj\.pure\)\{ box\.innerHTML=sjHTML; return; \}/.test(html) && /box\.innerHTML=sjHTML\+\(S\.tab==='ask'\?vectorAnswerHTML/.test(html));
           ok('sec: Back from reader restores hits scroll', /function restoreHitsScroll\(y\)/.test(html) && /S\.hitsScroll=\(sm&&sm\.scrollTop\)\|\|0/.test(html) && /const y=S\.hitsScroll; S\.hitsScroll=null; set\(\{pub:null/.test(html));
           ok('sec: index headings agree with BOOK paragraph titles (FACMAN/JO)', (function(){ let n=0, bad=[]; const nz=t=>String(t||'').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim(); Object.values(V.BOOK).forEach(b=>{ if(b.kind!=='para') return; const pid=/FACMAN/.test(b.doc||'')?'facman':(/7110/.test(b.doc||'')?'jo':null); if(!pid) return; const e=V.SEC_IDX[pid][String(b.pg||'').replace(/[\u2212\u2013]/g,'-')]; if(!e) return; n++; if(nz(e[0])!==nz(b.pa) && nz(e[0])!==nz(b.title) && !nz(e[0]).startsWith(nz(b.pa))) bad.push(b.pg+':'+e[0]+'≠'+b.pa); }); return n>300 && bad.length===0 || (console.log('   bad', bad.slice(0,5)), false); })());
         }
@@ -1903,6 +1903,17 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         ok('no Desmore invent in aliases', !(V.ASK_ALIASES||[]).some(a => /desmore/i.test(String(a.re))));
 
         // v0.8.12 ask-all-pubs: full shelf scan + multi-doc Sources
+        ok('flip-tpp: 17 plates (KNFG+L18), docs/flip, faa.gov source, amdt', Array.isArray(V.PLATES) && V.PLATES.length===17 && V.PLATES.every(p=>/^docs\/flip\/.+\.pdf$/.test(p.href) && /^https:\/\/aeronav\.faa\.gov\/d-tpp\/2610\//.test(p.src) && p.amdt && p.tx.length>200));
+        ok('flip-tpp: shelf shows FLIP family + cycle note', /FLIP \/ Terminal Procedures \(TPP SW-3\)/.test(V.pubShelfHTML()) && /cycle 2610/.test(V.pubShelfHTML()) && /KNFG Approaches/.test(V.pubShelfHTML()) && /Fallbrook \(L18\)/.test(V.pubShelfHTML()));
+        { const ids=q=>V.plateHits(q).map(h=>h.p.id);
+          ok('flip-tpp: TACAN 21 finds Z, Y, COPTER', ['knfg-tz21','knfg-ty21','knfg-ct21'].every(i=>ids('TACAN 21').includes(i)) && !ids('TACAN 21').includes('knfg-t3'), ids('TACAN 21').join(','));
+          ok('flip-tpp: BLDG3 -> Bulldog', ids('BLDG3')[0]==='knfg-bldg3');
+          ok('flip-tpp: radar mins -> radar minimums plate', ids('radar mins')[0]==='knfg-rad');
+          ok('flip-tpp: OCR text match (AMFIB)', ids('AMFIB').length>=2, ids('AMFIB').join(','));
+          ok('flip-tpp: pure section number does not hit plates', !ids('557').length);
+          ok('flip-tpp: FLIP doc maps to plate', V.pubIdForDoc('FLIP — Bulldog Three')==='knfg-bldg3' && V.pubIdForDoc('FLIP — Airport Diagram')==='knfg-ad');
+          ok('flip-tpp: ACAD-0533 + RFD 0534 cite plates, not blocked', /TPP KNFG Radar Instrument Approach Minimums/.test(JSON.stringify(V.SYLLABUS.fin)) && /TPP KNFG TACAN Z RWY 21/.test(JSON.stringify(V.SYLLABUS.rfd)) && !/no FLIP pub/.test(JSON.stringify(V.SYLLABUS)));
+        }
         ok('askScanPubOrder exported', typeof V.askScanPubOrder === 'function');
         ok('diversifyAskHits exported', typeof V.diversifyAskHits === 'function');
         ok('PUBS exported', Array.isArray(V.PUBS) && V.PUBS.length >= 8, 'n='+(V.PUBS&&V.PUBS.length));
@@ -1957,7 +1968,9 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           ok('fin-usecase: JO 5-11-2 card refined to Chg 2 (powered-lift / VERTIPORT)', !!h52 && /VERTIPORT/.test(h52.a) && /Chg 2/.test(h52.src.doc));
           V.S.pos='fin'; V.S.fcDeck='uc-test';
           const fb=V.fcBody();
-          ok('fin-usecase: guide renders on Final CHECKOUT set', /class="fc-guide"/.test(fb) && /CHECKOUT &amp; TEST|CHECKOUT & TEST/.test(fb) && /ACAD-0533/.test(fb));
+          ok('fin-usecase: guide renders on Final ACADS set (no CHECKOUT & TEST label)', /class="fc-guide"/.test(fb) && /ACADS/.test(fb) && !/CHECKOUT &amp; TEST|CHECKOUT & TEST/.test(fb) && /ACAD-0533/.test(fb));
+          ok('flip-tpp: no CHECKOUT & TEST chip label in any set row', ['rfd','fin','arr'].every(p=>{V.S.pos=p; V.S.fcDeck='uc-test'; const r=V.fcSetChipRow(true); return /ACADS/.test(r) && !/CHECKOUT/.test(r);})); V.S.pos='fin'; V.S.fcDeck='uc-test';
+          ok('flip-tpp: guides drop STUDY line', !/<span>STUDY<\/span>/.test(V.fcBody()));
           V.S.fcDeck='pos';
           ok('fin-usecase: Final POSITION deck unchanged (23)', V.activeFcDeck().length===23, V.activeFcDeck().length);
           /* v0.8.25 arr-usecase: Arrival sets */
