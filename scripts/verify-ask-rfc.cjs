@@ -563,7 +563,7 @@ ok('cite overview removed from pdf pane', /No excerpt overview/.test(html) && !/
 ok('Learn ACADS toggle always present', /data-m="acad">ACADs/.test(html) && !/hasAcad\?`<button[^>]*data-m="acad"/.test(html));
 ok('Learn has FLASHCARDS mode', /data-action="learnmode"/.test(html) && /learnMode:'cards'/.test(html) && /data-m="acad">ACADs/.test(html));
 ok('poscards opens Learn flashcards', /if\(a==='poscards'\)return set\(\{pos:el\.dataset\.p,tab:'learn',learnMode:'cards'/.test(html));
-ok('SYLLABUS cd/gnd/lcl/arr empty', /cd:\[\],gnd:\[\],lcl:\[/.test(html) && /,arr:\[\]\}/.test(html));
+ok('SYLLABUS cd/gnd/lcl empty; arr has packet', /cd:\[\],gnd:\[\],lcl:\[/.test(html) && !/,arr:\[\]\}/.test(html));
 ok('SYLLABUS.rfd not empty', /rfd:\[\{/.test(html));
 ok('SYLLABUS.rfd has ACAD-0520', /rfd:\[\{"n":1,"id":"ACAD-0520"/.test(html));
 ok('SYLLABUS.rfd has ACAD-0534', /rfd:\[[\s\S]*?"id":"ACAD-0534"/.test(html));
@@ -614,7 +614,8 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.26 flip-tpp', /v0\.8\.26 · flip-tpp<\/span>/.test(html) && !/v0\.8\.25 · arr-usecase<\/span>/.test(html));
+ok('statusbar v0.8.27 arr-acad', /v0\.8\.27 · arr-acad<\/span>/.test(html) && !/v0\.8\.26 · flip-tpp<\/span>/.test(html));
+ok('arr-acad: pending message removed', !/ACAD packet pending/.test(html));
 // v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
 {
   const OLD25=[/2,?200 via heading 211/i,/CLIMB AND MAINTAIN 2200 VIA/i,/ten \(10\) feet/,/±\s?10 feet/,/±\s?50 feet of the azimuth/,/between 51 and 100 feet/,/between 11 and 25 feet/,/between 26 and 50 feet/,/MAINTAIN 3800, PROCEED DIRECT ONTOS/i,/ONE THOUSAND TWO HUNDRED THEN TURN LEFT/,/UPWIND NUMBERS AND LEAVING/,/RS with ADC/,/RS, ADC, RD/,/H-1 departures only/,/between Bravo and Delta taxiways/,/Between 11 and 7 miles on final/,/go-around \(VFR\) or missed approach \(IFR\)/];
@@ -1913,6 +1914,16 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           ok('flip-tpp: pure section number does not hit plates', !ids('557').length);
           ok('flip-tpp: FLIP doc maps to plate', V.pubIdForDoc('FLIP — Bulldog Three')==='knfg-bldg3' && V.pubIdForDoc('FLIP — Airport Diagram')==='knfg-ad');
           ok('flip-tpp: ACAD-0533 + RFD 0534 cite plates, not blocked', /TPP KNFG Radar Instrument Approach Minimums/.test(JSON.stringify(V.SYLLABUS.fin)) && /TPP KNFG TACAN Z RWY 21/.test(JSON.stringify(V.SYLLABUS.rfd)) && !/no FLIP pub/.test(JSON.stringify(V.SYLLABUS)));
+        }
+        { const A=V.SYLLABUS.arr||[];
+          ok('arr-acad: 6 Arrival lesson topics in paper order', A.map(t=>t.id).join(',')==='ACAD-0536,TOPIC 2,ACAD-0525/0526,ACAD-0539,ACAD-0537,ACAD-0540/0535', A.map(t=>t.id).join(','));
+          ok('arr-acad: test exercise counts 15/2/13/13/21/18', A.map(t=>t.test.length).join('/')==='15/2/13/13/21/18', A.map(t=>t.test.length).join('/'));
+          ok('arr-acad: every test item has answer + src', A.every(t=>t.test.every(x=>x.q && x.a && x.src)));
+          const allR=[].concat(...A.map(t=>t.refs));
+          ok('arr-acad: FLIP refs open plates', allR.filter(r=>/^TPP /.test(r[0])).length>=20);
+          ok('arr-acad: blocked CNAF/SCT LOA/C-10 kept', ['CNAF 3710.7 5.3.4.1','SCT LOA','FACMAN Appendix C-10'].every(c=>allR.some(r=>r[0]===c)));
+          ok('arr-acad: Chg 2 cites used where Chg 2 has the paragraph', allR.some(r=>r[0]==='7110.65 Chg 2 4-8-9') && allR.some(r=>r[0]==='7110.65 Chg 2 7-5-1'));
+          V.S.pos='arr'; V.S.learnMode='acad'; const lv=V.learnView(); ok('arr-acad: Learn ARRIVAL ACADs renders checklist', !/No ACAD packet/.test(lv) && /ACAD-0536/.test(lv));
         }
         ok('askScanPubOrder exported', typeof V.askScanPubOrder === 'function');
         ok('diversifyAskHits exported', typeof V.diversifyAskHits === 'function');
