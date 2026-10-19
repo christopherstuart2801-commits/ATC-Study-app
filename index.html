@@ -59,7 +59,7 @@
 #vatc .tab svg{ width:15px; height:15px; flex:none; }
 /* top nav: all tabs same standout style */
 #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
-#vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{
+#vatc .tab[data-t="cards"], #vatc .tab[data-t="reference"]{
   font-size:13px; font-weight:600; letter-spacing:.14em; color:#c5ddd3;
   border:1px solid rgba(57,240,160,.42); border-bottom:2px solid transparent;
   padding:13px 15px; min-height:46px;
@@ -67,18 +67,18 @@
   box-shadow:0 0 0 1px rgba(57,240,160,.08) inset, 0 0 12px rgba(57,240,160,.12);
 }
 #vatc .tab[data-t="home"]:hover, #vatc .tab[data-t="ask"]:hover, #vatc .tab[data-t="learn"]:hover,
-#vatc .tab[data-t="sim"]:hover, #vatc .tab[data-t="reference"]:hover{
+#vatc .tab[data-t="cards"]:hover, #vatc .tab[data-t="reference"]:hover{
   color:var(--green); border-color:var(--green); background:rgba(57,240,160,.12);
 }
 #vatc .tab[data-t="home"].on, #vatc .tab[data-t="ask"].on, #vatc .tab[data-t="learn"].on,
-#vatc .tab[data-t="sim"].on, #vatc .tab[data-t="reference"].on{
+#vatc .tab[data-t="cards"].on, #vatc .tab[data-t="reference"].on{
   color:#04150d; background:var(--green); border-color:var(--green); border-bottom-color:var(--green);
   box-shadow:0 0 16px rgba(57,240,160,.4);
 }
 @media(max-width:640px){
   #vatc .tabs{ gap:3px; padding:4px 6px 0; }
   #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
-  #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{
+  #vatc .tab[data-t="cards"], #vatc .tab[data-t="reference"]{
     font-size:12px; padding:12px 11px; letter-spacing:.1em; min-height:44px;
   }
 }
@@ -498,10 +498,42 @@
 #vatc .fc-sets .fc-chg{ font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:12px; padding:3px 9px; }
 #vatc .fc-sets[open] .fc-chg{ color:var(--green); border-color:var(--green2); }
 #vatc .fc-sets .fc-chip-wrap{ margin:0; padding:0 10px 10px; }
-#vatc .fc-picker .pk-q{ width:100%; box-sizing:border-box; margin:0 0 10px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--panel); color:var(--text); font-size:14px; }
+#vatc .fc-picker .pk-q, #vatc #qrq{ width:100%; box-sizing:border-box; margin:0 0 10px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--panel); color:var(--text); font-size:14px; }
 #vatc .pk-h{ font-size:10px; letter-spacing:.16em; color:var(--muted); margin:10px 2px 6px; }
 #vatc .pk-list{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:6px; }
 #vatc .pk-set{ text-align:left; display:flex; flex-direction:column; gap:3px; padding:9px 12px; border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--text); cursor:pointer; min-height:44px; }
+#vatc .rfc-topic-slim{ flex-wrap:wrap; }
+#vatc .rfc-choose{ display:flex; gap:6px; margin-left:auto; flex:none; }
+#vatc .rfc-cb{ min-height:40px; min-width:64px; padding:6px 10px; border:1px solid var(--line); border-radius:8px; background:transparent; color:var(--text); font-size:11px; letter-spacing:.06em; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.15; }
+#vatc .rfc-cb.tst{ border-color:#39f0a0; color:#39f0a0; }
+#vatc .rfc-cb span{ font-size:9px; opacity:.75; letter-spacing:0; }
+#vatc .tst-list{ display:flex; flex-direction:column; gap:6px; }
+#vatc .tst-row{ border:1px solid var(--line); border-radius:10px; padding:8px 10px; background:var(--panel); display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; }
+#vatc .tst-h span{ color:var(--muted); font-size:12px; }
+#vatc .tst-btns{ display:flex; gap:6px; flex-wrap:wrap; }
+#vatc .tst-go{ min-height:44px; padding:6px 12px; border-radius:8px; border:1px solid #39f0a0; background:transparent; color:var(--text); display:flex; flex-direction:column; align-items:flex-start; cursor:pointer; }
+#vatc .tst-go.sec{ border-color:var(--line); }
+#vatc .tst-go span,#vatc .tst-none,#vatc .tst-meta{ font-size:10px; color:var(--muted); }
+#vatc .tst-top{ display:flex; gap:8px; align-items:center; margin:0 0 8px; }
+#vatc .tst-tag{ font-size:9px; letter-spacing:.12em; padding:2px 6px; border-radius:6px; border:1px solid var(--line); color:var(--muted); text-transform:uppercase; }
+#vatc .tst-tag.lqs{ color:var(--amber); border-color:currentColor; }
+#vatc .tst-src{ display:inline-block; margin-top:8px; font-size:10px; color:var(--muted); background:none; border:0; padding:0; text-decoration:underline; text-decoration-color:rgba(140,160,170,.4); cursor:pointer; text-align:left; }
+#vatc .tst-nav{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+#vatc .tst-nav .btn{ min-height:44px; flex:1 1 140px; }
+#vatc .tst-score{ text-align:center; margin:8px 0 14px; }
+#vatc .tst-mh{ font-size:10px; letter-spacing:.16em; color:var(--muted); margin:8px 0 4px; }
+#vatc .tst-miss{ border:1px solid var(--line); border-radius:10px; padding:8px 10px; margin-bottom:6px; }
+#vatc .tst-mq{ font-size:12px; margin-bottom:4px; } #vatc .tst-ma{ font-size:12px; color:#39f0a0; } #vatc .tst-yu{ font-size:11px; color:#ff8a8a; margin-top:3px; }
+#vatc .tst-a{ margin-top:6px; } #vatc .red{ color:#ff6363; }
+#vatc .qr-list{ display:flex; flex-direction:column; gap:4px; margin-top:8px; }
+#vatc .qr-sec{ border:1px solid var(--line); border-radius:10px; background:var(--panel); }
+#vatc .qr-sec[hidden],#vatc .qr-t tr[hidden]{ display:none; }
+#vatc .qr-sec>summary{ padding:10px 12px; cursor:pointer; font-size:13px; display:flex; justify-content:space-between; min-height:44px; align-items:center; }
+#vatc .qr-sec>summary .pk-n{ margin-left:auto; margin-right:10px; } #vatc .qr-t{ width:100%; border-collapse:collapse; font-size:12px; }
+#vatc .qr-t td{ padding:6px 10px; border-top:1px solid var(--line); vertical-align:top; }
+#vatc .qr-k{ width:34%; color:var(--text); } #vatc .qr-v{ color:#39f0a0; } #vatc .qr-s{ width:1%; white-space:nowrap; text-align:right; }
+#vatc .qr-src.nolink{ text-decoration:none; cursor:default; } #vatc .qr-src{ font-size:10px; color:var(--muted); background:none; border:0; padding:0; text-decoration:underline; text-decoration-color:rgba(140,160,170,.4); cursor:pointer; }
+@media (max-width:600px){ #vatc .qr-t tr{ display:grid; grid-template-columns:1fr; border-top:1px solid var(--line); padding:4px 0; } #vatc .qr-k,#vatc .qr-s{ width:auto; text-align:left; } #vatc .qr-t td{ border-top:0; padding:2px 10px; } }
 #vatc .pk-set[hidden],#vatc .pk-grp[hidden]{ display:none; }
 #vatc .pk-t{ display:flex; justify-content:space-between; gap:8px; font-size:13px; }
 #vatc .pk-n{ color:var(--muted); font-size:11px; }
@@ -597,7 +629,7 @@
   #vatc .brand .sub{ letter-spacing:.24em; }
   #vatc .stnchip > div{ display:none; }
   #vatc .tabs{ gap:4px; padding:6px 6px 0; overflow-x:visible; }
-  #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"], #vatc .tab[data-t="sim"], #vatc .tab[data-t="reference"]{ flex:1 1 0; justify-content:center; font-size:11px; letter-spacing:.06em; padding:11px 2px; min-width:0; }
+  #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"], #vatc .tab[data-t="cards"], #vatc .tab[data-t="reference"]{ flex:1 1 0; justify-content:center; font-size:11px; letter-spacing:.06em; padding:11px 2px; min-width:0; }
   #vatc .tab svg{ display:none; }
   #vatc .trackbar{ padding:8px 12px; gap:5px; }
   #vatc .body{ padding:14px 12px 18px; }
@@ -664,7 +696,6 @@
     {k:'arr',n:'Arrival',sn:'Arrival',g:'RADAR',sim:'scope',d:'Sequence the inbounds'}
   ];
   const PN=Object.fromEntries(POS.map(p=>[p.k,p.n]));
-  const PSIM=Object.fromEntries(POS.map(p=>[p.k,p.sim]));
 
   const Q=[
     {q:'At KNFG, which runway is primary for landing and takeoff?',c:['RWY 03','RWY 21','Controller\u2019s discretion','RWY 12'],a:1,tag:'Airfield',e:'KNFG (Munn Field) primarily uses Runway 21.',src:{doc:'FLIP — Airport Diagram',pg:'56',pa:'RWY 3-21',hl:'Runway 3/21, field elev 78. Primary: RWY 21.'}},
@@ -2878,30 +2909,6 @@
   };
 
   // ===== scenario sims (choice-step) =====
-  const SCN={
-    cd:[
-      {stem:'Delivering RAIDER 21\u2019s IFR clearance off KNFG. In what order do you read it?',line:'RAIDER 21 · F/A-18 · IFR',opts:['Route, Altitude, Clearance limit, Frequency, Transponder','Clearance limit, Route, Altitude, Frequency, Transponder (CRAFT)','Altitude, Route, Frequency, Clearance limit, Transponder','Transponder, Frequency, Route, Altitude, Clearance limit'],ans:1,fb:'CRAFT — a standard order keeps the read clean under load.'},
-      {stem:'RWY 21 is in use. Which departure is NOT valid for a RWY 21 takeoff?',line:'DEPARTURE SELECTION · RWY 21',opts:['Quntn Two','Corri Four','Munn Four','Bulldog Three'],ans:2,fb:'Munn Four is a RWY 3 departure. Quntn Two, Corri Four, and Bulldog Three all have RWY 21 takeoffs. (FLIP.)'},
-      {stem:'A VFR aircraft requests flight following northbound. First action?',line:'VFR REQUEST · FLIGHT FOLLOWING',opts:['Tell them to remain clear and call back','Assign a discrete beacon code and coordinate with the radar position','Issue an IFR clearance','Hand them straight to Tower'],ans:1,fb:'Assign a squawk, get them in the system, and coordinate the VFR with radar before transfer.'},
-      {stem:'SoCal amends RAIDER 21\u2019s route while the strip is active. First action?',line:'ROUTE AMENDMENT · RAIDER 21',opts:['Relay to the aircraft immediately, then update the strip','Annotate the amendment on the strip and read it back to verify, then relay','Wait for the next position','Ignore it'],ans:1,fb:'Mark it, verify it, then relay. The strip is the record of truth.'}
-    ],
-    gnd:[
-      {stem:'Taxiing RAIDER 21 to RWY 21 for departure. Before the runway, what do you do?',line:'GROUND · RAIDER 21 to RWY 21',opts:['Clear them onto the runway','Hold them short of RWY 21 and transfer to Local','Tell them to monitor Tower and continue','Clear for takeoff'],ans:1,fb:'Ground does not put aircraft on an active runway — hold short and hand to Local.'},
-      {stem:'A vehicle requests to cross RWY 21. Action?',line:'GROUND · VEHICLE crossing RWY 21',opts:['Approve the crossing yourself','Coordinate with Local before any runway crossing','Deny all crossings','Send them to Clearance'],ans:1,fb:'Any active-runway crossing is coordinated with Local first.'},
-      {stem:'Low visibility on the surface. Key control technique?',line:'GROUND · LOW VISIBILITY',opts:['Speed traffic up to clear faster','Maintain positive control and known positions; reduce simultaneous movements','Stop talking to reduce frequency congestion','Let aircraft self-sequence'],ans:1,fb:'Positive control and position awareness — fewer movements, not faster ones.'}
-    ],
-    lcl:[
-      {stem:'Departing RAIDER 21 off RWY 21 with a helicopter on a 1-mile final to the same runway. Action?',line:'TOWER · RWY 21 conflict',opts:['Clear the departure immediately','Hold the departure and ensure runway separation','Clear both at once','Switch the helo to Ground'],ans:1,fb:'Protect the runway — hold the departure until separation is assured.'},
-      {stem:'An aircraft on short final is unstable / not configured to land. Action?',line:'TOWER · short final',opts:['Clear to land anyway','Issue a go-around','Say nothing','Switch them to Approach'],ans:1,fb:'Issue the go-around early and decisively — never force an unsafe landing.'},
-      {stem:'A NORDO (lost-comm) light aircraft enters the pattern. Tool?',line:'TOWER · NORDO in the pattern',opts:['Keep transmitting on tower freq','Use light-gun signals (steady green = cleared to land)','Close the runway','Ignore it until it lands'],ans:1,fb:'Light-gun signals are the tool for a no-radio aircraft.'}
-    ],
-    rfd:[
-      {stem:'Delivering RAIDER 21\u2019s IFR clearance. In what order do you read it?',line:'RAIDER 21 · F/A-18 · IFR',opts:['Route, Altitude, Clearance limit, Frequency, Transponder','Clearance limit, Route, Altitude, Frequency, Transponder (CRAFT)','Altitude, Route, Frequency, Clearance limit, Transponder','Transponder, Clearance limit, Frequency, Route, Altitude'],ans:1,fb:'CRAFT — Clearance limit, Route, Altitude, Frequency, Transponder.'},
-      {stem:'RAIDER 21 departs RWY 21 on the QUNTN TWO. Published initial heading on the strip?',line:'QUNTN TWO · RWY 21',opts:['031°','211°','206°','127°'],ans:1,fb:'QUNTN TWO RWY 21: climb heading 211° to intercept OCN R-022.'},
-      {stem:'SoCal calls to hand off an inbound. Which readback verifies it?',line:'INBOUND HANDOFF · SOCAL → KNFG',opts:['"Roger."','"Radar contact."','Read back callsign + the position/altitude passed, then acknowledge','"Go ahead."'],ans:2,fb:'Verify callsign plus position/altitude before accepting.'},
-      {stem:'SoCal amends the route while the strip is active. First action?',line:'ROUTE AMENDMENT · RAIDER 21',opts:['Relay immediately, then update the strip','Annotate the strip and read it back to verify, then relay','Wait for the next position','Ignore it'],ans:1,fb:'Mark it, verify it, then relay.'}
-    ]
-  };
 
   // ===== ASK knowledge base (source-anchored) =====
   const ASK=[
@@ -3717,7 +3724,7 @@
     // Missing / blocked pubs (00-80T, 00-80T-114, etc.): never open wrong JO/FACMAN p.1
     if(!info.pub || (info.book && info.book.missing)){
       const why=(info.book && info.book.note) ? info.book.note : 'Pub PDF not loaded in app — blocked until paper lands.';
-      if(opts.from==='fc') return fcKeep({fcNote:rawCite+' — '+why}); /* stay on the card; don't dump to the ACAD list */
+      if(opts.from==='fc') return fcKeep({fcNote:rawCite+' — '+why}); if(opts.from==='test') return set({tstNote:rawCite+' — '+why}); /* stay on the card; don't dump to the ACAD list */
       resetCitePdfFind();
       return set({tab:'learn', learnMode:'acad', pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', pubPreferPage:0, pubCiteSec:'', learnReturn:null, learnBlockedNote:rawCite+' — '+why, lkFocus:false, refQ:''});
     }
@@ -4179,7 +4186,7 @@ function vectorAnswerHTML(query, hits){
         const citeR=(t.refs||[]).filter(r=>!(r&&r[2]==='hdr'));
         const refDone=citeR.filter(r=>S.rfcChk[t.n+':'+r[0]]).length;
         const refTot=citeR.length;
-        return `<div class="rfc-topic rfc-topic-slim"><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button><div data-action="acad" data-n="${t.n}" class="rfc-topic-body"><span class="rfc-n">${t.n}</span>${codes}<span class="rfc-tt">${t.t}</span><span class="muted rfc-prog" data-topic="${t.n}">${refDone}/${refTot}</span></div></div>`;
+        return `<div class="rfc-topic rfc-topic-slim"><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button><div data-action="acad" data-n="${t.n}" class="rfc-topic-body"><span class="rfc-n">${t.n}</span>${codes}<span class="rfc-tt">${t.t}</span><span class="muted rfc-prog" data-topic="${t.n}">${refDone}/${refTot}</span></div><div class="rfc-choose"><button type="button" class="rfc-cb" data-action="acad" data-n="${t.n}">ACAD</button><button type="button" class="rfc-cb tst" data-action="rfctest" data-n="${t.n}">TEST<span>${(()=>{const L=tstLqs(t).length,P=tstCards(S.pos,t).length; return L?L+' LQS':(P?P+' practice':'none');})()}</span></button></div></div>`;
       }).join('');
       const posLab=(PN[S.pos]||'POSITION').toUpperCase();
       const head=pack.demo
@@ -4326,7 +4333,7 @@ function vectorAnswerHTML(query, hits){
     const keep=opts&&opts.keepScroll;
     let y=0;
     if(keep){ const sm=document.querySelector('#vatc .scrollmain'); y=sm?sm.scrollTop:0; }
-    Scope.teardown(); Object.assign(S,o); render();
+    Object.assign(S,o); render();
     if(keep){
       const sm=document.querySelector('#vatc .scrollmain');
       if(sm) sm.scrollTop=y;
@@ -4379,91 +4386,6 @@ function vectorAnswerHTML(query, hits){
   const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 
   // ===== SCOPE engine (navy, real-scope styling) =====
-  const Scope={
-    active:false,cv:null,ctx:null,raf:null,iv:null,running:false,sel:null,
-    t:0,last:0,sweep:0,frame:0,comms:[],confPairs:{},nid:0,spawnT:5,run:{land:0,conf:0,lost:0},
-    SIZE:540,cx:270,cy:270,scale:225/18,COMPRESS:26,cap:5,
-    GATES:[[35,13.5],[55,12.5],[72,11.5],[20,13.5],[85,12]],
-    FIXES:[['WESIN',350,12],['UDHAY',358,9],['TEMEC',30,11],['TANNR',24,8],['IFLEV',36,6],['SKYES',70,12],['DEGLE',86,9],['GOZER',110,8],['VISTA',122,10.5],['ROBNN',116,13],['CORRI',42,5],['KELPS',262,8],['HUBRD',244,11],['EMILE',224,10],['CARDI',201,12],['HURSI',176,11]],
-    NAVS:[['OCN',210,7]],
-    TPL:[['MARINE','F/A-18',250],['RAIDER','F/A-18',250],['VANDAL','F/A-18',245],['PROWLER','EA-18',240],['TITAN','KC-130',195],['OTIS','KC-130',190],['HOTEL','MV-22',150],['REIN','MV-22',150],['GUNRUN','AH-1Z',140],['SHADOW','C-12',180]],
-    SPEED(){return +(document.querySelector('#vatc #spd button.on')?.dataset.s||1);},
-    // DATA ADAPTER: swap nextTraffic() for a live ADS-B feed (OpenSky / ADS-B Exchange / licensed) for real traffic.
-    nextTraffic(){ const g=this.GATES[(Math.random()*this.GATES.length)|0],tp=this.TPL[(Math.random()*this.TPL.length)|0];
-      const b=g[0]+(Math.random()*8-4),r=g[1]+(Math.random()*2-1),x=r*Math.sin(b*Math.PI/180),y=r*Math.cos(b*Math.PI/180);
-      const alt=[4000,5000,6000,7000][(Math.random()*4)|0],gs=tp[2]+(Math.random()*20-10),num=(Math.random()*89+10|0);
-      return {id:++this.nid,cs:tp[0]+' '+num,ty:tp[1],x,y,hdg:200+(Math.random()*55|0),alt,gs,tHdg:200,tAlt:alt,cleared:false,hist:[]}; },
-    seed(){ this.t=0;this.sweep=0;this.frame=0;this.comms=[];this.confPairs={};this.sel=null;this.nid=0;this.spawnT=5;this.run={land:0,conf:0,lost:0};
-      this.ac=[]; for(let i=0;i<3;i++){const a=this.nextTraffic();a.tHdg=a.hdg;this.ac.push(a);} },
-    mount(){ this.cv=document.getElementById('scope'); if(!this.cv)return; this.ctx=this.cv.getContext('2d');
-      const dpr=window.devicePixelRatio||1; this.cv.width=this.SIZE*dpr; this.cv.height=this.SIZE*dpr; this.ctx.setTransform(dpr,0,0,dpr,0,0);
-      this.active=true; this.seed(); this.draw(); this.renderList(); this.renderCmd(); this.renderComms(); this.updScore();
-      this.cv.onclick=e=>{ const r=this.cv.getBoundingClientRect(),k=this.SIZE/r.width,mx=(e.clientX-r.left)*k,my=(e.clientY-r.top)*k; let best=null,bd=1e9;
-        this.ac.forEach(a=>{const[px,py]=this.toPx(a);const d=Math.hypot(px-mx,py-my);if(d<bd){bd=d;best=a;}}); if(best&&bd<22){this.sel=best.id;this.renderList();this.renderCmd();if(!this.running)this.draw();} }; },
-    teardown(){ if(!this.active)return; this.running=false; if(this.raf)cancelAnimationFrame(this.raf); if(this.iv)clearInterval(this.iv);
-      S.simStats.land+=this.run.land; S.simStats.conf+=this.run.conf; S.simStats.lost+=this.run.lost; S.simStats.runs++; this.active=false; },
-    toPx(a){return [this.cx+a.x*this.scale,this.cy-a.y*this.scale];},
-    start(){ if(this.running||!this.active)return; this.running=true; this.last=performance.now();
-      const loop=now=>{ if(!this.running)return; let dt=Math.min((now-this.last)/1000,0.05); this.last=now; this.step(dt); this.draw(); this.frame++; this.raf=requestAnimationFrame(loop); };
-      this.raf=requestAnimationFrame(loop); this.iv=setInterval(()=>{this.renderList();this.updLive();},220); },
-    pause(){ this.running=false; if(this.raf)cancelAnimationFrame(this.raf); if(this.iv)clearInterval(this.iv); },
-    reset(){ this.pause(); const c=document.getElementById('comms'); if(c)c.innerHTML='<div class="empty">Press START. Select a target, then issue control instructions.</div>'; this.seed(); this.draw(); this.renderList(); this.renderCmd(); this.updScore(); const ov=document.getElementById('simov'); if(ov)ov.remove(); },
-    est(a){ const u=[Math.sin(211*Math.PI/180),Math.cos(211*Math.PI/180)],o=[Math.sin(31*Math.PI/180),Math.cos(31*Math.PI/180)];
-      const lat=Math.abs(a.x*u[1]-a.y*u[0]),dh=Math.abs((((211-a.hdg)%360)+540)%360-180),rng=Math.hypot(a.x,a.y);
-      return lat<1.2&&dh<35&&(a.x*o[0]+a.y*o[1])>0&&rng<10; },
-    step(dt){ const sp=this.SPEED(),f=this.COMPRESS*sp*dt; this.t+=dt*sp; this.sweep+=2.2*dt*sp; this.spawnT-=dt*sp;
-      if(this.spawnT<=0){ if(this.ac.length<this.cap){const a=this.nextTraffic();a.tHdg=a.hdg;this.ac.push(a);} this.spawnT=9+Math.random()*5; }
-      const rm=[]; this.ac.forEach(a=>{ let d=(((a.tHdg-a.hdg)%360)+540)%360-180; a.hdg=(a.hdg+Math.sign(d)*Math.min(Math.abs(d),3*f)+360)%360;
-        let da=a.tAlt-a.alt; a.alt+=Math.sign(da)*Math.min(Math.abs(da),25*f); const rad=a.hdg*Math.PI/180,dist=a.gs*f/3600; a.x+=dist*Math.sin(rad); a.y+=dist*Math.cos(rad);
-        if(this.frame%3===0){a.hist.push([a.x,a.y]); if(a.hist.length>6)a.hist.shift();} const rng=Math.hypot(a.x,a.y);
-        if(a.cleared&&rng<0.8){ this.comm('ctrl',`PENDLETON: "${a.cs}, contact Tower 128.775, good day."`); this.run.land++; rm.push(a.id); }
-        else if(rng>23){ this.comm('sys',`${a.cs} departed the sector — track lost.`); this.run.lost++; rm.push(a.id); } });
-      if(rm.length){ this.ac=this.ac.filter(a=>!rm.includes(a.id)); if(rm.includes(this.sel))this.sel=null; this.renderCmd(); }
-      const cur={}; for(let i=0;i<this.ac.length;i++)for(let j=i+1;j<this.ac.length;j++){ const A=this.ac[i],B=this.ac[j],dd=Math.hypot(A.x-B.x,A.y-B.y),va=Math.abs(A.alt-B.alt);
-        if(dd<3&&va<900){const k=A.id+'-'+B.id;cur[k]=1; if(!this.confPairs[k]){this.run.conf++;this.comm('sys',`⚠ CONFLICT ALERT: ${A.cs} & ${B.cs} — ${dd.toFixed(1)} NM.`);}} }
-      this.ac.forEach(a=>a.conf=Object.keys(cur).some(k=>k.split('-').includes(''+a.id))); this.confPairs=cur; this.updScore(); },
-    draw(){ const c=this.ctx,Z=this.SIZE; c.clearRect(0,0,Z,Z); const bg=c.createRadialGradient(this.cx,this.cy*0.92,20,this.cx,this.cy,Z*0.62); bg.addColorStop(0,'#0e2150'); bg.addColorStop(1,'#081334'); c.fillStyle=bg; c.fillRect(0,0,Z,Z);
-      c.strokeStyle='rgba(150,180,225,.30)'; c.lineWidth=1; c.font='9px monospace'; c.fillStyle='rgba(150,180,225,.5)';
-      [5,10,15].forEach(r=>{c.beginPath();c.arc(this.cx,this.cy,r*this.scale,0,7);c.stroke();c.fillText(r+'NM',this.cx+r*this.scale-22,this.cy-3);});
-      c.strokeStyle='rgba(150,180,225,.12)'; for(let a=0;a<360;a+=30){const rad=a*Math.PI/180;c.beginPath();c.moveTo(this.cx,this.cy);c.lineTo(this.cx+Math.sin(rad)*Z*0.6,this.cy-Math.cos(rad)*Z*0.6);c.stroke();}
-      c.fillStyle='rgba(200,220,255,.7)'; c.fillText('N',this.cx-3,15);
-      this.FIXES.forEach(f=>{const px=this.cx+f[2]*this.scale*Math.sin(f[1]*Math.PI/180),py=this.cy-f[2]*this.scale*Math.cos(f[1]*Math.PI/180);
-        c.strokeStyle='rgba(210,228,255,.8)';c.lineWidth=1;c.beginPath();c.moveTo(px,py-4);c.lineTo(px+4,py+3);c.lineTo(px-4,py+3);c.closePath();c.stroke();
-        c.fillStyle='rgba(210,228,255,.85)';c.fillText(f[0],px+6,py+3);});
-      const pent=(px,py)=>{c.beginPath();for(let k=0;k<5;k++){const a=(-90+k*72)*Math.PI/180,xx=px+5*Math.cos(a),yy=py+5*Math.sin(a);k?c.lineTo(xx,yy):c.moveTo(xx,yy);}c.closePath();c.stroke();};
-      this.NAVS.forEach(n=>{const px=this.cx+n[2]*this.scale*Math.sin(n[1]*Math.PI/180),py=this.cy-n[2]*this.scale*Math.cos(n[1]*Math.PI/180); c.strokeStyle='#ffd24d';c.lineWidth=1.3;pent(px,py); c.fillStyle='#ffd24d';c.fillText(n[0],px+7,py+3);});
-      const o=[Math.sin(31*Math.PI/180),Math.cos(31*Math.PI/180)];
-      c.strokeStyle='rgba(95,208,255,.55)'; c.setLineDash([5,5]); c.beginPath(); c.moveTo(this.cx-o[0]*this.scale*1.5,this.cy+o[1]*this.scale*1.5); c.lineTo(this.cx+o[0]*this.scale*13,this.cy-o[1]*this.scale*13); c.stroke(); c.setLineDash([]);
-      const faf=[this.cx+o[0]*this.scale*6,this.cy-o[1]*this.scale*6]; c.strokeStyle='#5fd0ff'; c.beginPath(); c.arc(faf[0],faf[1],4,0,7); c.stroke(); c.fillStyle='#5fd0ff'; c.fillText('FAF',faf[0]+7,faf[1]+3);
-      c.strokeStyle='#ffd24d';c.lineWidth=1.3;pent(this.cx,this.cy); c.fillStyle='#ffd24d';c.fillText('NFG',this.cx+9,this.cy+15);
-      c.save();c.translate(this.cx,this.cy);c.rotate(31*Math.PI/180);c.strokeStyle='#cfe0f5';c.lineWidth=3;c.beginPath();c.moveTo(0,-7);c.lineTo(0,7);c.stroke();c.restore();
-      const sa=this.sweep%(2*Math.PI),g=c.createLinearGradient(this.cx,this.cy,this.cx+Math.sin(sa)*225,this.cy-Math.cos(sa)*225); g.addColorStop(0,'rgba(57,240,160,.25)');g.addColorStop(1,'rgba(57,240,160,0)'); c.strokeStyle=g;c.lineWidth=2;c.beginPath();c.moveTo(this.cx,this.cy);c.lineTo(this.cx+Math.sin(sa)*225,this.cy-Math.cos(sa)*225);c.stroke();
-      this.ac.forEach(a=>{ const[px,py]=this.toPx(a),col=a.conf?'#ff6363':(a.cleared?'#5fd0ff':'#39f0a0');
-        a.hist.forEach((h,i)=>{const hx=this.cx+h[0]*this.scale,hy=this.cy-h[1]*this.scale;c.fillStyle='rgba(95,150,255,'+(0.12+0.12*i)+')';c.fillRect(hx-1.5,hy-1.5,3,3);});
-        const rad=a.hdg*Math.PI/180,ll=10+a.gs*0.05; c.strokeStyle=col;c.lineWidth=1.5;c.beginPath();c.moveTo(px,py);c.lineTo(px+Math.sin(rad)*ll,py-Math.cos(rad)*ll);c.stroke();
-        if(this.sel===a.id){c.strokeStyle='#fff';c.lineWidth=1;c.beginPath();c.arc(px,py,12,0,7);c.stroke();}
-        c.fillStyle=col;c.fillRect(px-3.5,py-3.5,7,7); c.font='10px monospace';c.fillStyle=col;c.fillText(a.cs,px+11,py-4);
-        c.fillStyle=a.conf?'#ff6363':'#8fe6b4';c.fillText(('0'+Math.round(a.alt/100)).slice(-3)+'  '+Math.round(a.gs),px+11,py+8); }); },
-    renderList(){ const el=document.getElementById('aclist'); if(!el)return; if(!this.ac.length){el.innerHTML='<div class="empty">Sector clear.</div>';return;}
-      el.innerHTML=this.ac.map(a=>{const st=a.conf?'<span class="st red">CONFLICT</span>':a.cleared?'<span class="st sky">CLR APCH</span>':this.est(a)?'<span class="st amb">ESTABLISHED</span>':'<span class="st muted">EN ROUTE</span>';
-        return `<div class="acrow ${this.sel===a.id?'on':''} ${a.conf?'conf':''}" data-action="simac" data-i="${a.id}"><div><div class="cs">${a.cs}</div><div class="nums">${a.ty} · ${('0'+Math.round(a.alt/100)).slice(-3)} · ${Math.round(a.hdg)}°</div></div>${st}</div>`;}).join(''); },
-    updLive(){ const a=this.ac.find(x=>x.id===this.sel); if(!a)return; const st=(id,v)=>{const n=document.getElementById(id);if(n)n.textContent=v;}; st('lv-alt',('0'+Math.round(a.alt/100)).slice(-3)); st('lv-hdg',Math.round(a.hdg)+'°'); st('lv-rng',Math.hypot(a.x,a.y).toFixed(1)+' NM'); },
-    renderCmd(){ const slot=document.getElementById('cmdslot'); if(!slot)return; const a=this.ac.find(x=>x.id===this.sel);
-      if(!a){slot.innerHTML='<div class="cmd"><div class="empty">Select a target to issue clearances.</div></div>';return;}
-      const hd=[160,180,211,240,270,300].map(h=>`<button class="mini" data-action="simcmd" data-c="hdg" data-v="${h}">${('00'+h).slice(-3)}°</button>`).join('');
-      const al=[5000,4000,3000,2500,2000].map(v=>`<button class="mini" data-action="simcmd" data-c="alt" data-v="${v}">${('0'+v/100).slice(-3)}</button>`).join('');
-      slot.innerHTML=`<div class="cmd"><div class="hd"><span class="cs">${a.cs}</span><span class="live">ALT <b id="lv-alt">${('0'+Math.round(a.alt/100)).slice(-3)}</b> · HDG <b id="lv-hdg">${Math.round(a.hdg)}°</b> · <b id="lv-rng">${Math.hypot(a.x,a.y).toFixed(1)} NM</b></span></div>
-        <div class="lbl">Turn</div><div class="row"><button class="mini" data-action="simcmd" data-c="lr" data-v="-10">◄ L10</button><button class="mini" data-action="simcmd" data-c="lr" data-v="10">R10 ►</button>${hd}</div>
-        <div class="lbl">Altitude (×100)</div><div class="row">${al}</div><button class="mini app" data-action="simcmd" data-c="app">CLEARED RNAV RWY 21 APPROACH</button></div>`; },
-    renderComms(){ const el=document.getElementById('comms'); if(!el||!this.comms.length)return; el.innerHTML=this.comms.slice(-7).map(c=>`<div class="${c.t}">${c.x}</div>`).join(''); el.scrollTop=el.scrollHeight; },
-    comm(t,x){this.comms.push({t,x});this.renderComms();},
-    updScore(){ const a=document.getElementById('sc-land'); if(!a)return; a.textContent=this.run.land; document.getElementById('sc-conf').textContent=this.run.conf; const m=Math.floor(this.t/60),s=Math.floor(this.t%60); document.getElementById('sc-clock').textContent=('0'+m).slice(-2)+':'+('0'+s).slice(-2); },
-    cmd(type,v){ const a=this.ac.find(x=>x.id===this.sel); if(!a)return;
-      if(type==='hdg'||type==='lr'){const h=type==='lr'?(a.tHdg+ +v+360)%360:+v,dir=turnDir(a.hdg,h);a.tHdg=h; this.comm('ctrl',`PENDLETON: "${a.cs}, turn ${dir} heading ${hdgW(h)}."`); this.comm('pilot',`${a.cs}: "${cap(dir)} heading ${hdgW(h)}, ${a.cs}."`);}
-      else if(type==='alt'){const verb=(+v<a.alt)?'descend':'climb';a.tAlt=+v; this.comm('ctrl',`PENDLETON: "${a.cs}, ${verb} and maintain ${altW(+v)}."`); this.comm('pilot',`${a.cs}: "${cap(verb)} and maintain ${altW(+v)}, ${a.cs}."`);}
-      else if(type==='app'){ if(this.est(a)){a.cleared=true;a.tHdg=211;a.tAlt=0; this.comm('ctrl',`PENDLETON: "${a.cs}, ${Math.max(1,Math.round(Math.hypot(a.x,a.y)-3))} miles from FAF, cleared RNAV Runway 21 approach."`); this.comm('pilot',`${a.cs}: "Cleared RNAV Runway 21 approach, ${a.cs}."`);} else {this.comm('sys',`Clearance not valid — ${a.cs} not established on final. Vector to intercept 211° first.`);} }
-      if(!this.running)this.draw(); this.renderCmd(); this.renderList(); }
-  };
 
   // ===== small visuals =====
   function routeBox(title,nodes){ const flow=nodes.map((n,i)=>`${i?'<span class="rarrow">→</span>':''}<span class="rnode">${n.t}</span>`).join('');
@@ -4479,10 +4401,10 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.28 · fc-picker</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.29 · learn-test</span></div>`; }
 
-  function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
-    return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
+  function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
+    return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}</div>`; }
   function trackbar(){ let out='<span class="grplbl">TWR</span>'; let g='TOWER';
     out+=POS.filter(p=>p.g==='TOWER').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
     out+='<span class="grplbl">RDR</span>'+POS.filter(p=>p.g==='RADAR').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
@@ -4647,10 +4569,11 @@ function vectorAnswerHTML(query, hits){
     if(S.pub && S.learnReturn) return pdfPaneHTML();
     const hasAcad=!!syllabusFor(S.pos).list.length;
     let mode=S.learnMode||'acad';
-    if(mode!=='acad' && mode!=='cards') mode='acad';
-    const seg=`<div class="seg"><button type="button" class="${mode==='acad'?'on':''}" data-action="learnmode" data-m="acad">ACADs</button>`+
-      `<button type="button" class="${mode==='cards'?'on':''}" data-action="learnmode" data-m="cards">FLASHCARDS</button></div>`;
-    if(mode==='cards') return seg+fcBody();
+    if(mode!=='acad' && mode!=='cards' && mode!=='test') mode='acad';
+    const seg=`<div class="seg"><button type="button" class="${mode==='acad'?'on':''}" data-action="learnmode" data-m="acad">ACADS</button>`+
+      `<button type="button" class="${mode==='test'?'on':''}" data-action="learnmode" data-m="test">TEST</button></div>`;
+    if(mode==='cards') return fcBody();
+    if(mode==='test') return seg+tstBody();
     if(!hasAcad){
       return seg+`<div class="qmeta"><span class="pill warn">ACADs · ${(PN[S.pos]||S.pos).toUpperCase()}</span></div>`+
         `<div class="explain">No ACAD packet for this position yet.</div>`;
@@ -5000,6 +4923,79 @@ function vectorAnswerHTML(query, hits){
   }
   function pkFind(k){ return pkSets().find(s=>s.k===k)||null; }
   const PK_GRP=[['quick','QUICK LOOKUP'],['acad','ACADS'],['onpos','ON POSITION & STATION']];
+  /* ===== v0.8.29 TEST: per-ACAD tests — LQS packet Test Exercise items (paper order) + Practice (pub-sourced cards tagged to that ACAD) ===== */
+  const TST_KEY='vatc.tests.v1';
+  function tstLoad(){ try{ return JSON.parse(localStorage.getItem(TST_KEY)||'{}')||{}; }catch(e){ return {}; } }
+  function tstSave(k, pct){ const all=tstLoad(); const o=all[k]||{best:0}; o.best=Math.max(o.best||0,pct); o.last=pct; o.date=new Date().toISOString().slice(0,10); all[k]=o; try{ localStorage.setItem(TST_KEY, JSON.stringify(all)); }catch(e){} }
+  function tstPlain(h){ return String(h||'').replace(/<br\s*\/?>/gi,' ').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/\s+/g,' ').trim(); }
+  function tstTopic(pos, n){ return (syllabusFor(pos).list||[]).find(t=>t.n===n)||null; }
+  function tstLqs(T){ return ((T&&T.test)||[]).filter(x=>x&&x.q&&x.a&&x.src).map((x,i)=>({id:'lqs'+i, q:x.q, a:x.a, plain:tstPlain(x.a), src:x.src, tag:'LQS'})); }
+  function tstCards(pos, T){ if(!T) return []; const ids=(T.ids&&T.ids.length?T.ids:[T.id]).concat([T.id]);
+    const uc=(FC_UC[pos]&&FC_UC[pos]['uc-test'])||[]; const seen=new Set();
+    return uc.filter(c=>c&&c.q&&c.a&&c.src&&c.o&&ids.indexOf(c.o)>=0&&!seen.has(c.id)&&seen.add(c.id)).map(c=>({id:c.id, q:c.q, a:escTxt(String(c.a)), plain:String(c.a).replace(/\s+/g,' ').trim(), src:c.src, tag:'Practice'})); }
+  function tstBank(pos, n, kind){ const T=tstTopic(pos,n); return kind==='prac'?tstCards(pos,T):tstLqs(T); }
+  const TST_SHORT=80;
+  function tstMc(bank, it){ /* MC only when the answer is short and the same ACAD bank has 3+ other real short answers */
+    if(it.plain.length>TST_SHORT) return null;
+    const pool=bank.filter(b=>b.plain.length<=TST_SHORT).map(b=>({id:b.id, a:b.plain}));
+    const ch=FCQ.mcChoices(it.id, pool); return ch.length>=4?ch:null; }
+  function tstStart(pos, n, kind, only){
+    const bank=tstBank(pos,n,kind); let order=bank.map((_,i)=>i);
+    if(only&&only.length) order=only.slice();
+    else if(kind==='prac'){ order=FCQ.shuffle(order).slice(0,20); }
+    return {pos, n, kind, order, i:0, res:[], phase:'q', fb:null, retake:!!(only&&only.length)};
+  }
+  function tstKey(t){ return t.pos+':'+t.n+':'+t.kind; }
+  function tstSrcBtn(it){ const cite=fcCiteStr(it.src); const lab=`${it.src.doc} · ${it.src.pg||''}${it.src.pa?' · '+it.src.pa:''}`; return cite?`<button type="button" class="tst-src" data-action="tstcite" data-cite="${escTxt(cite)}" data-title="${escTxt(String(it.src.pa||''))}">${escTxt(lab)}</button>`:`<span class="tst-src">${escTxt(lab)}</span>`; }
+  function tstHomeHTML(){
+    const list=syllabusFor(S.pos).list||[];
+    if(!list.length) return `<div class="explain">No ACAD packet for this position yet.</div>`;
+    const sc=tstLoad();
+    const meta=k=>{ const o=sc[k]; return o?` · best ${o.best}% · ${o.date}`:''; };
+    const rows=list.map(T=>{ const L=tstLqs(T).length, P=tstCards(S.pos,T).length;
+      const lq=L?`<button type="button" class="tst-go" data-action="tstpick" data-n="${T.n}" data-k="lqs"><b>LQS test</b><span>${L} items${meta(S.pos+':'+T.n+':lqs')}</span></button>`:`<span class="tst-none">No test items in the LQS packet</span>`;
+      const pr=P?`<button type="button" class="tst-go sec" data-action="tstpick" data-n="${T.n}" data-k="prac"><b>Practice</b><span>${Math.min(20,P)} of ${P}${meta(S.pos+':'+T.n+':prac')}</span></button>`:'';
+      return `<div class="tst-row"><div class="tst-h"><b>${escTxt(T.id)}</b> <span>${escTxt(T.t||'')}</span></div><div class="tst-btns">${lq}${pr}</div></div>`; }).join('');
+    return `<div class="tst-list">${rows}</div>`;
+  }
+  function tstBody(){
+    const t=S.tst; if(!t || t.pos!==S.pos || !tstTopic(t.pos,t.n)) return tstHomeHTML();
+    const T=tstTopic(t.pos,t.n), bank=tstBank(t.pos,t.n,t.kind);
+    const head=`<div class="fc-sets pk-back tst-top"><button type="button" class="btn-back" data-action="tstall">← ALL TESTS</button> <b>${escTxt(T.id)}</b> <span class="tst-tag ${t.kind}">${t.kind==='prac'?'Practice':'LQS'}</span></div>`;
+    if(t.phase==='done'){
+      const ok=t.res.filter(r=>r.ok).length, tot=t.res.length, pct=tot?Math.round(ok/tot*100):0;
+      const best=(tstLoad()[tstKey(t)]||{}).best;
+      const miss=t.res.filter(r=>!r.ok).map(r=>{ const it=bank[r.k]; return `<div class="tst-miss"><div class="tst-mq">${it.q}</div><div class="tst-ma">${it.a}</div>${r.u?`<div class="tst-yu">You: ${escTxt(r.u)}</div>`:''}${tstSrcBtn(it)}</div>`; }).join('');
+      const typos=t.res.filter(r=>r.ok&&r.typo).length;
+      return head+`<div class="tst-score"><div class="score">${ok}/${tot}</div><div class="muted">${pct}%${best!=null?' · best '+best+'%':''}${typos?' · '+typos+' accepted with typos':''}</div></div>`+
+        (miss?`<div class="tst-mh">MISSED</div>${miss}`:`<div class="explain">All correct.</div>`)+
+        `<div class="tst-nav">${miss?`<button type="button" class="btn" data-action="tstmissed">RETAKE MISSED</button>`:''}<button type="button" class="btn sec" data-action="tstpick" data-n="${t.n}" data-k="${t.kind}">RETAKE ALL</button></div>`;
+    }
+    const k=t.order[t.i], it=bank[k]; if(!it) return tstHomeHTML();
+    if(!t.mcc||t.mcc.i!==t.i||t.mcc.k!==k) t.mcc={i:t.i,k,c:tstMc(bank,it)}; const mc=t.mcc.c, fb=t.fb, pct=Math.round(t.i/t.order.length*100);
+    let ansHTML;
+    if(mc) ansHTML=`<div class="choices">${mc.map((c,j)=>{ let cls='ch'; if(fb){ if(c===it.plain) cls='ch correct'; else if(c===fb.u) cls='ch wrong'; } return `<button type="button" class="${cls}" ${fb?'disabled':''} data-action="tstmc" data-c="${escTxt(c)}"><span class="key">${String.fromCharCode(65+j)}</span>${escTxt(c)}</button>`; }).join('')}</div>`;
+    else ansHTML=`<textarea class="fillbox" id="tstans" placeholder="Your answer" ${fb?'disabled':''}>${fb&&fb.u?escTxt(fb.u):''}</textarea>`+(fb?'':`<div class="tst-nav"><button type="button" class="btn" data-action="tstcheck">CHECK</button></div>`);
+    let after='';
+    if(fb){
+      const verdict=fb.self?'':(fb.ok?`<div class="grn">✓ Correct${fb.typo?' — small typo accepted':''}</div>`:`<div class="red">✗ Not quite</div>`);
+      const self=fb.self&&fb.ok==null?`<div class="tst-nav"><button type="button" class="btn" data-action="tstself" data-v="1">✓ I HAD IT</button><button type="button" class="btn sec" data-action="tstself" data-v="0">✗ MISSED</button></div>`:'';
+      const next=fb.ok==null?'':`<div class="tst-nav"><button type="button" class="btn" data-action="tstnext">${t.i<t.order.length-1?'NEXT':'SCORE'} ${I.arrow}</button></div>`;
+      after=`<div class="explain reveal">${verdict}<div class="tst-a">${it.a}</div>${tstSrcBtn(it)}</div>${self}${next}`;
+    }
+    return head+`<div class="progressbar"><i style="width:${pct}%"></i></div><div class="tst-meta">${t.i+1} / ${t.order.length}${t.retake?' · missed only':''}</div>`+
+      (S.tstNote?`<div class="fc-note">${escTxt(S.tstNote)}</div>`:'')+
+      `<div class="qstem">${it.q}</div>${ansHTML}${after}`;
+  }
+  function tstAnswer(u, viaMc){
+    const t=S.tst, bank=tstBank(t.pos,t.n,t.kind), it=bank[t.order[t.i]];
+    const long=!viaMc && it.plain.length>TST_SHORT;
+    let fb;
+    if(long) fb={u, self:true, ok:null};
+    else { const g=FCQ.grade(u, it.plain); fb={u, ok:!!g.ok, typo:!!g.typo}; }
+    if(fb.ok!=null) t.res.push({k:t.order[t.i], ok:fb.ok, typo:fb.typo, u});
+    t.fb=fb; set({tst:t, tstNote:''});
+  }
   function fcPickerHTML(){
     const sets=pkSets();
     const row=s=>{ const ids=s.cards.map(c=>c.id); const c=FCQ.counts(ids,S.fcStats); const pct=ids.length?Math.round(c.KNOWN/ids.length*100):0;
@@ -5087,20 +5083,6 @@ function vectorAnswerHTML(query, hits){
     S.fcLastId=id; saveFcStats();
     fcKeep({});
   }
-  function simView(){ if(PSIM[S.pos]==='scope') return scopeView(); return scnView(); }
-  function scopeView(){ const brief=S.pos==='fin'?'<b>RADAR FINAL — RWY 21.</b> Vector each target to intercept the final (inbound <b>211°</b>), descend it, and clear the approach once established. Hold <b>3 NM / 1,000 ft</b>. Traffic streams in continuously.':'<b>ARRIVAL — KNFG.</b> Feed inbounds from the northeast toward the RWY 21 final, build the sequence, and hand each established aircraft the approach. Hold <b>3 NM / 1,000 ft</b>.';
-    const debrief=`<div class="debrief"><span class="dlbl">DEBRIEF</span>${skillChipHTML('skillchip')}</div>`;
-    return `<div class="radar"><div class="scopewrap"><div class="brief">${brief}</div>${debrief}<canvas id="scope" width="540" height="540"></canvas>
-      <div class="simctl"><button class="btn" data-action="simstart">START</button><button class="btn sec" data-action="simreset">RESET</button>
-        <div class="spd"><button data-action="simspeed" data-s="1" class="on">1×</button><button data-action="simspeed" data-s="2">2×</button><button data-action="simspeed" data-s="3">3×</button></div>
-        <div style="flex:1"></div><div class="scorebar"><div><b class="grn" id="sc-land">0</b><span class="muted">LANDED</span></div><div><b class="red" id="sc-conf">0</b><span class="muted">CONFLICTS</span></div><div><b class="amb" id="sc-clock">00:00</b><span class="muted">CLOCK</span></div></div></div></div>
-    <div class="ctrlcol"><div><h2 class="sec">TRAFFIC</h2><div class="aclist" id="aclist"></div></div><div id="cmdslot"></div><div><h2 class="sec">COMMS</h2><div class="comms" id="comms"><div class="empty">Press START. Select a target, then issue control instructions.</div></div></div></div></div>`; }
-  function scnView(){ const steps=SCN[S.pos]||SCN.rfd; const s=steps[S.scnIdx];
-    if(S.scnIdx>=steps.length){ return `<div class="stepcard reveal" style="text-align:center"><div class="score">${S.scnScore}/${steps.length}</div><p class="muted" style="margin:8px 0 16px">${PN[S.pos]} drill complete.</p><button class="btn" data-action="scnrestart" style="margin:0 auto">RUN AGAIN ${I.arrow}</button></div>`; }
-    const opts=s.opts.map((o,i)=>{let cls='opt';if(S.scnAns){if(i===s.ans)cls='opt ok';else if(i===S.scnSel)cls='opt no';}return `<button class="${cls}" ${S.scnAns?'disabled':''} data-action="scn" data-i="${i}">${o}</button>`;}).join('');
-    return `<div class="qmeta"><span class="pill warn">${PN[S.pos].toUpperCase()} SIM · SAMPLE</span><span class="muted" style="font-size:11px">Step ${S.scnIdx+1}/${steps.length}</span></div><div class="stepcard reveal"><div class="stripstem">${s.stem}<br><span class="strpv">▦ ${s.line}</span></div><div class="opts">${opts}</div>${S.scnAns?`<div class="explain">${s.fb}</div><div class="navrow"><span></span><button class="btn" data-action="scnnext">${S.scnIdx<steps.length-1?'NEXT':'FINISH'} ${I.arrow}</button></div>`:''}</div>`; }
-
-
   function appBase(){
     let p='/';
     try{ if(typeof location!=='undefined' && location && location.pathname) p=String(location.pathname); }catch(_){}
@@ -5187,7 +5169,9 @@ function vectorAnswerHTML(query, hits){
       const eds=PUBS.filter(x=>(x.family||x.id)===fid);
       families.push({fid, lab:(p.familyLab||p.lab), eds});
     });
-    const nest=families.map(f=>{
+    const PUB_ORDER=['jo','facman','aim','aom','orm','soh']; /* v0.8.29: JO 7110.65 → FACMAN → FLIP → the rest */
+    families.sort((x,y)=>{ const ix=PUB_ORDER.indexOf(x.fid), iy=PUB_ORDER.indexOf(y.fid); return (ix<0?99:ix)-(iy<0?99:iy); });
+    const nestRows=families.map(f=>{
       if(f.eds.length>1){
         const anyOn=f.eds.some(e=>S.pub===e.id);
         return `<details class="pos-acads pub-nest pub-family"${anyOn?' open':''}><summary>${escTxt(f.lab)}</summary>${f.eds.map(editionBlock).join('')}</details>`;
@@ -5198,9 +5182,10 @@ function vectorAnswerHTML(query, hits){
       if(secs){
         return `<details class="pos-acads pub-nest"><summary>${escTxt(p.lab)}</summary>${openRow}${secs}</details>`;
       }
-      return `<div class="rfc-topic ${S.pub===p.id?'on':''}" data-action="openpub" data-id="${p.id}"><span class="rfc-tt">${escTxt(p.lab)}</span></div>`;
-    }).join('');
-    return `<details class="pos-acads"><summary>PUBLICATIONS</summary>${nest}${flipShelfHTML()}</details>`;
+      return `<details class="pos-acads pub-nest"${S.pub===p.id?' open':''}><summary>${escTxt(p.lab)}</summary>${openRow}</details>`;
+    });
+    const nest=nestRows.slice(0,2).join('')+flipShelfHTML()+nestRows.slice(2).join('');
+    return `<details class="pos-acads"><summary>PUBLICATIONS</summary>${nest}</details>`;
   }
 
   /* PDF page jumps verified Sep 2026 for NFG FACMAN July 2026 — App D ~p148; Ch6-4 Arrival ~p91. */
@@ -5320,7 +5305,7 @@ function pdfPaneHTML(){
     const guess=plateMetaHTML(p)+(S.pubGuessNote?`<div class="note">${escTxt(S.pubGuessNote)}</div>`:'');
     // No excerpt overview / Highlight-Underline bar — PDF is the book section.
     const learnCite=!!S.learnReturn;
-    const backTitle=learnCite?(S.learnReturn.from==='fc'?'Back to flashcards':'Back to Learn checklist'):'Back to hits';
+    const backTitle=learnCite?(S.learnReturn.from==='fc'?'Back to flashcards':S.learnReturn.from==='test'?'Back to test':'Back to Learn checklist'):'Back to hits';
     let citeStep='';
     if(learnCite && S.learnReturn.from!=='fc'){
       const pack=acadTopicRefs(S.learnReturn.pos, S.learnReturn.rfcTopic);
@@ -5681,24 +5666,30 @@ function pdfPaneHTML(){
     });
   }
 
-  function refView(){ if(S.learnReturn && S.pub) return pdfPaneHTML(); const lk=refConsole(); const f=KNFG.freqs.map(x=>`<div class="freqrow"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join('');
-    const n=KNFG.navaids.map(x=>`<div class="freqrow"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join('');
-    const fl=KNFG.field.map(x=>`<div class="freqrow"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join('');
-    const dp=KNFG.deps.map((d,i)=>`<li><div class="nm2">${d.nm}</div><div class="ds">${d.ds}</div>${routeBox('Route',d.rt)}</li>`).join('');
-    const ap=KNFG.apps.map(d=>`<li><div class="nm2">${d.nm}</div><div class="ds">${d.ds}</div></li>`).join('');
+  /* ===== v0.8.29 Field Quick Reference: fast lookup sheet built ONLY from existing pub-sourced cards + JO TBL 2-3-10 (no new values) ===== */
+  const QR_SECS=[['ql-freq','Buttons & Frequencies'],['viscom','VISCOM Buttons'],['equip','Equipment Suffixes (JO TBL 2-3-10)'],['scratchpad','Scratchpad (FACMAN TBL 6-4)'],
+    ['ql-phone','Phone Lines'],['idents','3-Letter Identifiers'],['fixes','Fixes'],['diverts','Diverts'],['sids','SIDs & Departures'],['svfr','SVFR Routes'],
+    ['vrp','VFR Reporting Points'],['crash','Crash Phone'],['qr-strips','Strip Codes'],['fdio','FDIO Messages'],['ql-field','Airfield Spots & Taxiways'],['gca','GCA Critical Data']];
+  function qrSrcBtn(src){ if(!src) return ''; const cite=fcCiteStr(src); const lab=`${src.doc} · ${src.pg||''}`; const info=cite?citePubAndSec(cite):null; const ok=info&&info.pub&&!(info.book&&info.book.missing);
+    return ok?`<button type="button" class="qr-src" data-action="qrcite" data-cite="${escTxt(cite)}" data-title="${escTxt(String(src.pa||''))}">${escTxt(lab)}</button>`:`<span class="qr-src nolink" title="Pub not in app">${escTxt(lab)}</span>`; }
+  function qrRows(k){
+    if(k==='equip'){ const b=BOOK['7110.65 TBL 2-3-10']; const t=b&&b.table; if(!t) return [];
+      const src={doc:'JO 7110.65BB',pg:'TBL 2-3-10',pa:'AIRCRAFT EQUIPMENT SUFFIXES'};
+      return t.rows.map(r=>({q:r[3], a:`${r[0]} · ${r[1]} · ${r[2]}`, src})); }
+    const cards=fcUniq(QZ_DECKS[k]||FC_SETS[k]||[]);
+    return cards.filter(c=>c&&c.q&&c.a&&c.src).map(c=>({q:String(c.q).replace(/<[^>]+>/g,''), a:String(c.a), src:c.src}));
+  }
+  function quickRefHTML(){
+    const secs=QR_SECS.map(([k,lab])=>{ const rows=qrRows(k); if(!rows.length) return '';
+      const tr=rows.map(r=>`<tr data-s="${escTxt((lab+' '+r.q+' '+r.a).toLowerCase())}"><td class="qr-k">${escTxt(r.q)}</td><td class="qr-v">${escTxt(r.a)}</td><td class="qr-s">${qrSrcBtn(r.src)}</td></tr>`).join('');
+      return `<details class="qr-sec" data-k="${k}"><summary>${escTxt(lab)} <span class="pk-n">${rows.length}</span></summary><table class="qr-t"><tbody>${tr}</tbody></table></details>`; }).join('');
+    return `<input type="search" class="pk-q" id="qrq" placeholder="Look up — button, freq, ident, fix, suffix /G…" autocomplete="off" oninput="globalThis.vatcQrFilter&&globalThis.vatcQrFilter(this.value)"><div class="qr-list">${secs}</div>`;
+  }
+  globalThis.vatcQrFilter=function(v){ const n=String(v||'').toLowerCase().trim().split(/\s+/).filter(Boolean);
+    document.querySelectorAll('#vatc .qr-sec').forEach(d=>{ let vis=0; d.querySelectorAll('tr').forEach(tr=>{ const ok=!n.length||n.every(t=>tr.dataset.s.indexOf(t)>=0); tr.hidden=!ok; if(ok) vis++; }); d.hidden=!vis; d.open=!!n.length&&vis>0; }); };
+  function refView(){ if(S.learnReturn && S.pub) return pdfPaneHTML(); const lk=refConsole(); 
     const hide=(S.refQ||'').trim()?' hidden':'';
-    return lk+pubShelfHTML()+pdfPaneHTML()+`<details class="pos-acads" id="refdump"${hide}><summary>FIELD QUICK REF</summary><div class="refdump-inner"><div class="refgrid"><div class="card" style="padding:16px"><h2 class="sec">${I.radar} FREQUENCIES</h2>${f}</div><div class="card" style="padding:16px"><h2 class="sec">${I.target} NAVAIDS</h2>${n}<h2 class="sec" style="margin-top:16px">${I.file} FIELD</h2>${fl}</div></div>
-      <div class="card" style="padding:16px;margin-top:12px"><h2 class="sec">${I.up} DEPARTURES</h2><ul class="reflist">${dp}</ul></div>
-      <div class="card" style="padding:16px;margin-top:12px"><h2 class="sec">${I.book} APPROACHES</h2><ul class="reflist">${ap}</ul></div>
-      <div class="card" style="padding:16px;margin-top:12px"><h2 class="sec">${I.users} COORDINATION (G/G LANDLINES)</h2><div class="ggrid">
-        <div class="gg"><div class="gn">TWR LCL</div><div class="gd">Local — runway / pattern.</div></div>
-        <div class="gg"><div class="gn">TWR GND</div><div class="gd">Ground — taxi / movement.</div></div>
-        <div class="gg"><div class="gn">FLT DATA</div><div class="gd">Flight data / clearance.</div></div>
-        <div class="gg"><div class="gn">POS 1 / 2</div><div class="gd">Radar — handoffs & point-outs.</div></div>
-        <div class="gg"><div class="gn">SoCal</div><div class="gd">Overlying approach (127.3 / 323.0).</div></div>
-        <div class="gg"><div class="gn">WX / CRASH</div><div class="gd">Weather; crash hotline.</div></div></div>
-        <div class="note" style="margin-top:10px">Mirrors the VCSS landline layout. Discrete internal frequencies are intentionally not listed — only published positions; the full freq load stays in on-device, access-controlled material.</div></div>
-      </div></details>`; }
+    return lk+pubShelfHTML()+pdfPaneHTML()+`<details class="pos-acads" id="refdump"${hide}><summary>FIELD QUICK REF</summary><div class="refdump-inner">${quickRefHTML()}</div></details>`; }
 
   function stationScreen(){ const lock=(c,n)=>`<div class="stn lock"><div class="code">${c}</div><div class="nm">${n}</div><div class="lockrow">${I.lock} Content in validation — coming soon</div></div>`;
     return `<div class="body reveal"><h2 class="sec">${I.target} SELECT STATION</h2><div class="stationgrid">
@@ -5708,8 +5699,9 @@ function pdfPaneHTML(){
   function modal(){ const q=Q[S.source]; return `<div class="overlay" data-action="srcclose"><div class="modal" onclick="event.stopPropagation()"><h3>${I.ext} JUMP TO SOURCE</h3><div class="docframe"><div class="pg">${q.src.doc.toUpperCase()} — PAGE ${q.src.pg} · ¶ ${q.src.pa}</div><div class="hl">${q.src.hl}</div></div><div class="note">In the live app this opens your locally-imported document to this page and highlights the passage. Controlled publications are never bundled — you import your own authorized copy on-device.</div><div class="navrow" style="margin-top:14px"><span></span><button class="btn" data-action="srcclose">CLOSE</button></div></div></div>`; }
 
   function appScreen(){ let inner='';
+    if(S.tab==='sim'||S.tab==='cards') S.tab=(S.tab==='cards'?'learn':'home'); /* SIM tab removed v0.8.29 */
     if(S.tab==='home')inner=homeView(); else if(S.tab==='ask')inner=askView(); else if(S.tab==='learn'||S.tab==='train')inner=learnView();
-    else if(S.tab==='sim')inner=simView(); else if(S.tab==='reference')inner=refView();
+    else if(S.tab==='reference')inner=refView();
     return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${S.tab==='home'?'':trackbar()}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
 
   function doAsk(){
@@ -5733,7 +5725,7 @@ function pdfPaneHTML(){
     root.innerHTML=appScreen();
     if(vk===lastViewKey && yOld){ const smNew=document.querySelector('#vatc .scrollmain'); if(smNew) smNew.scrollTop=yOld; }
     lastViewKey=vk;
-    if(S.tab==='sim'&&PSIM[S.pos]==='scope')Scope.mount();
+    
     if(S.tab==='ask'||S.tab==='reference'){ bindLookup(); bindPdf(); if(S.tab==='reference'&&!S.pub){ document.querySelectorAll('#vatc .scrollmain details.pos-acads').forEach(d=>{ d.open=false; }); } if(S.tab==='ask'||S.lkFocus){ S.lkFocus=false; setTimeout(()=>focusLookup(),20); } if(S.tab==='reference'&&(S.refQ||'').trim()) drawLookup(S.refQ); }
     if(S.tab==='learn'&&S.pub&&S.learnReturn){ bindPdf(); }
     bindFcGroups(); if(document.getElementById('fcwr')) fcAfterPaint(); }
@@ -5800,11 +5792,7 @@ function pdfPaneHTML(){
     return false;
   }
   document.getElementById('vatc').addEventListener('click',e=>{ const el=e.target.closest('[data-action]'); if(!el)return; const a=el.dataset.action;
-    if(a==='simstart')return Scope.start();
-    if(a==='simreset')return Scope.reset();
     if(a==='simspeed'){document.querySelectorAll('#vatc #spd button').forEach(b=>b.classList.remove('on'));el.classList.add('on');return;}
-    if(a==='simac'){Scope.sel=+el.dataset.i;Scope.renderList();Scope.renderCmd();if(!Scope.running)Scope.draw();return;}
-    if(a==='simcmd')return Scope.cmd(el.dataset.c,el.dataset.v);
     if(a==='asksubmit'||a==='findgo')return doAsk();
     if(a==='askchip'||a==='skillchip'){const inp=document.getElementById('reflk')||document.getElementById('askq');if(inp){inp.value=el.dataset.q;doAsk();}return;}
     if(a==='findclear'){ S.refQ=''; S.askDoneQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.pubPreferPage=0; S.pubCiteSec=''; S.learnReturn=null; resetCitePdfFind(); pdfDoc=null; pdfSrc=''; pdfTextIndex=null; return set({refQ:'',askDoneQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null}); }
@@ -5815,6 +5803,7 @@ function pdfPaneHTML(){
       const inp=document.getElementById('reflk'); if(inp) inp.value='';
       return set({refQ:'',askDoneQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null});
     }
+    if(a==='qrcite'){ const info=citePubAndSec(el.dataset.cite||''); if(!info.pub) return; openSecHit({pub:info.pub, sec:info.sec||'', page:pageForCite(info.pub, info.sec), title:el.dataset.title||''}); return; }
     if(a==='opensec'){ openSecHit({pub:el.dataset.pub, sec:el.dataset.sec, page:el.dataset.page, sub:el.dataset.sub||'', title:el.dataset.title||''}); return; }
     if(a==='openfindhit'){
       openFindHit({pub:el.dataset.pub, doc:el.dataset.doc, needle:el.dataset.needle, page:el.dataset.page, cite:el.dataset.cite, title:el.dataset.title||'', q:S.refQ});
@@ -5827,10 +5816,9 @@ function pdfPaneHTML(){
     if(a==='aafocus'){ return set({aaFocus:String(el.dataset.aa||''),tab:'learn',learnMode:'acad'}); }
     if(a==='citeaa'){ const cite=el.dataset.cite||''; if(!cite) return; openLearnCite(cite,{title:el.dataset.title||''}); return; }
     if(a==='citesel'){ return; }
-    if(a==='goscope')return set({tab:'sim',pos:(PSIM[S.pos]==='scope'?S.pos:'fin')});
     if(a==='stations')return set({screen:'station'});
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
-    if(a==='tab'){const t=el.dataset.t; if(t==='learn') return set({tab:'learn',learnMode:'acad',trainMode:'practice'}); return set({tab:t});}
+    if(a==='tab'){const t=el.dataset.t; if(t==='cards'){ if(S.pub&&S.learnReturn) resetCitePdfFind(); return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcPick:true,fcSess:null,pub:null,learnReturn:null}); } if(t==='learn') return set({tab:'learn',learnMode:'acad',trainMode:'practice'}); return set({tab:t});}
     if(a==='learnmode'){const m=el.dataset.m; if(S.pub&&S.learnReturn){ resetCitePdfFind(); return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false,pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null}); } return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false,fcPick:(m==='cards')});}
     if(a==='pos')return set({pos:el.dataset.p,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='posfocus'){const k=el.dataset.p; return set({pos:k,tab:'learn',rfcTopic:0,posOpen:k,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});}
@@ -5853,10 +5841,15 @@ function pdfPaneHTML(){
     if(fcAction(a, el)) return;
     if(a==='fcshuffle'){const {deck,key}=fcOrderedDeck(); return fcKeep({fcOrder:fcShuffleOrder(deck.length,key),fcIdx:0,fcFlip:false});}
     if(a==='fccite'){const cite=el.dataset.cite||''; if(!cite)return; openLearnCite(cite,{title:el.dataset.title||'', from:'fc'}); return;}
-    if(a==='scn'){if(S.scnAns)return;const steps=SCN[S.pos]||SCN.rfd;const i=+el.dataset.i;return set({scnSel:i,scnAns:true,scnScore:S.scnScore+(i===steps[S.scnIdx].ans?1:0)});}
-    if(a==='scnnext')return set({scnIdx:S.scnIdx+1,scnAns:false,scnSel:null});
-    if(a==='scnrestart')return set({scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='src')return set({source:+el.dataset.i});
+    if(a==='tstpick'){ return set({tst:tstStart(S.pos,+el.dataset.n,el.dataset.k||'lqs'), tstNote:''}); }
+    if(a==='tstall'){ return set({tst:null, tstNote:''}); }
+    if(a==='tstmc'){ if(S.tst&&!S.tst.fb) tstAnswer(el.dataset.c||'', true); return; }
+    if(a==='tstcheck'){ if(S.tst&&!S.tst.fb){ const v=(document.getElementById('tstans')||{}).value||''; tstAnswer(v.trim(), false); } return; }
+    if(a==='tstself'){ const t=S.tst; if(!t||!t.fb) return; t.fb.ok=el.dataset.v==='1'; t.res.push({k:t.order[t.i], ok:t.fb.ok, u:t.fb.u}); return set({tst:t}); }
+    if(a==='tstnext'){ const t=S.tst; if(!t) return; t.fb=null; if(t.i<t.order.length-1){ t.i++; } else { t.phase='done'; const ok=t.res.filter(r=>r.ok).length; if(!t.retake) tstSave(tstKey(t), Math.round(ok/Math.max(1,t.res.length)*100)); } return set({tst:t, tstNote:''}); }
+    if(a==='tstmissed'){ const t=S.tst; if(!t) return; const miss=t.res.filter(r=>!r.ok).map(r=>r.k); return set({tst:tstStart(t.pos,t.n,t.kind,miss)}); }
+    if(a==='tstcite'){ const cite=el.dataset.cite||''; if(!cite) return; openLearnCite(cite,{title:el.dataset.title||'', from:'test'}); return; }
     if(a==='fcall'){ return set({fcPick:true, fcSess:null}); }
     if(a==='fcdeck'){const d0=el.dataset.d||'pos'; const pkp=/^pk:pos:(\w+)$/.exec(d0); if(pkp){ return set({tab:'learn',learnMode:'cards',trainMode:'cards',pos:pkp[1],fcDeck:'pos',fcPick:false,fcIdx:0,fcFlip:false,fcOrder:null,fcSess:null}); } const d=d0; const g=fcDeckGroup(d); const o=Object.assign({}, S.fcOpen||{}); if(g) o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcPick:false,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null,fcSess:null,fcSetsOpen:false});}
     if(a==='jumptbl'){ jumpTblRef(el.dataset.tbl||el.textContent||''); return; }
@@ -5874,7 +5867,7 @@ function pdfPaneHTML(){
     if(a==='rfclist')return set({rfcTopic:0,tab:'learn',aaFocus:''});
     if(a==='rfcref'){const cite=el.dataset.cite||''; openLearnCite(cite,{title:el.dataset.title||''}); return;}
     if(a==='acadcheck'){ toggleRfcChk(el.dataset.k); syncChk(el.dataset.k); return; }
-    if(a==='rfctest')return set({rfcTopic:+(el.dataset.n||S.rfcTopic||1),tab:'learn',learnMode:'acad',trainMode:'rfc',rfcQi:0,rfcReveal:false});
+    if(a==='rfctest'){ const n=+(el.dataset.n||S.rfcTopic||1); return set({rfcTopic:n,tab:'learn',learnMode:'test',tst:tstStart(S.pos,n,(tstLqs(tstTopic(S.pos,n)).length?'lqs':'prac')),tstNote:''}); }
     if(a==='rfcreveal')return set({rfcReveal:true});
     if(a==='rfcnext')return set({rfcQi:S.rfcQi+1,rfcReveal:false});
     if(a==='rfcrestart')return set({rfcQi:0,rfcReveal:false});

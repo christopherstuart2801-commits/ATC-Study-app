@@ -504,7 +504,7 @@ ok('Topics 1-4 checklists not rewritten (ACAD-0520 refs 2-1-7)', /"id":"ACAD-052
 ok('D-4/D-5 strip block still present', /function facmanStripBlock\(\)/.test(html) || /FIG D-4/.test(html));
 
 ok('Learn facmanStripBlock primary-only (no multi/nonr consts)', /function facmanStripBlock\(\)\{[\s\S]*?\n  \}/.test(html) && !/function facmanStripBlock\(\)\{[\s\S]*?const multi=/.test(html));
-ok('v0.8.19 fqr-trim: Field Quick Ref ends at Coordination (STRIPS section removed)', !/function stripsRef\(/.test(html) && !/\$\{stripsRef\(\)\}/.test(html) && !/TBL 5-3 Departure procedures/.test(html) && !/MORE · OTP/.test(html) && !/FIG D-4 · ATLAS40/.test(html) && !/NON-RADAR ARRIVAL/.test(html) && !/IFR MULTIPLE GCA ARRIVAL/.test(html) && !/#vatc \.sref-/.test(html) && /COORDINATION \(G\/G LANDLINES\)/.test(html));
+ok('v0.8.19 fqr-trim: Field Quick Ref is the lookup sheet (STRIPS / Coordination removed)', !/function stripsRef\(/.test(html) && !/\$\{stripsRef\(\)\}/.test(html) && !/TBL 5-3 Departure procedures/.test(html) && !/MORE · OTP/.test(html) && !/FIG D-4 · ATLAS40/.test(html) && !/NON-RADAR ARRIVAL/.test(html) && !/IFR MULTIPLE GCA ARRIVAL/.test(html) && !/#vatc \.sref-/.test(html) && /quickRefHTML\(\)/.test(html));
 ok('BOOK has TBL 6-3 dual key', /"TBL 6-3":/.test(html) && /"FACMAN TBL 6-3":/.test(html));
 ok('ASK has TBL 6-3 radar strip abbrev alias', /TBL\\s\*6-3/.test(aliases) && /radar strip abbreviations\?/.test(aliases));
 
@@ -532,7 +532,7 @@ ok('posProgress function', /function\s+posProgress\s*\(/.test(html));
 ok('rfcTrain FLASHCARDS seg', /function rfcExerciseBody\(\)/.test(html) && /function rfcTrain\(\)/.test(html));
 ok('no Learn TEST EXERCISE toggle', !/TEST EXERCISE/.test(html));
 ok('Learn cite PDF hides shelf', /if\(S\.pub && S\.learnReturn\) return pdfPaneHTML\(\)/.test(html));
-ok('Reference PUBLICATIONS closed by default', /function pubShelfHTML\(/.test(html) && /<details class="pos-acads"><summary>PUBLICATIONS<\/summary>\$\{nest\}\$\{flipShelfHTML\(\)\}<\/details>/.test(html) && !/pos-acads"\$\{S\.pub\?'':' open'\}/.test(html) && !/<details class="pos-acads" open><summary>PUBLICATIONS/.test(html));
+ok('Reference PUBLICATIONS closed by default', /function pubShelfHTML\(/.test(html) && /<details class="pos-acads"><summary>PUBLICATIONS<\/summary>\$\{nest\}<\/details>/.test(html) && !/pos-acads"\$\{S\.pub\?'':' open'\}/.test(html) && !/<details class="pos-acads" open><summary>PUBLICATIONS/.test(html));
 ok('no standalone SECTIONS · FACMAN dropdown', !/<summary>SECTIONS · FACMAN<\/summary>/.test(html) && !/<summary>SECTIONS · 7110\.65<\/summary>/.test(html));
 ok('pub sections nested under each PUBLICATION', /function pubSectionsFor\(/.test(html) && /pub-nest/.test(html));
 ok('fcdeck Quizlet tap-to-reveal', /data-action="fcflip"/.test(html) && /data-action="fcshuffle"/.test(html) && /tap to reveal/.test(html));
@@ -560,8 +560,11 @@ ok('rfcLearn hdr topics use full-width rfc-grid-span', /rfc-grid-span/.test(html
 
 ok('rfcLearn skips hdr rows in progress', /const citeRefs=T\.refs\.filter\(r=>!isHdr\(r\)\)/.test(html) || /citeR=\(t\.refs\|\|\[\]\)\.filter\(r=>!\(r&&r\[2\]==='hdr'\)\)/.test(html));
 ok('cite overview removed from pdf pane', /No excerpt overview/.test(html) && !/<div class="pdfcite">/.test(html));
-ok('Learn ACADS toggle always present', /data-m="acad">ACADs/.test(html) && !/hasAcad\?`<button[^>]*data-m="acad"/.test(html));
-ok('Learn has FLASHCARDS mode', /data-action="learnmode"/.test(html) && /learnMode:'cards'/.test(html) && /data-m="acad">ACADs/.test(html));
+ok('Learn ACADS toggle always present', /data-m="acad">ACADS</.test(html) && !/hasAcad\?`<button[^>]*data-m="acad"/.test(html));
+ok('Learn sub-tabs ACADS / TEST (FLASHCARDS moved to main nav)', /data-m="test">TEST</.test(html) && !/data-m="cards">FLASHCARDS</.test(html));
+ok('main nav HOME / ASK / LEARN / FLASHCARDS / REFERENCE, no SIM', /t\('home'[^)]*\)\}\$\{t\('ask'[^)]*\)\}\$\{t\('learn'[^)]*\)\}\$\{t\('cards',[^)]*'Flashcards'\)\}\$\{t\('reference'/.test(html) && !/t\('sim'/.test(html) && !/function simView|const Scope=|const SCN=|data-action="goscope"|a==='goscope'/.test(html));
+ok('Flashcards tab opens the set picker', /if\(t==='cards'\)\{[^}]*learnMode:'cards'[^}]*fcPick:true/.test(html));
+ok('stale saved tab sim → home', /S\.tab==='sim'\|\|S\.tab==='cards'/.test(html));
 ok('poscards opens Learn flashcards', /if\(a==='poscards'\)return set\(\{pos:el\.dataset\.p,tab:'learn',learnMode:'cards'/.test(html));
 ok('SYLLABUS cd/gnd/lcl empty; arr has packet', /cd:\[\],gnd:\[\],lcl:\[/.test(html) && !/,arr:\[\]\}/.test(html));
 ok('SYLLABUS.rfd not empty', /rfd:\[\{/.test(html));
@@ -614,7 +617,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.28 fc-picker', /v0\.8\.28 · fc-picker<\/span>/.test(html) && !/v0\.8\.27 · arr-acad<\/span>/.test(html));
+ok('statusbar v0.8.29 learn-test', /v0\.8\.29 · learn-test<\/span>/.test(html) && !/v0\.8\.28 · fc-picker<\/span>/.test(html));
 ok('arr-acad: pending message removed', !/ACAD packet pending/.test(html));
 // v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
 {
@@ -658,7 +661,7 @@ const invented = [...new Set(acads.filter(n => !allowed.has(n)))];
 ok('no invented ACAD-05xx', invented.length === 0, invented.join(','));
 ok('SKILLS present', /const SKILLS=\[/.test(html));
 ok('phraseologyOf function exists', /function\s+phraseologyOf\s*\(/.test(html));
-ok('skill chips in lookup', /skillChipHTML\('skillchip'\)/.test(html));
+ok('SIM debrief skill chips removed with SIM', !/skillChipHTML\('skillchip'\)/.test(html));
 ok('refdump hides field data', /id="refdump"/.test(html));
 
 
@@ -691,7 +694,7 @@ if (sm) {
   let code = sm[1];
   code = code.replace(
     /document\.getElementById\('vatc'\)\.addEventListener\('click'[\s\S]*render\(\);\s*\}\)\(\);/,
-    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcFaceHTML,secLookup,secBoxHTML,SEC_IDX,SEC_PUBS,fcSetChipRow,QZ_PARTS,QZ_DECKS,QZ_DUPES,QZ_MOVE,QZ_SRC_ORDER,QZ_CAT_OF,qzPartOf,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,PLATES,plateHits,diversifyAskHits,pubIdForDoc,queueCrossPubFind,FC_UC,FC_UC_MISS,FC_UC_GUIDE,FC_UC_NEW,isUcDeck,ucDeck};\n})();'
+    'globalThis.__VATC={askHits,expandAsk,ASK_ALIASES,SKILLS,BOOK,bookResolve,askResultHTML,siftLookup,rfcLearn,phraseologyOf,homeView,learnView,syllabusFor,pubShelfHTML,quickRefHTML,tstLqs,tstCards,tstStart,FCQ,rfcExerciseBody,rfcTrain,FC_POS,posDeck,posProgress,SYLLABUS,S,FC_SETS,activeFcDeck,fcBody,fcFaceHTML,secLookup,secBoxHTML,SEC_IDX,SEC_PUBS,fcSetChipRow,QZ_PARTS,QZ_DECKS,QZ_DUPES,QZ_MOVE,QZ_SRC_ORDER,QZ_CAT_OF,qzPartOf,pubShelfHTML,linkifyTblRefs,extractTblRefs,pageForCite,PUB_CH_PAGES,PUBS,askScanPubOrder,PLATES,plateHits,diversifyAskHits,pubIdForDoc,queueCrossPubFind,FC_UC,FC_UC_MISS,FC_UC_GUIDE,FC_UC_NEW,isUcDeck,ucDeck};\n})();'
   );
   try {
     eval(code);
@@ -781,7 +784,33 @@ if (sm) {
       ok('Learn lists ACAD-0520', /ACAD-0520/.test(learn), 'learn len=' + (learn&&learn.length));
       if (V.S) { V.S.learnMode='cards'; }
       const learnCards = typeof V.learnView === 'function' ? V.learnView() : '';
-      ok('Learn FLASHCARDS mode shows decks', /FLASHCARDS/.test(learnCards) && (/fcface/.test(learnCards) || /fc-crt/.test(learnCards) || /No sourced cards/.test(learnCards)));
+      ok('Learn cards mode (Flashcards tab) shows picker or deck, no Learn seg', !/data-m="test">TEST/.test(learnCards) && (/pk-set|fcface|No sourced cards/.test(learnCards)));
+      { V.S.learnMode='acad'; V.S.rfcTopic=0; V.S.pos='arr'; const L=V.learnView();
+        ok('ACAD card has ACAD + TEST choices', (L.match(/class="rfc-cb" data-action="acad"[^>]*>ACAD</g)||[]).length===6 && (L.match(/class="rfc-cb tst" data-action="rfctest"/g)||[]).length===6 && !/>References</.test(L));
+        const per=V.SYLLABUS.arr.map(T=>V.tstLqs(T).length);
+        ok('arr LQS banks = packet test items in paper order (15/2/13/13/21/18)', per.join('/')==='15/2/13/13/21/18' && V.tstLqs(V.SYLLABUS.arr[0])[0].q===V.SYLLABUS.arr[0].test[0].q, per.join('/'));
+        const allSrc=['rfd','fin','arr'].every(k=>V.SYLLABUS[k].every(T=>V.tstLqs(T).concat(V.tstCards(k,T)).every(it=>it.src&&it.src.doc&&it.a&&it.q)));
+        ok('every test item has an answer + source', allSrc);
+        const pracOk=['rfd','fin','arr'].every(k=>V.SYLLABUS[k].every(T=>V.tstCards(k,T).every(it=>it.tag==='Practice')) && V.SYLLABUS[k].every(T=>V.tstLqs(T).every(it=>it.tag==='LQS')));
+        ok('LQS vs Practice tagged', pracOk);
+        V.S.learnMode='test'; V.S.tst=null; const H=V.learnView();
+        ok('TEST list: per-ACAD rows with LQS + Practice', (H.match(/class="tst-row"/g)||[]).length===6 && /data-action="tstpick" data-n="1" data-k="lqs"/.test(H) && /data-k="prac"/.test(H));
+        V.S.tst=V.tstStart('arr',1,'lqs'); const Q=V.learnView();
+        ok('test question view: one question + ← ALL TESTS + LQS tag', /ALL TESTS/.test(Q) && /tst-tag lqs/.test(Q) && /1 \/ 15/.test(Q));
+        V.S.tst.phase='done'; V.S.tst.res=[{k:0,ok:false,u:'x'},{k:1,ok:true}]; const R=V.learnView();
+        ok('results: score, missed w/ answer + grey source, Retake missed', /1\/2/.test(R) && /class="tst-miss"/.test(R) && /class="tst-src"/.test(R) && /data-action="tstmissed"/.test(R));
+        const g=V.FCQ.grade('Expect runwy 21 straight in approach','Expect runway 21 straight in approach'), gn=V.FCQ.grade('Expect runway 22 straight in approach','Expect runway 21 straight in approach');
+        ok('written grading: small typo accepted+flagged, numbers exact', g.ok&&g.typo && !gn.ok);
+        V.S.tst=null; V.S.learnMode='acad'; }
+      { const sh=V.pubShelfHTML(); const order=[...sh.matchAll(/<summary>([^<]+)<\/summary>/g)].map(m=>m[1]).filter(x=>!/^(PUBLICATIONS|NFG FACMAN|JO 7110\.65BB Chg|JO 7110\.65BB$|.*archive|.*Airport|.*Plates|.*SIDs|.*Approach)/.test(x));
+        const ix=k=>sh.indexOf(k);
+        ok('Publications order: JO 7110.65 → FACMAN → FLIP → AIM → AOM → OPNAVINST → OPNAV M', ix('<summary>JO 7110.65BB</summary>')>0 && ix('<summary>JO 7110.65BB</summary>')<ix('<summary>FACMAN</summary>') && ix('<summary>FACMAN</summary>')<ix('FLIP / Terminal Procedures') && ix('FLIP / Terminal Procedures')<ix('<summary>AIM') && ix('<summary>AIM')<ix('<summary>StaO 3710.1H AOM') && ix('StaO 3710.1H AOM')<ix('<summary>OPNAVINST 3500.39D') && ix('OPNAVINST 3500.39D')<ix('<summary>OPNAV M-5100.23'));
+        ok('Publications rows consistent (OPNAV rows are nests like the rest)', /<details class="pos-acads pub-nest"><summary>OPNAVINST 3500\.39D<\/summary>/.test(sh) && /<details class="pos-acads pub-nest"><summary>OPNAV M-5100\.23<\/summary>/.test(sh));
+        const qr=V.quickRefHTML();
+        ok('Field Quick Ref: no Coordination section, search box, lookup sections', !/COORDINATION \(G\/G/.test(html) && /id="qrq"/.test(qr) && ['Buttons &amp; Frequencies','VISCOM Buttons','Equipment Suffixes','Scratchpad (FACMAN TBL 6-4)','Phone Lines','3-Letter Identifiers','Fixes','Diverts','SIDs &amp; Departures'].every(x=>qr.indexOf(x)>=0));
+        const rows=(qr.match(/<tr /g)||[]).length, srcs=(qr.match(/class="qr-src/g)||[]).length;
+        ok('Field Quick Ref: every row has a grey source', rows>200 && rows===srcs, rows+' rows / '+srcs+' src');
+        ok('Equipment suffixes straight from JO TBL 2-3-10 (20 rows, /G GNSS Mode C)', /<td class="qr-k">\/G<\/td><td class="qr-v">Non-RVSM · GNSS · Transponder with Mode C<\/td>/.test(qr) && V.BOOK['7110.65 TBL 2-3-10'].table.rows.length===20); }
 
       ok('FC_POS.fin exists', !!(V.FC_POS && Array.isArray(V.FC_POS.fin) && V.FC_POS.fin.length));
       ok('FC_POS.lcl exists', !!(V.FC_POS && Array.isArray(V.FC_POS.lcl) && V.FC_POS.lcl.length));
