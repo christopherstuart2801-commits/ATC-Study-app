@@ -614,7 +614,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.24 fin-usecase', /v0\.8\.24 · fin-usecase<\/span>/.test(html) && !/v0\.8\.23 · pos-usecase<\/span>/.test(html));
+ok('statusbar v0.8.25 arr-usecase', /v0\.8\.25 · arr-usecase<\/span>/.test(html) && !/v0\.8\.24 · fin-usecase<\/span>/.test(html));
 // v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
 {
   const OLD25=[/2,?200 via heading 211/i,/CLIMB AND MAINTAIN 2200 VIA/i,/ten \(10\) feet/,/±\s?10 feet/,/±\s?50 feet of the azimuth/,/between 51 and 100 feet/,/between 11 and 25 feet/,/between 26 and 50 feet/,/MAINTAIN 3800, PROCEED DIRECT ONTOS/i,/ONE THOUSAND TWO HUNDRED THEN TURN LEFT/,/UPWIND NUMBERS AND LEAVING/,/RS with ADC/,/RS, ADC, RD/,/H-1 departures only/,/between Bravo and Delta taxiways/,/Between 11 and 7 miles on final/,/go-around \(VFR\) or missed approach \(IFR\)/];
@@ -652,7 +652,7 @@ ok('PUBS Ask shelf has all library ids', /id:'facman'/.test(html) && /id:'facman
 ok('quizlet reveal-lock dual-face', /fcard\$\{S\.fcFlip\?' is-revealed':''\}/.test(html) && /fcface front/.test(html) && /fcface back/.test(html) && /function fcKeep\(/.test(html));
 }
 const acads = [...html.matchAll(/ACAD-(\d+)/g)].map(m => m[1]);
-const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533']);
+const allowed = new Set(['0520','0534','0532','0521','0522','0523','0538','0533','0536','0525','0526','0539','0537','0540','0535'] /* + Arrival/Departure LQS (Mar 2026) codes */);
 const invented = [...new Set(acads.filter(n => !allowed.has(n)))];
 ok('no invented ACAD-05xx', invented.length === 0, invented.join(','));
 ok('SKILLS present', /const SKILLS=\[/.test(html));
@@ -1933,8 +1933,8 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           ok('pos-usecase: every set has a guide (covers/from/how)', Object.entries(U).every(([p,o])=>Object.keys(o).every(k=>G[p]&&G[p][k]&&G[p][k].covers&&G[p][k].from&&G[p][k].how)));
           const known=new Set(); Object.values(V.FC_SETS||{}).forEach(a=>(a||[]).forEach(c=>known.add(c.id))); Object.values(V.FC_POS||{}).forEach(a=>(a||[]).forEach(c=>known.add(c.id)));
           const nw=[].concat(...Object.values(V.FC_UC_NEW||{}));
-          ok('pos-usecase: new ucr-*/ucf-* ids do not collide with existing cards', nw.every(c=>/^uc[rf]-/.test(c.id) && !known.has(c.id)) && new Set(nw.map(c=>c.id)).size===nw.length, 'n='+nw.length);
-          ok('pos-usecase: new cards cite FACMAN July 2026 or JO 7110.65BB with a highlight', nw.every(c=>c.src && (c.src.doc==='NFG FACMAN July 2026' || c.src.doc==='JO 7110.65BB') && c.src.pg && c.src.hl), nw.filter(c=>!(c.src&&c.src.hl)).map(c=>c.id).join(','));
+          ok('pos-usecase: new ucr-*/ucf-*/uca-* ids do not collide with existing cards', nw.every(c=>/^uc[rfa]-/.test(c.id) && !known.has(c.id)) && new Set(nw.map(c=>c.id)).size===nw.length, 'n='+nw.length);
+          ok('pos-usecase: new cards cite FACMAN July 2026 or JO 7110.65BB with a highlight', nw.every(c=>c.src && (c.src.doc==='NFG FACMAN July 2026' || c.src.doc==='JO 7110.65BB' || c.src.doc==='JO 7110.65BB Chg 2') && c.src.pg && c.src.hl), nw.filter(c=>!(c.src&&c.src.hl)).map(c=>c.id).join(','));
           const t=U.rfd&&U.rfd['uc-test']||[];
           ok('pos-usecase: CHECKOUT set covers all 5 RFD ACAD blocks', ['ACAD-0520','ACAD-0534','ACAD-0532','ACAD-0521/0522','ACAD-0523/0538'].every(a=>t.some(c=>c.o===a)));
           const saveDeck=V.S.fcDeck, savePos=V.S.pos;
@@ -1960,6 +1960,20 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           ok('fin-usecase: guide renders on Final CHECKOUT set', /class="fc-guide"/.test(fb) && /CHECKOUT &amp; TEST|CHECKOUT & TEST/.test(fb) && /ACAD-0533/.test(fb));
           V.S.fcDeck='pos';
           ok('fin-usecase: Final POSITION deck unchanged (23)', V.activeFcDeck().length===23, V.activeFcDeck().length);
+          /* v0.8.25 arr-usecase: Arrival sets */
+          ok('arr-usecase: Arrival has LIVE / CHECKOUT / NEW sets', !!(U.arr && ['uc-live','uc-test','uc-new'].every(k=>Array.isArray(U.arr[k]) && U.arr[k].length>=60)), U.arr?Object.keys(U.arr).map(k=>k+'='+U.arr[k].length).join(' '):'none');
+          const at=U.arr&&U.arr['uc-test']||[];
+          const acads=['ACAD-0536','ACAD-0525','ACAD-0526','ACAD-0539','ACAD-0537','ACAD-0540','ACAD-0535'];
+          ok('arr-usecase: CHECKOUT covers the 7 Arrival LQS ACAD blocks in paper order', acads.every(a=>at.some(c=>c.o===a)) && acads.every((a,i)=>!i || at.findIndex(c=>c.o===a) > at.findIndex(c=>c.o===acads[i-1])));
+          const anw=(V.FC_UC_NEW&&V.FC_UC_NEW.arr)||[];
+          ok('arr-usecase: new Arrival cards are uca-* tagged pos arr with a highlight', anw.length>=200 && anw.every(c=>/^uca-/.test(c.id) && c.pos==='arr' && c.src && c.src.hl), 'n='+anw.length);
+          const arrAll=[].concat(...Object.values(U.arr||{}));
+          ok('arr-usecase: no stale basic 5-5-4 heavy/large/small wake cards in Arrival sets', !arrAll.some(c=>/^wake-/.test(c.id)));
+          ok('arr-usecase: reused cards are the same objects (progress carries by id)', (V.FC_SETS.missed||[]).every(c=>arrAll.includes(c)) && (V.FC_SETS.lostcom||[]).every(c=>arrAll.includes(c)));
+          ok('arr-usecase: every plan id resolves', !(V.FC_UC_MISS||[]).length, (V.FC_UC_MISS||[]).join(','));
+          V.S.pos='arr'; V.S.fcDeck='uc-test';
+          ok('arr-usecase: guide renders on Arrival CHECKOUT set', /class="fc-guide"/.test(V.fcBody()) && /ACAD-0536/.test(V.fcBody()));
+          V.S.fcDeck='pos';
           V.S.pos='gnd';
           ok('pos-usecase: position without sets falls back to its POSITION deck', V.activeFcDeck().length===(V.posDeck('gnd')||[]).length && !/class="fc-guide"/.test(V.fcBody()));
           V.S.fcDeck=saveDeck; V.S.pos=savePos;
