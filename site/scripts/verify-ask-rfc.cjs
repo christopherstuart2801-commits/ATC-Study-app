@@ -614,7 +614,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.27 arr-acad', /v0\.8\.27 · arr-acad<\/span>/.test(html) && !/v0\.8\.26 · flip-tpp<\/span>/.test(html));
+ok('statusbar v0.8.28 fc-picker', /v0\.8\.28 · fc-picker<\/span>/.test(html) && !/v0\.8\.27 · arr-acad<\/span>/.test(html));
 ok('arr-acad: pending message removed', !/ACAD packet pending/.test(html));
 // v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
 {
@@ -949,7 +949,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           ok('reveal: prog shows ALL LOCAL count', new RegExp('LOCAL · 1 / '+ql.length).test(rb));
           V.S.fcDeck='ql-sqdn'; V.S.fcFlip=false;
           const sb=V.fcBody();
-          ok('category deck labels part · category', /LOCAL · SQUADRONS · 1 \//.test(sb) && !/class="fcard is-revealed"/.test(sb));
+          ok('category deck labels category (in-set header)', /<b>Squadrons<\/b>/.test(sb) && /\b1 \//.test(sb) && !/class="fcard is-revealed"/.test(sb), sb.slice(0,200));
           ok('v0.8.18: squadron deck shows Show/Type/Table selects + set list', /data-action="sqshow"/.test(sb) && /ALL CARDS IN THIS SET/.test(sb) && /class="fc-row/.test(sb) && /data-action="fcrate" data-k="1"/.test(sb), sb.slice(0,160));
           const sqAll=(V.FC_SETS.squadrons||[]).length;
           V.S.sqShow='cs'; const csN=V.activeFcDeck().length; V.S.sqShow='all'; const allN=V.activeFcDeck().length; V.S.sqShow='cs'; V.S.sqTbl='TBL C-3'; const c3N=V.activeFcDeck().length; V.S.sqTbl='';
@@ -970,9 +970,14 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         V.S.fcDeck='idents'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0; V.S.trainMode = 'cards'; V.S.fcIdx = 0; V.S.fcFlip = false; V.S.pos = 'fin';
         const idBody = typeof V.fcBody === 'function' ? V.fcBody() : (typeof V.rfcTrain === 'function' ? V.rfcTrain() : '');
         ok('fcBody idents deck shows C-1 card', /TBL C-1/.test(idBody) && /POGGI|PGY/.test(idBody), (idBody||'').slice(0,180));
-        ok('fcBody named deck chips (three parts)', /data-d="q-tower"/.test(idBody) && /data-d="q-radar"/.test(idBody) && /data-d="q-local"/.test(idBody) && /data-d="ql-idents"[^>]*>IDENTIFIERS/.test(idBody) && /data-d="qr-strips"[^>]*>RADAR STRIPS/.test(idBody) && /data-d="qt-viscom"[^>]*>VISCOM/.test(idBody));
-        ok('train chip UI group label TOWER/RADAR/LOCAL', /<summary[^>]*data-g="local"/.test(idBody) && /<summary[^>]*data-g="tower"/.test(idBody));
-        ok('train pos chip first when present', /fc-poschip[\s\S]*fc-chip-groups/.test(idBody) && /data-d="pos"/.test(idBody));
+        { const kp=V.S.fcPick; V.S.fcPick=true; const pk=V.fcBody(); V.S.fcPick=kp;
+          const hs=(pk.match(/class="pk-h"/g)||[]).length, names=[...pk.matchAll(/<b>([^<]+)<\/b><span class="pk-n">(\d+)<\/span>/g)].map(m=>[m[1].replace(/&amp;/g,'&'),+m[2]]);
+          ok('picker: search box + ≤3 headers + no chip wall', /id="pkq"/.test(pk) && hs>=2 && hs<=3 && !/fc-chip-groups|details class="fc-sets/.test(pk), 'hdrs='+hs);
+          ok('picker: plain names first (Buttons, 3-Letter Identifiers, Completion Instructions)', names[0]&&names[0][0]==='Buttons & Frequencies' && names[1][0]==='3-Letter Identifiers' && names[2][0]==='Completion Instructions', names.slice(0,3).join(' | '));
+          { const big=[...pk.matchAll(/data-d="(pk:[^"]*)"[^>]*><span class="pk-t"><b>[^<]*<\/b><span class="pk-n">(\d+)</g)].filter(m=>!/^pk:(ql-|idents|qr-strips)/.test(m[1]) && +m[2]>40); ok('picker: ACAD / on-position sets ≤40 cards', /data-d="pk:arr:ACAD-0536/.test(pk) && big.length===0, big.map(m=>m[1]).join(',')); }
+          ok('picker: every set non-empty', names.length>20 && names.every(n=>n[1]>0), names.length+' sets'); }
+        ok('in-set header: ← ALL SETS back to picker', /data-action="fcall"/.test(idBody));
+        
         const d1939 = (V.FC_SETS && V.FC_SETS['dial-1939']) || [];
         ok('FC_SETS.dial-1939 is array', Array.isArray(d1939) && d1939.length > 0, 'n=' + d1939.length);
         ok('dial-1939 Palomar Tower ↔ 20', d1939.some(c => /Palomar Tower/i.test(idQ(c)) && /\b20\b/.test(idA(c))) && d1939.some(c => /\b20\b/.test(idQ(c)) && /Palomar Tower/i.test(idA(c))));
@@ -1244,7 +1249,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         const taxiBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody taxi shows 2-1-15 or Papa taxiway', /2-1-15|Papa taxiway/.test(taxiBody), (taxiBody||'').slice(0,220));
         ok('homeView AIRFIELD chip (taxi)', /data-d="ql-field"/.test(home2) && /AIRFIELD/.test(home2));
-        ok('fcBody AIRFIELD chip (taxi)', /data-d="ql-field"/.test(idBody) && />AIRFIELD</.test(idBody));
+        { const kp=V.S.fcPick; V.S.fcPick=true; const pk=V.fcBody(); V.S.fcPick=kp; ok('picker: Airfield set (taxi) present', /data-d="pk:ql-field"/.test(pk) && /<b>Airfield Spots &amp; Taxiways<\/b>/.test(pk)); }
         const tsD = (V.FC_SETS && V.FC_SETS.termstrip) || [];
         ok('FC_SETS.termstrip is array', Array.isArray(tsD) && tsD.length > 0, 'n=' + tsD.length);
         ok('termstrip arrival box 6 previous fix', tsD.some(c => /Arrival box 6/.test(idQ(c)) && /previous fix/.test(idA(c)) && /TBL 2-3-3/.test(idSrc(c))));
@@ -1256,7 +1261,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         const tsBody = typeof V.fcBody === 'function' ? V.fcBody() : '';
         ok('fcBody termstrip shows TBL 2-3-3 or arrival', /TBL 2-3-3|Arrival vs departure/.test(tsBody), (tsBody||'').slice(0,220));
         ok('homeView RADAR STRIPS chip (termstrip)', /data-d="qr-strips"/.test(home2) && /RADAR STRIPS/.test(home2));
-        ok('fcBody RADAR STRIPS chip (termstrip)', /data-d="qr-strips"/.test(idBody) && /RADAR STRIPS/.test(idBody));
+        { const kp=V.S.fcPick; V.S.fcPick=true; const pk=V.fcBody(); V.S.fcPick=kp; ok('picker: Strip Boxes (termstrip) + Strip Codes present', /data-d="pk:termstrip"/.test(pk) && /data-d="pk:qr-strips"/.test(pk)); }
         V.S.fcDeck='pos'; V.S.fcFlip=true; V.S.fcOrder=null; V.S.fcIdx=0;
 
         const finSyl = (V.SYLLABUS && V.SYLLABUS.fin) || [];

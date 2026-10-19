@@ -102,7 +102,7 @@
 #vatc .hero .hstats div b{ font-family:var(--fd); font-size:18px; color:var(--text); display:block;}
 #vatc .hero .hstats div span{ font-size:8.5px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase;}
 #vatc .grp{ font-family:var(--fd); letter-spacing:.2em; font-size:10px; color:var(--amber); text-transform:uppercase; margin:16px 0 8px;}
-/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile · v0.8.16 fac2026-sync · v0.8.17 fac2026-reader · v0.8.18 brief-polish · v0.8.19 fqr-trim · v0.8.20 fc-clean-answers · v0.8.21 fc-answer-only · v0.8.22 ask-section-jump · v0.8.23 pos-usecase · v0.8.24 fin-usecase · v0.8.25 arr-usecase · v0.8.26 flip-tpp · v0.8.27 arr-acad */
+/* v0.8.13 home-slim · v0.8.14 quizlet-3part · v0.8.15 asr-par-by-mile · v0.8.16 fac2026-sync · v0.8.17 fac2026-reader · v0.8.18 brief-polish · v0.8.19 fqr-trim · v0.8.20 fc-clean-answers · v0.8.21 fc-answer-only · v0.8.22 ask-section-jump · v0.8.23 pos-usecase · v0.8.24 fin-usecase · v0.8.25 arr-usecase · v0.8.26 flip-tpp · v0.8.27 arr-acad · v0.8.28 fc-picker */
 #vatc .stnbar{ font-family:var(--fd); font-size:12px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 2px 10px; margin-bottom:12px; border-bottom:1px solid var(--line); }
 #vatc .pos6{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px; }
 @media(max-width:640px){ #vatc .pos6{ grid-template-columns:1fr 1fr; } }
@@ -498,6 +498,17 @@
 #vatc .fc-sets .fc-chg{ font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:12px; padding:3px 9px; }
 #vatc .fc-sets[open] .fc-chg{ color:var(--green); border-color:var(--green2); }
 #vatc .fc-sets .fc-chip-wrap{ margin:0; padding:0 10px 10px; }
+#vatc .fc-picker .pk-q{ width:100%; box-sizing:border-box; margin:0 0 10px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--panel); color:var(--text); font-size:14px; }
+#vatc .pk-h{ font-size:10px; letter-spacing:.16em; color:var(--muted); margin:10px 2px 6px; }
+#vatc .pk-list{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:6px; }
+#vatc .pk-set{ text-align:left; display:flex; flex-direction:column; gap:3px; padding:9px 12px; border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--text); cursor:pointer; min-height:44px; }
+#vatc .pk-set[hidden],#vatc .pk-grp[hidden]{ display:none; }
+#vatc .pk-t{ display:flex; justify-content:space-between; gap:8px; font-size:13px; }
+#vatc .pk-n{ color:var(--muted); font-size:11px; }
+#vatc .pk-sub{ font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#vatc .pk-bar{ height:3px; background:var(--line); border-radius:2px; overflow:hidden; }
+#vatc .pk-bar i{ display:block; height:100%; background:var(--acc,#39f0a0); }
+#vatc .pk-back{ display:flex; align-items:center; gap:10px; margin:0 0 10px; font-size:12px; }
 #vatc .fc-guide{ border:1px solid var(--line); border-radius:10px; background:var(--panel); margin:0 0 10px; }
 #vatc .fc-guide > summary{ list-style:none; cursor:pointer; padding:8px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
 #vatc .fc-guide > summary::-webkit-details-marker{ display:none; }
@@ -1665,7 +1676,7 @@
       fcCard('ts-10-18','Boxes 10–18','Enter data as specified by a facility directive. Arrival/radar: need not enter except when nonradar procedures are used or radio recording equipment is inoperative. Departure items may include departure time, runway used for takeoff, check marks for information forwarded or relayed.','Strip','termstrip',SRC_TBL234)
     ]
   };
-  function activeFcDeck(){ const d=S.fcDeck; let deck; if(d && /^uc-/.test(d)) deck=ucDeck(d)||posDeck(S.pos); else if(d && d!=='pos' && QZ_DECKS[d]) deck=QZ_DECKS[d]; else if(d && d!=='pos' && FC_SETS[d]) deck=FC_SETS[d]; else deck=posDeck(S.pos); return isSqDeck(d)?sqFilter(deck):deck; }
+  function activeFcDeck(){ const d=S.fcDeck; let deck; if(d && /^pk:/.test(d)){ const ps=pkFind(d); if(ps) return ps.cards; } if(d && /^uc-/.test(d)) deck=ucDeck(d)||posDeck(S.pos); else if(d && d!=='pos' && QZ_DECKS[d]) deck=QZ_DECKS[d]; else if(d && d!=='pos' && FC_SETS[d]) deck=FC_SETS[d]; else deck=posDeck(S.pos); return isSqDeck(d)?sqFilter(deck):deck; }
   function fcDeckKey(){ const b=(S.fcDeck && S.fcDeck!=='pos') ? (/^uc-/.test(S.fcDeck)?S.fcDeck+'@'+S.pos:S.fcDeck) : S.pos; return isSqDeck(S.fcDeck)?b+'|'+(S.sqShow||'cs')+'|'+(S.sqType||'')+'|'+(S.sqTbl||''):b; }
   function fcOrderedDeck(){
     const deck=activeFcDeck()||[];
@@ -4468,7 +4479,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.27 · arr-acad</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.28 · fc-picker</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{const tab=S.tab==='train'?'learn':S.tab; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('sim',I.sim,'Sim')}${t('reference',I.file,'Reference')}</div>`; }
@@ -4937,7 +4948,73 @@ function vectorAnswerHTML(query, hits){
       <div class="fc-wr"><input id="fcwr" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type the answer" enterkeyhint="done"><button type="button" class="btn" data-action="fcwrcheck">CHECK</button></div>
       <button type="button" class="btn-ghost fc-dk" data-action="fcwrdk">Don't know</button></div>`;
   }
+  /* ===== v0.8.28 fc-picker: one compact, searchable list of every set. Names = what a controller looks for.
+     pk:* keys are views over existing cards (ids unchanged, progress shared). Oversized sets split to <=40. */
+  const PK_QUICK=[
+    ['ql-freq','Buttons & Frequencies','freq freqs frequency buttons viscom gca radio'],
+    ['idents','3-Letter Identifiers','idents identifiers 3 letter location ids'],
+    ['arrcomp','Completion Instructions','completion approach complete full stop low approach'],
+    ['ql-phone','Phone Lines','phone lines 1939 4779 dial'],
+    ['fixes','Fixes','fixes points'],
+    ['scratchpad','Scratchpad','scratchpad stars entries'],
+    ['qr-strips','Strip Codes','strips strip codes radar'],
+    ['termstrip','Strip Boxes','strip boxes terminal completion marking'],
+    ['sids','SIDs & Departures','sid sids departures odp'],
+    ['viscom','VISCOM Buttons','viscom buttons'],
+    ['crash','Crash Phone','crash phone emergency'],
+    ['diverts','Diverts','diverts alternates'],
+    ['vrp','VFR Reporting Points','vfr points vrp'],
+    ['svfr','SVFR Routes','svfr special vfr routes'],
+    ['ql-field','Airfield Spots & Taxiways','airfield spots taxiways papa'],
+    ['ql-sqdn','Squadrons','squadrons callsigns modex'],
+    ['fdio','FDIO Messages','fdio messages'],
+    ['abbrev','Abbreviations','abbreviations'],
+    ['gca','GCA Critical Data','gca critical data']];
+  const PK_ONPOS=[
+    ['asrmile','ASR Calls by Mile','asr surveillance mile'],['parmile','PAR Calls by Mile','par precision mile'],['gcafinal','GCA Final','gca final'],
+    ['qr-missed','Missed Approach & Lost Comm','missed lost comm'],['handoff','Handoffs','handoff handoffs'],['qr-wakesep','Wake & Separation','wake separation'],
+    ['radio','Radio Phraseology','radio phraseology'],['taxi','Taxi','taxi ground'],['qt-ops','Tower Ops','tower ops helo spots']];
+  let PK_CACHE=null;
+  function pkChunks(cards, max){ const n=Math.ceil(cards.length/max); if(n<=1) return [cards]; const sz=Math.ceil(cards.length/n); const out=[]; for(let i=0;i<cards.length;i+=sz) out.push(cards.slice(i,i+sz)); return out; }
+  function pkSets(){
+    if(PK_CACHE) return PK_CACHE;
+    const out=[];
+    const subOf=cards=>cards.slice(0,3).map(c=>String(c.q||'').replace(/<[^>]+>/g,'')).join(' · ');
+    const push=(grp,k,name,kw,cards)=>{ cards=fcUniq(cards||[]); if(!cards.length) return; pkChunks(cards,grp==='quick'?999:40).forEach((ch,i,a)=>{ out.push({k:'pk:'+k+(a.length>1?':'+(i+1):''), grp, name:name+(a.length>1?` (${i+1}/${a.length})`:''), sub:subOf(ch), kw:(kw||'').toLowerCase(), cards:ch}); }); };
+    PK_QUICK.forEach(([k,name,kw])=>{ const cards=QZ_DECKS[k]||FC_SETS[k]; if(k==='ql-sqdn') return push('quick',k,name,kw,[]); push('quick',k,name,kw,cards); });
+    if(QZ_DECKS['ql-sqdn']||FC_SETS.squadrons) out.splice(out.findIndex(s=>/fdio/.test(s.k)),0,{k:'ql-sqdn',grp:'quick',name:'Squadrons',sub:'Callsigns, squadrons, modex (filters inside)',kw:'squadrons callsigns modex',cards:QZ_DECKS['ql-sqdn']||FC_SETS.squadrons});
+    ['rfd','fin','arr'].forEach(pos=>{
+      const P=FC_UC[pos]; if(!P||!P['uc-test']) return;
+      const topics=SYLLABUS[pos]||[];
+      const by={}; P['uc-test'].forEach(c=>{ const o=c.o||''; (by[o]=by[o]||[]).push(c); });
+      Object.keys(by).forEach(code=>{
+        const t=topics.find(x=>(x.ids||[x.id]).includes(code)||x.id===code);
+        push('acad',pos+':'+code,`${PN[pos]} · ${code}`,`${PN[pos]} ${code} ${(t&&t.t)||''} acad`,by[code]);
+        const last=out[out.length-1]; if(t) out.filter(s=>s.k.indexOf('pk:'+pos+':'+code)===0).forEach(s=>s.sub=t.t);
+      });
+    });
+    POS.forEach(p=>{ const d=posDeck(p.k)||[]; if(d.length) out.push({k:'pk:pos:'+p.k, grp:'onpos', name:`${PN[p.k]} essentials`, sub:subOf(d), kw:(PN[p.k]+' position essentials').toLowerCase(), cards:d, pos:p.k}); });
+    ['rfd','fin','arr'].forEach(pos=>{ const P=FC_UC[pos]; if(!P) return; push('onpos',pos+':live',`${PN[pos]} · Live on position`,`${PN[pos]} live on position`,P['uc-live']); push('onpos',pos+':new',`${PN[pos]} · New to station`,`${PN[pos]} new to station`,P['uc-new']); });
+    PK_ONPOS.forEach(([k,name,kw])=>push('onpos',k,name,kw,QZ_DECKS[k]||FC_SETS[k]));
+    PK_CACHE=out; return out;
+  }
+  function pkFind(k){ return pkSets().find(s=>s.k===k)||null; }
+  const PK_GRP=[['quick','QUICK LOOKUP'],['acad','ACADS'],['onpos','ON POSITION & STATION']];
+  function fcPickerHTML(){
+    const sets=pkSets();
+    const row=s=>{ const ids=s.cards.map(c=>c.id); const c=FCQ.counts(ids,S.fcStats); const pct=ids.length?Math.round(c.KNOWN/ids.length*100):0;
+      return `<button type="button" class="pk-set" data-action="fcdeck" data-d="${escTxt(s.k)}" data-s="${escTxt((s.name+' '+s.kw+' '+s.sub).toLowerCase())}"><span class="pk-t"><b>${escTxt(s.name)}</b><span class="pk-n">${ids.length}</span></span><span class="pk-sub">${escTxt(s.sub)}</span><span class="pk-bar"><i style="width:${pct}%"></i></span></button>`; };
+    const grp=PK_GRP.map(([g,lab])=>{ const ss=sets.filter(s=>s.grp===g); return ss.length?`<div class="pk-grp" data-g="${g}"><div class="pk-h">${lab}</div><div class="pk-list">${ss.map(row).join('')}</div></div>`:''; }).join('');
+    return `<div id="fcwrap" class="fc-picker"><input id="pkq" class="pk-q" placeholder="Find a set — buttons, idents, completion…" autocomplete="off" spellcheck="false" oninput="vatcPkFilter(this.value)">${grp}<div class="pk-none muted" hidden>No set matches.</div></div>`;
+  }
+  globalThis.vatcPkFilter=function(q){
+    const n=String(q||'').toLowerCase().trim().split(/\s+/).filter(Boolean);
+    let any=0;
+    document.querySelectorAll('#vatc .pk-grp').forEach(g=>{ let vis=0; g.querySelectorAll('.pk-set').forEach(b=>{ const ok=!n.length||n.every(t=>b.dataset.s.indexOf(t)>=0); b.hidden=!ok; if(ok) vis++; }); g.hidden=!vis; any+=vis; });
+    const no=document.querySelector('#vatc .pk-none'); if(no) no.hidden=!!any;
+  };
   function fcBody(){
+    if(S.fcPick) return fcPickerHTML();
     const chips=fcSetChipRow(true);
     activeFcDeck(); // deck source
     const {deck, key, ord, cards:ordered}=fcOrderedDeck();
@@ -4946,8 +5023,9 @@ function vectorAnswerHTML(query, hits){
     const partId=named&&!uc?qzPartOf(S.fcDeck):'';
     const partLab=partId?(QZ_PARTS.find(p=>p.id===partId)||{}).lab:'';
     const deckLab=uc?((PN[S.pos]||S.pos).toUpperCase()+' · '+UC_LAB[S.fcDeck]):named?(QZ_LAB[S.fcDeck]||FC_SET_LAB[S.fcDeck]||S.fcDeck):((PN[S.pos]||S.pos).toUpperCase());
-    const lab=(partLab && !/^q-/.test(S.fcDeck) && QZ_LAB[S.fcDeck])?(partLab+' · '+deckLab):deckLab;
-    const sets=`<details class="fc-sets"${S.fcSetsOpen?' open':''}><summary data-action="fcsets"><span class="muted">SET</span> <b>${escTxt(lab)}</b><span class="fc-chg">change</span></summary>${chips}</details>`;
+    const pkS=(/^pk:/.test(S.fcDeck||'')||S.fcDeck==='ql-sqdn')?pkFind(S.fcDeck):null;
+    const lab=pkS?pkS.name:((partLab && !/^q-/.test(S.fcDeck) && QZ_LAB[S.fcDeck])?(partLab+' · '+deckLab):deckLab);
+    const sets=`<div class="fc-sets pk-back"><button type="button" class="btn-back" data-action="fcall">← ALL SETS</button> <b>${escTxt(lab)}</b></div>`;
     const deckCards=fcUniq(deck);
     const ids=deckCards.map(c=>c.id);
     const byId={}; deckCards.forEach(c=>{ byId[c.id]=c; });
@@ -5753,7 +5831,7 @@ function pdfPaneHTML(){
     if(a==='stations')return set({screen:'station'});
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
     if(a==='tab'){const t=el.dataset.t; if(t==='learn') return set({tab:'learn',learnMode:'acad',trainMode:'practice'}); return set({tab:t});}
-    if(a==='learnmode'){const m=el.dataset.m; if(S.pub&&S.learnReturn){ resetCitePdfFind(); return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false,pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null}); } return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false});}
+    if(a==='learnmode'){const m=el.dataset.m; if(S.pub&&S.learnReturn){ resetCitePdfFind(); return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false,pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null}); } return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false,fcPick:(m==='cards')});}
     if(a==='pos')return set({pos:el.dataset.p,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='posfocus'){const k=el.dataset.p; return set({pos:k,tab:'learn',rfcTopic:0,posOpen:k,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});}
     if(a==='poscards')return set({pos:el.dataset.p,tab:'learn',learnMode:'cards',trainMode:'cards',fcIdx:0,fcFlip:false,posOpen:el.dataset.p,fcDeck:'pos',fcOrder:null});
@@ -5779,7 +5857,8 @@ function pdfPaneHTML(){
     if(a==='scnnext')return set({scnIdx:S.scnIdx+1,scnAns:false,scnSel:null});
     if(a==='scnrestart')return set({scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='src')return set({source:+el.dataset.i});
-    if(a==='fcdeck'){const d=el.dataset.d||'pos'; const g=fcDeckGroup(d); const o=Object.assign({}, S.fcOpen||{}); if(g) o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null,fcSess:null,fcSetsOpen:false});}
+    if(a==='fcall'){ return set({fcPick:true, fcSess:null}); }
+    if(a==='fcdeck'){const d0=el.dataset.d||'pos'; const pkp=/^pk:pos:(\w+)$/.exec(d0); if(pkp){ return set({tab:'learn',learnMode:'cards',trainMode:'cards',pos:pkp[1],fcDeck:'pos',fcPick:false,fcIdx:0,fcFlip:false,fcOrder:null,fcSess:null}); } const d=d0; const g=fcDeckGroup(d); const o=Object.assign({}, S.fcOpen||{}); if(g) o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcPick:false,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null,fcSess:null,fcSetsOpen:false});}
     if(a==='jumptbl'){ jumpTblRef(el.dataset.tbl||el.textContent||''); return; }
     if(a==='fcgrp'){ const g=el.dataset.g||'tower'; setTimeout(()=>{ const o=Object.assign({tower:false,radar:false,local:false},S.fcOpen||{}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
     if(a==='openpub'){const page=Math.max(1,parseInt(el.dataset.page,10)||1);const same=S.pub===el.dataset.id; if(!same){resetCitePdfFind();} return set({tab:'reference',pub:el.dataset.id,pubPage:page,pubQ:same?S.pubQ:'',pubGuessNote:'',pubPreferPage:page,pubCiteSec:same?S.pubCiteSec:''});}
