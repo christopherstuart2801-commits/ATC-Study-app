@@ -617,7 +617,9 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.29 learn-test', /v0\.8\.29 · learn-test<\/span>/.test(html) && !/v0\.8\.28 · fc-picker<\/span>/.test(html));
+ok('statusbar v0.8.30 back-nav', /v0\.8\.30 · back-nav<\/span>/.test(html) && !/v0\.8\.29 · learn-test<\/span>/.test(html));
+ok('history back wired (pushState + popstate + top ← button)', /history\.pushState\(/.test(html) && /addEventListener\('popstate'/.test(html) && /data-action="navback"/.test(html) && /a==='navback'/.test(html));
+ok('type scale documented in CSS variables', /--font-head:[^;]+; --font-body:[^;]+; --font-mono:/.test(html) && /--fs-xs:10px; --fs-sm:11px; --fs-base:13px/.test(html) && /#vatc button,#vatc input,#vatc select,#vatc textarea\{ font-family:inherit; \}/.test(html));
 ok('arr-acad: pending message removed', !/ACAD packet pending/.test(html));
 // v0.8.16 fac2026-sync: no July-2025-only text anywhere under the July 2026 cite
 {
@@ -786,7 +788,7 @@ if (sm) {
       const learnCards = typeof V.learnView === 'function' ? V.learnView() : '';
       ok('Learn cards mode (Flashcards tab) shows picker or deck, no Learn seg', !/data-m="test">TEST/.test(learnCards) && (/pk-set|fcface|No sourced cards/.test(learnCards)));
       { V.S.learnMode='acad'; V.S.rfcTopic=0; V.S.pos='arr'; const L=V.learnView();
-        ok('ACAD card has ACAD + TEST choices', (L.match(/class="rfc-cb" data-action="acad"[^>]*>ACAD</g)||[]).length===6 && (L.match(/class="rfc-cb tst" data-action="rfctest"/g)||[]).length===6 && !/>References</.test(L));
+        ok('ACADS list is clean (no ACAD/TEST buttons; tap card = checklist)', !/rfc-cb/.test(L) && (L.match(/class="rfc-topic-body"/g)||[]).length===6 && (L.match(/data-action="acad" data-n="/g)||[]).length===6);
         const per=V.SYLLABUS.arr.map(T=>V.tstLqs(T).length);
         ok('arr LQS banks = packet test items in paper order (15/2/13/13/21/18)', per.join('/')==='15/2/13/13/21/18' && V.tstLqs(V.SYLLABUS.arr[0])[0].q===V.SYLLABUS.arr[0].test[0].q, per.join('/'));
         const allSrc=['rfd','fin','arr'].every(k=>V.SYLLABUS[k].every(T=>V.tstLqs(T).concat(V.tstCards(k,T)).every(it=>it.src&&it.src.doc&&it.a&&it.q)));
@@ -1000,8 +1002,8 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
         const idBody = typeof V.fcBody === 'function' ? V.fcBody() : (typeof V.rfcTrain === 'function' ? V.rfcTrain() : '');
         ok('fcBody idents deck shows C-1 card', /TBL C-1/.test(idBody) && /POGGI|PGY/.test(idBody), (idBody||'').slice(0,180));
         { const kp=V.S.fcPick; V.S.fcPick=true; const pk=V.fcBody(); V.S.fcPick=kp;
-          const hs=(pk.match(/class="pk-h"/g)||[]).length, names=[...pk.matchAll(/<b>([^<]+)<\/b><span class="pk-n">(\d+)<\/span>/g)].map(m=>[m[1].replace(/&amp;/g,'&'),+m[2]]);
-          ok('picker: search box + ≤3 headers + no chip wall', /id="pkq"/.test(pk) && hs>=2 && hs<=3 && !/fc-chip-groups|details class="fc-sets/.test(pk), 'hdrs='+hs);
+          const hs=(pk.match(/<details class="pk-dd" data-dd="(quick|bypos|acad)"/g)||[]).length, names=[...pk.matchAll(/<b>([^<]+)<\/b><span class="pk-n">(\d+)<\/span>/g)].map(m=>[m[1].replace(/&amp;/g,'&'),+m[2]]);
+          ok('picker: search box + 3 top dropdowns (Quick lookup / By position / ACADs) + per-position sub-dropdowns', /id="pkq"/.test(pk) && hs===3 && !/fc-chip-groups|details class="fc-sets/.test(pk) && ['pos:cd','pos:gnd','pos:lcl','pos:rfd','pos:fin','pos:arr','acad:rfd','acad:fin','acad:arr'].every(k=>pk.indexOf('data-dd="'+k+'"')>=0) && /ontoggle="globalThis\.vatcPkToggle/.test(pk), 'top='+hs);
           ok('picker: plain names first (Buttons, 3-Letter Identifiers, Completion Instructions)', names[0]&&names[0][0]==='Buttons & Frequencies' && names[1][0]==='3-Letter Identifiers' && names[2][0]==='Completion Instructions', names.slice(0,3).join(' | '));
           { const big=[...pk.matchAll(/data-d="(pk:[^"]*)"[^>]*><span class="pk-t"><b>[^<]*<\/b><span class="pk-n">(\d+)</g)].filter(m=>!/^pk:(ql-|idents|qr-strips)/.test(m[1]) && +m[2]>40); ok('picker: ACAD / on-position sets ≤40 cards', /data-d="pk:arr:ACAD-0536/.test(pk) && big.length===0, big.map(m=>m[1]).join(',')); }
           ok('picker: every set non-empty', names.length>20 && names.every(n=>n[1]>0), names.length+' sets'); }

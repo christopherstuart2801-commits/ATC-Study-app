@@ -18,7 +18,13 @@
   --green:#39f0a0; --green2:#1f9c66; --green-dim:#0f3c2a;
   --amber:#ffb24d; --red:#ff6363; --sky:#5fd0ff; --text:#d6e7df; --muted:#7d9489;
   --fd:'Oswald','Arial Narrow',sans-serif; --fm:'JetBrains Mono',ui-monospace,Menlo,monospace;
-  font-family:var(--fm); color:var(--text); max-width:980px; margin:0 auto; background:var(--bg);
+  /* v0.8.30 TYPE SCALE — one heading font (Oswald: tabs, section heads, buttons, dropdown titles),
+     one body font (JetBrains Mono: the terminal-style reading text), and mono for codes/cites/freqs (same family, tabular).
+     Use these tokens for any new UI; buttons/inputs inherit the body font (no browser default sans). */
+  --font-head:var(--fd); --font-body:var(--fm); --font-mono:var(--fm);
+  --fs-xs:10px; --fs-sm:11px; --fs-base:13px; --fs-md:14px; --fs-lg:16px; --fs-xl:20px; --fs-score:44px;
+  --fw-reg:400; --fw-med:500; --fw-bold:700; --ls-caps:.12em; --ls-tight:.02em; --lh-body:1.45;
+  font-family:var(--font-body); color:var(--text); max-width:980px; margin:0 auto; background:var(--bg);
   border:1px solid var(--line); border-radius:16px; overflow:hidden; position:relative; min-height:700px; box-shadow:0 30px 80px rgba(0,0,0,.55);
   max-height:100vh; max-height:100dvh; display:flex; flex-direction:column;
 }
@@ -507,24 +513,42 @@
 #vatc .rfc-cb{ min-height:40px; min-width:64px; padding:6px 10px; border:1px solid var(--line); border-radius:8px; background:transparent; color:var(--text); font-size:11px; letter-spacing:.06em; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.15; }
 #vatc .rfc-cb.tst{ border-color:#39f0a0; color:#39f0a0; }
 #vatc .rfc-cb span{ font-size:9px; opacity:.75; letter-spacing:0; }
-#vatc .tst-list{ display:flex; flex-direction:column; gap:6px; }
-#vatc .tst-row{ border:1px solid var(--line); border-radius:10px; padding:8px 10px; background:var(--panel); display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; }
-#vatc .tst-h span{ color:var(--muted); font-size:12px; }
-#vatc .tst-btns{ display:flex; gap:6px; flex-wrap:wrap; }
-#vatc .tst-go{ min-height:44px; padding:6px 12px; border-radius:8px; border:1px solid #39f0a0; background:transparent; color:var(--text); display:flex; flex-direction:column; align-items:flex-start; cursor:pointer; }
-#vatc .tst-go.sec{ border-color:var(--line); }
-#vatc .tst-go span,#vatc .tst-none,#vatc .tst-meta{ font-size:10px; color:var(--muted); }
-#vatc .tst-top{ display:flex; gap:8px; align-items:center; margin:0 0 8px; }
-#vatc .tst-tag{ font-size:9px; letter-spacing:.12em; padding:2px 6px; border-radius:6px; border:1px solid var(--line); color:var(--muted); text-transform:uppercase; }
-#vatc .tst-tag.lqs{ color:var(--amber); border-color:currentColor; }
-#vatc .tst-src{ display:inline-block; margin-top:8px; font-size:10px; color:var(--muted); background:none; border:0; padding:0; text-decoration:underline; text-decoration-color:rgba(140,160,170,.4); cursor:pointer; text-align:left; }
-#vatc .tst-nav{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-#vatc .tst-nav .btn{ min-height:44px; flex:1 1 140px; }
-#vatc .tst-score{ text-align:center; margin:8px 0 14px; }
-#vatc .tst-mh{ font-size:10px; letter-spacing:.16em; color:var(--muted); margin:8px 0 4px; }
-#vatc .tst-miss{ border:1px solid var(--line); border-radius:10px; padding:8px 10px; margin-bottom:6px; }
-#vatc .tst-mq{ font-size:12px; margin-bottom:4px; } #vatc .tst-ma{ font-size:12px; color:#39f0a0; } #vatc .tst-yu{ font-size:11px; color:#ff8a8a; margin-top:3px; }
-#vatc .tst-a{ margin-top:6px; } #vatc .red{ color:#ff6363; }
+#vatc .tst-intro{ font-size:var(--fs-sm); color:var(--muted); margin:0 2px 10px; line-height:var(--lh-body); }
+#vatc .tst-list{ display:flex; flex-direction:column; gap:8px; }
+#vatc .tst-row{ display:grid; grid-template-columns:1fr auto; gap:10px 12px; align-items:center; border:1px solid var(--line); border-radius:12px; padding:12px 14px; background:var(--panel); }
+#vatc .tst-h{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+#vatc .tst-h .tst-code{ color:var(--amber); font-family:var(--font-mono); }
+#vatc .tst-h .tst-title{ font-size:var(--fs-base); color:var(--text); line-height:1.3; }
+#vatc .tst-btns{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+#vatc .tst-go{ min-height:44px; min-width:96px; padding:6px 12px; border-radius:10px; border:1px solid var(--green2); background:rgba(57,240,160,.06); color:var(--green); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; font-family:var(--font-head); font-size:var(--fs-sm); letter-spacing:var(--ls-caps); text-transform:uppercase; }
+#vatc .tst-go:hover{ border-color:var(--green); }
+#vatc .tst-go.sec{ border-color:var(--line); background:transparent; color:var(--text); }
+#vatc .tst-go small{ font-family:var(--font-mono); font-size:var(--fs-xs); letter-spacing:0; text-transform:none; color:var(--muted); }
+#vatc .tst-go small b{ color:var(--green); font-weight:var(--fw-bold); }
+#vatc .tst-none{ font-size:var(--fs-xs); color:var(--muted); align-self:center; }
+@media (max-width:600px){ #vatc .tst-row{ grid-template-columns:1fr; } #vatc .tst-btns{ justify-content:stretch; } #vatc .tst-go{ flex:1 1 0; } }
+#vatc .tst-top{ display:flex; gap:10px; align-items:center; margin:0 0 10px; }
+#vatc .tst-top b{ font-family:var(--font-mono); color:var(--amber); font-size:var(--fs-base); }
+#vatc .tst-tag{ font-size:var(--fs-xs); letter-spacing:var(--ls-caps); padding:2px 7px; border-radius:6px; border:1px solid var(--line); color:var(--muted); text-transform:uppercase; }
+#vatc .tst-tag.lqs{ color:var(--amber); border-color:rgba(255,178,77,.5); }
+#vatc .tst-card{ border:1px solid var(--line); border-radius:12px; background:var(--panel); padding:14px 16px; margin:8px 0 10px; }
+#vatc .tst-meta{ display:flex; justify-content:space-between; margin-bottom:8px; }
+#vatc .tst-card .qstem{ font-size:var(--fs-md); line-height:var(--lh-body); margin:0; }
+#vatc .tst-src{ display:inline-block; margin-top:10px; font-size:var(--fs-xs); color:var(--muted); background:none; border:0; padding:0; text-decoration:underline; text-decoration-color:rgba(140,160,170,.4); cursor:pointer; text-align:left; }
+#vatc .tst-nav{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+#vatc .tst-nav .btn{ min-height:46px; flex:1 1 160px; }
+#vatc .tst-fb{ border-left:3px solid var(--line); padding:10px 14px; margin-top:10px; background:rgba(255,255,255,.02); border-radius:0 10px 10px 0; }
+#vatc .tst-fb.ok{ border-left-color:var(--green); } #vatc .tst-fb.no{ border-left-color:var(--red); }
+#vatc .tst-fb .tst-v{ font-family:var(--font-head); letter-spacing:var(--ls-caps); text-transform:uppercase; font-size:var(--fs-sm); margin-bottom:6px; }
+#vatc .tst-fb.ok .tst-v{ color:var(--green); } #vatc .tst-fb.no .tst-v{ color:var(--red); }
+#vatc .tst-a{ font-size:var(--fs-base); line-height:var(--lh-body); }
+#vatc .tst-score{ text-align:center; padding:18px 10px; border:1px solid var(--line); border-radius:14px; background:var(--panel); margin:6px 0 14px; }
+#vatc .tst-score .score{ font-size:var(--fs-score); }
+#vatc .tst-score .muted{ font-size:var(--fs-sm); letter-spacing:var(--ls-caps); text-transform:uppercase; }
+#vatc .tst-mh{ font-family:var(--font-head); font-size:var(--fs-sm); letter-spacing:var(--ls-caps); color:var(--amber); margin:10px 2px 6px; }
+#vatc .tst-miss{ border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:8px; background:var(--panel); }
+#vatc .tst-mq{ font-size:var(--fs-base); margin-bottom:6px; line-height:var(--lh-body); } #vatc .tst-ma{ font-size:var(--fs-base); color:var(--green); line-height:var(--lh-body); } #vatc .tst-yu{ font-size:var(--fs-sm); color:#ff8a8a; margin-top:4px; }
+#vatc .red{ color:var(--red); }
 #vatc .qr-list{ display:flex; flex-direction:column; gap:4px; margin-top:8px; }
 #vatc .qr-sec{ border:1px solid var(--line); border-radius:10px; background:var(--panel); }
 #vatc .qr-sec[hidden],#vatc .qr-t tr[hidden]{ display:none; }
@@ -534,6 +558,26 @@
 #vatc .qr-k{ width:34%; color:var(--text); } #vatc .qr-v{ color:#39f0a0; } #vatc .qr-s{ width:1%; white-space:nowrap; text-align:right; }
 #vatc .qr-src.nolink{ text-decoration:none; cursor:default; } #vatc .qr-src{ font-size:10px; color:var(--muted); background:none; border:0; padding:0; text-decoration:underline; text-decoration-color:rgba(140,160,170,.4); cursor:pointer; }
 @media (max-width:600px){ #vatc .qr-t tr{ display:grid; grid-template-columns:1fr; border-top:1px solid var(--line); padding:4px 0; } #vatc .qr-k,#vatc .qr-s{ width:auto; text-align:left; } #vatc .qr-t td{ border-top:0; padding:2px 10px; } }
+#vatc .navback{ flex:none; width:40px; height:40px; margin-right:10px; border-radius:10px; border:1px solid var(--line); background:transparent; color:var(--green); font-size:18px; line-height:1; cursor:pointer; }
+#vatc .navback[disabled]{ opacity:.25; cursor:default; }
+#vatc .pk-dd{ border:1px solid var(--line); border-radius:12px; background:var(--panel); margin:0 0 8px; }
+#vatc .pk-dd[hidden]{ display:none; }
+#vatc .pk-dd>summary{ list-style:none; display:flex; align-items:center; gap:10px; min-height:48px; padding:10px 14px; cursor:pointer; font-family:var(--font-head); font-size:var(--fs-md); letter-spacing:var(--ls-caps); text-transform:uppercase; color:var(--amber); }
+#vatc .pk-dd>summary::-webkit-details-marker{ display:none; }
+#vatc .pk-dd>summary::after{ content:'▸'; margin-left:6px; color:var(--green); transition:transform .15s; }
+#vatc .pk-dd[open]>summary::after{ transform:rotate(90deg); }
+#vatc .pk-dd>summary .pk-n{ margin-left:auto; }
+#vatc .pk-dd>.pk-list,#vatc .pk-dd>.pk-dd{ margin:0 10px 10px; }
+#vatc .pk-dd.sub{ background:var(--bg); border-radius:10px; }
+#vatc .pk-dd.sub>summary{ min-height:44px; font-size:var(--fs-sm); color:var(--text); }
+/* v0.8.30 typography unification: form controls inherit the body font; new components use the tokens */
+#vatc button,#vatc input,#vatc select,#vatc textarea{ font-family:inherit; }
+#vatc .pk-set b,#vatc .tst-h b,#vatc .tst-code{ font-family:var(--font-body); font-weight:var(--fw-bold); font-size:var(--fs-base); letter-spacing:var(--ls-tight); }
+#vatc .pk-sub,#vatc .tst-h span,#vatc .tst-meta,#vatc .tst-none{ font-family:var(--font-body); font-size:var(--fs-sm); color:var(--muted); }
+#vatc .pk-n,#vatc .qr-src,#vatc .tst-src,#vatc .qr-v,#vatc .tst-tag{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+#vatc .pk-q,#vatc #qrq,#vatc .fillbox{ font-family:var(--font-body); font-size:var(--fs-md); }
+#vatc .qr-sec>summary{ font-family:var(--font-head); font-size:var(--fs-md); letter-spacing:var(--ls-caps); text-transform:uppercase; color:var(--amber); }
+#vatc .qr-t{ font-size:var(--fs-base); }
 #vatc .pk-set[hidden],#vatc .pk-grp[hidden]{ display:none; }
 #vatc .pk-t{ display:flex; justify-content:space-between; gap:8px; font-size:13px; }
 #vatc .pk-n{ color:var(--muted); font-size:11px; }
@@ -4186,7 +4230,7 @@ function vectorAnswerHTML(query, hits){
         const citeR=(t.refs||[]).filter(r=>!(r&&r[2]==='hdr'));
         const refDone=citeR.filter(r=>S.rfcChk[t.n+':'+r[0]]).length;
         const refTot=citeR.length;
-        return `<div class="rfc-topic rfc-topic-slim"><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button><div data-action="acad" data-n="${t.n}" class="rfc-topic-body"><span class="rfc-n">${t.n}</span>${codes}<span class="rfc-tt">${t.t}</span><span class="muted rfc-prog" data-topic="${t.n}">${refDone}/${refTot}</span></div><div class="rfc-choose"><button type="button" class="rfc-cb" data-action="acad" data-n="${t.n}">ACAD</button><button type="button" class="rfc-cb tst" data-action="rfctest" data-n="${t.n}">TEST<span>${(()=>{const L=tstLqs(t).length,P=tstCards(S.pos,t).length; return L?L+' LQS':(P?P+' practice':'none');})()}</span></button></div></div>`;
+        return `<div class="rfc-topic rfc-topic-slim"><button type="button" class="rfc-check ${ton?'on':''}" data-action="acadcheck" data-k="${tk}" title="Mark topic done">${ton?'✓':''}</button><div data-action="acad" data-n="${t.n}" class="rfc-topic-body"><span class="rfc-n">${t.n}</span>${codes}<span class="rfc-tt">${t.t}</span><span class="muted rfc-prog" data-topic="${t.n}">${refDone}/${refTot}</span></div></div>`;
       }).join('');
       const posLab=(PN[S.pos]||'POSITION').toUpperCase();
       const head=pack.demo
@@ -4329,11 +4373,61 @@ function vectorAnswerHTML(query, hits){
   const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'acad',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcDeck:'pos',fcGrp:'',fcOpen:{},fcOrder:null,fcMode:'cards',fcOnlyNot:false,fcStats:loadFcStats(),fcSess:null,fcLastId:null,fcSetsOpen:false,sqShow:'cs',sqType:'',sqTbl:'',
     lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'' };
+  /* ===== v0.8.30 NAV: in-app + browser/phone back via history.pushState/popstate.
+     Each history entry = snapshot of navigational S keys + UI (scroll, open <details>, search inputs). ===== */
+  const NAV_KEYS=['screen','tab','learnMode','trainMode','pos','rfcTopic','pub','pubPage','pubQ','pubGuessNote','pubCiteLab','pubCiteQuote','pubPreferPage','pubCiteSec','pubSecBan','learnReturn','learnBlockedNote',
+    'fcPick','fcDeck','fcIdx','fcFlip','fcOrder','fcMode','fcGrp','fcOpen','tst','tstNote','refQ','askDoneQ','aaFocus','posOpen','hitsScroll','sqShow','sqType','sqTbl'];
+  const NAV={n:0, restoring:false, ready:false};
+  function navKey(){ const t=S.tst; return [S.screen,S.tab,S.learnMode,S.pos,S.rfcTopic,S.pub||'',S.fcPick?1:0,S.fcPick?'':S.fcDeck,t?(t.pos+t.n+t.kind+(t.phase==='done'?'d':'')):''].join('|'); }
+  function navSnapS(){ const o={}; NAV_KEYS.forEach(k=>{ o[k]=(S[k]===undefined)?null:S[k]; }); try{ return JSON.parse(JSON.stringify(o)); }catch(e){ return {}; } }
+  function navSnapUI(){
+    const sm=document.querySelector('#vatc .scrollmain');
+    const det=[...document.querySelectorAll('#vatc details')].map((d,i)=>d.open?i:-1).filter(i=>i>=0);
+    const inp={}; ['pkq','qrq','reflk','askq','pdffind'].forEach(id=>{ const e=document.getElementById(id); if(e&&e.value) inp[id]=e.value; });
+    return {y:(sm&&sm.scrollTop)||0, det, inp};
+  }
+  function navApplyUI(ui){
+    if(!ui) return;
+    const ds=[...document.querySelectorAll('#vatc details')]; (ui.det||[]).forEach(i=>{ if(ds[i]) ds[i].open=true; });
+    Object.keys(ui.inp||{}).forEach(id=>{ const e=document.getElementById(id); if(!e) return; e.value=ui.inp[id];
+      if(id==='pkq'&&globalThis.vatcPkFilter) globalThis.vatcPkFilter(e.value);
+      else if(id==='qrq'&&globalThis.vatcQrFilter) globalThis.vatcQrFilter(e.value); });
+    const go=()=>{ const sm=document.querySelector('#vatc .scrollmain'); if(sm) sm.scrollTop=ui.y||0; };
+    go(); requestAnimationFrame(go); setTimeout(go,120); setTimeout(go,400);
+  }
+  function navEntry(){ return (history.state&&history.state.vatc)?history.state:null; }
+  function navMini(s){ return {tab:s.tab, learnMode:s.learnMode, pub:s.pub||null, fcPick:!!s.fcPick, tst:!!s.tst, lr:!!s.learnReturn}; }
+  /* in-app Back buttons: pop history when the previous entry is where the button goes; else plain set() */
+  function navBackIf(pred){ const e=navEntry(); if(e && e.n>0 && e.p && pred(e.p)){ history.back(); return true; } return false; }
+  function navInit(){
+    try{ history.replaceState({vatc:1, n:0, s:navSnapS(), ui:null, p:null}, ''); }catch(e){}
+    window.addEventListener('popstate', ev=>{
+      const st=ev.state; if(!st||!st.vatc) return;
+      NAV.restoring=true; NAV.n=st.n;
+      try{ resetCitePdfFind(); }catch(e){}
+      Object.assign(S, JSON.parse(JSON.stringify(st.s||{})));
+      if(S.tab==='ask'||S.tab==='reference'){ const inp=document.getElementById('reflk'); if(inp) inp.value=S.refQ||''; }
+      render();
+      try{ if(S.learnMode==='cards'&&S.tab==='learn'&&!S.fcPick) fcAfterPaint(); }catch(e){}
+      if((S.tab==='reference'||S.tab==='ask') && !S.pub && (S.refQ||S.askDoneQ) && document.getElementById('refhits')){ try{ drawLookup(S.tab==='ask'?(S.askDoneQ||S.refQ):S.refQ); }catch(e){} }
+      navApplyUI(st.ui);
+      NAV.restoring=false;
+    });
+    const pre=()=>{ NAV.preUI=navSnapUI(); NAV.preT=Date.now(); };
+    document.addEventListener('pointerdown', pre, true); document.addEventListener('keydown', e=>{ if(e.key==='Enter') pre(); }, true);
+    NAV.ready=true;
+  }
+  globalThis.__vatcNav=()=>({n:NAV.n, key:navKey()});
   function set(o, opts){
     const keep=opts&&opts.keepScroll;
     let y=0;
     if(keep){ const sm=document.querySelector('#vatc .scrollmain'); y=sm?sm.scrollTop:0; }
+    const navK0=(NAV.ready&&!NAV.restoring)?navKey():null, navS0=navK0!=null?navSnapS():null, navU0=navK0!=null?((NAV.preUI&&Date.now()-NAV.preT<1500)?NAV.preUI:navSnapUI()):null; NAV.preUI=null;
     Object.assign(S,o); render();
+    if(navK0!=null && navKey()!==navK0){
+      try{ const cur=navEntry()||{vatc:1,n:NAV.n,p:null}; history.replaceState(Object.assign({}, cur, {s:navS0, ui:navU0}), '');
+        NAV.n=(cur.n||0)+1; history.pushState({vatc:1, n:NAV.n, s:navSnapS(), ui:null, p:navMini(navS0)}, ''); const nb=document.querySelector('#vatc .navback'); if(nb) nb.disabled=false; }catch(e){}
+    } else if(NAV.ready && !NAV.restoring){ try{ const cur=navEntry(); if(cur) history.replaceState(Object.assign({}, cur, {s:navSnapS()}), ''); }catch(e){} }
     if(keep){
       const sm=document.querySelector('#vatc .scrollmain');
       if(sm) sm.scrollTop=y;
@@ -4398,10 +4492,10 @@ function vectorAnswerHTML(query, hits){
     <text x="124" y="14" fill="#9fc7b6" font-family="monospace" font-size="8">final 211°</text></svg></div>`; }
 
   // ===== chrome =====
-  function topbar(){ return `<div class="top"><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
+  function topbar(){ return `<div class="top"><button type="button" class="navback" data-action="navback" aria-label="Back" title="Back"${(NAV.ready&&NAV.n>0)?'':' disabled'}>←</button><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.29 · learn-test</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.30 · back-nav</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}</div>`; }
@@ -4951,12 +5045,12 @@ function vectorAnswerHTML(query, hits){
     const list=syllabusFor(S.pos).list||[];
     if(!list.length) return `<div class="explain">No ACAD packet for this position yet.</div>`;
     const sc=tstLoad();
-    const meta=k=>{ const o=sc[k]; return o?` · best ${o.best}% · ${o.date}`:''; };
+    const meta=k=>{ const o=sc[k]; return o?`best <b>${o.best}%</b> · ${o.date.slice(5)}`:'not taken'; };
     const rows=list.map(T=>{ const L=tstLqs(T).length, P=tstCards(S.pos,T).length;
-      const lq=L?`<button type="button" class="tst-go" data-action="tstpick" data-n="${T.n}" data-k="lqs"><b>LQS test</b><span>${L} items${meta(S.pos+':'+T.n+':lqs')}</span></button>`:`<span class="tst-none">No test items in the LQS packet</span>`;
-      const pr=P?`<button type="button" class="tst-go sec" data-action="tstpick" data-n="${T.n}" data-k="prac"><b>Practice</b><span>${Math.min(20,P)} of ${P}${meta(S.pos+':'+T.n+':prac')}</span></button>`:'';
-      return `<div class="tst-row"><div class="tst-h"><b>${escTxt(T.id)}</b> <span>${escTxt(T.t||'')}</span></div><div class="tst-btns">${lq}${pr}</div></div>`; }).join('');
-    return `<div class="tst-list">${rows}</div>`;
+      const lq=L?`<button type="button" class="tst-go" data-action="tstpick" data-n="${T.n}" data-k="lqs">LQS · ${L}<small>${meta(S.pos+':'+T.n+':lqs')}</small></button>`:`<span class="tst-none">No LQS test items</span>`;
+      const pr=P?`<button type="button" class="tst-go sec" data-action="tstpick" data-n="${T.n}" data-k="prac">Practice · ${Math.min(20,P)}<small>${meta(S.pos+':'+T.n+':prac')}</small></button>`:'';
+      return `<div class="tst-row"><div class="tst-h"><b class="tst-code">${escTxt(T.id)}</b><span class="tst-title">${escTxt(T.t||'')}</span></div><div class="tst-btns">${lq}${pr}</div></div>`; }).join('');
+    return `<div class="tst-intro">LQS = his packet's test questions in paper order · Practice = 20 source-cited cards from that ACAD.</div><div class="tst-list">${rows}</div>`;
   }
   function tstBody(){
     const t=S.tst; if(!t || t.pos!==S.pos || !tstTopic(t.pos,t.n)) return tstHomeHTML();
@@ -4978,14 +5072,14 @@ function vectorAnswerHTML(query, hits){
     else ansHTML=`<textarea class="fillbox" id="tstans" placeholder="Your answer" ${fb?'disabled':''}>${fb&&fb.u?escTxt(fb.u):''}</textarea>`+(fb?'':`<div class="tst-nav"><button type="button" class="btn" data-action="tstcheck">CHECK</button></div>`);
     let after='';
     if(fb){
-      const verdict=fb.self?'':(fb.ok?`<div class="grn">✓ Correct${fb.typo?' — small typo accepted':''}</div>`:`<div class="red">✗ Not quite</div>`);
+      const verdict=fb.self?`<div class="tst-v">Compare with the answer</div>`:(fb.ok?`<div class="tst-v">✓ Correct${fb.typo?' — small typo accepted':''}</div>`:`<div class="tst-v">✗ Not quite</div>`);
       const self=fb.self&&fb.ok==null?`<div class="tst-nav"><button type="button" class="btn" data-action="tstself" data-v="1">✓ I HAD IT</button><button type="button" class="btn sec" data-action="tstself" data-v="0">✗ MISSED</button></div>`:'';
       const next=fb.ok==null?'':`<div class="tst-nav"><button type="button" class="btn" data-action="tstnext">${t.i<t.order.length-1?'NEXT':'SCORE'} ${I.arrow}</button></div>`;
-      after=`<div class="explain reveal">${verdict}<div class="tst-a">${it.a}</div>${tstSrcBtn(it)}</div>${self}${next}`;
+      after=`<div class="tst-fb ${fb.self&&fb.ok==null?'':(fb.ok?'ok':'no')}">${verdict}<div class="tst-a">${it.a}</div>${tstSrcBtn(it)}</div>${self}${next}`;
     }
-    return head+`<div class="progressbar"><i style="width:${pct}%"></i></div><div class="tst-meta">${t.i+1} / ${t.order.length}${t.retake?' · missed only':''}</div>`+
+    return head+`<div class="progressbar"><i style="width:${pct}%"></i></div>`+
       (S.tstNote?`<div class="fc-note">${escTxt(S.tstNote)}</div>`:'')+
-      `<div class="qstem">${it.q}</div>${ansHTML}${after}`;
+      `<div class="tst-card"><div class="tst-meta"><span>Question ${t.i+1} / ${t.order.length}${t.retake?' · missed only':''}</span><span>${mc?'Multiple choice':'Written'}</span></div><div class="qstem">${it.q}</div></div>${ansHTML}${after}`;
   }
   function tstAnswer(u, viaMc){
     const t=S.tst, bank=tstBank(t.pos,t.n,t.kind), it=bank[t.order[t.i]];
@@ -5000,13 +5094,29 @@ function vectorAnswerHTML(query, hits){
     const sets=pkSets();
     const row=s=>{ const ids=s.cards.map(c=>c.id); const c=FCQ.counts(ids,S.fcStats); const pct=ids.length?Math.round(c.KNOWN/ids.length*100):0;
       return `<button type="button" class="pk-set" data-action="fcdeck" data-d="${escTxt(s.k)}" data-s="${escTxt((s.name+' '+s.kw+' '+s.sub).toLowerCase())}"><span class="pk-t"><b>${escTxt(s.name)}</b><span class="pk-n">${ids.length}</span></span><span class="pk-sub">${escTxt(s.sub)}</span><span class="pk-bar"><i style="width:${pct}%"></i></span></button>`; };
-    const grp=PK_GRP.map(([g,lab])=>{ const ss=sets.filter(s=>s.grp===g); return ss.length?`<div class="pk-grp" data-g="${g}"><div class="pk-h">${lab}</div><div class="pk-list">${ss.map(row).join('')}</div></div>`:''; }).join('');
+    const PKO=pkOpenLoad();
+    const posOf=s=>s.pos||((/^pk:(cd|gnd|lcl|rfd|fin|arr)[:]/.exec(s.k)||[])[1])||'';
+    const dd=(id,lab,inner,n,cls)=>`<details class="pk-dd${cls?' '+cls:''}" data-dd="${id}"${PKO[id]?' open':''} ontoggle="globalThis.vatcPkToggle&&globalThis.vatcPkToggle(this)"><summary><span>${escTxt(lab)}</span><span class="pk-n">${n}</span></summary>${inner}</details>`;
+    const list=ss=>`<div class="pk-list">${ss.map(row).join('')}</div>`;
+    const quick=sets.filter(s=>s.grp==='quick');
+    const posBlocks=POS.map(p=>{ const ss=sets.filter(s=>s.grp==='onpos'&&posOf(s)===p.k); return ss.length?dd('pos:'+p.k,PN[p.k],list(ss),ss.length,'sub'):''; }).join('');
+    const other=sets.filter(s=>s.grp==='onpos'&&!posOf(s));
+    const posAll=posBlocks+(other.length?dd('pos:other','Phraseology & procedures (all radar / tower)',list(other),other.length,'sub'):'');
+    const acadBlocks=POS.map(p=>{ const ss=sets.filter(s=>s.grp==='acad'&&posOf(s)===p.k); return ss.length?dd('acad:'+p.k,PN[p.k],list(ss),ss.length,'sub'):''; }).join('');
+    const grp=dd('quick','Quick lookup',list(quick),quick.length)+dd('bypos','By position',posAll,sets.filter(s=>s.grp==='onpos').length)+dd('acad','ACADs',acadBlocks,sets.filter(s=>s.grp==='acad').length);
     return `<div id="fcwrap" class="fc-picker"><input id="pkq" class="pk-q" placeholder="Find a set — buttons, idents, completion…" autocomplete="off" spellcheck="false" oninput="vatcPkFilter(this.value)">${grp}<div class="pk-none muted" hidden>No set matches.</div></div>`;
   }
+  const PKO_KEY='vatc.pkOpen.v1';
+  function pkOpenLoad(){ try{ const o=JSON.parse(localStorage.getItem(PKO_KEY)||'null'); return o||{quick:true}; }catch(e){ return {quick:true}; } }
+  let PK_FILTERING=false;
+  globalThis.vatcPkToggle=function(d){ if(PK_FILTERING) return; const q=document.getElementById('pkq'); if(q&&q.value.trim()) return; const o=pkOpenLoad(); o[d.dataset.dd]=d.open; try{ localStorage.setItem(PKO_KEY, JSON.stringify(o)); }catch(e){} };
   globalThis.vatcPkFilter=function(q){
     const n=String(q||'').toLowerCase().trim().split(/\s+/).filter(Boolean);
-    let any=0;
-    document.querySelectorAll('#vatc .pk-grp').forEach(g=>{ let vis=0; g.querySelectorAll('.pk-set').forEach(b=>{ const ok=!n.length||n.every(t=>b.dataset.s.indexOf(t)>=0); b.hidden=!ok; if(ok) vis++; }); g.hidden=!vis; any+=vis; });
+    let any=0; PK_FILTERING=true;
+    document.querySelectorAll('#vatc .pk-set').forEach(b=>{ const ok=!n.length||n.every(t=>b.dataset.s.indexOf(t)>=0); b.hidden=!ok; if(ok) any++; });
+    const PKO=pkOpenLoad();
+    [...document.querySelectorAll('#vatc .pk-dd')].reverse().forEach(d=>{ const vis=d.querySelectorAll('.pk-set:not([hidden])').length; d.hidden=!vis; d.open=n.length?vis>0:!!PKO[d.dataset.dd]; const c=d.querySelector(':scope>summary .pk-n'); if(c) c.textContent=n.length?vis:d.querySelectorAll('.pk-set').length; });
+    setTimeout(()=>{ PK_FILTERING=false; },0);
     const no=document.querySelector('#vatc .pk-none'); if(no) no.hidden=!!any;
   };
   function fcBody(){
@@ -5797,6 +5907,7 @@ function pdfPaneHTML(){
     if(a==='askchip'||a==='skillchip'){const inp=document.getElementById('reflk')||document.getElementById('askq');if(inp){inp.value=el.dataset.q;doAsk();}return;}
     if(a==='findclear'){ S.refQ=''; S.askDoneQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.pubPreferPage=0; S.pubCiteSec=''; S.learnReturn=null; resetCitePdfFind(); pdfDoc=null; pdfSrc=''; pdfTextIndex=null; return set({refQ:'',askDoneQ:'',pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null}); }
     if(a==='findback'){
+      if(S.pub && navBackIf(p=>!p.pub && (p.tab===S.tab || (S.learnReturn&&p.tab==='learn')))) return;
       if(S.learnReturn && S.pub){ return leavePdfToLearn(); }
       if(S.pub){ resetCitePdfFind(); const y=S.hitsScroll; S.hitsScroll=null; set({pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:''}); restoreHitsScroll(y); return; }
       S.refQ=''; S.askDoneQ=''; S.pub=null; S.pubPage=1; S.pubQ=''; S.pubGuessNote=''; S.pubCiteLab=''; S.pubCiteQuote=''; S.pubPreferPage=0; S.pubCiteSec=''; S.learnReturn=null; resetCitePdfFind(); pdfDoc=null; pdfSrc=''; pdfTextIndex=null;
@@ -5842,15 +5953,16 @@ function pdfPaneHTML(){
     if(a==='fcshuffle'){const {deck,key}=fcOrderedDeck(); return fcKeep({fcOrder:fcShuffleOrder(deck.length,key),fcIdx:0,fcFlip:false});}
     if(a==='fccite'){const cite=el.dataset.cite||''; if(!cite)return; openLearnCite(cite,{title:el.dataset.title||'', from:'fc'}); return;}
     if(a==='src')return set({source:+el.dataset.i});
+    if(a==='navback'){ if(navEntry()&&navEntry().n>0) history.back(); return; }
     if(a==='tstpick'){ return set({tst:tstStart(S.pos,+el.dataset.n,el.dataset.k||'lqs'), tstNote:''}); }
-    if(a==='tstall'){ return set({tst:null, tstNote:''}); }
+    if(a==='tstall'){ if(navBackIf(p=>p.learnMode==='test'&&!p.tst)) return; return set({tst:null, tstNote:''}); }
     if(a==='tstmc'){ if(S.tst&&!S.tst.fb) tstAnswer(el.dataset.c||'', true); return; }
     if(a==='tstcheck'){ if(S.tst&&!S.tst.fb){ const v=(document.getElementById('tstans')||{}).value||''; tstAnswer(v.trim(), false); } return; }
     if(a==='tstself'){ const t=S.tst; if(!t||!t.fb) return; t.fb.ok=el.dataset.v==='1'; t.res.push({k:t.order[t.i], ok:t.fb.ok, u:t.fb.u}); return set({tst:t}); }
     if(a==='tstnext'){ const t=S.tst; if(!t) return; t.fb=null; if(t.i<t.order.length-1){ t.i++; } else { t.phase='done'; const ok=t.res.filter(r=>r.ok).length; if(!t.retake) tstSave(tstKey(t), Math.round(ok/Math.max(1,t.res.length)*100)); } return set({tst:t, tstNote:''}); }
     if(a==='tstmissed'){ const t=S.tst; if(!t) return; const miss=t.res.filter(r=>!r.ok).map(r=>r.k); return set({tst:tstStart(t.pos,t.n,t.kind,miss)}); }
     if(a==='tstcite'){ const cite=el.dataset.cite||''; if(!cite) return; openLearnCite(cite,{title:el.dataset.title||'', from:'test'}); return; }
-    if(a==='fcall'){ return set({fcPick:true, fcSess:null}); }
+    if(a==='fcall'){ if(navBackIf(p=>p.fcPick&&p.learnMode==='cards'&&p.tab==='learn')) return; return set({fcPick:true, fcSess:null}); }
     if(a==='fcdeck'){const d0=el.dataset.d||'pos'; const pkp=/^pk:pos:(\w+)$/.exec(d0); if(pkp){ return set({tab:'learn',learnMode:'cards',trainMode:'cards',pos:pkp[1],fcDeck:'pos',fcPick:false,fcIdx:0,fcFlip:false,fcOrder:null,fcSess:null}); } const d=d0; const g=fcDeckGroup(d); const o=Object.assign({}, S.fcOpen||{}); if(g) o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcPick:false,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null,fcSess:null,fcSetsOpen:false});}
     if(a==='jumptbl'){ jumpTblRef(el.dataset.tbl||el.textContent||''); return; }
     if(a==='fcgrp'){ const g=el.dataset.g||'tower'; setTimeout(()=>{ const o=Object.assign({tower:false,radar:false,local:false},S.fcOpen||{}); document.querySelectorAll('#vatc details.fc-crt summary[data-g]').forEach(s=>{ const dd=s.closest('details'); if(dd) o[s.dataset.g]=dd.open; }); S.fcOpen=o; S.fcGrp=g; },0); return; }
@@ -5908,6 +6020,7 @@ function pdfPaneHTML(){
   });
 
   render();
+  navInit(); render();
 })();
 </script>
 </body>
