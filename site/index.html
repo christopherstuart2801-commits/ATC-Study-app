@@ -2284,13 +2284,91 @@
      new cards are ucr-* ids. Each set opens with a guide (what it covers, where it comes from, how to study). RFD first; other positions
      follow one per night (FACMAN-only until Christopher sends that position's LQS paper).
      v0.8.24 fin-usecase: Radar Final sets added (ucf-* ids; FACMAN July 2026 + JO 7110.65BB paras on the RFC LQS paper / Topic 6 ACAD-0533).
-     v0.8.25 arr-usecase: Arrival sets added (uca-* ids; Arrival/Departure LQS Mar 2026 → FACMAN July 2026 + JO 7110.65BB / Chg 2). */
+     v0.8.25 arr-usecase: Arrival sets added (uca-* ids; Arrival/Departure LQS Mar 2026 → FACMAN July 2026 + JO 7110.65BB / Chg 2).
+     v0.8.32 cd-usecase: Clearance / Flight Data LIVE + NEW sets (ucc-* ids; FACMAN July 2026 ch 5-1/5-3/5-4/8-3 + JO 7110.65BB 4-2/4-3). No LQS paper yet, so no ACAD set. */
   const UC_KEYS=['uc-live','uc-test','uc-new'];
   const UC_LAB={'uc-live':'LIVE ON POSITION','uc-test':'ACADS','uc-new':'NEW TO STATION'};
   const UC_F=(pg,pa,hl)=>({doc:'NFG FACMAN July 2026',pg:pg,pa:pa,hl:hl});
   const UC_J=(pg,pa,hl)=>({doc:'JO 7110.65BB',pg:pg,pa:pa,hl:hl});
   const UC_C=(pg,pa,hl)=>({doc:'JO 7110.65BB Chg 2',pg:pg,pa:pa,hl:hl});
   const FC_UC_NEW={
+    cd:[
+      /* FACMAN 5-3 Clearance Delivery */
+      fcCard('ucc-531-role','Clearance Delivery — responsible for','Obtaining, posting, and relaying ATC clearances and advisories.','Clearance','cd',UC_F('5-3-1','DUTIES & RESPONSIBILITIES','The clearance delivery controller is responsible for obtaining, posting, and relaying ATC clearances and advisories.')),
+      fcCard('ucc-531-combined','Clearance Delivery is normally combined at','The Flight Data position.','Clearance','cd',UC_F('5-3-1','DUTIES & RESPONSIBILITIES','Normally this position is combined at the Flight Data position.')),
+      fcCard('ucc-531-primary','Clearance Delivery and Tower Flight Data primary duties are listed in','NAVAIR 00-80T-114 (FACMAN 5-3-1 and 5-4-1 list only the additional duties).','Clearance','cd',UC_F('5-3-1','DUTIES & RESPONSIBILITIES','Primary duties are listed in NAVAIR 00-80T-114.')),
+      fcCard('ucc-531-addl','Clearance Delivery additional duties (5-3-1 a–e)','a. General surveillance of the airport. b. Issue clearance items as appropriate. c. Relay SCT clearances to the pilot verbatim. d. Assign a VFR-on-Top altitude (TBL 5-9). e. Issue IFR departures an ODP and initial altitude per the SCT LOA routes (TBL 5-8).','Clearance','cd',UC_F('5-3-1','DUTIES & RESPONSIBILITIES','a. Exercising general surveillance of the airport. b. Issue clearance items as appropriate.')),
+      fcCard('ucc-531-loa','Exceptions for obtaining or issuing an SCT clearance are covered by','The LOA (SoCal TRACON – MCAS Camp Pendleton Interfacility Coordination Procedures). Otherwise relay the SCT clearance verbatim.','Clearance','cd',UC_F('5-3-1','DUTIES & RESPONSIBILITIES','ATC clearances received from SCT shall be relayed to the pilot verbatim. Exceptions for obtaining / issuing a clearance are covered by LOA.')),
+      fcCard('ucc-531-odp','Aircraft departing on an IFR flight plan shall be issued','An Obstacle Departure Procedure and an initial altitude, IAW the routes in the SCT LOA (TBL 5-8).','Clearance','cd',UC_F('5-3-1','DUTIES & RESPONSIBILITIES','Aircraft departing on an IFR flight plan shall be issued an Obstacle Departure Procedures and initial altitude in accordance with the routes in the SCT LOA. See Table 5-8.')),
+      fcCard('ucc-531-example','FACMAN example IFR clearance (to North Island on the QUNTN ODP)','“CLEARED TO NAVY NORTH ISLAND AIRPORT VIA THE QUNTN ONE OBSTACLE DEPARTURE PROCEDURE, QUNTN, SKATE, THEN DIRECT. ON DEPARTURE, CLIMB AND MAINTAIN 3000, DEPARTURE FREQUENCY IS (127.3 OR 323.0), SQUAWK 4534.”','Phraseology','cd',UC_F('5-3-1','DUTIES & RESPONSIBILITIES','CLEARED TO NAVY NORTH ISLAND AIRPORT VIA THE QUNTN ONE OBSTACLE DEPARTURE PROCEDURE, QUNTN, SKATE, THEN DIRECT.')),
+      fcCard('ucc-t58-quntn','TBL 5-8 initial altitude — QUNTN','3000.','Clearance','cd',UC_F('TBL 5-8','Initial Altitudes for Departure Procedures','QUNTN 3000')),
+      fcCard('ucc-t58-bldg','TBL 5-8 initial altitude — BLDG','4000.','Clearance','cd',UC_F('TBL 5-8','Initial Altitudes for Departure Procedures','BLDG 4000')),
+      fcCard('ucc-t58-munn','TBL 5-8 initial altitude — MUNN','4000.','Clearance','cd',UC_F('TBL 5-8','Initial Altitudes for Departure Procedures','MUNN 4000')),
+      fcCard('ucc-t58-corri','TBL 5-8 initial altitude — CORRI','Maintain as coordinated.','Clearance','cd',UC_F('TBL 5-8','Initial Altitudes for Departure Procedures','CORRI Maintain as coordinated')),
+      fcCard('ucc-532-limit','CORRI ODP request to remain in the GCA box — clearance limit','KNFG. The aircraft will expect vectors to Camp Pendleton Airport after CORRI.','Clearance','cd',UC_F('5-3-2','GCA BOX REQUESTS','Aircraft requesting the CORRI ODP to remain in the GCA box pattern shall have a clearance limit of KNFG.')),
+      fcCard('ucc-532-rmk','GCA box request — what goes in the flight plan remarks, and why?','“Requesting GCA Box” — to prevent confusion with Southern California TRACON.','Clearance','cd',UC_F('5-3-2','GCA BOX REQUESTS','In the remarks sections of the flight plan, the words “Requesting GCA Box” shall be added to alleviate any confusion with Southern California TRACON.')),
+      /* FACMAN 5-4 Tower Flight Data */
+      fcCard('ucc-541-assist','Tower Flight Data assists','Both the ground controller and the local controller.','Coordination','cd',UC_F('5-4-1','DUTIES & RESPONSIBILITIES','The flight data controller assists both the ground controller and the local controller.')),
+      fcCard('ucc-541-addl','Tower Flight Data additional duties (5-4-1 a–e)','a. Obtain a release for all departing IFR aircraft. b. Activate the crash phone as directed by the Tower Supervisor. c. Monitor local control frequencies. d. Monitor flight strips for INREQ / ALNOT updates. e. Clearance Delivery when combined.','Coordination','cd',UC_F('5-4-1','DUTIES & RESPONSIBILITIES','a. Obtaining a release for all departing IFR aircraft')),
+      fcCard('ucc-541-inreq','Tower Flight Data monitors flight strips for','Updating of INREQ / ALNOT status.','Coordination','cd',UC_F('5-4-1','DUTIES & RESPONSIBILITIES','Monitoring flight strips for updating of INREQ / ALNOT status.')),
+      fcCard('ucc-542-atis','Who maintains and updates the ATIS broadcast?','The Tower Flight Data controller (5-4-2 a).','Weather','cd',UC_F('5-4-2','WEATHER','a. Maintain and update the ATIS broadcast.')),
+      fcCard('ucc-542-spec','Tower Flight Data requests a special weather observation when','Directed by the Tower Supervisor.','Weather','cd',UC_F('5-4-2','WEATHER','Request a special observation as directed by the tower supervisor.')),
+      fcCard('ucc-543-items','Flight Clearance liaison — what Flight Data relays (5-4-3 a–e)','Departure and arrival times; range status; airfield status (IFR to VFR, taxiway closures, NAVAID outages); Flight Plan Not Received (FPNO) information; other information as directed (VIP information, pilot requests).','Coordination','cd',UC_F('5-4-3','FLIGHT CLEARANCE COORDINATION','a. Relay departure and arrival times to Flight Clearance. b. Relay range status information.')),
+      fcCard('ucc-543-fpno','FPNO','Flight Plan Not Received. Flight Data relays FPNO information to Flight Clearance.','Coordination','cd',UC_F('5-4-3','FLIGHT CLEARANCE COORDINATION','Relay Flight Plan Not Received (FPNO) information.')),
+      fcCard('ucc-543-park','Arrival will use VAL, transient parking, or ramp areas — what does Flight Data coordinate with Flight Clearance, and when?','Aircraft identification and parking, as soon as the tower is notified of the arrival.','Coordination','cd',UC_F('5-4-3','FLIGHT CLEARANCE COORDINATION','Coordinate aircraft identification and parking as soon as the tower is notified of arrival for use of VAL, transient parking and ramp areas.')),
+      fcCard('ucc-544-ratcf','RATCF not operational — who does Tower Flight Data coordinate IFR releases with?','SCT.','Coordination','cd',UC_F('5-4-4','SCT COORDINATION','Releases for IFR aircraft whenever RATCF is not operational.')),
+      fcCard('ucc-544-fdio','FDIO not operational — IFR clearances are coordinated with','SCT, by Tower Flight Data.','Coordination','cd',UC_F('5-4-4','SCT COORDINATION','IFR clearances when the FDIO is not operational.')),
+      fcCard('ucc-545-traffic','Traffic calls to RATCF (5-4-5 c)','Made as directed by the Local Controller, to the appropriate control position (P1 / P2 / A2 / A3).','Coordination','cd',UC_F('5-4-5','RATCF COORDINATION','Traffic calls as directed by the Local Controller (Appropriate control position, i.e., P1 / P2 / A2 / A3)')),
+      fcCard('ucc-546-what','ATIS — what it broadcasts and why','Pertinent airfield non-control information, weather, and NOTAMs, continuously, to reduce frequency congestion and the controller workload of repeating basic airfield information.','Weather','cd',UC_F('5-4-6','AUTOMATIC TERMINAL INFORMATION SERVICE (ATIS)','The ATIS is used to continuously broadcast pertinent airfield non-control information, weather and NOTAMS to pilots.')),
+      fcCard('ucc-546-only','What information goes on the ATIS?','Only information that directly affects arriving and departing aircraft, as outlined in FAAO JO 7110.65.','Weather','cd',UC_F('5-4-6','AUTOMATIC TERMINAL INFORMATION SERVICE (ATIS)','Only information that directly affects arriving and departing aircraft as outlined in FAAO JO 7110.65 will be transmitted over the ATIS.')),
+      /* FACMAN 8-3-9 ATIS operation */
+      fcCard('ucc-839-emer','The ATIS frequency may also be used for','Emergency communications to aircraft.','Equipment','cd',UC_F('8-3-9','ATIS','The ATIS frequency may be used for emergency communications to aircraft.')),
+      fcCard('ucc-839-steps','Making an ATIS broadcast (8-3-9 a–h)','Click the ATIS code button → select the code (OK picks the next in sequence) → new METAR shows in “New METAR Message” → enter weather manually if nothing from ASOS → add airfield information under the weather text → Test to listen and verify → OK to replace the broadcast (Cancel closes without saving).','Equipment','cd',UC_F('8-3-9','ATIS','Click the ATIS code button to open the ATIS dialog box.')),
+      fcCard('ucc-839-test','Before replacing the ATIS broadcast, verify it by','Clicking “Test” to listen (starts the text-to-voice process).','Equipment','cd',UC_F('8-3-9','ATIS','Click ‘Test’ to listen and verify that the new message is correct.')),
+      fcCard('ucc-839-asos','No information received from the ASOS — ATIS weather','The operator enters the weather information manually.','Equipment','cd',UC_F('8-3-9','ATIS','If no information is received from the ASOS, the operator can enter weather information manually.')),
+      fcCard('ucc-839-cancel','ATIS dialog — “Cancel”','Closes the ATIS window without saving any changes.','Equipment','cd',UC_F('8-3-9','ATIS','Click ‘Cancel’ to deactivate the ATIS window without saving any changes.')),
+      /* JO 7110.65BB clearance phraseology FACMAN 5-3-1 / 5-1-7 point to */
+      fcCard('ucc-422-prefix','Clearance relayed to an aircraft through a non-ATC facility — prefix','“A-T-C clears,” “A-T-C advises,” or “A-T-C requests.” (Longrifle SVFR relays use “ATC Clears…”, FACMAN 5-1-7 g.)','Phraseology','cd',UC_J('4-2-2','CLEARANCE PREFIX','Prefix a clearance, information, or a request for information which will be relayed to an aircraft through a non-ATC facility')),
+      fcCard('ucc-425-ways','Amending the route in a previously issued clearance — the four ways','1. State the portion being amended, then the amendment: CHANGE (portion) TO READ (new portion). 2. State the amendment, then REST OF ROUTE UNCHANGED. 3. CLEARED DIRECT (fix / waypoint / destination AIRPORT) on the previously issued route. 4. Issue the entire route by stating the amendment.','Phraseology','cd',UC_J('4-2-5','ROUTE OR ALTITUDE AMENDMENTS','Amend route of flight in a previously issued clearance by one of the following')),
+      fcCard('ucc-425-restate','Route or altitude amended — what must you restate?','All applicable altitude restrictions.','Clearance','cd',UC_J('4-2-5','ROUTE OR ALTITUDE AMENDMENTS','When route or altitude in a previously issued clearance is amended, restate all applicable altitude restrictions.')),
+      fcCard('ucc-425-maint','Altitude to “maintain” changed or restated and the restrictions omitted','The altitude restrictions are canceled, including SID/STAR restrictions.','Clearance','cd',UC_J('4-2-5','ROUTE OR ALTITUDE AMENDMENTS','previously issued altitude restrictions are omitted, altitude restrictions are canceled, including SID/STAR altitude restrictions if any.')),
+      fcCard('ucc-425-odp','ODP crossing altitudes and speed restrictions — can ATC cancel or amend them?','No.','Clearance','cd',UC_J('4-2-5','ROUTE OR ALTITUDE AMENDMENTS','Crossing altitudes and speed restrictions on Obstacle Departure Procedure/s (ODP/s) cannot be canceled or amended by ATC.')),
+      fcCard('ucc-432-dep','Departure clearance relayed by an FSS, dispatcher, etc. — always include','The airport of departure.','Clearance','cd',UC_J('4-3-2','DEPARTURE CLEARANCES','Always include the airport of departure when issuing a departure clearance for relay to an aircraft by an FSS, dispatcher, etc.')),
+      fcCard('ucc-432-navaid','Clearance limit is a NAVAID (type known)','Follow the NAVAID name with its type: CLEARED TO (NAVAID name and type).','Phraseology','cd',UC_J('4-3-2','DEPARTURE CLEARANCES','When the clearance limit is a NAVAID and the NAVAID type is known, the type of NAVAID must follow the NAVAID name.')),
+      /* New to station: FACMAN 5-1 Tower General + 8-3 Tower Equipment */
+      fcCard('ucc-515-ship','Ship-to-shore flight plans are processed via','FACSFAC, North Island (naval vessels off Southern California have no Flight Service Station).','Airfield','cd',UC_F('5-1-5','SHIP TO SHORE FLIGHT','flight plans shall be processed via FACSFAC, North Island.')),
+      fcCard('ucc-516-file','Shore-to-ship flight plans — filed with, and how movement messages flow','Filed with MCAS Flight Clearance or the tower. Tower passes movement messages to Flight Clearance, then to FACSFAC.','Airfield','cd',UC_F('5-1-6','SHORE TO SHIP FLIGHT','Shore-to-Ship flight plans may be filed with MCAS Flight Clearance or the tower.')),
+      fcCard('ucc-516-restr','Shore-to-ship restrictions','Helicopters only; both arrival and departure facilities open and VFR.','Airfield','cd',UC_F('5-1-6','SHORE TO SHIP FLIGHT','Both arrival and departure facilities shall be open and VFR')),
+      fcCard('ucc-516-min','Shore-to-ship flight plan — minimum information','Aircraft callsign, number and type; ETE; fuel on board (FOB); souls on board (SOB); ship’s tactical callsign.','Airfield','cd',UC_F('5-1-6','SHORE TO SHIP FLIGHT','The minimum information required for this type of flight plan is')),
+      fcCard('ucc-519-tec','TEC routes','Tower Enroute Control routes, contained within approach control airspace; none enter ARTCC airspace (see the FAA Chart Supplement).','Clearance','cd',UC_F('5-1-9','TEC ROUTES','Tower Enroute Control routes (TEC routes) are contained within approach control airspace.')),
+      fcCard('ucc-519-alt','TEC route altitudes — initial and final','Initial altitude depends on the associated SID; expect the final altitude within ten minutes of departure, assigned by aircraft category.','Clearance','cd',UC_F('5-1-9','TEC ROUTES','Initial altitude assignment is dependent on the associated SID with the final altitude to expect within ten minutes of departure.')),
+      fcCard('ucc-519-q','TEC category Q','Non-jet, cruise speed 189 knots or less (ex: helicopters).','Clearance','cd',UC_F('5-1-9','TEC ROUTES','Q = Non-jet, cruise speed 189 knots or less (ex: helicopters).')),
+      fcCard('ucc-519-p','TEC category P','Non-jet, cruise speed 190 knots or greater (ex: small prop).','Clearance','cd',UC_F('5-1-9','TEC ROUTES','P = Non-jet, cruise speed 190 knots or greater (ex: small prop).')),
+      fcCard('ucc-519-m','TEC category M','Turboprop / special, cruise speed 190 knots or greater (ex: military turboprop).','Clearance','cd',UC_F('5-1-9','TEC ROUTES','M = Turboprop / special, cruise speed 190 knots or greater (ex: military turboprop).')),
+      fcCard('ucc-519-j','TEC category J','Jets.','Clearance','cd',UC_F('5-1-9','TEC ROUTES','J = Jets')),
+      fcCard('ucc-5111-what','FDIO — what it is','An inter- and intra-facility computer link for transmitting generated flight strips and associated ATC information.','Equipment','cd',UC_F('5-1-11','FLIGHT DATA INPUT / OUTPUT SYSTEM (FDIO)','This system allows for an inter- and intra-facility computer link for the transmission of generated flight strips and associated ATC information.')),
+      fcCard('ucc-5117-fc','Flight Check aircraft — what they do and their priority','Inspect and evaluate NAVAIDs; given priority over other aircraft in the Class D surface area (IAW JO 7110.65).','Airfield','cd',UC_F('5-1-17','FLIGHT CHECK AIRCRAFT','Flight Check aircraft shall be given priority over other aircraft in the Class D surface area in accordance with FAAO JO 7110.65.')),
+      fcCard('ucc-5119-codes','VIP — aircraft with codes aboard: notify Flight Clearance of the ETA','As soon as possible; if possible at least 10 minutes prior to landing.','Coordination','cd',UC_F('5-1-19','VIP PROCEDURES','Ensure that Flight Clearance is notified as soon as possible of the estimated arrival time of aircraft with codes aboard (if possible, at least 10 minutes prior to landing.)')),
+      fcCard('ucc-5119-handle','VIP aircraft handling','Expeditious handling during all phases of movement (Tower Supervisor assists Operations).','Coordination','cd',UC_F('5-1-19','VIP PROCEDURES','Ensure that the VIP aircraft receive expeditious handling during all phases of movement.')),
+      fcCard('ucc-5120-bravo','Callsign BRAVO','Benbow Helicopters Inc. VFR only.','Callsigns','cd',UC_F('5-1-20','STATE AND LOCAL CALLSIGN DESIGNATIONS','BRAVO. Assigned to Benbow Helicopters Inc. Use of this callsign will be for VFR use only.')),
+      fcCard('ucc-5120-duke','Callsign DUKE','Orange County Sheriff’s Department (OCSD). VFR / SVFR only.','Callsigns','cd',UC_F('5-1-20','STATE AND LOCAL CALLSIGN DESIGNATIONS','DUKE. Assigned to Orange County Sheriff’s Department (OCSD)')),
+      fcCard('ucc-5120-eagle','Callsign EAGLE','Airborne Law Enforcement (ABLE). VFR / SVFR only.','Callsigns','cd',UC_F('5-1-20','STATE AND LOCAL CALLSIGN DESIGNATIONS','EAGLE. Assigned to Airborne Law Enforcement (ABLE).')),
+      fcCard('ucc-5120-hb','Callsign HB','Huntington Beach Police Dept Traffic Aero Bureau. VFR only.','Callsigns','cd',UC_F('5-1-20','STATE AND LOCAL CALLSIGN DESIGNATIONS','HB. Assigned to Huntington Beach Police Dept Traffic Aero Bureau.')),
+      fcCard('ucc-5120-idaho','Callsign IDAHO','Law enforcement agency use on bona fide air interdiction / surveillance missions.','Callsigns','cd',UC_F('5-1-20','STATE AND LOCAL CALLSIGN DESIGNATIONS','IDAHO. Law enforcement agency use on bona fide air interdiction/surveillance missions.')),
+      fcCard('ucc-5120-supply','Callsign SUPPLY','Orange County Regional Narcotics Suspension Program (RNSP). VFR / SVFR only.','Callsigns','cd',UC_F('5-1-20','STATE AND LOCAL CALLSIGN DESIGNATIONS','SUPPLY. Assigned to Orange County Regional Narcotics Suspension Program (RNSP)')),
+      fcCard('ucc-5120-tv7','Callsign TV-7','West Coast Helicopters. VFR / SVFR only.','Callsigns','cd',UC_F('5-1-20','STATE AND LOCAL CALLSIGN DESIGNATIONS','TV-7. Assigned to West Coast Helicopters.')),
+      fcCard('ucc-5120-18aero','Callsign EIGHTEEN AERO','Orange County Sheriff - Coroner Department (OCSCD). VFR / SVFR only.','Callsigns','cd',UC_F('5-1-20','STATE AND LOCAL CALLSIGN DESIGNATIONS','EIGHTEEN AERO. Assigned to Orange County Sheriff - Coroner Department (OCSCD)')),
+      fcCard('ucc-5120-police40','Callsign POLICE 40','Huntington Park Police Department. VFR / SVFR only.','Callsigns','cd',UC_F('5-1-20','STATE AND LOCAL CALLSIGN DESIGNATIONS','POLICE 40. Assigned to Huntington Park Police Department.')),
+      fcCard('ucc-5120-astria','Callsign ASTRIA','San Diego County Sheriff Department.','Callsigns','cd',UC_F('5-1-20','STATE AND LOCAL CALLSIGN DESIGNATIONS','ASTRIA. Assigned to San Diego County Sheriff Department.')),
+      fcCard('ucc-5122-closed','Closed tower operations — how requested','Submitted to the Air Station Operations Officer via Flight Clearance. MAG-39 squadrons coordinate through the MAG-39 Operations Officer.','Coordination','cd',UC_F('5-1-22','CLOSED TOWER OPS','Requests for closed tower operations shall be submitted to the Air Station Operations Officer via Flight Clearance.')),
+      fcCard('ucc-832-where','Crash phone — where it sits in the tower','Between the flight data and local control positions.','Equipment','cd',UC_F('8-3-2','CRASH PHONE','The crash phone is located between the flight data')),
+      fcCard('ucc-833-fire','Fire Department line','On the ETVS (FIRE RNG): direct contact with the base Fire Department.','Equipment','cd',UC_F('8-3-3','FIRE DEPARTMENT LINE','This line is located on the ETVS (FIRE RNG). It gives the tower direct contact with the base Fire Department.')),
+      fcCard('ucc-834-lr','Longrifle line — used for','A direct ETVS intercom between ATC and Range Control to determine the status of ranges, artillery firing areas, mortar positions, and drop zones.','Equipment','cd',UC_F('8-3-4','LONGRIFLE LINE','They are used to determine the status of ranges, artillery firing areas, mortar positions and drop zones.')),
+      fcCard('ucc-835-where','Tower light guns — how many and where','Two: between flight data and local, and between ground control and flight data. Keep them in the charging cradles until needed.','Equipment','cd',UC_F('8-3-5','LIGHT GUNS','There are two light guns in the tower. They are located between flight data and local and between ground control and flight data.')),
+      fcCard('ucc-835-batt','Light gun battery swap — how often','At least quarterly: put the spare battery in use and the original in the spare socket on the charger base.','Equipment','cd',UC_F('8-3-5','LIGHT GUNS','At least quarterly, the spare battery should be put in use and the original battery put in the spare battery socket on the charger base.')),
+      fcCard('ucc-835-range','Light gun daytime range','Up to 3.6 NM (further at night). Color signals per FAAO JO 7110.65.','Equipment','cd',UC_F('8-3-5','LIGHT GUNS','During daytime use the light gun can be seen up to 3.6NM.')),
+      fcCard('ucc-838-tdw','Tower Display Workstation (TDW) location','Between the flight data and local control positions.','Equipment','cd',UC_F('8-3-8','TOWER DISPLAY WORKSTATION','The tower display workstation (TDW) is located between the flight data and local control positions.'))
+    ],
     rfd:[
       /* FACMAN 6-3 Radar Flight Data */
       fcCard('ucr-631-fn','RFD primary function','Coordinate arrival information with the tower and final controllers.','Radar','rfd',UC_F('6-3-1','DUTIES & RESPONSIBILITIES','The primary function of radar flight data is to coordinate arrival information with the tower and final controllers.')),
@@ -2748,6 +2826,19 @@
   /* Set recipes: ['#ACAD-xxxx'] switches the origin label shown on the card front (CHECKOUT set); '*deck' pulls a whole FC_SETS deck;
      '*deck:TBL x' pulls only that deck's cards citing that table. Ids repeat across use cases on purpose (same card, same progress). */
   const FC_UC_PLAN={
+    cd:{
+      'uc-live':['ucc-531-role','ucc-531-combined','ucc-531-primary','ucc-531-addl','ucc-531-loa','uca-421-order','uca-421-apt','ucc-432-navaid','ucc-432-dep',
+        'ucc-531-odp','ucc-t58-quntn','ucc-t58-bldg','ucc-t58-munn','ucc-t58-corri','uca-432-odp','uca-432-vec','ucc-531-example','uca-nfg-vot-who','uca-nfg-vot-alt',
+        'ucc-532-limit','ucc-532-rmk','ucc-422-prefix','ucc-425-ways','ucc-425-restate','ucc-425-maint','ucc-425-odp',
+        'ucc-541-assist','ucc-541-addl','ucc-541-inreq','uca-556-5min','uca-556-3min','uca-434-rel','uca-434-hfr','uca-434-time','uca-439',
+        'ucc-542-atis','ucr-542-hourly','ucr-542-pirep','ucr-542-vis','ucc-542-spec','ucc-543-items','ucc-543-fpno','ucc-543-park','ucr-543-fuel',
+        'ucr-544-sct','ucc-544-fdio','ucc-544-ratcf','ucr-545-rel','ucr-545-rfd','ucc-545-traffic',
+        'ucc-546-what','ucc-546-only','ucr-546-code','ucc-839-steps','ucc-839-test','ucc-839-asos','ucc-839-cancel','ucc-839-emer'],
+      'uc-new':['lima-golf','ucc-515-ship','ucc-516-file','ucc-516-restr','ucc-516-min','ucc-519-tec','ucc-519-alt','ucc-519-q','ucc-519-p','ucc-519-m','ucc-519-j',
+        'ucc-5111-what','ucc-5117-fc','ucc-5119-codes','ucc-5119-handle',
+        'ucc-5120-bravo','ucc-5120-duke','ucc-5120-eagle','ucc-5120-hb','ucc-5120-idaho','ucc-5120-supply','ucc-5120-tv7','ucc-5120-18aero','ucc-5120-police40','ucc-5120-astria',
+        'ucc-5122-closed','ucc-832-where','ucc-833-fire','ucc-834-lr','ucc-835-where','ucc-835-batt','ucc-835-range','ucc-838-tdw']
+    },
     rfd:{
       'uc-live':['ucr-631-fn','ucr-631-brief','ucr-631-approval','ucr-631-duties','*rfd','ucr-632-rel','ucr-633-who','ucr-633-when','ucr-633-aware','ucr-635-dep',
         'ucr-644-tdreq','ucr-644-req','ucr-644-items','ad-release-ex','ucr-644-readback','ucr-644-released','ucr-644-r2503','ad-sct-auth',
@@ -2831,6 +2922,14 @@
     }
   };
   const FC_UC_GUIDE={
+    cd:{
+      'uc-live':{covers:'Clearance Delivery and Tower Flight Data on position: clearance items, ODPs and TBL 5-8 initial altitudes, VFR-on-top, GCA box requests, amendments, IFR releases, weather and ATIS, Flight Clearance / SCT / RATCF coordination.',
+        from:'FACMAN July 2026 5-3-1, 5-3-2, 5-4-1 to 5-4-6, 5-5-6, 8-3-9, TBL 5-8, TBL 5-9; JO 7110.65BB 4-2-1, 4-2-2, 4-2-5, 4-3-2, 4-3-4, 4-3-9. FACMAN only: ACAD cards wait on the Clearance / Flight Data LQS paper.',
+        how:'Run it before each tower shift until KNOWN; say the example clearance and TBL 5-8 out loud.'},
+      'uc-new':{covers:'Ship / shore flight plans, Lima and Golf, TEC routes and categories, FDIO, Flight Check and VIP handling, local callsigns, closed tower requests, tower equipment (crash phone, Fire Department and Longrifle lines, light guns, TDW).',
+        from:'FACMAN July 2026 5-1-5, 5-1-6, 5-1-8, 5-1-9, 5-1-11, 5-1-17, 5-1-19, 5-1-20, 5-1-22, 8-3-2 to 8-3-5, 8-3-8.',
+        how:'Work it in your first week in the tower; keep callsigns and TEC categories in rotation until KNOWN.'}
+    },
     rfd:{
       'uc-live':{covers:'Duties and limits, inbound coordination to Final and Tower, weather, IFR releases, beacon codes, strips, TBL 6-4 scratchpad.',
         from:'FACMAN July 2026 6-3-1 to 6-3-7, 6-4-4, 6-1-6, 6-1-10; JO 7110.65 5-4-3.',
@@ -2889,9 +2988,13 @@
   function ucDeck(k){ const P=FC_UC[S.pos]; return (P&&P[k])||null; }
   function isUcDeck(k){ return /^uc-/.test(String(k||'')) && !!ucDeck(k); }
   function fcGuideHTML(){
-    if(!isUcDeck(S.fcDeck)) return '';
-    const g=(FC_UC_GUIDE[S.pos]||{})[S.fcDeck]; if(!g) return '';
-    return `<details class="fc-guide"${S.fcGuideShut?'':' open'}><summary data-action="fcguide"><span class="muted">GUIDE</span> <b>${escTxt(UC_LAB[S.fcDeck]||'')}</b></summary><div class="fcg-b"><p><span>COVERS</span>${escTxt(g.covers)}</p><p><span>FROM</span>${escTxt(g.from)}</p></div></details>`;
+    /* v0.8.32: picker position sets (pk:<pos>:live / :new / :ACAD-…) show their position's guide too */
+    let pos=S.pos, k=S.fcDeck; const pm=/^pk:(cd|gnd|lcl|rfd|fin|arr):(live|new|ACAD-)/.exec(String(k||''));
+    if(pm){ pos=pm[1]; k=pm[2]==='live'?'uc-live':pm[2]==='new'?'uc-new':'uc-test'; if(!(FC_UC[pos]&&FC_UC[pos][k])) return ''; }
+    else if(!isUcDeck(k)) return '';
+    const g=(FC_UC_GUIDE[pos]||{})[k]; if(!g) return '';
+    const gOpen=pm?!!S.fcGuidePkOpen:!S.fcGuideShut; /* picker sets: guide starts collapsed so the card stays above the fold */
+    return `<details class="fc-guide"${gOpen?' open':''}><summary data-action="fcguide"><span class="muted">GUIDE</span> <b>${escTxt(UC_LAB[k]||'')}</b></summary><div class="fcg-b"><p><span>COVERS</span>${escTxt(g.covers)}</p><p><span>FROM</span>${escTxt(g.from)}</p></div></details>`;
   }
   function qzPartOf(k){
     if(!k||k==='pos') return '';
@@ -4498,7 +4601,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><button type="button" class="navback" data-action="navback" aria-label="Back" title="Back"${(NAV.ready&&NAV.n>0)?'':' disabled'}>←</button><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.31 · fc-dedupe</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.32 · cd-usecase</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}</div>`; }
@@ -5120,7 +5223,7 @@ function vectorAnswerHTML(query, hits){
   }
   /* v0.8.31 home-quizlets: Home TOWER / RADAR / GENERAL use the exact Flashcards-tab picker rows (same sets, same deck view). */
   const HQ_PARTS=[
-    ['tower','TOWER','Clearance/FD · Ground · Local',['pk:pos:cd','pk:pos:gnd','pk:pos:lcl','pk:sids','pk:fdio','pk:svfr','pk:vrp','pk:viscom','pk:crash','pk:qt-ops']],
+    ['tower','TOWER','Clearance/FD · Ground · Local',['pk:cd:live','pk:pos:gnd','pk:pos:lcl','pk:sids','pk:fdio','pk:svfr','pk:vrp','pk:viscom','pk:crash','pk:qt-ops']],
     ['radar','RADAR','RFD · Final/GCA · Arrival',['pk:rfd:live','pk:fin:live','pk:arr:live','pk:asrmile','pk:parmile','pk:gcafinal','pk:qr-missed','pk:handoff','pk:qr-wakesep','pk:radio','pk:qr-strips','pk:termstrip','pk:scratchpad','pk:fixes','pk:gca','pk:arrcomp','pk:abbrev']],
     ['general','GENERAL','Frequencies · station facts',['pk:ql-freq','pk:core','pk:idents','pk:ql-phone','pk:diverts','pk:ql-field','ql-sqdn']]];
   function homeQuizHTML(){
@@ -5907,7 +6010,7 @@ function pdfPaneHTML(){
   function fcAction(a, el){
     if(a==='fcmode'){ fcKeep({fcMode:el.dataset.m==='practice'?'practice':'cards', fcFlip:false}); return true; }
     if(a==='fcsets'){ setTimeout(()=>{ const d=document.querySelector('#vatc details.fc-sets'); S.fcSetsOpen=!!(d&&d.open); },0); return true; }
-    if(a==='fcguide'){ setTimeout(()=>{ const d=document.querySelector('#vatc details.fc-guide'); S.fcGuideShut=!(d&&d.open); },0); return true; }
+    if(a==='fcguide'){ setTimeout(()=>{ const d=document.querySelector('#vatc details.fc-guide'); if(/^pk:/.test(String(S.fcDeck||''))) S.fcGuidePkOpen=!!(d&&d.open); else S.fcGuideShut=!(d&&d.open); },0); return true; }
     const ss=S.fcSess;
     if(a==='fcrate'){
       if(!ss||!ss.st||S.fcMode==='practice') return true;

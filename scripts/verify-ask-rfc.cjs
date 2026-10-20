@@ -617,7 +617,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.31 fc-dedupe', /v0\.8\.31 · fc-dedupe<\/span>/.test(html) && !/v0\.8\.30 · back-nav<\/span>/.test(html));
+ok('statusbar v0.8.32 cd-usecase', /v0\.8\.32 · cd-usecase<\/span>/.test(html) && !/v0\.8\.31 · fc-dedupe<\/span>/.test(html));
 ok('history back wired (pushState + popstate + top ← button)', /history\.pushState\(/.test(html) && /addEventListener\('popstate'/.test(html) && /data-action="navback"/.test(html) && /a==='navback'/.test(html));
 ok('type scale documented in CSS variables', /--font-head:[^;]+; --font-body:[^;]+; --font-mono:/.test(html) && /--fs-xs:10px; --fs-sm:11px; --fs-base:13px/.test(html) && /#vatc button,#vatc input,#vatc select,#vatc textarea\{ font-family:inherit; \}/.test(html));
 ok('arr-acad: pending message removed', !/ACAD packet pending/.test(html));
@@ -1991,7 +1991,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           ok('pos-usecase: every set has a guide (covers/from/how)', Object.entries(U).every(([p,o])=>Object.keys(o).every(k=>G[p]&&G[p][k]&&G[p][k].covers&&G[p][k].from&&G[p][k].how)));
           const known=new Set(); Object.values(V.FC_SETS||{}).forEach(a=>(a||[]).forEach(c=>known.add(c.id))); Object.values(V.FC_POS||{}).forEach(a=>(a||[]).forEach(c=>known.add(c.id)));
           const nw=[].concat(...Object.values(V.FC_UC_NEW||{}));
-          ok('pos-usecase: new ucr-*/ucf-*/uca-* ids do not collide with existing cards', nw.every(c=>/^uc[rfa]-/.test(c.id) && !known.has(c.id)) && new Set(nw.map(c=>c.id)).size===nw.length, 'n='+nw.length);
+          ok('pos-usecase: new ucr-*/ucf-*/uca-* ids do not collide with existing cards', nw.every(c=>/^uc[rfac]-/.test(c.id) && !known.has(c.id)) && new Set(nw.map(c=>c.id)).size===nw.length, 'n='+nw.length);
           ok('pos-usecase: new cards cite FACMAN July 2026 or JO 7110.65BB with a highlight', nw.every(c=>c.src && (c.src.doc==='NFG FACMAN July 2026' || c.src.doc==='JO 7110.65BB' || c.src.doc==='JO 7110.65BB Chg 2') && c.src.pg && c.src.hl), nw.filter(c=>!(c.src&&c.src.hl)).map(c=>c.id).join(','));
           const t=U.rfd&&U.rfd['uc-test']||[];
           ok('pos-usecase: CHECKOUT set covers all 5 RFD ACAD blocks', ['ACAD-0520','ACAD-0534','ACAD-0532','ACAD-0521/0522','ACAD-0523/0538'].every(a=>t.some(c=>c.o===a)));
@@ -2033,6 +2033,14 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           ok('arr-usecase: every plan id resolves', !(V.FC_UC_MISS||[]).length, (V.FC_UC_MISS||[]).join(','));
           V.S.pos='arr'; V.S.fcDeck='uc-test';
           ok('arr-usecase: guide renders on Arrival CHECKOUT set', /class="fc-guide"/.test(V.fcBody()) && /ACAD-0536/.test(V.fcBody()));
+          /* v0.8.32 cd-usecase: Clearance / Flight Data sets (FACMAN-only until the LQS paper arrives) */
+          ok('cd-usecase: Clearance/FD has LIVE + NEW sets, no ACAD set yet', !!(U.cd && (U.cd['uc-live']||[]).length>=55 && (U.cd['uc-new']||[]).length>=30 && !U.cd['uc-test']), U.cd?Object.keys(U.cd).map(k=>k+'='+U.cd[k].length).join(' '):'none');
+          const cnw=(V.FC_UC_NEW&&V.FC_UC_NEW.cd)||[];
+          ok('cd-usecase: new cards are ucc-* tagged pos cd with a highlight', cnw.length>=60 && cnw.every(c=>/^ucc-/.test(c.id) && c.pos==='cd' && c.src && c.src.hl), 'n='+cnw.length);
+          ok('cd-usecase: TBL 5-8 initial altitudes match FACMAN July 2026', ['ucc-t58-quntn:3000','ucc-t58-bldg:4000','ucc-t58-munn:4000'].every(x=>{ const [i,a]=x.split(':'); const c=cnw.find(z=>z.id===i); return c && c.a.indexOf(a)===0; }) && /Maintain as coordinated/.test((cnw.find(z=>z.id==='ucc-t58-corri')||{}).a||''));
+          ok('cd-usecase: reused Arrival/RFD cards are the same objects', ['uca-421-order','uca-nfg-vot-alt','ucr-544-sct'].every(i=>U.cd['uc-live'].some(c=>c.id===i && (V.FC_UC_NEW.arr.concat(V.FC_UC_NEW.rfd)).includes(c))));
+          { const kp=V.S.fcPick, kd=V.S.fcDeck; V.S.fcPick=false; V.S.fcDeck='pk:cd:new'; const gb=V.fcBody(); V.S.fcPick=kp; V.S.fcDeck=kd;
+            ok('cd-usecase: picker position set shows its guide', /class="fc-guide"/.test(gb) && /NEW TO STATION/.test(gb) && /5-1-20/.test(gb)); }
           V.S.fcDeck='pos';
           V.S.pos='gnd';
           ok('pos-usecase: position without sets falls back to its POSITION deck', V.activeFcDeck().length===(V.posDeck('gnd')||[]).length && !/class="fc-guide"/.test(V.fcBody()));
