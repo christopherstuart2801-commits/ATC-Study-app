@@ -161,6 +161,7 @@
 #vatc .sjrow{ display:grid; grid-template-columns:auto 1fr auto; gap:4px 10px; align-items:center; width:100%; text-align:left; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:inherit; font:inherit; padding:9px 11px; cursor:pointer; }
 #vatc .sjrow:hover, #vatc .sjrow:focus-visible{ border-color:var(--green2); }
 #vatc .sjrow .sj-pub{ font-family:var(--fm); font-size:10px; letter-spacing:.1em; color:var(--green); text-transform:uppercase; white-space:nowrap; }
+#vatc .sjrow .sj-snip{ grid-column:1 / -1; font-size:11px; color:var(--muted,#8aa); line-height:1.35; }
 #vatc .sjrow .sj-t{ font-size:13px; line-height:1.3; min-width:0; overflow-wrap:anywhere; }
 #vatc .sjrow .sj-sub{ color:var(--amber); }
 #vatc .sjrow .sj-go{ font-family:var(--fm); font-size:10px; letter-spacing:.1em; color:var(--muted); white-space:nowrap; }
@@ -3656,6 +3657,32 @@
     return res;
   }
   function secHitLabel(h){ return /^\d+-\d+-\d+$/.test(h.sec)?h.sec+'. '+h.title:(/^\d{4}$/.test(h.sec)?h.sec+'. '+h.title:h.sec+' · '+h.title); }
+  /* v0.8.33 PARA INDEX: static data/para-index.json (FACMAN July 2026 + JO 7110.65BB headings+text, built by scripts/build-para-index.py).
+     Loaded once (idle prefetch), searched in-memory — no PDF parsing at query time. */
+  let PARA=null, PARA_P=null;
+  function loadParaIdx(){ if(PARA) return Promise.resolve(PARA); if(PARA_P) return PARA_P;
+    PARA_P=fetch(assetUrl('data/para-index.json')).then(r=>r.json()).then(d=>{ PARA=d.map(e=>Object.assign(e,{hl:e.h.toLowerCase(),tl:e.t.toLowerCase()})); return PARA; }).catch(()=>{ PARA_P=null; return null; });
+    return PARA_P; }
+  const PARA_LAB={facman:'FACMAN', jo:'JO 7110.65BB'};
+  function paraSearch(q){
+    if(!PARA) return null;
+    const n=String(q||'').toLowerCase().replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim();
+    if(n.length<3 || /^[\d ]+$/.test(n)) return [];
+    const head=[], body=[];
+    PARA.forEach(e=>{ if(e.hl.indexOf(n)>=0) head.push(e); else { const i=e.tl.indexOf(n); if(i>=0) body.push({e,i}); } });
+    return head.map(e=>({e,i:-1,head:true})).concat(body);
+  }
+  function paraBoxHTML(q){
+    const r=paraSearch(q); if(!r||!r.length) return '';
+    const rows=r.slice(0,40).map(({e,i,head})=>{
+      let snip=head?e.t.slice(0,110):e.t.slice(Math.max(0,i-50), i+90);
+      if(!head && i>50) snip='…'+snip;
+      return `<button type="button" class="sjrow" data-action="opensec" data-pub="${e.p}" data-sec="${escTxt(e.k)}" data-page="${e.pg}" data-sub="" data-title="${escTxt(e.h)}"><span class="sj-pub">${PARA_LAB[e.p]||e.p}${head?' · HEADING':''}</span><span class="sj-t">${escTxt(e.k)}. ${escTxt(e.h)}</span><span class="sj-p">p.${e.pg} ›</span><span class="sj-snip">${escTxt(snip)}…</span></button>`;
+    }).join('');
+    const nh=r.filter(x=>x.head).length;
+    return `<div class="secjump" data-para="1"><div class="sj-h">PARAGRAPHS · <b>${escTxt(q)}</b><span class="sj-n">${nh} heading · ${r.length-nh} text${r.length>40?' · top 40':''}</span></div><div class="sj-rows">${rows}</div></div>`;
+  }
+  try{ (window.requestIdleCallback||setTimeout)(()=>loadParaIdx(), 400); }catch(_){}
   function secBoxHTML(r){
     if(!r||!r.isSec) return '';
     const typed=escTxt(r.q);
@@ -4202,6 +4229,8 @@ function vectorAnswerHTML(query, hits){
     /* v0.8.22: paragraph-number lookup first — a pure number query (557, FACMAN 5-5-7, TBL 5-3) shows section headings only */
     const sj=secLookup(q), sjHTML=plateBoxHTML(q)+secBoxHTML(sj);
     if(sj.isSec && sj.pure){ box.innerHTML=sjHTML; return; }
+    const pxHTML=paraBoxHTML(q);
+    if(PARA===null){ const q0=q; loadParaIdx().then(()=>{ if((S.refQ||'').trim()===q0 && !S.pub) drawLookup(q0); }); }
     const hits=askHits(q);
     const supportHits=diversifyAskHits(hits, 6);
     const support=supportHits.map((h)=>{
@@ -4229,14 +4258,14 @@ function vectorAnswerHTML(query, hits){
     }).join('');
     const crossMount='<div id="crosspubhits" class="findhits" aria-live="polite"></div>';
     if(!hits.length){
-      box.innerHTML=sjHTML+(S.tab==='ask' ? vectorAnswerHTML(q, []) : '<div class="lkempty">No matching passages.</div>')+crossMount;
+      box.innerHTML=sjHTML+pxHTML+(pxHTML?'':(S.tab==='ask' ? vectorAnswerHTML(q, []) : '<div class="lkempty">No matching passages.</div>'))+crossMount;
     } else {
       const srcHead=S.tab==='ask'?'<div class="muted" style="font-size:10px;letter-spacing:.14em;margin:8px 0 4px">SOURCES</div>':'';
-      box.innerHTML=sjHTML+(S.tab==='ask'?vectorAnswerHTML(q, hits):'')+srcHead+'<div class="findhits slim">'+support+'</div>'+crossMount;
+      box.innerHTML=sjHTML+(S.tab==='ask'?vectorAnswerHTML(q, hits):'')+pxHTML+srcHead+'<div class="findhits slim">'+support+'</div>'+crossMount;
     }
     // Ask always scans the full Reference shelf (AIM/AOM/OPNAV/Chg2/archives), even when BOOK already hit.
     // Reference Find still scans when local BOOK is empty (type-as-you-go) so we do not thrash PDFs on every key.
-    if(S.tab==='ask' || !hits.length) queueCrossPubFind(q);
+    if(!pxHTML && (S.tab==='ask' || !hits.length)) queueCrossPubFind(q);
   }
   function onLookupInput(){
     const inp=document.getElementById('reflk'); if(!inp) return;
@@ -4463,7 +4492,7 @@ function vectorAnswerHTML(query, hits){
 
   /* v0.8.18 brief-polish: one-time progress reset — clears check-offs / flashcard progress saved by older builds.
      Keeps highlights (vatc.studymarks) and settings (vatc.trainee). Runs once per PROGRESS_VER. */
-  const PROGRESS_VER_KEY='vector_progress_ver', PROGRESS_VER='2026-10-02';
+  const PROGRESS_VER_KEY='vector_progress_ver', PROGRESS_VER='2026-10-21';
   (function oneTimeProgressReset(){
     try{
       if(localStorage.getItem(PROGRESS_VER_KEY)===PROGRESS_VER) return;
@@ -4599,9 +4628,9 @@ function vectorAnswerHTML(query, hits){
 
   // ===== chrome =====
   function topbar(){ return `<div class="top"><button type="button" class="navback" data-action="navback" aria-label="Back" title="Back"${(NAV.ready&&NAV.n>0)?'':' disabled'}>←</button><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
-    <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">MCAS Camp Pendleton · Munn Field</div></div>`}
+    <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">${S.station==='KNKX'?'MCAS Miramar':'MCAS Camp Pendleton · Munn Field'}</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.32 · cd-usecase</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.33 · search</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}</div>`; }
@@ -5948,12 +5977,17 @@ function pdfPaneHTML(){
   function stationScreen(){ const lock=(c,n)=>`<div class="stn lock"><div class="code">${c}</div><div class="nm">${n}</div><div class="lockrow">${I.lock} Content in validation — coming soon</div></div>`;
     return `<div class="body reveal"><h2 class="sec">${I.target} SELECT STATION</h2><div class="stationgrid">
       <div class="stn open" data-action="pick" data-s="KNFG"><span class="pill ok" style="position:absolute;top:14px;right:14px">UNLOCKED</span><div class="code">KNFG</div><div class="nm">MCAS Camp Pendleton · Munn Field</div><div class="lockrow" style="color:var(--green)">${I.chk} 6 positions · live</div></div>
-      ${lock('KNKX','MCAS Miramar')}${lock('KNYL','MCAS Yuma')}${lock('KNKT','MCAS Cherry Point')}${lock('KNCA','MCAS New River')}${lock('KNBC','MCAS Beaufort')}</div></div>`; }
+      <div class="stn open" data-action="pick" data-s="KNKX"><span class="pill" style="position:absolute;top:14px;right:14px">SHELL</span><div class="code">KNKX</div><div class="nm">MCAS Miramar</div><div class="lockrow">${I.lock} Content coming soon</div></div>${lock('KNYL','MCAS Yuma')}${lock('KNKT','MCAS Cherry Point')}${lock('KNCA','MCAS New River')}${lock('KNBC','MCAS Beaufort')}</div></div>`; }
 
   function modal(){ const q=Q[S.source]; return `<div class="overlay" data-action="srcclose"><div class="modal" onclick="event.stopPropagation()"><h3>${I.ext} JUMP TO SOURCE</h3><div class="docframe"><div class="pg">${q.src.doc.toUpperCase()} — PAGE ${q.src.pg} · ¶ ${q.src.pa}</div><div class="hl">${q.src.hl}</div></div><div class="note">In the live app this opens your locally-imported document to this page and highlights the passage. Controlled publications are never bundled — you import your own authorized copy on-device.</div><div class="navrow" style="margin-top:14px"><span></span><button class="btn" data-action="srcclose">CLOSE</button></div></div></div>`; }
 
+  /* v0.8.33: MCAS Miramar (KNKX) empty shell — same layout/tabs, no station content. */
+  function shellView(){ const T={home:'Home',ask:'Ask',learn:'Learn — ACADS / TEST',train:'Learn — ACADS / TEST',cards:'Flashcards',reference:'Reference'};
+    const lab=T[S.tab==='learn'&&S.learnMode==='cards'?'cards':S.tab]||'This tab';
+    return `${S.tab==='home'?'<div class="stnbar">MCAS Miramar (KNKX)</div>':''}<div class="card" style="padding:22px;text-align:center;margin-top:12px" data-shell="KNKX"><div class="code" style="font-family:var(--fm);letter-spacing:.2em;color:var(--green)">KNKX · ${escTxt(lab.toUpperCase())}</div><div style="font-size:18px;margin:10px 0 6px">Coming soon</div><div class="muted" style="font-size:12px">No ACADs, flashcards, tests or references loaded for MCAS Miramar yet. Content is added once the station's LQS and FACMAN are provided and validated.</div></div>`; }
   function appScreen(){ let inner='';
     if(S.tab==='sim'||S.tab==='cards') S.tab=(S.tab==='cards'?'learn':'home'); /* SIM tab removed v0.8.29 */
+    if(S.station==='KNKX'){ return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${S.tab==='home'?'':trackbar()}<div class="body">${shellView()}</div>${statusbar()}</div>`; }
     if(S.tab==='home')inner=homeView(); else if(S.tab==='ask')inner=askView(); else if(S.tab==='learn'||S.tab==='train')inner=learnView();
     else if(S.tab==='reference')inner=refView();
     return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${S.tab==='home'?'':trackbar()}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }

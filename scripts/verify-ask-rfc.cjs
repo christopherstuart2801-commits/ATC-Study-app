@@ -617,7 +617,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.32 cd-usecase', /v0\.8\.32 · cd-usecase<\/span>/.test(html) && !/v0\.8\.31 · fc-dedupe<\/span>/.test(html));
+ok('statusbar v0.8.33 search', /v0\.8\.33 · search<\/span>/.test(html) && !/v0\.8\.32 · cd-usecase<\/span>/.test(html));
 ok('history back wired (pushState + popstate + top ← button)', /history\.pushState\(/.test(html) && /addEventListener\('popstate'/.test(html) && /data-action="navback"/.test(html) && /a==='navback'/.test(html));
 ok('type scale documented in CSS variables', /--font-head:[^;]+; --font-body:[^;]+; --font-mono:/.test(html) && /--fs-xs:10px; --fs-sm:11px; --fs-base:13px/.test(html) && /#vatc button,#vatc input,#vatc select,#vatc textarea\{ font-family:inherit; \}/.test(html));
 ok('arr-acad: pending message removed', !/ACAD packet pending/.test(html));
@@ -650,7 +650,8 @@ ok('home-slim: topbar station text hidden on Home', /<div class="stnchip">\$\{S\
 ok('home-slim: first six positions tiles', /const first6=POS\.slice\(0,6\)/.test(html) && /class="pos6"/.test(html));
 ok('askScanPubOrder helper', /function\s+askScanPubOrder\s*\(/.test(html));
 ok('diversifyAskHits helper', /function\s+diversifyAskHits\s*\(/.test(html));
-ok('Ask always queues cross-pub find', /tab==='ask'\s*\|\|\s*!hits\.length\)\s*queueCrossPubFind/.test(html));
+ok('Ask queues cross-pub find unless para index answered', /!pxHTML && \(S\.tab==='ask' \|\| !hits\.length\)\) queueCrossPubFind/.test(html));
+ok('para index asset shipped', require('fs').existsSync(require('path').join(__dirname,'..','site','data','para-index.json')));
 ok('crosspubhits merge mount', /id="crosspubhits"|id='crosspubhits'|getElementById\('crosspubhits'\)/.test(html));
 ok('Ask Sources label', /SOURCES/.test(html) && /ALSO IN LIBRARY/.test(html));
 ok('PUBS Ask shelf has all library ids', /id:'facman'/.test(html) && /id:'facman2025'/.test(html) && /id:'jo'/.test(html) && /id:'jochg2'/.test(html) && /id:'aim'/.test(html) && /id:'aom'/.test(html) && /id:'orm'/.test(html) && /id:'soh'/.test(html));
