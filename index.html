@@ -587,6 +587,24 @@
 #vatc .pk-bar{ height:3px; background:var(--line); border-radius:2px; overflow:hidden; }
 #vatc .pk-bar i{ display:block; height:100%; background:var(--acc,#39f0a0); }
 #vatc .pk-back{ display:flex; align-items:center; gap:10px; margin:0 0 10px; font-size:12px; }
+#vatc .tabhint{ font-size:10.5px; color:var(--muted,#8a9); padding:3px 12px 5px; letter-spacing:.02em; line-height:1.3; }
+#vatc .my-sets{ margin:8px 0 10px; border:1px solid var(--green2); border-radius:10px; padding:8px; background:var(--panel2); }
+#vatc .my-hd{ display:flex; justify-content:space-between; align-items:center; gap:6px; font-size:11px; letter-spacing:.14em; color:var(--green); font-weight:600; margin-bottom:6px; flex-wrap:wrap; }
+#vatc .my-btns{ display:flex; gap:6px; }
+#vatc .my-b{ font:inherit; font-size:11px; letter-spacing:.06em; background:var(--bg); border:1px solid var(--green2); color:var(--green); padding:6px 10px; border-radius:7px; cursor:pointer; -webkit-appearance:none; appearance:none; display:inline-block; }
+#vatc .my-row{ display:flex; gap:6px; align-items:stretch; margin-top:6px; } #vatc .my-row .pk-set{ flex:1; margin:0; }
+#vatc .my-ed{ font-size:10px; background:var(--bg); border:1px solid var(--line,#334); color:var(--muted,#8a9); border-radius:7px; padding:0 8px; -webkit-appearance:none; appearance:none; }
+#vatc #myname{ width:100%; box-sizing:border-box; font:inherit; font-size:14px; background:var(--panel2); color:inherit; border:1px solid var(--green2); border-radius:8px; padding:9px 10px; -webkit-appearance:none; appearance:none; }
+#vatc .my-empty{ font-size:11px; }
+#vatc .my-imp{ display:flex; gap:8px; margin:8px 0; flex-wrap:wrap; }
+#vatc .my-card{ position:relative; display:grid; gap:4px; border:1px solid var(--line,#334); border-radius:8px; padding:6px 30px 6px 6px; margin-bottom:6px; background:var(--panel2); }
+#vatc .my-card.dr{ border-color:var(--amber); }
+#vatc .my-card textarea{ font:inherit; font-size:13px; background:var(--bg); color:inherit; border:1px solid var(--line,#334); border-radius:6px; padding:6px; min-height:38px; resize:vertical; }
+#vatc .my-del{ position:absolute; top:6px; right:4px; background:none; border:0; color:var(--muted,#8a9); font-size:14px; -webkit-appearance:none; appearance:none; }
+#vatc .my-warn{ color:var(--amber); font-size:12px; font-weight:600; margin:6px 0; }
+#vatc .my-draft{ border:1px dashed var(--amber); border-radius:10px; padding:8px; margin:8px 0; }
+#vatc .my-raw pre{ white-space:pre-wrap; font-size:10px; max-height:160px; overflow:auto; }
+#vatc .my-prog{ font-size:11px; margin:4px 0; }
 #vatc .pk-back .btn-back{ font-family:var(--fm); background:var(--panel2); border:1px solid var(--green2); color:var(--green); padding:7px 12px; border-radius:8px; cursor:pointer; font-size:11px; letter-spacing:.12em; font-weight:600; min-height:32px; -webkit-appearance:none; appearance:none; }
 #vatc .pk-back .btn-back:hover{ background:var(--green-dim); }
 #vatc .fc-guide{ border:1px solid var(--line); border-radius:10px; background:var(--panel); margin:0 0 10px; }
@@ -1755,7 +1773,7 @@
       fcCard('ts-10-18','Boxes 10–18','Enter data as specified by a facility directive. Arrival/radar: need not enter except when nonradar procedures are used or radio recording equipment is inoperative. Departure items may include departure time, runway used for takeoff, check marks for information forwarded or relayed.','Strip','termstrip',SRC_TBL234)
     ]
   };
-  function activeFcDeck(){ const d=S.fcDeck; let deck; if(d && /^pk:/.test(d)){ const ps=pkFind(d); if(ps) return ps.cards; } if(d && /^uc-/.test(d)) deck=ucDeck(d)||posDeck(S.pos); else if(d && d!=='pos' && QZ_DECKS[d]) deck=QZ_DECKS[d]; else if(d && d!=='pos' && FC_SETS[d]) deck=FC_SETS[d]; else deck=posDeck(S.pos); return isSqDeck(d)?sqFilter(deck):deck; }
+  function activeFcDeck(){ const d=S.fcDeck; let deck; if(d && /^my:/.test(d)) return myDeck(d); if(d && /^pk:/.test(d)){ const ps=pkFind(d); if(ps) return ps.cards; } if(d && /^uc-/.test(d)) deck=ucDeck(d)||posDeck(S.pos); else if(d && d!=='pos' && QZ_DECKS[d]) deck=QZ_DECKS[d]; else if(d && d!=='pos' && FC_SETS[d]) deck=FC_SETS[d]; else deck=posDeck(S.pos); return isSqDeck(d)?sqFilter(deck):deck; }
   function fcDeckKey(){ const b=(S.fcDeck && S.fcDeck!=='pos') ? (/^uc-/.test(S.fcDeck)?S.fcDeck+'@'+S.pos:S.fcDeck) : S.pos; return isSqDeck(S.fcDeck)?b+'|'+(S.sqShow||'cs')+'|'+(S.sqType||'')+'|'+(S.sqTbl||''):b; }
   function fcOrderedDeck(){
     const deck=activeFcDeck()||[];
@@ -4630,10 +4648,12 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><button type="button" class="navback" data-action="navback" aria-label="Back" title="Back"${(NAV.ready&&NAV.n>0)?'':' disabled'}>←</button><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">${S.station==='KNKX'?'MCAS Miramar':'MCAS Camp Pendleton · Munn Field'}</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.33 · search</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.34 · my sets</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
-    return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}</div>`; }
+    return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}</div>${tabHint()}`; }
+  const TAB_HINT={ask:'Search every pub and get a cited answer.',learn:'Your LQS ACADs with references and tests.',cards:'Study sets by position and ACAD.',reference:'7110.65, FACMAN, FLIP plates and more.'};
+  function tabHint(){ let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const h=TAB_HINT[tab]; return h?`<div class="tabhint">${h}</div>`:''; }
   function trackbar(){ let out='<span class="grplbl">TWR</span>'; let g='TOWER';
     out+=POS.filter(p=>p.g==='TOWER').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
     out+='<span class="grplbl">RDR</span>'+POS.filter(p=>p.g==='RADAR').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
@@ -5263,6 +5283,99 @@ function vectorAnswerHTML(query, hits){
   }
   function pkRowHTML(s){ const ids=s.cards.map(c=>c.id); const c=FCQ.counts(ids,S.fcStats); const pct=ids.length?Math.round(c.KNOWN/ids.length*100):0;
       return `<button type="button" class="pk-set" data-action="fcdeck" data-d="${escTxt(s.k)}" data-s="${escTxt((s.name+' '+s.kw+' '+s.sub).toLowerCase())}"><span class="pk-t"><b>${escTxt(s.name)}</b><span class="pk-n">${ids.length}</span></span><span class="pk-sub">${escTxt(s.sub)}</span><span class="pk-bar"><i style="width:${pct}%"></i></span></button>`; }
+  /* ===== v0.8.34 MY SETS: user-made flashcard sets (localStorage), manual + photo/PDF import (on-device OCR, tesseract.js lazy-loaded only when used). ===== */
+  const MY_KEY='vatc.mySets.v1';
+  function mySets(){ try{ const a=JSON.parse(localStorage.getItem(MY_KEY)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+  function mySave(a){ try{ localStorage.setItem(MY_KEY, JSON.stringify(a)); }catch(e){ alert('Could not save — storage full?'); } }
+  function myGet(id){ return mySets().find(s=>s.id===id)||null; }
+  function myNewId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+  function myDeck(k){ const s=myGet(String(k).slice(3)); return s?s.cards.map(c=>({id:'my-'+s.id+'-'+c.id,q:c.q,a:c.a,tag:'my',pos:'',src:null})):[]; }
+  /* Auto-draft cards from OCR/PDF text: 'term - definition' / 'term: definition' lines, paragraph numbers (5-1-12 TITLE), headings (ALL CAPS / short line) + following text. */
+  function myDraft(text){
+    const lines=String(text||'').replace(/\r/g,'').split('\n').map(l=>l.replace(/\s+/g,' ').trim());
+    const out=[]; let cur=null;
+    const push=()=>{ if(cur&&cur.q&&cur.a.trim()) out.push({q:cur.q.trim(),a:cur.a.trim()}); cur=null; };
+    const para=/^((?:\d{1,2}[-.]){2}\d{1,3}[a-z]?\.?|[A-Z]?\d{1,2}[-.]\d{1,3}\.?)\s+(.{2,90})$/;
+    const td=/^([^:–—-]{2,50}?)\s*(?:\s[-–—]\s|:\s)\s*(.{3,})$/;
+    for(const l of lines){
+      if(!l){ if(cur&&cur.a) push(); continue; }
+      let m;
+      if((m=para.exec(l))){ push(); const t=m[2]; const sp=/^([A-Z][A-Z0-9 ,/&()'-]{2,80}?)[.]\s*(.*)$/.exec(t); cur={q:(m[1].replace(/\.$/,''))+' '+(sp?sp[1]:t), a:sp?sp[2]:''}; continue; }
+      if((m=td.exec(l)) && m[1].split(' ').length<=6){ push(); out.push({q:m[1].trim(),a:m[2].trim()}); continue; }
+      const head=(l.length<=60 && /[A-Za-z]/.test(l) && (l===l.toUpperCase() || (!/[.,;]$/.test(l) && l.split(' ').length<=6 && /^[A-Z]/.test(l))));
+      if(head && !(cur&&!cur.a)){ push(); cur={q:l.replace(/:$/,''),a:''}; continue; }
+      if(cur) cur.a+=(cur.a?' ':'')+l; else cur={q:'',a:l};
+    }
+    push();
+    return out.filter(c=>c.q.length>1&&c.a.length>1).map(c=>({q:c.q.slice(0,200),a:c.a.slice(0,900)})).slice(0,80);
+  }
+  globalThis.vatcMyDraft=myDraft;
+  function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=()=>rej(new Error('load '+src)); document.head.appendChild(s); }); }
+  async function myOcr(file, prog){
+    if(/pdf$/i.test(file.type)||/\.pdf$/i.test(file.name)){
+      const lib=await loadPdfJs(); const doc=await lib.getDocument({data:await file.arrayBuffer()}).promise; let txt='';
+      const n=Math.min(doc.numPages,10);
+      for(let i=1;i<=n;i++){ prog('Reading PDF page '+i+'/'+n+'…'); const pg=await doc.getPage(i); const tc=await pg.getTextContent(); let lastY=null; tc.items.forEach(it=>{ const y=it.transform[5]; txt+=(lastY!=null&&Math.abs(y-lastY)>2?'\n':' ')+it.str; lastY=y; }); txt+='\n\n';
+        if(tc.items.length<5){ const vp=pg.getViewport({scale:2}); const c=document.createElement('canvas'); c.width=vp.width; c.height=vp.height; await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise; txt+=await myOcrImg(c, prog)+'\n\n'; } }
+      return txt;
+    }
+    return myOcrImg(file, prog);
+  }
+  async function myOcrImg(img, prog){
+    if(!globalThis.Tesseract){ prog('Loading text reader (first time ~10 MB)…'); await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'); }
+    const r=await Tesseract.recognize(img,'eng',{logger:m=>{ if(m.status) prog(m.status.replace(/^./,c=>c.toUpperCase())+(m.progress?' '+Math.round(m.progress*100)+'%':'')); }});
+    return (r&&r.data&&r.data.text)||'';
+  }
+  function myPickerHTML(){
+    const ss=mySets();
+    const rows=ss.map(s=>{ const ids=s.cards.map(c=>'my-'+s.id+'-'+c.id); const c=FCQ.counts(ids,S.fcStats); const pct=ids.length?Math.round(c.KNOWN/ids.length*100):0;
+      return `<div class="my-row"><button type="button" class="pk-set" data-action="fcdeck" data-d="my:${escTxt(s.id)}" data-s="${escTxt(('my '+s.name).toLowerCase())}"><span class="pk-t"><b>${escTxt(s.name)}</b><span class="pk-n">${ids.length}</span></span><span class="pk-bar"><i style="width:${pct}%"></i></span></button><button type="button" class="my-ed" data-action="myedit" data-id="${escTxt(s.id)}" aria-label="Edit set">EDIT</button></div>`; }).join('');
+    return `<div class="my-sets"><div class="my-hd"><span>MY SETS</span><span class="my-btns"><button type="button" class="my-b" data-action="mynew">+ New set</button><label class="my-b">Import JSON<input type="file" accept="application/json,.json" data-action="myimpjson" hidden></label></span></div>${rows||'<div class="muted my-empty">Make your own cards — type them or draft them from a photo or PDF.</div>'}</div>`;
+  }
+  function myEditorHTML(){
+    const E=S.myEd; if(!E) return '';
+    const card=(c,i)=>`<div class="my-card"><textarea class="my-q" data-i="${i}" placeholder="Front">${escTxt(c.q)}</textarea><textarea class="my-a" data-i="${i}" placeholder="Back">${escTxt(c.a)}</textarea><button type="button" class="my-del" data-action="mydelcard" data-i="${i}" aria-label="Delete card">✕</button></div>`;
+    const draft=E.draft?`<div class="my-draft"><div class="my-warn">Drafted from your photo — check before studying.</div>${E.draft.length?E.draft.map((c,i)=>`<div class="my-card dr"><textarea class="my-dq" data-i="${i}">${escTxt(c.q)}</textarea><textarea class="my-da" data-i="${i}">${escTxt(c.a)}</textarea><button type="button" class="my-del" data-action="mydeldraft" data-i="${i}" aria-label="Drop draft">✕</button></div>`).join(''):'<div class="muted">No cards could be drafted — add them by hand.</div>'}<div class="fc-row2"><button type="button" class="btn" data-action="mykeepdraft">ADD ${E.draft.length} TO SET</button><button type="button" class="btn sec" data-action="mydropdraft">DISCARD</button></div><details class="my-raw"><summary>Text read from file</summary><pre>${escTxt(E.raw||'')}</pre></details></div>`:'';
+    return `<div id="fcwrap" class="my-ed-wrap"><div class="fc-sets pk-back"><button type="button" class="btn-back" data-action="mycancel">← ALL SETS</button> <b>${E.id?'Edit set':'New set'}</b></div>
+      <input id="myname" class="pk-q" placeholder="Set name" value="${escTxt(E.name)}">
+      <div class="my-imp"><label class="my-b">📷 Take photo<input type="file" accept="image/*" capture="environment" data-action="myimport" hidden></label><label class="my-b">Image / PDF<input type="file" accept="image/*,application/pdf,.pdf" data-action="myimport" hidden></label></div>
+      <div class="my-prog muted"${E.busy?'':' hidden'}>${escTxt(E.busy||'')}</div>
+      ${draft}<div class="my-list">${E.cards.map(card).join('')}</div>
+      <button type="button" class="btn sec" data-action="myaddcard">+ Add card</button>
+      <div class="fc-row2"><button type="button" class="btn" data-action="mysave">SAVE SET</button>${E.id?'<button type="button" class="btn sec" data-action="myexport">EXPORT JSON</button><button type="button" class="btn sec" data-action="mydelset">DELETE SET</button>':''}</div>
+      <div class="muted" style="font-size:10px;margin-top:6px">Saved on this device only. Export JSON to share.</div></div>`;
+  }
+  function mySync(){ const E=S.myEd; if(!E) return; const n=document.getElementById('myname'); if(n) E.name=n.value;
+    document.querySelectorAll('#vatc .my-q').forEach(t=>{ E.cards[+t.dataset.i].q=t.value; }); document.querySelectorAll('#vatc .my-a').forEach(t=>{ E.cards[+t.dataset.i].a=t.value; });
+    if(E.draft){ document.querySelectorAll('#vatc .my-dq').forEach(t=>{ E.draft[+t.dataset.i].q=t.value; }); document.querySelectorAll('#vatc .my-da').forEach(t=>{ E.draft[+t.dataset.i].a=t.value; }); } }
+  function myAction(a, el){
+    const E=S.myEd;
+    if(a==='mynew') return set({myEd:{id:'',name:'',cards:[{id:myNewId(),q:'',a:''}],draft:null}});
+    if(a==='myedit'){ const s=myGet(el.dataset.id); if(!s) return; return set({myEd:{id:s.id,name:s.name,cards:s.cards.map(c=>Object.assign({},c)),draft:null}}); }
+    if(!E) return;
+    mySync();
+    if(a==='mycancel') return set({myEd:null,fcPick:true});
+    if(a==='myaddcard'){ E.cards.push({id:myNewId(),q:'',a:''}); return set({myEd:E},{keepScroll:true}); }
+    if(a==='mydelcard'){ E.cards.splice(+el.dataset.i,1); return set({myEd:E},{keepScroll:true}); }
+    if(a==='mydeldraft'){ E.draft.splice(+el.dataset.i,1); return set({myEd:E},{keepScroll:true}); }
+    if(a==='mydropdraft'){ E.draft=null; E.raw=''; return set({myEd:E},{keepScroll:true}); }
+    if(a==='mykeepdraft'){ E.cards=E.cards.filter(c=>c.q.trim()||c.a.trim()).concat(E.draft.filter(c=>c.q.trim()&&c.a.trim()).map(c=>({id:myNewId(),q:c.q,a:c.a}))); E.draft=null; E.raw=''; return set({myEd:E},{keepScroll:true}); }
+    if(a==='mysave'){ const cards=E.cards.filter(c=>c.q.trim()&&c.a.trim()); if(!E.name.trim()){ alert('Name the set first.'); return; } if(!cards.length){ alert('Add at least one card with a front and back.'); return; }
+      const all=mySets(); const id=E.id||myNewId(); const rec={id, name:E.name.trim(), cards, t:Date.now()}; const i=all.findIndex(s=>s.id===id); if(i>=0) all[i]=rec; else all.unshift(rec); mySave(all);
+      return set({myEd:null,fcPick:true}); }
+    if(a==='mydelset'){ if(!confirm('Delete this set?')) return; mySave(mySets().filter(s=>s.id!==E.id)); return set({myEd:null,fcPick:true}); }
+    if(a==='myexport'){ const s=myGet(E.id); if(!s) return; const blob=new Blob([JSON.stringify({vectorAtcSet:1,name:s.name,cards:s.cards.map(c=>({q:c.q,a:c.a}))},null,1)],{type:'application/json'}); const u=URL.createObjectURL(blob); const ln=document.createElement('a'); ln.href=u; ln.download=(s.name.replace(/[^\w-]+/g,'_')||'set')+'.json'; document.body.appendChild(ln); ln.click(); ln.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000); return; }
+  }
+  async function myFile(a, el){
+    const f=el.files&&el.files[0]; if(!f) return;
+    if(a==='myimpjson'){ try{ const j=JSON.parse(await f.text()); const cards=(j.cards||[]).filter(c=>c&&c.q&&c.a).map(c=>({id:myNewId(),q:String(c.q).slice(0,500),a:String(c.a).slice(0,2000)})); if(!cards.length) throw 0; const all=mySets(); all.unshift({id:myNewId(),name:String(j.name||f.name.replace(/\.json$/i,'')).slice(0,80),cards,t:Date.now()}); mySave(all); set({fcPick:true}); }catch(e){ alert('Not a VECTOR ATC set file.'); } return; }
+    const E=S.myEd; if(!E) return; mySync();
+    const prog=t=>{ E.busy=t; const p=document.querySelector('#vatc .my-prog'); if(p){ p.hidden=false; p.textContent=t; } };
+    prog('Reading file…');
+    try{ const raw=await myOcr(f, prog); E.raw=raw; E.draft=myDraft(raw); }catch(e){ E.raw=''; E.draft=[]; alert('Could not read that file'+(navigator.onLine?'':' — the text reader needs internet the first time')+'.'); }
+    E.busy=''; set({myEd:E});
+  }
+  globalThis.vatcMyFile=myFile;
   function fcPickerHTML(){
     const sets=pkSets();
     const row=s=>{ const ids=s.cards.map(c=>c.id); const c=FCQ.counts(ids,S.fcStats); const pct=ids.length?Math.round(c.KNOWN/ids.length*100):0;
@@ -5277,7 +5390,7 @@ function vectorAnswerHTML(query, hits){
     const posAll=posBlocks+(other.length?dd('pos:other','Phraseology & procedures (all radar / tower)',list(other),other.length,'sub'):'');
     const acadBlocks=POS.map(p=>{ const ss=sets.filter(s=>s.grp==='acad'&&posOf(s)===p.k); return ss.length?dd('acad:'+p.k,PN[p.k],list(ss),ss.length,'sub'):''; }).join('');
     const grp=dd('quick','General · Quick lookup',list(quick),quick.length)+dd('bypos','By position',posAll,sets.filter(s=>s.grp==='onpos').length)+dd('acad','ACADs',acadBlocks,sets.filter(s=>s.grp==='acad').length);
-    return `<div id="fcwrap" class="fc-picker"><input id="pkq" class="pk-q" placeholder="Find a set — buttons, idents, completion…" autocomplete="off" spellcheck="false" oninput="vatcPkFilter(this.value)">${grp}<div class="pk-none muted" hidden>No set matches.</div></div>`;
+    return `<div id="fcwrap" class="fc-picker"><input id="pkq" class="pk-q" placeholder="Find a set — buttons, idents, completion…" autocomplete="off" spellcheck="false" oninput="vatcPkFilter(this.value)">${myPickerHTML()}${grp}<div class="pk-none muted" hidden>No set matches.</div></div>`;
   }
   const PKO_KEY='vatc.pkOpen.v1';
   function pkOpenLoad(){ try{ const o=JSON.parse(localStorage.getItem(PKO_KEY)||'null'); return o||{quick:true}; }catch(e){ return {quick:true}; } }
@@ -5293,6 +5406,7 @@ function vectorAnswerHTML(query, hits){
     const no=document.querySelector('#vatc .pk-none'); if(no) no.hidden=!!any;
   };
   function fcBody(){
+    if(S.myEd) return myEditorHTML();
     if(S.fcPick) return fcPickerHTML();
     const chips=fcSetChipRow(true);
     activeFcDeck(); // deck source
@@ -5303,7 +5417,8 @@ function vectorAnswerHTML(query, hits){
     const partLab=partId?(QZ_PARTS.find(p=>p.id===partId)||{}).lab:'';
     const deckLab=uc?((PN[S.pos]||S.pos).toUpperCase()+' · '+UC_LAB[S.fcDeck]):named?(QZ_LAB[S.fcDeck]||FC_SET_LAB[S.fcDeck]||S.fcDeck):((PN[S.pos]||S.pos).toUpperCase());
     const pkS=(/^pk:/.test(S.fcDeck||'')||S.fcDeck==='ql-sqdn')?pkFind(S.fcDeck):null;
-    const lab=pkS?pkS.name:((partLab && !/^q-/.test(S.fcDeck) && QZ_LAB[S.fcDeck])?(partLab+' · '+deckLab):deckLab);
+    const myS=/^my:/.test(S.fcDeck||'')?myGet(S.fcDeck.slice(3)):null;
+    const lab=myS?('MY · '+myS.name):pkS?pkS.name:((partLab && !/^q-/.test(S.fcDeck) && QZ_LAB[S.fcDeck])?(partLab+' · '+deckLab):deckLab);
     const sets=`<div class="fc-sets pk-back"><button type="button" class="btn-back" data-action="fcall">← ALL SETS</button> <b>${escTxt(lab)}</b></div>`;
     const deckCards=fcUniq(deck);
     const ids=deckCards.map(c=>c.id);
@@ -6022,6 +6137,7 @@ function pdfPaneHTML(){
   document.getElementById('vatc').addEventListener('change',e=>{
     const el=e.target.closest('[data-action]'); if(!el) return;
     const a=el.dataset.action;
+    if(a==='myimport'||a==='myimpjson'){ myFile(a, el); return; }
     if(a==='citesel'){
       const cite=String(el.value||'').trim();
       if(!cite) return;
@@ -6140,6 +6256,7 @@ function pdfPaneHTML(){
     if(a==='tstnext'){ const t=S.tst; if(!t) return; t.fb=null; if(t.i<t.order.length-1){ t.i++; } else { t.phase='done'; const ok=t.res.filter(r=>r.ok).length; if(!t.retake) tstSave(tstKey(t), Math.round(ok/Math.max(1,t.res.length)*100)); } return set({tst:t, tstNote:''}); }
     if(a==='tstmissed'){ const t=S.tst; if(!t) return; const miss=t.res.filter(r=>!r.ok).map(r=>r.k); return set({tst:tstStart(t.pos,t.n,t.kind,miss)}); }
     if(a==='tstcite'){ const cite=el.dataset.cite||''; if(!cite) return; openLearnCite(cite,{title:el.dataset.title||'', from:'test'}); return; }
+    if(/^my/.test(a)){ myAction(a, el); return; }
     if(a==='fcall'){ if(navBackIf(p=>p.fcPick&&p.learnMode==='cards'&&p.tab==='learn')) return; return set({fcPick:true, fcSess:null}); }
     if(a==='fcdeck'){const d0=el.dataset.d||'pos'; const pkp=/^pk:pos:(\w+)$/.exec(d0); if(pkp){ return set({tab:'learn',learnMode:'cards',trainMode:'cards',pos:pkp[1],fcDeck:d0,fcPick:false,fcIdx:0,fcFlip:false,fcOrder:null,fcSess:null}); } const d=d0; const g=fcDeckGroup(d); const o=Object.assign({}, S.fcOpen||{}); if(g) o[g]=true; return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcDeck:d,fcPick:false,fcIdx:0,fcFlip:false,fcGrp:g,fcOpen:o,fcOrder:null,fcSess:null,fcSetsOpen:false});}
     if(a==='jumptbl'){ jumpTblRef(el.dataset.tbl||el.textContent||''); return; }

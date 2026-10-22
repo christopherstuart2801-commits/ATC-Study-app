@@ -1,0 +1,45 @@
+const {chromium}=require('playwright-core');
+const R=[];const ok=(n,c,d='')=>{R.push(c);console.log((c?'PASS ':'FAIL ')+n+(d?' — '+d:''));};
+const OUT='/workspace/build-brief/v17-app/';
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true})).newPage();
+const errs=[];p.on('pageerror',e=>errs.push(e.message));const W=t=>p.waitForTimeout(t);
+await p.goto('http://localhost:8765/index.html');await W(700);
+await p.evaluate(()=>document.querySelector('[data-action="poslearn"][data-p="arr"]').click());await W(300);
+ok('Learn explainer', (await p.textContent('#vatc .tabhint'))==='Your LQS ACADs with references and tests.');
+await p.click('#vatc [data-action="tab"][data-t="cards"]');await W(400);
+ok('Flashcards explainer', (await p.textContent('#vatc .tabhint'))==='Study sets by position and ACAD.');
+await p.screenshot({path:OUT+'1-tab-explainer.png'});
+ok('My sets at top of picker', !!(await p.$('#fcwrap .my-sets')) && (await p.$eval('#fcwrap',e=>e.children[1].className))==='my-sets');
+await p.click('#vatc [data-action="mynew"]');await W(200);
+await p.fill('#myname','Test set');
+await p.fill('#vatc .my-q','ATIS');await p.fill('#vatc .my-a','Automatic Terminal Information Service');
+await p.click('#vatc [data-action="myaddcard"]');await W(150);
+ok('add card keeps typed text', (await p.$$eval('#vatc .my-q',e=>e.map(x=>x.value)))[0]==='ATIS' && (await p.$$('#vatc .my-card')).length===2);
+await p.fill('#vatc .my-q >> nth=1','VFR');await p.fill('#vatc .my-a >> nth=1','Visual flight rules');
+await p.click('#vatc [data-action="mysave"]');await W(300);
+const st=await p.evaluate(()=>JSON.parse(localStorage.getItem('vatc.mySets.v1')));
+ok('set saved to localStorage', st.length===1 && st[0].cards.length===2);
+await p.screenshot({path:OUT+'2-my-sets-picker.png'});
+await p.click('#vatc .my-row .pk-set');await W(400);
+const body=await p.textContent('#fcwrap');
+ok('study set with card UI', /MY · Test set/.test(body) && /ATIS|VFR/.test(body) && !!(await p.$('#vatc [data-action="fcmode"][data-m="practice"]')));
+await p.click('#vatc [data-action="fcmode"][data-m="practice"]');await W(300);
+ok('practice mode renders', errs.length===0, errs.join('|'));
+await p.click('#vatc [data-action="fcall"]');await W(300);
+await p.click('#vatc [data-action="myedit"]');await W(200);
+await p.click('#vatc [data-action="mydelcard"] >> nth=1');await p.click('#vatc [data-action="mysave"]');await W(200);
+ok('edit/delete card', (await p.evaluate(()=>JSON.parse(localStorage.getItem('vatc.mySets.v1'))[0].cards.length))===1);
+// draft parser
+const d=await p.evaluate(()=>vatcMyDraft('VISUAL SEPARATION\nUsed when the pilot reports traffic in sight.\n\nATIS - Automatic Terminal Information Service\n10-1-1 EMERGENCY DETERMINATIONS. Declared by pilot.'));
+ok('drafter splits heading / term-def / para', d.length===3, JSON.stringify(d));
+if(process.argv[2]==='ocr'){
+  await p.click('#vatc [data-action="mynew"]');await W(200);await p.fill('#myname','From photo');
+  await p.setInputFiles('#vatc input[data-action="myimport"] >> nth=1', OUT+'sample-page.png');
+  await p.waitForSelector('#vatc .my-warn',{timeout:120000});await W(300);
+  const n=(await p.$$('#vatc .my-card.dr')).length;
+  ok('OCR import → draft review', n>=2, n+' drafts');
+  await p.screenshot({path:OUT+'3-photo-import-review.png'});
+}
+ok('no page errors', errs.length===0, errs.join('|'));
+console.log(R.every(x=>x)?'ALL PASS':'SOME FAIL');await b.close();})();
