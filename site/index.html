@@ -4648,7 +4648,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><button type="button" class="navback" data-action="navback" aria-label="Back" title="Back"${(NAV.ready&&NAV.n>0)?'':' disabled'}>←</button><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">${S.station==='KNKX'?'MCAS Miramar':'MCAS Camp Pendleton · Munn Field'}</div></div>`}
     <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.34 · my sets</span></div>`; }
+  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.35 · my sets</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}</div>${tabHint()}`; }
@@ -4976,7 +4976,12 @@ function vectorAnswerHTML(query, hits){
       const norm=s=>String(s||'').trim().toLowerCase();
       const me=(cards||[]).find(c=>c.id===id); if(!me) return [];
       const seen=new Set([norm(me.a)]); const out=[];
-      shuffle((cards||[]).filter(c=>c.id!==id), rng).forEach(c=>{ const n=norm(c.a); if(out.length<3 && n && !seen.has(n)){ seen.add(n); out.push(c.a); } });
+      /* v0.8.35: prefer look-alike distractors (same tag, same answer shape, similar length) so a frequency is never offered "Ch 55" or a sentence */
+      const kind=a=>{ a=String(a||''); return /\d+\.\d+/.test(a)?'num':(/\d/.test(a)?'mix':'txt'); };
+      const lenb=a=>{ const n=String(a||'').length; return n<=25?0:(n<=60?1:2); };
+      const score=c=>(c.tag&&c.tag===me.tag?2:0)+(kind(c.a)===kind(me.a)?2:0)+(lenb(c.a)===lenb(me.a)?1:0);
+      const pool=shuffle((cards||[]).filter(c=>c.id!==id), rng).map((c,i)=>({c,i,s:score(c)})).sort((x,y)=>(y.s-x.s)||(x.i-y.i)).map(x=>x.c);
+      pool.forEach(c=>{ const n=norm(c.a); if(out.length<3 && n && !seen.has(n)){ seen.add(n); out.push(c.a); } });
       return shuffle([me.a].concat(out), rng);
     }
     /* ---- written grading ---- */

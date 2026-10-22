@@ -617,7 +617,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.34 my sets', /v0\.8\.34 · my sets<\/span>/.test(html) && !/v0\.8\.33 · search<\/span>/.test(html));
+ok('statusbar v0.8.35 my sets', /v0\.8\.35 · my sets<\/span>/.test(html) && !/v0\.8\.34 · my sets<\/span>/.test(html));
 ok('tab explainers present', /Search every pub and get a cited answer\./.test(html) && /Study sets by position and ACAD\./.test(html));
 ok('my sets: OCR lazy-loaded + honest draft label', /Drafted from your photo — check before studying\./.test(html) && !/<script[^>]+tesseract/i.test(html) && /accept="image\/\*" capture=/.test(html));
 ok('appBase/assetUrl kept', /function appBase\(/.test(html) && /function assetUrl\(/.test(html));

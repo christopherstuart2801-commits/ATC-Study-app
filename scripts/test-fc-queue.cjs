@@ -189,6 +189,13 @@ const mkIds = n => Array.from({ length: n }, (_, i) => 'c' + i);
   ok('mc: 1 correct + 3 distinct distractors from the same deck', ch.length === 4 && ch.filter(x => x === 'ans2').length === 1 && new Set(ch).size === 4);
 }
 
+{
+  const cards = [{id:'f1',tag:'F',a:'128.775 / 340.2'},{id:'f2',tag:'F',a:'134.675 / 271.6'},{id:'f3',tag:'F',a:'UHF 279.3'},{id:'f4',tag:'F',a:'285.45'},
+    {id:'x1',tag:'F',a:'Ch 55'},{id:'x2',tag:'F',a:'Contact SCT when communications with the aircraft are no longer required.'},{id:'x3',tag:'G',a:'RWY 21'}];
+  let bad=0; for(let k=0;k<50;k++){ const ch=FCQ.mcChoices('f1',cards,rngFrom(k)); if(ch.some(x=>/Ch 55|Contact SCT|RWY 21/.test(x))) bad++; }
+  ok('mc: distractors look like the answer (frequency never offered Ch 55 / a sentence when look-alikes exist)', bad===0, 'bad='+bad);
+}
+
 /* ---------- written grading ---------- */
 {
   const g = (u, a) => FCQ.grade(u, a);
