@@ -84,7 +84,7 @@ try {
   const desk = await session(1280, 800, false);
   const home = await desk.page.evaluate(() => document.body.innerText);
   const homeBtns = await desk.page.$$eval('.home-go button', els => els.map(el => el.textContent.trim()));
-  ok('desktop home shortcuts are Study, Reference, Crew, and Device', homeBtns.join('|') === 'Study|Reference|Crew|Device');
+  ok('desktop home shortcuts are Study, References, Crew, and Device', homeBtns.join('|') === 'Study|References|Crew|Device');
   ok('desktop home does not repeat the long today notes', !/today/i.test(home) && !/not a qualification/i.test(home) && !/not a live airfield status/i.test(home) && !/study a position/i.test(home));
   ok('desktop home keeps the station and quizlets', /MCAS Camp Pendleton \(KNFG\)/i.test(home) && /KNFG Quizlets/i.test(home) && /NO CONTROLLED DATA LOADED/.test(home) && /Positions/i.test(home));
   const deskFit = await desk.page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1);
@@ -209,7 +209,7 @@ try {
     const pos = document.querySelector('#posgrid').getBoundingClientRect().top;
     return { view, btns, pos };
   });
-  ok('mobile home shortcuts are the four labels', phoneGo.btns.map(b => b.t).join('|') === 'Study|Reference|Crew|Device' && /NO CONTROLLED DATA LOADED/.test(phoneHome) && !/not a qualification/i.test(phoneHome));
+  ok('mobile home shortcuts are the four labels', phoneGo.btns.map(b => b.t).join('|') === 'Study|References|Crew|Device' && /NO CONTROLLED DATA LOADED/.test(phoneHome) && !/not a qualification/i.test(phoneHome) && /Not started/.test(phoneHome) && /Training/.test(phoneHome));
   ok('mobile shows all four shortcuts on screen', phoneGo.btns.length === 4 && phoneGo.btns.every(b => b.top >= 0 && b.bottom <= phoneGo.view.h && b.left >= -1 && b.right <= phoneGo.view.w + 1 && !b.clipped) && phoneGo.pos < phoneGo.view.h);
   const phoneFit = await phone.page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1);
   ok('mobile home does not widen the page', phoneFit, await phone.page.evaluate(() => document.documentElement.scrollWidth + '/' + document.documentElement.clientWidth));
