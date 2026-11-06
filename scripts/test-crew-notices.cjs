@@ -7,7 +7,9 @@ const assert = require('assert/strict');
 const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'site/index.html'), 'utf8');
 assert.equal(html, fs.readFileSync(path.join(root, 'index.html'), 'utf8'), 'root/site mirror');
-assert(html.includes('v0.8.36 · tower paper'), 'tower signature kept');
+assert(html.includes('TOWER_PAPER:BEGIN — v0.8.36'), 'tower packet signature kept');
+assert(html.includes('NO CONTROLLED DATA LOADED'));
+assert(html.includes("const APP_VER='0.8.37'"));
 assert(html.includes("learn:'Your LQS ACADs with references and tests.'"));
 assert(html.includes("cards:'Study sets by position and ACAD.'"));
 assert(html.includes("reference:'7110.65, FACMAN, FLIP plates and more.'"));
@@ -16,7 +18,8 @@ const block = html.split('/* CREW_NOTICES:BEGIN').pop().split('/* CREW_NOTICES:E
 assert(block && block.includes('function crewParseNotice'), 'crew block present');
 assert(!/FCC|password|createClient|serviceWorker\.register|\bfetch\s*\(/i.test(block), 'no feed, auth client, upload, or service worker in crew block');
 assert(!/supabase\.(from|channel|auth)/i.test(block));
-assert(block.includes('Supabase is not connected'));
+assert(block.includes('No cloud account service is connected'));
+assert(!/supabase/i.test(block));
 assert(block.includes('Not in effect'));
 assert(block.includes('ATCFO'));
 assert(block.includes('Training Chief'));
@@ -61,7 +64,7 @@ check('planned access is not effective and names nobody', () => {
   const a = C.access();
   assert.equal(a.effective, false);
   assert.equal(a.login, false);
-  assert.equal(a.supabase, false);
+  assert.equal(a.cloud, false);
   assert.equal(a.owner, null);
   assert.equal(a.admin, null);
   assert.equal(a.roles.length, 5);
@@ -139,7 +142,8 @@ check('backup import cannot grant authority or a role', () => {
     }]
   });
   assert.equal(merged.length, 1);
-  assert.equal(merged[0].crew, 'B');
+  assert.equal(merged[0].crew, '2');
+  assert.equal(merged[0].reviewedText, 'EXAMPLE only');
   assert.equal(JSON.stringify(merged[0].decisions), '[]');
   assert.equal(merged[0].authoritative, false);
   assert.equal(merged[0].aid, true);
@@ -158,17 +162,21 @@ check('demo roster is a small fictional fixture', () => {
   const rows = C.demoRoster;
   assert.equal(rows.length, 2);
   assert.equal(rows[0].label, 'Demo Controller 01');
-  assert.equal(rows[0].crew, 'A');
+  assert.equal(rows[0].crew, '1');
   assert.equal(rows[0].date, '2099-01-06');
   assert.equal(rows[0].outcome, 'Dummy outcome — sample reviewed');
   assert.equal(rows[0].fictional, true);
   assert.equal(rows[1].label, 'Demo Controller 02');
-  assert.equal(rows[1].crew, 'B');
+  assert.equal(rows[1].crew, '2');
   assert.equal(rows[1].fictional, true);
-  const blob = JSON.stringify(rows) + C.demoHTML('all') + C.demoHTML('A');
+  const blob = JSON.stringify(rows) + C.demoHTML('all') + C.demoHTML('1');
   assert.match(blob, /Fictional labels/);
-  assert.match(C.demoHTML('A'), /Demo Controller 01/);
-  assert.doesNotMatch(C.demoHTML('A'), /Demo Controller 02/);
+  assert.match(C.demoHTML('1'), /Demo Controller 01/);
+  assert.doesNotMatch(C.demoHTML('1'), /Demo Controller 02/);
+  assert.equal(C.canon('A'), '1');
+  assert.equal(C.canon('b'), '2');
+  assert.equal(C.sanitize({ id: 'c-leg', crew: 'A', reviewedText: 'typed by hand', ocrText: 'DIFFERENT OCR', ocrStatus: 'pending', reviewAck: true }).reviewedText, 'typed by hand');
+  assert.equal(C.sanitize({ id: 'c-leg', crew: 'B', reviewedText: 'typed by hand', ocrStatus: 'pending' }).crew, '2');
   assert.doesNotMatch(blob, /@|\(\d{3}\)|\bPFT\b|\bCFT\b|medical|phone|rank|email/i);
   assert.doesNotMatch(block, /CREW_DEMO_ROSTER[\s\S]{0,800}(@|\(\d{3}\)|medical)/i);
 });
@@ -179,7 +187,32 @@ check('OCR copy stays non-authoritative', () => {
   assert.match(C.ocrLab('read', false), /not authoritative/);
   assert.match(C.ocrLab('read', true), /not authoritative/);
   assert.match(C.aid, /Verify against the official current NOTAM source/);
+  assert.match(C.aid, /not an operational notice/);
 });
+
+async function extraUnits() {
+  const writes = [];
+  const failed = await C.commit(
+    { id: 'c1', crew: '1', reviewedText: 'hello', ocrStatus: 'pending', reviewAck: true, thumb: true, aid: true, authoritative: false, decisions: [] },
+    new Blob(['img'], { type: 'image/png' }),
+    { put: async () => { throw new Error('idb'); }, del: async () => {}, write: (l) => { writes.push(l); }, load: () => [], get: async () => null }
+  );
+  assert.equal(failed.complete, false);
+  assert.equal(failed.image.reason, 'indexeddb-failed');
+  assert.equal(writes.length, 0);
+  const device = { format: 'vector-atc-backup', formatVersion: 1, keys: { 'vatc.fcStats': {} } };
+  const bad = C.attachToDeviceBackup(device, { records: [{ id: 'c1', crew: '1', reviewedText: 'x', thumb: true, ocrStatus: 'read', reviewAck: true }], photos: {} });
+  assert.equal(bad.ok, false);
+  assert.equal(JSON.stringify(bad.missing), '["c1"]');
+  const good = C.attachToDeviceBackup(device, { records: [{ id: 'c1', crew: 'A', reviewedText: 'kept text', ocrText: 'ocr', thumb: true, ocrStatus: 'pending', reviewAck: true }], photos: { c1: 'data:image/png;base64,YQ==' } });
+  assert.equal(good.ok, true);
+  assert.equal(good.backup.keys['vatc.crewNotices.v1'][0].crew, '1');
+  assert.equal(good.backup.keys['vatc.crewNotices.v1'][0].reviewedText, 'kept text');
+  assert.equal(good.backup.crewPhotos.bridge, 'vector-atc-crew-photos');
+  assert.equal(good.backup.crewPhotos.notOfficialSource, true);
+  checks += 1;
+  console.log('PASS photo failure does not save, and a device backup cannot omit crew photos');
+}
 
 console.log(checks + ' unit checks passed');
 
@@ -251,13 +284,13 @@ async function browserChecks() {
   await page.waitForSelector('[data-crw="office"] details.crw-roles[open]');
   const roles = await page.textContent('details.crw-roles');
   const officeTxt = await page.textContent('[data-crw="office"]');
-  ok('planned roles are a small disclosure, not a login', /ATCFO/.test(roles) && /Training Chief/.test(roles) && /Vector Head/.test(roles) && /intended viewer/.test(roles) && /approved crew reads/.test(roles) && /Not in effect/.test(roles) && /Supabase is not connected/.test(roles) && /no access code/i.test(roles));
+  ok('planned roles are a small disclosure, not a login', /ATCFO/.test(roles) && /Training Chief/.test(roles) && /Vector Head/.test(roles) && /intended viewer/.test(roles) && /approved crew reads/.test(roles) && /Not in effect/.test(roles) && /No cloud account service is connected/.test(roles) && /no access code/i.test(roles));
   ok('office demo roster is fictional and separate from notices', /Demo Controller 01/.test(officeTxt) && /Demo Controller 02/.test(officeTxt) && /Not assignments/.test(officeTxt) && (await page.locator('.crw-demo-row').count()) === 2 && (await page.locator('.crw-item').count()) === 0);
   ok('no password or account control', await page.locator('input[type="password"], [data-action="login"]').count() === 0);
   await page.screenshot({ path: path.join(shotDir, 'office-roles-mobile.png') });
   await page.click('[data-action="crwboard"]');
   const aBoard = await page.textContent('[data-crw="board"]');
-  ok('crew A shows only its fictional demo row', /Demo Controller 01/.test(aBoard) && !/Demo Controller 02/.test(aBoard));
+  ok('crew 1 shows only its fictional demo row', /Demo Controller 01/.test(aBoard) && !/Demo Controller 02/.test(aBoard) && /Crew 1/.test(aBoard) && !/Crew A/.test(aBoard));
   await page.selectOption('#crw-shift', 'day');
   await page.fill('#crw-date', '2099-01-01');
   await page.fill('#crw-src', 'EXAMPLE sheet');
@@ -280,7 +313,7 @@ async function browserChecks() {
   const savedTxt = await page.textContent('[data-crw="read"]');
   ok('saved record keeps the training-aid label', /Saved on this browser/.test(savedTxt) && /Training aid only/.test(savedTxt) && /Parse needs review/.test(savedTxt) && /Date needs review/.test(savedTxt));
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('vatc.crewNotices.v1')));
-  ok('record is local, crew A, not authoritative', stored.length === 1 && stored[0].crew === 'A' && stored[0].authoritative === false && stored[0].decisions.length === 0 && stored[0].reviewAck === true && stored[0].example === true);
+  ok('record is local, crew 1, not authoritative', stored.length === 1 && stored[0].crew === '1' && stored[0].authoritative === false && stored[0].decisions.length === 0 && stored[0].reviewAck === true && stored[0].example === true);
   const thumb = await page.evaluate(async (id) => {
     const db = await new Promise((res, rej) => { const r = indexedDB.open('vatcCrewLocal', 1); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
     return await new Promise(res => { const rq = db.transaction('thumbs').objectStore('thumbs').get(id); rq.onsuccess = () => res(!!rq.result); rq.onerror = () => res(false); });
@@ -292,11 +325,11 @@ async function browserChecks() {
   const noted = await page.evaluate(() => JSON.parse(localStorage.getItem('vatc.crewNotices.v1'))[0].localNote);
   ok('optional note stays on device', noted === 'optional local note' && /Nothing was sent/.test(await page.textContent('.crw-msg')));
   await page.click('[data-action="crwoffice"]');
-  await page.click('[data-action="crwfilt"][data-f="B"]');
-  ok('crew B filter hides crew A', (await page.locator('.crw-item').count()) === 0);
-  await page.click('[data-action="crwfilt"][data-f="A"]');
-  ok('crew A filter shows the saved notice', (await page.locator('.crw-item').count()) === 1);
-  await page.click('[data-action="crwcrew"][data-c="B"]');
+  await page.click('[data-action="crwfilt"][data-f="2"]');
+  ok('crew 2 filter hides crew 1', (await page.locator('.crw-item').count()) === 0);
+  await page.click('[data-action="crwfilt"][data-f="1"]');
+  ok('crew 1 filter shows the saved notice', (await page.locator('.crw-item').count()) === 1);
+  await page.click('[data-action="crwcrew"][data-c="2"]');
   await page.evaluate(() => { window.Tesseract = { recognize: async () => ({ data: { text: 'EXAMPLE CREW B ONLY' } }) }; });
   await page.selectOption('#crw-shift', 'swing');
   await page.fill('#crw-date', '2099-01-02');
@@ -307,8 +340,8 @@ async function browserChecks() {
   await page.click('#crw-save');
   await page.waitForSelector('[data-crw="read"]');
   await page.click('[data-action="crwoffice"]');
-  await page.click('[data-action="crwfilt"][data-f="B"]');
-  ok('crew B has its own notice', (await page.locator('.crw-item').count()) === 1 && /Crew B/.test(await page.textContent('.crw-item')));
+  await page.click('[data-action="crwfilt"][data-f="2"]');
+  ok('crew 2 has its own notice', (await page.locator('.crw-item').count()) === 1 && /Crew 2/.test(await page.textContent('.crw-item')));
   await page.click('[data-action="crwfilt"][data-f="all"]');
   ok('both crews listed together', (await page.locator('.crw-item').count()) === 2);
 
@@ -326,7 +359,7 @@ async function browserChecks() {
   ok('no service worker registered', sw === 0);
   await mobile.setOffline(true);
   await page.click('#vatc [data-action="tab"][data-t="crew"]');
-  ok('open session still shows local notices while offline', /Crew A|Crew B|Training office|Crew notices/.test(await page.textContent('#vatc')));
+  ok('open session still shows local notices while offline', /Crew 1|Crew 2|Training office|Crew notices/.test(await page.textContent('#vatc')));
   const offlinePage = await mobile.newPage();
   let navFailed = false;
   try { await offlinePage.goto(url, { timeout: 8000 }); } catch (e) { navFailed = true; }
@@ -338,19 +371,33 @@ async function browserChecks() {
   await page.click('[data-action="crwoffice"]');
   ok('records survive reload', (await page.locator('.crw-item').count()) === 2);
 
+  const devPromise = page.waitForEvent('download');
+  await page.click('[data-action="device"]');
+  await page.waitForSelector('[data-action="exportbackup"]');
+  await page.click('[data-action="exportbackup"]');
+  const devDl = await devPromise;
+  const devPath = path.join(shotDir, 'device-backup.json');
+  await devDl.saveAs(devPath);
+  const device = JSON.parse(fs.readFileSync(devPath, 'utf8'));
+  const crewRows = device.keys && device.keys['vatc.crewNotices.v1'];
+  ok('device backup includes crew text and photo bytes or it is not complete', device.format === 'vector-atc-backup' && Array.isArray(crewRows) && crewRows.length === 2 && device.crewPhotos && device.crewPhotos.bridge === 'vector-atc-crew-photos' && device.crewPhotos.notOfficialSource === true && crewRows.every(r => typeof device.crewPhotos.photos[r.id] === 'string' && r.thumb === true && (r.crew === '1' || r.crew === '2')));
+  await page.click('[data-action="deviceclose"]');
+
   const dlPromise = page.waitForEvent('download');
   await page.click('[data-action="crwexport"]');
   const dl = await dlPromise;
   const dlPath = path.join(shotDir, 'backup.json');
   await dl.saveAs(dlPath);
   const backup = JSON.parse(fs.readFileSync(dlPath, 'utf8'));
-  ok('export is a local backup file', backup.vectorAtcCrewBackup === 1 && backup.records.length === 2 && /Training aid only/.test(backup.warning) && backup.thumbs && Object.keys(backup.thumbs).length >= 1 && !JSON.stringify(backup.records).includes('Demo Controller'));
+  ok('export is a labeled crew file with photos', backup.vectorAtcCrewBackup === 1 && backup.notDeviceBackup === true && backup.photosComplete === true && backup.records.length === 2 && /Training aid only/.test(backup.warning) && /not the full device backup/.test(backup.warning) && backup.thumbs && Object.keys(backup.thumbs).length >= 1 && !JSON.stringify(backup.records).includes('Demo Controller') && backup.records.every(r => r.crew === '1' || r.crew === '2'));
   await page.evaluate(() => localStorage.removeItem('vatc.crewNotices.v1'));
   await page.click('[data-action="crwboard"]');
   await page.click('[data-action="crwoffice"]');
   await page.setInputFiles('input[data-action="crwrestore"]', dlPath);
   await page.waitForFunction(() => /Restored 2 notices/.test(document.body.textContent || ''));
-  ok('restore puts the backup back on this browser only', /Restored 2 notices/.test(await page.textContent('.crw-msg')) && (await page.evaluate(() => JSON.parse(localStorage.getItem('vatc.crewNotices.v1')).length)) === 2);
+  const restored = await page.evaluate(() => JSON.parse(localStorage.getItem('vatc.crewNotices.v1')));
+  const restoredText = restored.map(r => r.reviewedText).join('\n');
+  ok('restore keeps reviewed text and crew identity', /Restored 2 notices/.test(await page.textContent('.crw-msg')) && /Reviewed text was kept/.test(await page.textContent('.crw-msg')) && restored.length === 2 && restored.every(r => r.crew === '1' || r.crew === '2') && /NOT A NOTICE/.test(restoredText) && /EXAMPLE CREW B ONLY/.test(restoredText));
 
   await page.click('[data-action="crwall"]');
   await page.click('[data-action="crwdel"]');
@@ -406,6 +453,31 @@ async function browserChecks() {
   }
   await real.close();
 
+  const off = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const offPage = await off.newPage();
+  const oerr = [];
+  const oreq = [];
+  offPage.on('pageerror', e => oerr.push(String(e)));
+  offPage.on('request', req => { if (/jsdelivr|tesseract/i.test(req.url())) oreq.push(req.url()); });
+  await off.setOffline(true);
+  let offNav = false;
+  try { await offPage.goto(url, { timeout: 8000 }); } catch (e) { offNav = true; }
+  ok('offline fresh load is not served without the shell', offNav);
+  await off.setOffline(false);
+  await offPage.goto(url);
+  await offPage.click('#vatc [data-action="tab"][data-t="crew"]');
+  await off.setOffline(true);
+  await offPage.click('[data-action="crwnophoto"]');
+  await offPage.waitForSelector('#crw-text');
+  await offPage.fill('#crw-text', 'EXAMPLE typed while the text reader is unavailable');
+  await offPage.check('#crw-ack');
+  ok('offline review can be saved without the text reader', !(await offPage.locator('#crw-save').isDisabled()));
+  await offPage.click('#crw-save');
+  await offPage.waitForFunction(() => /Saved on this browser/.test(document.body.textContent || ''));
+  const typed = await offPage.evaluate(() => JSON.parse(localStorage.getItem('vatc.crewNotices.v1')).find(r => /typed while/.test(r.reviewedText || '')));
+  ok('offline typed notice is stored as pending training text', !!(typed && typed.ocrStatus === 'pending' && typed.authoritative === false && typed.crew === '1' && oreq.length === 0 && oerr.length === 0));
+  await off.close();
+
   ok('no uncaught errors on the mobile session', errs.length === 0, errs.join(' | '));
   ok('no uncaught errors on desktop', derr.length === 0, derr.join(' | '));
   ok('no uncaught errors on the OCR attempt', rerr.length === 0, rerr.join(' | '));
@@ -417,6 +489,6 @@ async function browserChecks() {
   if (!pass.every(Boolean)) process.exit(1);
 }
 
-if (process.argv.includes('--browser')) {
-  browserChecks().catch(err => { console.error(err); process.exit(1); });
-}
+extraUnits().then(() => {
+  if (process.argv.includes('--browser')) return browserChecks();
+}).catch(err => { console.error(err); process.exit(1); });

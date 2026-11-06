@@ -21,7 +21,7 @@ The worker does not cache other websites, notes, credentials, or API responses. 
 
 ## Device backup
 
-Device → Export backup downloads one JSON file (`format` `vector-atc-backup`, version 1) of the `vatc.*` values on this device, including trainee name and initials, marks, checks, lessons, flashcards, tests, custom sets, and pocket keys. Import checks the file and asks before it replaces progress on this device. A bad file or a failed write leaves current progress in place. Nothing is uploaded.
+Device → Export backup downloads one JSON file (`format` `vector-atc-backup`, version 1) of the `vatc.*` values on this device, including trainee name and initials, marks, checks, lessons, flashcards, tests, custom sets, and pocket keys. Crew training notices on this device are included with their photos in `crewPhotos` (`bridge` `vector-atc-crew-photos`). If a saved notice claims a photo and the bytes are missing, the export stops. It does not write a complete backup that silently omits photos. The separate Crew control downloads crew text and photos only and is labeled as not the full device backup. Saved crew notices are a training aid. They are not an official notice source and they do not approve operational use. Import checks the file and asks before it replaces progress on this device. A bad file or a failed write leaves current progress in place. Nothing is uploaded.
 
 ## Head Guide
 

@@ -4972,7 +4972,7 @@ function vectorAnswerHTML(query, hits){
   function saveFcStats(){ try{ localStorage.setItem(FC_STATS_KEY, JSON.stringify(S.fcStats||{})); }catch(_){} }
   const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'acad',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcDeck:'pos',fcGrp:'',fcOpen:{},fcOrder:null,fcMode:'cards',fcOnlyNot:false,fcStats:loadFcStats(),fcSess:null,fcLastId:null,fcSetsOpen:false,sqShow:'cs',sqType:'',sqTbl:'',
-    lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'', crewView:'board', crewId:'A', crewFilt:'all', crewDraft:null, crewReadId:'', crewSel:{}, crewAsk:null, crewMsg:'', crewRolesOpen:false };
+    lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'', crewView:'board', crewId:'1', crewFilt:'all', crewDraft:null, crewReadId:'', crewSel:{}, crewAsk:null, crewMsg:'', crewRolesOpen:false };
   /* ===== v0.8.30 NAV: in-app + browser/phone back via history.pushState/popstate.
      Each history entry = snapshot of navigational S keys + UI (scroll, open <details>, search inputs). ===== */
   const NAV_KEYS=['screen','tab','learnMode','trainMode','pos','rfcTopic','pub','pubPage','pubQ','pubGuessNote','pubCiteLab','pubCiteQuote','pubPreferPage','pubCiteSec','pubSecBan','learnReturn','learnBlockedNote',
@@ -5139,7 +5139,7 @@ function vectorAnswerHTML(query, hits){
     try{ if(navigator.clipboard&&navigator.clipboard.writeText){ await navigator.clipboard.writeText(text); return true; } }catch(e){}
     try{ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); const ok=document.execCommand('copy'); ta.remove(); return !!ok; }catch(e){ return false; }
   }
-  function doExport(){
+  async function doExport(){
     if(!globalThis.VATC_BACKUP){ alert('Backup tools did not load. Nothing was changed.'); return; }
     const raw={};
     try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k) raw[k]=localStorage.getItem(k); } }
@@ -5147,7 +5147,12 @@ function vectorAnswerHTML(query, hits){
     if(!raw['vector_progress_ver']) raw['vector_progress_ver']=JSON.stringify(PROGRESS_VER);
     const built=VATC_BACKUP.build(raw,{appVersion:APP_VER, exportedAt:new Date().toISOString(), progressVer:PROGRESS_VER});
     if(!built.ok){ alert('Export stopped. Nothing was changed.\n'+built.errors.join('\n')); return; }
-    const blob=new Blob([JSON.stringify(built.backup,null,1)],{type:'application/json'});
+    let bundle;
+    try{ bundle=await crewPhotoBundle(); }
+    catch(e){ alert('Device backup stopped. Crew photos could not be read, so no file was saved. Nothing was uploaded.'); return; }
+    const attached=crewAttachToDeviceBackup(built.backup, bundle);
+    if(!attached.ok){ alert('Device backup stopped so it would not leave out crew photos.\n'+(attached.errors||[]).join('\n')+'\n\nNothing was uploaded.'); return; }
+    const blob=new Blob([JSON.stringify(attached.backup,null,1)],{type:'application/json'});
     const u=URL.createObjectURL(blob); const ln=document.createElement('a'); ln.href=u; ln.download='vector-atc-backup-'+new Date().toISOString().slice(0,10)+'.json';
     document.body.appendChild(ln); ln.click(); ln.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000);
   }
@@ -5162,11 +5167,14 @@ function vectorAnswerHTML(query, hits){
     const when=parsed.backup.exportedAt||'an unknown time';
     const n=Object.keys(parsed.backup.keys||{}).length;
     let go=false;
-    try{ go=window.confirm('Replace all study progress on this device with this backup ('+n+' saved items, exported '+when+')?\n\nThis overwrites trainee name and initials, study marks, checks, lessons, flashcards, tests, custom sets, and pocket keys on this device. Cancel leaves current progress unchanged.'); }
+    try{ go=window.confirm('Replace all study progress on this device with this backup ('+n+' saved items, exported '+when+')?\n\nThis overwrites trainee name and initials, study marks, checks, lessons, flashcards, tests, custom sets, and pocket keys on this device. It also replaces local crew training notices and restores photos included in the file. Cancel leaves current progress unchanged.'); }
     catch(e){ go=false; }
     if(!go) return;
     const res=VATC_BACKUP.apply(localStorage, parsed.backup, {progressVer:PROGRESS_VER});
     if(!res.ok){ alert('Import failed. Current progress was left unchanged.\n'+res.error); return; }
+    try{ crewWrite(crewLoad()); }catch(e){}
+    const photoRes=await crewRestoreDevicePhotos(parsed.backup);
+    if(!photoRes.ok){ alert('Study progress was imported. Crew photos were not all restored.\n'+(photoRes.errors||[]).join('\n')+'\n\nReviewed training text was kept. This is not an official notice source.'); }
     location.reload();
   }
   function topbar(){ return `<div class="top"><button type="button" class="navback" data-action="navback" aria-label="Back" title="Back"${(NAV.ready&&NAV.n>0)?'':' disabled'}>←</button><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
@@ -5176,7 +5184,7 @@ function vectorAnswerHTML(query, hits){
 
   function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}${t('crew',I.users,'Crew')}</div>${tabHint()}`; }
-  const TAB_HINT={ask:'Search every pub and get a cited answer.',learn:'Your LQS ACADs with references and tests.',cards:'Study sets by position and ACAD.',reference:'7110.65, FACMAN, FLIP plates and more.',crew:'Photograph a notice, review the text, then save it on this browser.'};
+  const TAB_HINT={ask:'Search every pub and get a cited answer.',learn:'Your LQS ACADs with references and tests.',cards:'Study sets by position and ACAD.',reference:'7110.65, FACMAN, FLIP plates and more.',crew:'Training aid. Photograph a sheet, review the text, then save it on this browser. It does not replace the official source.'};
   function tabHint(){ let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const h=TAB_HINT[tab]; return h?`<div class="tabhint">${h}</div>`:''; }
   function trackbar(){ let out='<span class="grplbl">TWR</span>'; let g='TOWER';
     out+=POS.filter(p=>p.g==='TOWER').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
@@ -7037,14 +7045,16 @@ function vectorAnswerHTML(query, hits){
 /* CREW_NOTICES:BEGIN — local training-aid prototype. OCR is not authoritative. Planned roles are not in effect. */
   const CREW_KEY='vatc.crewNotices.v1';
   const CREW_DB='vatcCrewLocal';
-  const CREW_AID='Training aid only. Verify against the official current NOTAM source. Not a live status.';
+  const CREW_AID='Training aid only. Verify against the official current NOTAM source. Not a live status and not an operational notice.';
   /* Fictional demo roster only. Not taken from a personnel file and not stored. */
   const CREW_DEMO_ROSTER=[
-    {id:'demo-01', label:'Demo Controller 01', crew:'A', status:'Demo', date:'2099-01-06', outcome:'Dummy outcome — sample reviewed', fictional:true},
-    {id:'demo-02', label:'Demo Controller 02', crew:'B', status:'Demo', date:'2099-01-07', outcome:'Dummy outcome — sample not started', fictional:true}
+    {id:'demo-01', label:'Demo Controller 01', crew:'1', status:'Demo', date:'2099-01-06', outcome:'Dummy outcome — sample reviewed', fictional:true},
+    {id:'demo-02', label:'Demo Controller 02', crew:'2', status:'Demo', date:'2099-01-07', outcome:'Dummy outcome — sample not started', fictional:true}
   ];
+  function crewCanon(v){ const s=String(v==null?'':v).trim().toUpperCase(); if(s==='1'||s==='A') return '1'; if(s==='2'||s==='B') return '2'; return ''; }
   function crewDemoHTML(which){
-    const rows=(which==='A'||which==='B')?CREW_DEMO_ROSTER.filter(r=>r.crew===which):CREW_DEMO_ROSTER;
+    const id=crewCanon(which);
+    const rows=id?CREW_DEMO_ROSTER.filter(r=>r.crew===id):CREW_DEMO_ROSTER;
     const body=rows.map(r=>`<div class="crw-demo-row"><b>${escTxt(r.label)}</b><span>Crew ${r.crew} · ${escTxt(r.status)} · ${escTxt(r.date)}</span><span>${escTxt(r.outcome)}</span></div>`).join('');
     return `<details class="crw-demo"><summary>Demo roster</summary><p>Fictional labels for this screen and for tests. Not assignments, not scores, and not saved as personnel records.</p>${body}</details>`;
   }
@@ -7052,10 +7062,10 @@ function vectorAnswerHTML(query, hits){
   function crewNewId(){ return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
   function crewCleanId(id){ const s=String(id||''); return /^[A-Za-z0-9_-]{1,40}$/.test(s)?s:crewNewId(); }
   function crewPlannedAccess(){
-    return {effective:false, login:false, supabase:false, owner:null, admin:null, roles:[
+    return {effective:false, login:false, cloud:false, owner:null, admin:null, roles:[
       {id:'atcfo', title:'ATCFO', intent:'overall owner', effective:false},
       {id:'training-chief', title:'Master sergeant', intent:'Training Chief / training-office lead with training-wide visibility', effective:false},
-      {id:'vector-head', title:'Vector Head', intent:'one per crew; maintainer for that crew daily NOTAM and training input', effective:false},
+      {id:'vector-head', title:'Vector Head', intent:'one per crew; maintainer for that crew daily training-notice input', effective:false},
       {id:'office-staff', title:'Training-office staff', intent:'viewer', effective:false},
       {id:'controller', title:'Controller', intent:'own training and approved crew reads', effective:false}
     ]};
@@ -7104,10 +7114,11 @@ function vectorAnswerHTML(query, hits){
     return f.indexOf('ocr-pending')>=0||f.indexOf('shift-needs-review')>=0||f.indexOf('source-needs-review')>=0||f.indexOf('date-unresolved')>=0;
   }
   function crewSanitizeRecord(r){
-    if(!r||(r.crew!=='A'&&r.crew!=='B')) return null;
+    const crew=crewCanon(r&&r.crew);
+    if(!r||!crew) return null;
     const reviewed=String(r.reviewedText!=null?r.reviewedText:(r.text||'')).slice(0,20000);
     const rec={
-      id:crewCleanId(r.id), crew:r.crew,
+      id:crewCleanId(r.id), crew:crew,
       shift:['day','swing','mid'].indexOf(r.shift)>=0?r.shift:'',
       shiftDate:/^\d{4}-\d{2}-\d{2}$/.test(String(r.shiftDate||''))?String(r.shiftDate):'',
       sourceNote:String(r.sourceNote||'').slice(0,500),
@@ -7124,7 +7135,7 @@ function vectorAnswerHTML(query, hits){
   }
   function crewCanSave(d){
     if(!d) return {ok:false, reason:'Nothing to save.'};
-    if(d.crew!=='A'&&d.crew!=='B') return {ok:false, reason:'Choose crew A or B.'};
+    if(!crewCanon(d.crew)) return {ok:false, reason:'Choose Crew 1 or Crew 2.'};
     if(d.ocrStatus==='reading') return {ok:false, reason:'Text reader is still running.'};
     if(!d.ack) return {ok:false, reason:'Review the text and check the box before saving.'};
     return {ok:true, reason:''};
@@ -7133,7 +7144,7 @@ function vectorAnswerHTML(query, hits){
     const gate=crewCanSave(d);
     if(!gate.ok) return {ok:false, reason:gate.reason, rec:null};
     const rec=crewSanitizeRecord({
-      id:d.editId||crewNewId(), crew:d.crew, shift:d.shift, shiftDate:d.shiftDate, sourceNote:d.sourceNote,
+      id:d.editId||crewNewId(), crew:crewCanon(d.crew), shift:d.shift, shiftDate:d.shiftDate, sourceNote:d.sourceNote,
       ocrStatus:d.ocrStatus, ocrText:d.ocrText, reviewedText:d.text, reviewAck:true, lineNotes:d.lineNotes,
       example:!!(d.example||/\bEXAMPLE\b/i.test(d.text||'')), savedAt:now||new Date().toISOString(),
       localNote:d.localNote||'', thumb:!!d.thumb, permanence:d.permanence
@@ -7167,17 +7178,18 @@ function vectorAnswerHTML(query, hits){
     if((S.crewView||'board')==='office'){
       const f=S.crewFilt||'all';
       let rows=list;
-      if(f==='A'||f==='B') rows=list.filter(r=>r.crew===f);
+      const filt=crewCanon(f);
+      if(filt) rows=list.filter(r=>r.crew===filt);
       else if(f==='look') rows=list.filter(crewNeedsLook);
       else if(f==='ocr') rows=list.filter(r=>(r.flags||[]).indexOf('ocr-pending')>=0);
       return rows.slice().sort(crewSort);
     }
-    const id=S.crewId==='B'?'B':'A';
+    const id=crewCanon(S.crewId)||'1';
     return list.filter(r=>r.crew===id).sort(crewSort);
   }
   function crewSelectedIds(){ const sel=S.crewSel||{}; return Object.keys(sel).filter(id=>sel[id]); }
   function crewBlankDraft(){
-    return {token:'', editId:'', crew:S.crewId==='B'?'B':'A', shift:'', shiftDate:'', sourceNote:'', text:'', ocrText:'', ocrStatus:'', ocrError:'', example:false, ack:false, lineNotes:[], hadThumb:false, localNote:'', thumb:false};
+    return {token:'', editId:'', crew:crewCanon(S.crewId)||'1', shift:'', shiftDate:'', sourceNote:'', text:'', ocrText:'', ocrStatus:'', ocrError:'', example:false, ack:false, lineNotes:[], hadThumb:false, localNote:'', thumb:false};
   }
   function crewPull(d){
     if(!d) return d;
@@ -7190,7 +7202,7 @@ function vectorAnswerHTML(query, hits){
     const ack=g('crw-ack'); if(ack) d.ack=!!ack.checked;
     return d;
   }
-  function crewDraftFromScreen(){ const d=crewBlankDraft(); d.crew=S.crewId==='B'?'B':'A'; crewPull(d); d.crew=S.crewId==='B'?'B':'A'; return d; }
+  function crewDraftFromScreen(){ const d=crewBlankDraft(); d.crew=crewCanon(S.crewId)||'1'; crewPull(d); d.crew=crewCanon(d.crew)||crewCanon(S.crewId)||'1'; return d; }
   function crewSetBlob(file){
     if(crewBlobUrl){ try{ URL.revokeObjectURL(crewBlobUrl); }catch(e){} }
     crewBlob=file||null;
@@ -7284,28 +7296,92 @@ function vectorAnswerHTML(query, hits){
     a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=>URL.revokeObjectURL(u),2000);
   }
-  async function crewExport(){
+  async function crewPhotoBundle(){
     const records=crewLoad();
-    const thumbs={}; let missed=false;
+    const photos={}; const missing=[];
     for(const r of records){
       if(!r.thumb) continue;
-      try{ const b=await crewThumbGet(r.id); if(!b){ missed=true; continue; } thumbs[r.id]=await crewBlobDataUrl(b); }
-      catch(e){ missed=true; }
+      try{ const b=await crewThumbGet(r.id); if(!b){ missing.push(r.id); continue; } photos[r.id]=await crewBlobDataUrl(b); }
+      catch(e){ missing.push(r.id); }
     }
-    const payload={vectorAtcCrewBackup:1, kind:'training-aid-local', warning:CREW_AID, exportedAt:new Date().toISOString(),
-      records:records.map(r=>{ const c=crewSanitizeRecord(r); c.decisions=[]; c.authoritative=false; c.aid=true; return c; }), thumbs:thumbs};
+    return {records:records, photos:photos, missing:missing};
+  }
+  function crewAttachToDeviceBackup(deviceBackup, bundle){
+    if(!deviceBackup||deviceBackup.format!=='vector-atc-backup'||!deviceBackup.keys||typeof deviceBackup.keys!=='object'||Array.isArray(deviceBackup.keys)){
+      return {ok:false, complete:false, missing:[], errors:['not a device backup']};
+    }
+    const records=((bundle&&bundle.records)||[]).map(crewSanitizeRecord).filter(Boolean);
+    const photos=(bundle&&bundle.photos)||{};
+    const missing=[];
+    records.forEach(r=>{ if(r.thumb && !(typeof photos[r.id]==='string' && photos[r.id].indexOf('data:image/')===0)) missing.push(r.id); });
+    if(missing.length) return {ok:false, complete:false, missing:missing, errors:['device backup would omit crew photos: '+missing.join(', ')]};
+    const keys=Object.assign({}, deviceBackup.keys);
+    keys[CREW_KEY]=records.map(r=>{ const c=Object.assign({}, r); c.authoritative=false; c.decisions=[]; c.aid=true; return c; });
+    const backup=Object.assign({}, deviceBackup, {keys:keys, crewPhotos:{bridge:'vector-atc-crew-photos', bridgeVersion:1, aid:true, notOfficialSource:true, photos:photos}});
+    if(JSON.stringify(backup).length>12*1024*1024) return {ok:false, complete:false, missing:missing, errors:['backup is too large to keep the crew photos']};
+    return {ok:true, complete:true, missing:[], backup:backup};
+  }
+  async function crewRestoreDevicePhotos(backup){
+    const records=crewLoad();
+    const pack=backup&&backup.crewPhotos;
+    const photos=(pack&&pack.photos)||{};
+    if(pack&&pack.bridge!=='vector-atc-crew-photos') return {ok:false, restored:0, missing:[], errors:['crew photo section is not the training-aid bridge']};
+    let restored=0; const missing=[];
+    for(const rec of records){
+      if(!rec.thumb) continue;
+      const blob=typeof photos[rec.id]==='string'?crewDataUrlBlob(photos[rec.id]):null;
+      if(!blob){ rec.thumb=false; missing.push(rec.id); continue; }
+      try{ await crewThumbPut(rec.id, blob); restored++; }
+      catch(e){ rec.thumb=false; missing.push(rec.id); }
+    }
+    if(missing.length){ try{ crewWrite(records); }catch(e){} return {ok:false, restored:restored, missing:missing, errors:['missing crew photos: '+missing.join(', ')]}; }
+    return {ok:true, restored:restored, missing:[]};
+  }
+  async function crewCommit(rec, blob, deps){
+    deps=deps||{};
+    const put=deps.put||crewThumbPut, del=deps.del||crewThumbDel, write=deps.write||crewWrite, load=deps.load||crewLoad, get=deps.get||crewThumbGet;
+    const copy=Object.assign({}, rec);
+    copy.authoritative=false; copy.decisions=[]; copy.aid=true;
+    let image;
+    if(blob){
+      try{ await put(copy.id, blob); image={stored:true, reason:'stored'}; copy.thumb=true; copy.permanence='local-browser'; }
+      catch(e){ copy.thumb=false; return {ok:false, complete:false, record:copy, image:{stored:false, reason:'indexeddb-failed'}}; }
+    }else if(deps.keepExisting){
+      let existing=null;
+      try{ existing=await get(copy.id); }catch(e){ existing=null; }
+      if(!existing){ copy.thumb=false; return {ok:false, complete:false, record:copy, image:{stored:false, reason:'missing'}}; }
+      image={stored:true, reason:'kept'}; copy.thumb=true;
+    }else{ image={stored:false, reason:'no-photo'}; copy.thumb=false; }
+    const all=(load()||[]).filter(r=>r.id!==copy.id);
+    all.unshift(copy);
+    try{ write(all); }
+    catch(e){
+      if(blob&&image.stored){ try{ await del(copy.id); }catch(_){} }
+      return {ok:false, complete:false, record:copy, image:{stored:false, reason:'text-not-stored'}};
+    }
+    return {ok:true, complete:true, record:copy, image:image};
+  }
+  async function crewExport(){
+    const bundle=await crewPhotoBundle();
+    const photosMissing=bundle.missing.slice();
+    const thumbs=bundle.photos;
+    const payload={vectorAtcCrewBackup:1, island:'crew-text-and-photos', notDeviceBackup:true, kind:'training-aid-local',
+      warning:CREW_AID+' This file is crew text and photos only. It is not the full device backup and it is not an official notice source.',
+      exportedAt:new Date().toISOString(), photosComplete:photosMissing.length===0, photosMissing:photosMissing,
+      records:bundle.records.map(r=>{ const c=crewSanitizeRecord(r); if(photosMissing.indexOf(c.id)>=0) c.thumb=false; c.decisions=[]; c.authoritative=false; c.aid=true; return c; }),
+      thumbs:thumbs};
     crewDownload('vector-atc-crew-local-backup.json', JSON.stringify(payload));
-    return {n:records.length, missed:missed};
+    return {n:payload.records.length, missed:photosMissing.length>0, photosMissing:photosMissing, photosComplete:photosMissing.length===0};
   }
   function crewMsgHTML(){ return S.crewMsg?`<div class="crw-msg" role="status">${escTxt(S.crewMsg)}</div>`:''; }
   function crewAidHTML(){ return `<div class="crw-aid" role="note">${escTxt(CREW_AID)} This tool does not issue runway, airfield, or control instructions.</div>`; }
   function crewRolesHTML(open){
     return `<details class="crw-roles"${open?' open':''}><summary>Planned access model / roles</summary>
-      <p>Not in effect. No login. There is no access code. This page does not make anyone owner or admin. Supabase is not connected.</p>
+      <p>Not in effect. No login. There is no access code. This page does not make anyone owner or admin. No cloud account service is connected.</p>
       <ul>
         <li>ATCFO — intended overall owner.</li>
         <li>Master sergeant — intended Training Chief and training-office lead, with training-wide visibility.</li>
-        <li>Vector Head — one per crew, intended maintainer for that crew's daily NOTAM and training input.</li>
+        <li>Vector Head — one per crew, intended maintainer for that crew's daily training-notice input.</li>
         <li>Other training-office staff — intended viewer.</li>
         <li>Controllers — intended to see their own training and approved crew reads.</li>
       </ul>
@@ -7335,7 +7411,7 @@ function vectorAnswerHTML(query, hits){
     const sel=S.crewSel||{};
     const allOn=vis.length&&vis.every(id=>sel[id]);
     const n=crewSelectedIds().length;
-    return `<div class="crw-tools"><button type="button" data-action="crwall">${allOn?'CLEAR SELECTION':'SELECT ALL'}</button><button type="button" data-action="crwexport">EXPORT</button><button type="button" data-action="crwdel"${n?' class="crw-hot"':''}>DELETE${n?' ('+n+')':''}</button></div>`;
+    return `<div class="crw-tools"><button type="button" data-action="crwall">${allOn?'CLEAR SELECTION':'SELECT ALL'}</button><button type="button" data-action="crwexport">EXPORT CREW</button><button type="button" data-action="crwdel"${n?' class="crw-hot"':''}>DELETE${n?' ('+n+')':''}</button></div>`;
   }
   function crewAskHTML(){
     const q=S.crewAsk; if(!q||q.kind!=='del') return '';
@@ -7370,11 +7446,11 @@ function vectorAnswerHTML(query, hits){
     return '<div class="crw-empty">No photo in this step.</div>';
   }
   function crewBoardHTML(){
-    const id=S.crewId==='B'?'B':'A';
+    const id=crewCanon(S.crewId)||'1';
     const rows=crewCurrentRows();
     const nLook=rows.filter(crewNeedsLook).length;
     return `<div class="crw" data-crw="board"><h2 class="sec">Crew notices</h2>${crewMsgHTML()}${crewAidHTML()}
-      <div class="crw-seg"><button type="button" class="${id==='A'?'on':''}" data-action="crwcrew" data-c="A">Crew A</button><button type="button" class="${id==='B'?'on':''}" data-action="crwcrew" data-c="B">Crew B</button></div>
+      <div class="crw-seg"><button type="button" class="${id==='1'?'on':''}" data-action="crwcrew" data-c="1">Crew 1</button><button type="button" class="${id==='2'?'on':''}" data-action="crwcrew" data-c="2">Crew 2</button></div>
       <p class="crw-fine"><button type="button" class="crw-quiet" data-action="crwoffice">Training office</button></p>
       <div class="crw-form">
         <label>Shift<select id="crw-shift" class="crw-in">${crewShiftOpts('')}</select></label>
@@ -7394,31 +7470,31 @@ function vectorAnswerHTML(query, hits){
   function crewFiltHTML(){
     const f=S.crewFilt||'all';
     const btn=(k,lab)=>`<button type="button" class="crw-chip${f===k?' on':''}" data-action="crwfilt" data-f="${k}">${lab}</button>`;
-    return `<div class="crw-chips">${btn('all','All')}${btn('A','Crew A')}${btn('B','Crew B')}${btn('look','Needs a look')}${btn('ocr','OCR pending')}</div>`;
+    return `<div class="crw-chips">${btn('all','All')}${btn('1','Crew 1')}${btn('2','Crew 2')}${btn('look','Needs a look')}${btn('ocr','OCR pending')}</div>`;
   }
   function crewOfficeHTML(){
     const list=crewLoad();
     const rows=crewCurrentRows();
-    const ca=list.filter(r=>r.crew==='A'), cb=list.filter(r=>r.crew==='B');
+    const ca=list.filter(r=>r.crew==='1'), cb=list.filter(r=>r.crew==='2');
     return `<div class="crw" data-crw="office"><h2 class="sec">Training office</h2>${crewMsgHTML()}${crewAidHTML()}
-      <p class="crw-fine">Local history on this browser. Not a live NOTAM feed. <button type="button" class="crw-quiet" data-action="crwboard">Crew workspace</button></p>
+      <p class="crw-fine">Local training history on this browser. Not a live notice feed and not an official source. <button type="button" class="crw-quiet" data-action="crwboard">Crew workspace</button></p>
       <div class="crw-office-rows">
-        <button type="button" data-action="crwcrew" data-c="A"><b>Crew A</b><span>${ca.length} saved · ${ca.filter(crewNeedsLook).length} need a look</span></button>
-        <button type="button" data-action="crwcrew" data-c="B"><b>Crew B</b><span>${cb.length} saved · ${cb.filter(crewNeedsLook).length} need a look</span></button>
+        <button type="button" data-action="crwcrew" data-c="1"><b>Crew 1</b><span>${ca.length} saved · ${ca.filter(crewNeedsLook).length} need a look</span></button>
+        <button type="button" data-action="crwcrew" data-c="2"><b>Crew 2</b><span>${cb.length} saved · ${cb.filter(crewNeedsLook).length} need a look</span></button>
       </div>
       ${crewFiltHTML()}
       <div class="crw-listhead"><span>Local history</span><span>${rows.length}</span></div>
       ${rows.length?rows.map(crewItemHTML).join(''):'<div class="crw-empty">No notices in this filter.</div>'}
       ${crewToolsHTML(rows)}
       <label class="crw-tool">Restore backup<input type="file" accept="application/json,.json" data-action="crwrestore" hidden></label>
-      ${crewDemoHTML((S.crewFilt==='A'||S.crewFilt==='B')?S.crewFilt:'all')}
+      ${crewDemoHTML(crewCanon(S.crewFilt)?S.crewFilt:'all')}
       ${crewAskHTML()}${crewRolesHTML(!!S.crewRolesOpen)}
       <p class="crw-fine">${escTxt(CREW_AID)} ${escTxt('Saved in this browser only. Clearing site data removes notices and photos. Nothing is sent to a server.')}</p>
     </div>`;
   }
   function crewReviewHTML(){
     const d=S.crewDraft||crewBlankDraft();
-    const id=d.crew==='B'?'B':'A';
+    const id=crewCanon(d.crew)||'1';
     const reading=d.ocrStatus==='reading';
     const ex=!!(d.example||/\bEXAMPLE\b/i.test(d.text||''));
     const photoNote=crewBlobUrl?'This photo is held for this visit until you save. Save keeps it in this browser only.':(d.hadThumb&&d.editId?'Saved photo is stored in this browser.':'No photo is held for this notice.');
@@ -7503,8 +7579,8 @@ function vectorAnswerHTML(query, hits){
     const replacing=S.crewView==='review'&&S.crewDraft;
     const d=replacing?Object.assign(crewBlankDraft(), S.crewDraft):crewDraftFromScreen();
     if(replacing) crewPull(d);
-    d.crew=S.crewId==='B'?'B':'A';
-    if(replacing&&S.crewDraft&&S.crewDraft.crew) d.crew=S.crewDraft.crew;
+    d.crew=crewCanon(S.crewId)||'1';
+    if(replacing&&S.crewDraft&&crewCanon(S.crewDraft.crew)) d.crew=crewCanon(S.crewDraft.crew);
     d.token=crewNewId();
     d.ack=false;
     d.lineNotes=[];
@@ -7525,11 +7601,11 @@ function vectorAnswerHTML(query, hits){
     try{
       if(!globalThis.Tesseract&&typeof navigator!=='undefined'&&navigator.onLine===false){
         d.ocrStatus='pending';
-        d.ocrError='Text reader is not on this device yet, and this browser is offline. OCR is pending and needs review. The photo was not uploaded.';
+        d.ocrError='OCR is pending. You can type the notice, review it, and save. Nothing was uploaded.';
         d.text='';
       }else{
         prog('Reading text on this device…');
-        const text=await myOcrImg(f, prog);
+        const text=await Promise.race([myOcrImg(f, prog), new Promise((_,rej)=>setTimeout(()=>rej(new Error('ocr-timeout')),45000))]);
         if(!S.crewDraft||S.crewDraft.token!==token) return;
         d.ocrText=String(text||''); d.text=d.ocrText;
         d.ocrStatus=d.ocrText.trim()?'read':'empty';
@@ -7537,8 +7613,11 @@ function vectorAnswerHTML(query, hits){
       }
     }catch(err){
       if(!S.crewDraft||S.crewDraft.token!==token) return;
-      d.ocrStatus='failed';
-      d.ocrError='Could not read that image. OCR is pending. Nothing was uploaded.';
+      const offline=typeof navigator!=='undefined'&&navigator.onLine===false;
+      const timed=err&&String(err.message||err)==='ocr-timeout';
+      d.text=d.text||'';
+      if(offline||timed){ d.ocrStatus='pending'; d.ocrError='OCR is pending. You can type the notice, review it, and save. Nothing was uploaded.'; }
+      else { d.ocrStatus='failed'; d.ocrError='Could not read that image. OCR is pending. You can type the notice, review it, and save. Nothing was uploaded.'; }
     }
     if(!S.crewDraft||S.crewDraft.token!==token) return;
     d.ack=false; d.lineNotes=[];
@@ -7550,19 +7629,25 @@ function vectorAnswerHTML(query, hits){
     if(!f) return;
     try{
       const data=JSON.parse(await f.text());
+      const beforeText={};
+      (data.records||[]).forEach(raw=>{ if(raw&&raw.id!=null) beforeText[String(raw.id)]=raw.reviewedText!=null?String(raw.reviewedText):null; });
       const merged=crewMergeBackup(crewLoad(), data);
       const thumbs=(data&&data.thumbs)||{};
-      let photos=0;
+      const listed=new Set((data.photosMissing||[]).map(String));
+      let photos=0; const missing=[];
       for(const rec of merged){
+        if(beforeText[rec.id]!=null) rec.reviewedText=String(beforeText[rec.id]).slice(0,20000);
         const t=thumbs[rec.id];
+        const claimed=!!rec.thumb||listed.has(rec.id);
         if(typeof t==='string'&&t.indexOf('data:image/')===0){
           const blob=crewDataUrlBlob(t);
-          if(!blob) continue;
-          try{ await crewThumbPut(rec.id, blob); rec.thumb=true; photos++; }catch(e){ rec.thumb=false; }
+          if(blob){ try{ await crewThumbPut(rec.id, blob); rec.thumb=true; photos++; continue; }catch(e){ rec.thumb=false; missing.push(rec.id); continue; } }
         }
+        if(claimed){ rec.thumb=false; if(missing.indexOf(rec.id)<0) missing.push(rec.id); }
       }
+      merged.forEach(r=>{ const again=crewSanitizeRecord(r); if(again){ r.parse=again.parse; r.flags=again.flags; r.crew=again.crew; } });
       crewWrite(merged);
-      set({crewView:'office', crewMsg:'Restored '+(data.records||[]).length+' notices onto this browser only'+(photos?' ('+photos+' photos)':'')+'. Nothing was uploaded.', crewAsk:null});
+      set({crewView:'office', crewMsg:'Restored '+(data.records||[]).length+' notices onto this browser only. Photos restored: '+photos+'. Missing photos: '+missing.length+'. Reviewed text was kept. Training aid only. Nothing was uploaded.', crewAsk:null});
     }catch(e){
       set({crewMsg:'That file is not a crew backup. Nothing was changed.'});
     }
@@ -7570,26 +7655,21 @@ function vectorAnswerHTML(query, hits){
   async function crewDoSave(){
     const d=S.crewDraft; if(!d) return;
     crewPull(d);
-    const hadBlob=!!crewBlob;
     const built=crewBuildRecord(d);
     if(!built.ok){ set({crewMsg:built.reason}); return; }
-    const rec=built.rec;
-    let keepThumb=false;
-    if(crewBlob){
-      try{ await crewThumbPut(rec.id, crewBlob); keepThumb=true; rec.permanence='local-browser'; }
-      catch(e){ keepThumb=false; rec.permanence='text-local-photo-not-stored'; }
-    }else if(d.hadThumb&&d.editId){ keepThumb=true; }
-    rec.thumb=keepThumb;
-    const all=crewLoad();
-    const i=all.findIndex(x=>x.id===rec.id);
-    if(i>=0) all[i]=rec; else all.unshift(rec);
-    try{ crewWrite(all); }
-    catch(e){ set({crewMsg:'Could not save — browser storage is full. Nothing was uploaded.'}); return; }
+    const outcome=await crewCommit(built.rec, crewBlob, {keepExisting:!crewBlob&&!!(d.hadThumb&&d.editId)});
+    if(!outcome.complete){
+      const why=outcome.image&&outcome.image.reason==='indexeddb-failed'
+        ?'Not saved. The photo could not be stored, so the notice was not written.'
+        :'Not saved. The notice and photo were not stored together.';
+      set({crewMsg:why+' Training aid only. Nothing was uploaded.'});
+      return;
+    }
     crewSetBlob(null);
-    const msg=(hadBlob&&!keepThumb)
-      ?'Text saved on this browser. The photo could not be stored and will not remain. Training aid only — verify against the official current NOTAM source.'
-      :'Saved on this browser. Training aid only — verify against the official current NOTAM source.';
-    set({crewDraft:null, crewView:'read', crewReadId:rec.id, crewId:rec.crew, crewMsg:msg, crewAsk:null});
+    const msg=outcome.image&&outcome.image.reason==='no-photo'
+      ?'Saved on this browser. No photo was stored with this notice. Training aid only — verify against the official current NOTAM source.'
+      :'Saved on this browser, including the photo. Training aid only — verify against the official current NOTAM source. This is not a live status.';
+    set({crewDraft:null, crewView:'read', crewReadId:outcome.record.id, crewId:outcome.record.crew, crewMsg:msg, crewAsk:null});
   }
   async function crewDoDelete(ids){
     const have=new Set(crewLoad().map(r=>r.id));
@@ -7609,7 +7689,7 @@ function vectorAnswerHTML(query, hits){
       set({crewSel:sel},{keepScroll:true}); return;
     }
     if(a==='crwcrew'){
-      const c=el.dataset.c==='B'?'B':'A';
+      const c=crewCanon(el.dataset.c)||'1';
       crewSetBlob(null);
       set({tab:'crew', crewId:c, crewView:'board', crewDraft:null, crewAsk:null, crewMsg:''}); return;
     }
@@ -7694,14 +7774,15 @@ function vectorAnswerHTML(query, hits){
     }
     if(a==='crwaskno'){ set({crewAsk:null}); return; }
     if(a==='crwexport'){
-      crewExport().then(r=>set({crewMsg:r.missed?'Backup downloaded. Some photos could not be included.':'Backup downloaded to this device. It was not uploaded.'})).catch(()=>set({crewMsg:'Could not build the local backup.'}));
+      crewExport().then(r=>set({crewMsg:r.missed?('Crew text-and-photos file downloaded. It is not the full device backup. '+r.photosMissing.length+' photo(s) were missing and are listed in the file, so this copy is not complete.'):'Crew text and photos downloaded. This is not the full device backup. It was not uploaded.'})).catch(()=>set({crewMsg:'Could not build the crew text-and-photos file.'}));
       return;
     }
   }
   globalThis.vatcCrew={
     key:CREW_KEY, aid:CREW_AID, parse:crewParseNotice, canSave:crewCanSave, build:crewBuildRecord,
     flags:crewFlags, sanitize:crewSanitizeRecord, merge:crewMergeBackup, needsLook:crewNeedsLook,
-    access:crewPlannedAccess, rolesHTML:crewRolesHTML, ocrLab:crewOcrLab, demoRoster:CREW_DEMO_ROSTER, demoHTML:crewDemoHTML
+    access:crewPlannedAccess, rolesHTML:crewRolesHTML, ocrLab:crewOcrLab, demoRoster:CREW_DEMO_ROSTER, demoHTML:crewDemoHTML,
+    canon:crewCanon, commit:crewCommit, attachToDeviceBackup:crewAttachToDeviceBackup
   };
   /* CREW_NOTICES:END */
 
