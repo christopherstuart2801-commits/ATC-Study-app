@@ -429,7 +429,35 @@ function browserSmoke(){
           assert.ok(info.n>0);
           assert.match(info.sample, /INFLIGHT|inflight|pilot reports/i);
           assert.equal(info.tab, 0);
-          const focused=await waitEval(send, `(()=>{ const t=document.getElementById('pdftext'); t.focus(); const cs=getComputedStyle(t); return document.activeElement===t && cs.outlineStyle!=='none' ? 'focus' : 'nofocus '+cs.outlineStyle; })()`);
+          const placed=await waitEval(send, `(()=>{
+            const stage=document.querySelector('#vatc .pdfstage');
+            const marks=[...document.querySelectorAll('#vatc .pdftext .src-hl')].filter(m=>m.getBoundingClientRect().height>0);
+            const zin=document.querySelector('[data-action="pdfzoomin"]');
+            const zout=document.querySelector('[data-action="pdfzoomout"]');
+            if(!stage || !marks.length || !zin || !zout) return '';
+            const zcs=getComputedStyle(zin);
+            const sr=stage.getBoundingClientRect();
+            let top=Infinity,bottom=-Infinity,left=Infinity,right=-Infinity;
+            marks.forEach(m=>{ const r=m.getBoundingClientRect(); top=Math.min(top,r.top); bottom=Math.max(bottom,r.bottom); left=Math.min(left,r.left); right=Math.max(right,r.right); });
+            const tall=(bottom-top)>sr.height*0.72;
+            const mid=(top+bottom)/2;
+            const vertOk=tall ? (top>=sr.top-4 && top<=sr.top+sr.height*0.34) : (mid>=sr.top+sr.height*0.18 && mid<=sr.top+sr.height*0.72);
+            const vis=bottom>sr.top+8 && top<sr.bottom-8;
+            const zoom=parseFloat(stage.getAttribute('data-pdfzoom')||'1');
+            const bandW=right-left;
+            const touch=zout.title==='Zoom out' && zin.title==='Zoom in' && parseFloat(zcs.minHeight)>=44 && parseFloat(zcs.minWidth)>=44;
+            const fit=stage.getAttribute('data-focusfit')==='1';
+            const bandOk=bandW<=sr.width+12;
+            return JSON.stringify({vertOk, tall, vis, zoom, bandW, stageW:Math.round(sr.width), stageH:Math.round(sr.height), top:Math.round(top-sr.top), mid:Math.round(mid-sr.top), touch, fit, bandOk, titles:[zout.title, zin.title], min:[zcs.minWidth, zcs.minHeight]});
+          })()`);
+          const place=JSON.parse(placed);
+          const shot=await send('Page.captureScreenshot', {format:'png'});
+          if(shot && shot.data){
+            fs.mkdirSync('/opt/cursor/artifacts', {recursive:true});
+            fs.writeFileSync('/opt/cursor/artifacts/study-reader-mobile.png', Buffer.from(shot.data, 'base64'));
+          }
+          assert.ok(place.touch && place.fit && place.vertOk && place.vis && place.zoom>=1 && place.zoom<=1.7 && place.bandOk, 'highlighted band is not in the reader center, or zoom controls are missing '+placed);
+          const focused=await waitEval(send, `(()=>{ const t=document.getElementById('pdftext'); t.focus(); const cs=getComputedStyle(t); const id=document.activeElement&&document.activeElement.id; return document.activeElement===t && cs.outlineStyle!=='none' ? 'focus' : 'nofocus '+cs.outlineStyle+' active='+id+' tab='+t.tabIndex; })()`);
           assert.equal(focused, 'focus');
         }
         const overflow=await waitEval(send, `document.documentElement.scrollWidth<=document.documentElement.clientWidth+1 ? 'fit' : ('overflow '+document.documentElement.scrollWidth)`);
