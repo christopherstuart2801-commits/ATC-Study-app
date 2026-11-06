@@ -10,7 +10,7 @@ const el=()=>({innerHTML:'',value:'',style:{},classList:{add(){},remove(){},cont
 const ctx={console,document:{getElementById:el,querySelector:el,querySelectorAll:()=>[],addEventListener(){}},localStorage:{getItem(){return null;},setItem(){},removeItem(){},length:0},setTimeout(){},clearTimeout(){},requestAnimationFrame(){},navigator:{},location:{},history:{}};
 ctx.window=ctx;vm.createContext(ctx);
 let code=html.match(/<script>([\s\S]*)<\/script>\s*<\/body>/)[1];
-const exported='TOWER_PAPER,TOWER_CITES,TOWER_PAPER_CARDS,SYLLABUS,FC_POS,FC_UC,FC_SETS,S,syllabusFor,rfcLearn,citePubAndSec,pageForCite,fcCiteStr,tstBody,tstStart,tstCards,acadRefKey,acadTopicRefs';
+const exported='TOWER_PAPER,TOWER_CITES,TOWER_PAPER_CARDS,SYLLABUS,FC_POS,FC_UC,FC_SETS,S,syllabusFor,rfcLearn,citePubAndSec,pageForCite,fcCiteStr,tstBody,tstStart,tstCards,acadRefKey,acadTopicRefs,learnView';
 const end=/document\.getElementById\('vatc'\)\.addEventListener\('click'[\s\S]*render\(\);\s*\}\)\(\);/;
 assert(end.test(code),'runtime instrumentation point');
 code=code.replace(end,`globalThis.V={${exported}};})();`);vm.runInContext(code,ctx);
@@ -20,9 +20,22 @@ const pages={};for(const [key,file] of [['jo','JO-7110.65BB.pdf'],['facman','NFG
   pages[key]=execFileSync('pdftotext',['-layout',path.join(root,'site/docs',file),'-'],{maxBuffer:15e6,encoding:'utf8'}).split('\f');
 }
 let checks=0;const check=(name,fn)=>{fn();checks++;console.log('PASS '+name);};
-check('CD/GND/LCL share the explicit Tower packet; radar packets untouched',()=>{
- for(const pos of ['cd','gnd','lcl']) {assert.equal(V.syllabusFor(pos).list,V.TOWER_PAPER);V.S.pos=pos;V.S.rfcTopic=0;const view=V.rfcLearn();assert.match(view,/Shared Tower paper/);assert.doesNotMatch(view,/No ACAD packet/);}
+check('CD alone gets the Clearance Delivery / Flight Data tower packet; radar packets untouched',()=>{
+ assert.equal(V.syllabusFor('cd').list,V.TOWER_PAPER);V.S.pos='cd';V.S.rfcTopic=0;const view=V.rfcLearn();
+ assert.match(view,/Clearance Delivery \/ Flight Data/);assert.doesNotMatch(view,/No ACAD packet|Shared Tower|CD \/ GND \/ LCL|SAMPLE/);
+ assert.equal(V.FC_UC.cd['uc-test'].filter(c=>c.id.startsWith('tower-paper-')).length,22);
  for(const pos of ['fin','rfd','arr']) assert(!V.syllabusFor(pos).list.some(t=>t.towerPaper));
+});
+check('GND and LCL keep the exact pre-change empty Learn/test state',()=>{
+ for(const pos of ['gnd','lcl']){
+  assert.equal(V.syllabusFor(pos).list.length,0,pos+' syllabus');
+  assert(!V.syllabusFor(pos).list.some(t=>t.towerPaper));
+  V.S.pos=pos;V.S.rfcTopic=0;V.S.learnMode='acad';V.S.pub=null;const view=V.learnView();
+  assert.match(view,/No ACAD packet for this position yet\./);assert.doesNotMatch(view,/Tower packet|Shared Tower|tower-paper/);
+  V.S.tst=null;assert.equal(V.tstBody(),'<div class="explain">No ACAD packet for this position yet.</div>');
+  const deck=(V.FC_UC[pos]||{})['uc-test']||[];assert.equal(deck.length,0,pos+' FC_UC uc-test');
+  assert(!(V.FC_POS[pos]||[]).some(c=>String(c.id).startsWith('tower-paper-')),pos+' FC_POS');
+ }
 });
 check('paper ACAD-0520/0521/0522/0523 refs are present with no radar-only Topic 1 extras',()=>{
  const all=V.TOWER_PAPER.flatMap(t=>t.ids);for(const code of ['ACAD-0520','ACAD-0521','ACAD-0522','ACAD-0523'])assert(all.includes(code));
@@ -72,7 +85,7 @@ check('SOCAL LOA / CNAF / NAVAIR / SAN TEC refs visibly blocked, not clickable o
  V.S.rfcTopic=4;const weather=V.rfcLearn();assert.match(weather,/No sourced LQs yet/);assert.doesNotMatch(weather,/data-action="rfctest"|Strip learning/);
 });
 check('Tower LQs always use written input; new Practice cards stay accessible',()=>{
- for(const pos of ['cd','gnd','lcl']){V.S.pos=pos;for(const T of V.TOWER_PAPER.filter(t=>t.test.length)){
+ for(const pos of ['cd']){V.S.pos=pos;for(const T of V.TOWER_PAPER.filter(t=>t.test.length)){
   V.S.tst=V.tstStart(pos,T.n,'lqs');const out=V.tstBody();assert.match(out,/<textarea/);assert.doesNotMatch(out,/data-action="tstmc"/);
   const added=V.tstCards(pos,T).filter(c=>c.id.startsWith('tower-paper-'));assert.equal(added.length,T.test.length);
  }}

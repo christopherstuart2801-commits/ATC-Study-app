@@ -4384,7 +4384,7 @@ function vectorAnswerHTML(query, hits){
   }
   function rfcLearn(){
     const pack=syllabusFor(S.pos); const RFC=pack.list;
-    const sharedBanner=isTowerPaperPos(S.pos)?'<div class="explain">Shared Tower paper · CD / GND / LCL. Topics 1–4 are shared syllabus coverage, not separate position qualifications. LQs are a verified starter bank; missing pubs remain blocked.</div>':'';
+    const sharedBanner=isTowerPaperPos(S.pos)?'<div class="explain">Clearance Delivery / Flight Data · Tower packet Topics 1–4. LQs are a verified starter bank; missing pubs remain blocked.</div>':'';
     const demoBanner=sharedBanner+(pack.demo?`<div class="pill warn" style="margin:0 0 8px">SAMPLE · ${PN[S.pos]||S.pos} — Final ACADs until this position’s paper lands</div>`:'');
     const T=RFC.find(t=>t.n===S.rfcTopic);
     if(!T){
@@ -5792,16 +5792,16 @@ function vectorAnswerHTML(query, hits){
     "blocked": "PUB NEEDED: Weather Observations by Control Tower Personnel is not loaded. The supplied paper is a rubric, not answer text."
   }
 };
-  const isTowerPaperPos=k=>['cd','gnd','lcl'].includes(k);
+  const isTowerPaperPos=k=>k==='cd';
   const towerCite=cite=>TOWER_CITES[String(cite||'').replace(/^JO\s+/, '7110.65 ')];
   const TOWER_PAPER_CARDS=TOWER_PAPER.flatMap(T=>T.test.map(q=>({id:q.id,q:q.q,a:q.a,tag:q.tag,pos:q.pos,src:q.src,o:q.acad})));
-  ['cd','gnd','lcl'].forEach(pos=>{
+  ['cd'].forEach(pos=>{
     SYLLABUS[pos]=TOWER_PAPER;
     FC_POS[pos].push(...TOWER_PAPER_CARDS.filter(c=>c.pos==='any'||c.pos===pos));
     FC_UC[pos]=FC_UC[pos]||{};
     FC_UC[pos]['uc-test']=(FC_UC[pos]['uc-test']||[]).concat(TOWER_PAPER_CARDS);
     FC_UC_GUIDE[pos]=FC_UC_GUIDE[pos]||{};
-    FC_UC_GUIDE[pos]['uc-test']={covers:'Shared Tower paper Topics 1–4; verified radio, movement, strips and clearance starter bank.',from:'JO 7110.65BB and NFG FACMAN July 2026; missing LOA/CNAF/NAVAIR refs remain blocked.',how:'Use Learn checklists first, then written LQs. Source chips open the verified pub; this is not a position qualification.'};
+    FC_UC_GUIDE[pos]['uc-test']={covers:'Clearance Delivery / Flight Data tower packet Topics 1–4; verified radio, movement, strips and clearance starter bank.',from:'JO 7110.65BB and NFG FACMAN July 2026; missing LOA/CNAF/NAVAIR refs remain blocked.',how:'Use Learn checklists first, then written LQs. Source chips open the verified pub; this is not a position qualification.'};
   });
   function acadRefKey(T,cite){ return (T.towerPaper?'tower-paper:':'')+T.n+':'+cite; }
   /* TOWER_PAPER:END */
@@ -6379,7 +6379,7 @@ function vectorAnswerHTML(query, hits){
       const lq=L?`<button type="button" class="tst-go" data-action="tstpick" data-n="${T.n}" data-k="lqs">LQS · ${L}<small>${meta(S.pos+':'+T.n+':lqs')}</small></button>`:`<span class="tst-none">No sourced LQs yet</span>`;
       const pr=P?`<button type="button" class="tst-go sec" data-action="tstpick" data-n="${T.n}" data-k="prac">Practice · ${Math.min(20,P)}<small>${meta(S.pos+':'+T.n+':prac')}</small></button>`:'';
       return `<div class="tst-row"><div class="tst-h"><b class="tst-code">${escTxt(T.id)}</b><span class="tst-title">${escTxt(T.t||'')}</span></div><div class="tst-btns">${lq}${pr}</div></div>`; }).join('');
-    const intro=isTowerPaperPos(S.pos)?'Shared Tower paper · CD / GND / LCL. LQS = verified written-answer starter bank, not questions printed on the syllabus. Practice = source-cited cards from that ACAD.':"LQS = his packet's test questions in paper order · Practice = 20 source-cited cards from that ACAD.";
+    const intro=isTowerPaperPos(S.pos)?'Clearance Delivery / Flight Data · Tower packet. LQS = verified written-answer starter bank, not questions printed on the syllabus. Practice = source-cited cards from that ACAD.':"LQS = his packet's test questions in paper order · Practice = 20 source-cited cards from that ACAD.";
     return `<div class="tst-intro">${intro}</div><div class="tst-list">${rows}</div>`;
   }
   function tstBody(){

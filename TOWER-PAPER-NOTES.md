@@ -10,7 +10,9 @@ The four supplied syllabus photos were read directly from `/workspace/vector-tow
 - Topic 4: `a24ca93d19b045f24f7a65b7ff6348b7202c7f61d5fb2adc8f39310ad3b989aa.jpg`
 
 Photos supply syllabus topics/references, **not an answer key**. They are not shipped.
-The packet is explicitly shared by CD/GND/LCL; it is not three position-specific qualification syllabi.
+**Scope (owner correction):** the packet is wired into Learn under **Clearance Delivery / Flight Data (cd) only**, like the radar
+positions. Ground and Local are untouched: empty syllabus, the original "No ACAD packet for this position yet." Learn/TEST
+state, no tower cards in FC_POS or the FC_UC uc-test deck. Card `pos` tags from the paper are kept as authored, not reassigned.
 The new bank has 22 written-answer LQs and 22 matching uniquely defined flashcards:
 
 | Paper topic | ACAD | LQs | Cards |
@@ -37,6 +39,8 @@ No backend/login/PWA work. Existing radar syllabus data is unchanged.
 - SOCAL TRACON LOA: IFR departures/initial SID altitudes and clearances, VFR-on-top, clearance priority.
 - CNAF M-3710: 5.3.4.1 takeoff minimums, 5.3.5.2 multipiloted approach criteria.
 - NAVAIR Weather Observations by Control Tower Personnel: all seven visibility rubric areas. No source = no LQs.
+  The owner sent the NAVAIR PDF, but the attachment path was not readable on the build machine at build time, so
+  Topic 4 stays blocked. Nothing was integrated or inferred from it; it needs a readable re-upload.
 - SAN TEC route entry/read: current FAA Chart Supplement listing is not loaded. FACMAN 5-1-9 is linked for
   context/classifications only, not substituted for the actual SAN listing.
 - Photo says 1939/4777/4779; actual July 2026 FACMAN 8-1-4 says **1939/4977/4779**. UI preserves and explains
@@ -51,9 +55,9 @@ Long written responses retain the app's existing compare/self-grade pattern.
 
 - `node scripts/test-fc-queue.cjs`: 49 passed, 0 failed.
 - `node scripts/test-my-sets.cjs`: all 10 checks passed, no page errors.
-- `node scripts/test-tower-paper.cjs`: 7 grouped checks passed, including actual PDF excerpt and page checks,
+- `node scripts/test-tower-paper.cjs`: 8 grouped checks passed (adds GND/LCL empty-state + empty uc-test deck, CD-only packet), including actual PDF excerpt and page checks,
   paper refs, source fields, IDs, tags, written-only LQs, missing-pub blocks and radar-progress isolation.
 - `node site/scripts/verify-ask-rfc.cjs`: same 12 baseline failures, no new failures (baseline captured before edits).
-- Mobile Chromium smoke (390×844): CD/GND/LCL open shared packet; blocked refs have no action;
+- Mobile Chromium smoke (390×844): CD opens the tower packet; GND/LCL show the original empty state; earlier CD smoke: blocked refs have no action;
   no horizontal overflow; clearance relay opens JO PDF page 218; written LQ input/reveal renders; no page errors.
 - Root and site HTML are byte-identical.
