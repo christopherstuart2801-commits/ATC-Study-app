@@ -43,7 +43,7 @@
       },
       canInstall: !!state.canInstall,
       installed: !!state.installed,
-      storage: state.storage ? { usage: state.storage.usage, quota: state.storage.quota } : null
+      storage: state.storage ? { usage: state.storage.usage, quota: state.storage.quota, reported: !!state.storage.reported } : null
     };
   }
 
@@ -68,6 +68,26 @@
     });
   }
 
+  function refreshEstimate() {
+    var nav = root.navigator;
+    if (!(nav && nav.storage && nav.storage.estimate)) {
+      state.storage = { usage: null, quota: null, reported: false };
+      emit();
+      return Promise.resolve();
+    }
+    return nav.storage.estimate().then(function (est) {
+      state.storage = {
+        usage: est && typeof est.usage === 'number' ? est.usage : null,
+        quota: est && typeof est.quota === 'number' ? est.quota : null,
+        reported: true
+      };
+      emit();
+    }).catch(function () {
+      state.storage = { usage: null, quota: null, reported: false };
+      emit();
+    });
+  }
+
   function applyStatus(data) {
     if (!data) return;
     if (data.version) state.version = state.version || data.version;
@@ -82,6 +102,7 @@
     }
     if (state.sw !== 'error') state.sw = 'ready';
     emit();
+    if (state.shellReady && state.refs && !state.refs.running) refreshEstimate();
   }
 
   function refreshStatus() {
@@ -151,12 +172,7 @@
       state.installed = true;
       emit();
     });
-    if (root.navigator && root.navigator.storage && root.navigator.storage.estimate) {
-      root.navigator.storage.estimate().then(function (est) {
-        state.storage = { usage: est.usage, quota: est.quota };
-        emit();
-      }).catch(function () {});
-    }
+    refreshEstimate();
     if (!(root.navigator && root.navigator.serviceWorker)) {
       state.sw = 'unsupported';
       emit();
@@ -170,12 +186,13 @@
         state.refs.running = data.type === 'REF_PROGRESS';
         if (data.failed) state.refs.failed = data.failed;
         emit();
-        if (data.type === 'REF_DONE') refreshStatus();
+        if (data.type === 'REF_DONE') { refreshStatus(); refreshEstimate(); }
       }
     });
     root.navigator.serviceWorker.addEventListener('controllerchange', function () {
       if (wantsReload) { root.location.reload(); return; }
       state.sw = 'ready';
+      refreshStatus();
       kickRefs();
     });
     root.navigator.serviceWorker.register('sw.js').then(function (reg) {
@@ -184,7 +201,7 @@
       emit();
       watchRegistration(reg);
       reg.update().catch(function () {});
-      if (root.navigator.serviceWorker.controller) kickRefs();
+      if (root.navigator.serviceWorker.controller) { refreshStatus(); kickRefs(); }
     }).catch(function (err) {
       state.sw = 'error';
       state.swError = String((err && err.message) || err);
