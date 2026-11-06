@@ -4978,11 +4978,28 @@ function vectorAnswerHTML(query, hits){
   // ===== chrome =====
   function fmtBytes(n){ if(n==null||!isFinite(n)) return 'unavailable'; if(n<1024) return Math.round(n)+' B'; if(n<1048576) return (n/1024).toFixed(1)+' KB'; return (n/1048576).toFixed(1)+' MB'; }
   function deviceSnap(){ return (globalThis.VATC_DEVICE&&VATC_DEVICE.snapshot)?VATC_DEVICE.snapshot():{online:navigator.onLine!==false, version:APP_VER, sw:'unknown', swError:'', shellReady:false, refs:{total:0,cached:0,failed:[],running:false}, canInstall:false, installed:false, storage:null}; }
+  /* File counts come from the service worker. navigator.storage.estimate() is separate origin metadata and may stay 0 even when those files are saved. */
+  function siteFilesLine(d, refs){
+    const total=refs.total||0, cached=refs.cached||0, failed=refs.failed||[];
+    if(!d.shellReady) return 'App shell is not saved yet. Publication save waits until the shell is saved.';
+    if(refs.running || (total>0 && cached<total && !failed.length)) return 'Saving site files… '+cached+'/'+(total||'…')+' publications.';
+    if(!total) return 'App shell is saved. The publication list is not in yet.';
+    const head='Site files saved: '+cached+'/'+total+' publications.';
+    if(failed.length) return head+' '+failed.length+' could not be saved.';
+    return head;
+  }
+  function storageEstimateLine(d){
+    const s=d.storage;
+    if(!s||!s.reported) return 'Browser storage estimate: not reported. This is origin metadata, not the publication count.';
+    const usage=s.usage==null?'not reported':fmtBytes(s.usage);
+    const quota=s.quota==null?'':' of '+fmtBytes(s.quota);
+    if(s.usage===0) return 'Browser storage estimate: '+usage+quota+'. Reported 0 from origin metadata. The estimate may exclude the cache and does not mean the files above are missing.';
+    return 'Browser storage estimate: '+usage+quota+' (estimate may exclude the cache).';
+  }
   function deviceStatusHTML(){
     const d=deviceSnap(), refs=d.refs||{total:0,cached:0,failed:[],running:false};
     const fails=(refs.failed||[]).slice(0,6).map(f=>escTxt(String(f.url||f).split('/').pop())+(f.error?' — '+escTxt(f.error):'')).join('<br>');
-    const store=d.storage?'About '+fmtBytes(d.storage.usage)+' used of '+fmtBytes(d.storage.quota)+'.':'This browser did not report a storage estimate.';
-    return `<dl class="health"><dt>VERSION</dt><dd>v${escTxt(d.version||APP_VER)} · progress stamp ${escTxt(PROGRESS_VER)}</dd><dt>CONNECTION</dt><dd>${d.online?'Online':'Offline'}</dd><dt>ACCOUNT</dt><dd>None on this version</dd><dt>APP SHELL</dt><dd>${d.shellReady?'Saved on this device, including the Head Guide':'Not saved yet. Open this site once while online.'}</dd><dt>SERVICE WORKER</dt><dd>${escTxt(d.sw||'unknown')}${d.swError?' — '+escTxt(d.swError):''}</dd><dt>PUBLICATIONS</dt><dd>${refs.cached||0} / ${refs.total||0} saved${refs.running?' · saving':''}${fails?'<div class="note">'+fails+'</div>':''}</dd><dt>INSTALL</dt><dd>${d.installed?'Installed on this device.':d.canInstall?'This browser can install.':'Use the browser steps below.'}</dd><dt>STORAGE</dt><dd>${store}</dd></dl>`;
+    return `<dl class="health"><dt>VERSION</dt><dd>v${escTxt(d.version||APP_VER)} · progress stamp ${escTxt(PROGRESS_VER)}</dd><dt>CONNECTION</dt><dd>${d.online?'Online':'Offline'}</dd><dt>ACCOUNT</dt><dd>None on this version</dd><dt>APP SHELL</dt><dd>${d.shellReady?'Saved on this device, including the Head Guide':'Not saved yet. Open this site once while online.'}</dd><dt>SERVICE WORKER</dt><dd>${escTxt(d.sw||'unknown')}${d.swError?' — '+escTxt(d.swError):''}</dd><dt>SITE FILES</dt><dd>${escTxt(siteFilesLine(d, refs))}${fails?'<div class="note">'+fails+'</div>':''}</dd><dt>BROWSER STORAGE ESTIMATE</dt><dd>${escTxt(storageEstimateLine(d))}</dd><dt>INSTALL</dt><dd>${d.installed?'Installed on this device.':d.canInstall?'This browser can install.':'Use the browser steps below.'}</dd></dl>`;
   }
   function installHelpHTML(){
     const d=deviceSnap();
