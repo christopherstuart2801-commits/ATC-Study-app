@@ -129,22 +129,31 @@ try {
   }, { timeout: 30000 }).then(() => true).catch(() => false);
   if (!shellReady) fail('shell cache missing'); else pass('shell cache exists');
 
+  await page.waitForFunction(() => {
+    const s = window.VATC_DEVICE && window.VATC_DEVICE.snapshot();
+    return s && s.shellReady && s.refs && s.refs.total > 0 && s.refs.cached === s.refs.total && !s.refs.running;
+  }, { timeout: 180000 });
+  const refSnap = await page.evaluate(() => window.VATC_DEVICE.snapshot().refs);
+  pass('all ' + refSnap.cached + ' enumerated publications saved');
+
   await page.click('[data-action="device"]');
   await page.waitForSelector('.modal.device', { timeout: 10000 });
   const deviceText = await page.$eval('.modal.device', el => el.innerText);
   if (!/Add to Home Screen/.test(deviceText) || !/Install VECTOR ATC/.test(deviceText) || !/not an app-store download/.test(deviceText) || !/not a Department of Defense approval/.test(deviceText)) fail('install guidance missing');
   else pass('device panel shows Windows and iPhone install guidance');
+  if (!/Site files saved: \d+\/\d+ publications/.test(deviceText) || !/Browser storage estimate:/.test(deviceText) || !/may exclude the cache/.test(deviceText)) fail('storage wording missing: ' + deviceText.slice(0, 700));
+  else pass('device panel counts saved publications separately from the browser estimate');
+  if (/Reported 0/.test(deviceText) && !/does not mean the files above are missing/.test(deviceText)) fail('zero estimate lacks the cache caveat');
   const installOffered = await page.evaluate(() => !!(window.VATC_DEVICE && window.VATC_DEVICE.snapshot().canInstall));
+  const measured = await page.evaluate(async () => {
+    const est = (navigator.storage && navigator.storage.estimate) ? await navigator.storage.estimate() : null;
+    const s = window.VATC_DEVICE.snapshot();
+    return { estimate: est, shellReady: s.shellReady, refs: s.refs, storage: s.storage };
+  });
   console.log('INFO beforeinstallprompt offered:', installOffered);
+  console.log('INFO storage estimate after shell and publications:', JSON.stringify(measured));
   await page.screenshot({ path: path.join(artifacts, 'vector-device-narrow.png') });
   await page.click('[data-action="deviceclose"]');
-
-  await page.waitForFunction(() => {
-    const s = window.VATC_DEVICE && window.VATC_DEVICE.snapshot();
-    return s && s.refs && s.refs.total > 0 && s.refs.cached === s.refs.total && !s.refs.running;
-  }, { timeout: 180000 });
-  const refSnap = await page.evaluate(() => window.VATC_DEVICE.snapshot().refs);
-  pass('all ' + refSnap.cached + ' enumerated publications saved');
 
   const noteCached = await page.evaluate(async () => {
     await fetch('docs/NATOPS-VECTOR-ATC-one-pager.md');

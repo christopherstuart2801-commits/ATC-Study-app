@@ -226,6 +226,10 @@ function envFor(fetchImpl, caches) {
   ok('install guidance names Windows and iPhone without a store', /Add to Home Screen/.test(html) && /Install VECTOR ATC/.test(html) && /not an app-store download/.test(html) && /not a Department of Defense approval/.test(html));
   ok('import asks before replace', /Replace all study progress on this device with this backup/.test(html) && /Cancel leaves current progress unchanged/.test(html) && /VATC_BACKUP\.apply\(/.test(html));
   ok('page does not add supabase or clear storage on update', !/supabase/i.test(html) && !/localStorage\.clear/.test(html));
+  ok('storage status separates saved files from the browser estimate',
+    /function siteFilesLine/.test(html) && /Site files saved:/.test(html) && /App shell is not saved yet/.test(html) &&
+    /Browser storage estimate:/.test(html) && /may exclude the cache/.test(html) && /does not mean the files above are missing/.test(html) &&
+    !/About '\+fmtBytes/.test(html));
 
   function sliceBetween(a, b) {
     const i = html.indexOf(a);
