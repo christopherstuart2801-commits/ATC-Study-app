@@ -21,7 +21,8 @@
     'vatc.fcRated': 'objmap',
     'vatc.tests.v1': 'tests',
     'vatc.mySets.v1': 'sets',
-    'vatc.pkOpen.v1': 'boolmap'
+    'vatc.pkOpen.v1': 'boolmap',
+    'vatc.positionRecords.v1': 'posrecs'
   };
 
   function isPlain(v) {
@@ -98,6 +99,11 @@
         if (row.date != null && typeof row.date !== 'string') return 'test date must be a string';
       }
       return '';
+    }
+    if (kind === 'posrecs') {
+      var pos = root.VATC_POSREC;
+      if (!pos || !pos.validateStore) return walk(v, 0);
+      return pos.validateStore(v);
     }
     if (kind === 'sets') {
       if (!Array.isArray(v)) return 'custom sets must be a list';

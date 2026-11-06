@@ -9,7 +9,8 @@
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
-    "test:site": "node site/scripts/test-offline.cjs && node site/scripts/test-fc-queue.cjs"
+    "test:site": "node site/scripts/test-offline.cjs && node site/scripts/test-fc-queue.cjs",
+    "test:ui": "node site/scripts/smoke-study-ui.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
