@@ -844,18 +844,27 @@
 #vatc-update #vatc-update-later{ background:transparent; color:#d6e7df; }
 #vatc .skip{ position:absolute; left:8px; top:8px; z-index:70; transform:translateY(-140%); background:#e7fff4; color:#04150d; padding:8px 12px; border-radius:8px; font-size:14px; font-weight:700; }
 #vatc .skip:focus{ transform:none; }
-#vatc .today{ margin:0 0 16px; }
-#vatc .today-lead, #vatc .today-note, #vatc .lkintro{ font-size:14px; line-height:1.45; color:var(--text); margin:0 0 10px; }
-#vatc .today-note{ color:var(--muted); font-size:13px; }
-#vatc .today-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-#vatc .today-card{ display:flex; flex-direction:column; align-items:flex-start; gap:6px; text-align:left; min-height:44px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--panel); color:var(--text); cursor:pointer; }
-#vatc .today-card:hover{ border-color:var(--green2); }
-#vatc .today-k{ font-family:var(--fd); letter-spacing:.06em; text-transform:uppercase; font-size:14px; color:var(--green); }
-#vatc .today-d{ font-size:13px; line-height:1.45; color:var(--text); }
+#vatc .home-go{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:0 0 12px; }
+#vatc .home-go button{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; min-height:76px; width:100%; border:1px solid #2c463c; border-radius:14px; background:#132420; color:#f4f7f5; font-family:var(--fd); font-weight:600; letter-spacing:.04em; text-transform:uppercase; font-size:12px; cursor:pointer; padding:10px 4px; }
+#vatc .home-go button:hover{ border-color:#3e6254; background:#173028; }
+#vatc .home-go .go-ic{ display:grid; place-items:center; width:28px; height:28px; border-radius:9px; }
+#vatc .home-go .go-ic svg{ width:18px; height:18px; }
+#vatc .home-go .go-study .go-ic{ color:#39f0a0; background:rgba(57,240,160,.14); }
+#vatc .home-go .go-ref .go-ic{ color:#5fd0ff; background:rgba(95,208,255,.14); }
+#vatc .home-go .go-crew .go-ic{ color:#ffb24d; background:rgba(255,178,77,.16); }
+#vatc .home-go .go-device .go-ic{ color:#e6d7b0; background:rgba(230,215,176,.14); }
+#vatc .home-go .go-lb{ line-height:1.1; white-space:nowrap; }
+#vatc h2.home-sec{ font-size:15px; letter-spacing:.06em; color:#f3f7f4; margin:2px 0 10px; }
+#vatc .pcard.ptile{ background:#12211c; border-color:#2a4038; }
+#vatc .pcard.ptile .pn{ color:#f4f7f5; }
+#vatc .pcard.ptile .pcpct{ color:#9ddec0; }
 #vatc button:focus-visible, #vatc [role="button"]:focus-visible, #vatc a:focus-visible, #vatc input:focus-visible, #vatc select:focus-visible, #vatc textarea:focus-visible, #vatc summary:focus-visible{ outline:2px solid #e7fff4; outline-offset:2px; }
 #vatc .crw-office{ margin:0 0 10px; }
 @media(max-width:640px){
-  #vatc .today-grid{ grid-template-columns:1fr; }
+  #vatc .home-go{ gap:6px; margin:0 0 10px; }
+  #vatc .home-go button{ min-height:70px; font-size:11px; letter-spacing:.02em; padding:8px 2px; gap:5px; }
+  #vatc .home-go .go-ic{ width:26px; height:26px; }
+  #vatc .home-go .go-ic svg{ width:16px; height:16px; }
   #vatc .navback, #vatc .btn-ghost{ min-height:44px; }
 }
 @media (prefers-reduced-motion: reduce){
@@ -5185,11 +5194,51 @@ function vectorAnswerHTML(query, hits){
     <div class="stnchip">${S.tab==='home'?'':S.screen!=='app'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">${S.station==='KNKX'?'MCAS Miramar':'MCAS Camp Pendleton · Munn Field'}</div></div>`}
     <button type="button" class="btn-ghost" data-action="guide" aria-label="Head Guide">GUIDE</button><button type="button" class="btn-ghost" data-action="stations" aria-label="Choose station">STATIONS</button></div></div>`; }
   function statusbar(){ const d=deviceSnap(); return `<div class="status"><span><span class="dot${d.online?'':' off'}" id="netdot"></span> <span id="netlab">${d.online?'ONLINE':'OFFLINE'}</span> · NO CONTROLLED DATA LOADED</span><span><button type="button" class="btn-ghost" data-action="device" aria-label="This device">DEVICE</button> v${APP_VER}</span></div>`; }
-  function focusDevice(){ const dlg=document.querySelector('#vatc .modal.device'); if(dlg) dlg.focus(); }
-  function focusDeviceBtn(){ const b=document.querySelector('#vatc [data-action="device"]'); if(b) b.focus(); }
+  let deviceOpenerSel='';
+  function focusEl(el){ if(!el) return false; try{ el.focus({preventScroll:true}); }catch(e){ try{ el.focus(); }catch(_){} } return document.activeElement===el; }
+  function deviceFocusables(){
+    const dlg=document.querySelector('#vatc .modal.device'); if(!dlg) return [];
+    return [...dlg.querySelectorAll('button, input, select, textarea, a[href]')].filter(el=>{
+      if(el.disabled || el.hidden || el.getAttribute('aria-hidden')==='true') return false;
+      if(el.tagName==='INPUT' && el.type==='hidden') return false;
+      const s=getComputedStyle(el);
+      return s.display!=='none' && s.visibility!=='hidden';
+    });
+  }
+  function focusDevice(){
+    const items=deviceFocusables();
+    if(items.length){ focusEl(items[0]); return; }
+    const dlg=document.querySelector('#vatc .modal.device');
+    if(dlg) focusEl(dlg);
+  }
+  function keepDeviceFocus(){
+    if(!S.deviceOpen) return;
+    const dlg=document.querySelector('#vatc .modal.device');
+    if(dlg && !dlg.contains(document.activeElement)) focusDevice();
+  }
+  function focusScreenHeading(){
+    const h=document.querySelector('#vatc-main h2') || document.querySelector('#vatc h2.sec') || document.querySelector('#vatc h1');
+    if(!h){ const main=document.getElementById('vatc-main'); return main?focusEl(main):false; }
+    if(!h.hasAttribute('tabindex')) h.setAttribute('tabindex','-1');
+    return focusEl(h);
+  }
+  function restoreAfterDevice(){
+    const opener=deviceOpenerSel && document.querySelector('#vatc '+deviceOpenerSel);
+    if(opener && focusEl(opener)) return;
+    const trig=document.querySelector('#vatc [data-action="device"]');
+    if(trig && focusEl(trig)) return;
+    focusScreenHeading();
+  }
+  function markDeviceOpener(el){
+    if(el && el.matches && el.matches('[data-action="today"][data-go="device"]')) deviceOpenerSel='[data-action="today"][data-go="device"]';
+    else if(el && el.matches && el.matches('[data-action="device"]')) deviceOpenerSel='[data-action="device"]';
+  }
+  function openDevice(el){ markDeviceOpener(el); S.deviceOpen=true; render(); focusDevice(); }
+  function activeTabKey(){ let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; return tab||'home'; }
+  function studyPanelAttrs(){ const id=activeTabKey(); return `id="vatc-main" role="tabpanel" aria-labelledby="tab-${id}" tabindex="-1"`; }
 
-  function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button type="button" role="tab" aria-selected="${on?'true':'false'}" class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
-    return `<div class="tabs" role="tablist" aria-label="Study">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}${t('crew',I.users,'Crew')}</div>${tabHint()}`; }
+  function tabs(){ const t=(k,ic,l)=>{let tab=activeTabKey(); const on=tab===k; return `<button type="button" role="tab" id="tab-${k}" aria-selected="${on?'true':'false'}" aria-controls="vatc-main" class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
+    return `<div class="tabs" role="tablist" aria-orientation="horizontal" aria-label="Study">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}${t('crew',I.users,'Crew')}</div>${tabHint()}`; }
   const TAB_HINT={ask:'Search every pub and get a cited answer.',learn:'Your LQS ACADs with references and tests.',cards:'Study sets by position and ACAD.',reference:'7110.65, FACMAN, FLIP plates and more.',crew:'Training aid. Photograph a sheet, review the text, then save it on this browser. It does not replace the official source.'};
   function tabHint(){ let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const h=TAB_HINT[tab]; return h?`<div class="tabhint">${h}</div>`:''; }
   function trackbar(){ let out='<span class="grplbl">TWR</span>'; let g='TOWER';
@@ -6376,17 +6425,13 @@ function vectorAnswerHTML(query, hits){
         <span class="ptg">${p.g==='TOWER'?'TWR':'RDR'}</span><span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div>${pending?'<div class="psub">ACAD pending</div>':''}</div>`;
     };
     const first6=POS.slice(0,6), rest=POS.slice(6);
-    const today=`<section class="today" aria-labelledby="today-h"><h2 class="sec" id="today-h">Today</h2><p class="today-lead">Study and training aid for the material already in this app. Not a live airfield status and not a substitute for the current official source.</p><div class="today-grid">
-      <button type="button" class="today-card" data-action="today" data-go="positions"><span class="today-k">Study a position</span><span class="today-d">Open ACADs, tests, and flashcards. The percent on each tile is study progress on this device, not a qualification.</span></button>
-      <button type="button" class="today-card" data-action="today" data-go="ask"><span class="today-k">Cited pages</span><span class="today-d">Ask or open a publication in this app. A passage is highlighted only when the page text matches. Otherwise verify that page.</span></button>
-      <button type="button" class="today-card" data-action="today" data-go="crew"><span class="today-k">Crew 1 and Crew 2</span><span class="today-d">Photograph a training sheet, review the text, and save it in this browser. Check the official current notice. Text read from a photo is not authoritative.</span></button>
-      <button type="button" class="today-card" data-action="today" data-go="device"><span class="today-k">Offline on this device</span><span class="today-d">Install, keep the publications already in this app, and export a backup that includes crew photos. Nothing is uploaded.</span></button>
-    </div></section>`;
-    const quiz=`<div class="grp">KNFG Quizlets</div><p class="today-note">Study sets already in this app.</p>
+    const go=(go,tone,icon,label)=>`<button type="button" class="go-${tone}" data-action="today" data-go="${go}"><span class="go-ic" aria-hidden="true">${icon}</span><span class="go-lb">${label}</span></button>`;
+    const shortcuts=`<div class="home-go" role="group" aria-label="Shortcuts">${go('positions','study',I.book,'Study')}${go('reference','ref',I.file,'Reference')}${go('crew','crew',I.users,'Crew')}${go('device','device',I.layers,'Device')}</div>`;
+    const quiz=`<h2 class="sec home-sec">KNFG Quizlets</h2>
       ${homeQuizHTML()}`;
     return `<div class="stnbar">MCAS Camp Pendleton (KNFG)</div>
-      ${today}
-      <div class="grp">Positions</div><p class="today-note">Choose a position. Study progress stays on this device.</p>
+      ${shortcuts}
+      <h2 class="sec home-sec">Positions</h2>
       <div class="pos6" id="posgrid">${first6.map(tile).join('')}</div>
       ${rest.length?`<div class="pos6">${rest.map(tile).join('')}</div>`:''}
       ${quiz}`; }
@@ -8596,11 +8641,11 @@ function pdfPaneHTML(){
     return `${S.tab==='home'?'<div class="stnbar">MCAS Miramar (KNKX)</div>':''}<div class="card" style="padding:22px;text-align:center;margin-top:12px" data-shell="KNKX"><div class="code" style="font-family:var(--fm);letter-spacing:.2em;color:var(--green)">KNKX · ${escTxt(lab.toUpperCase())}</div><div style="font-size:18px;margin:10px 0 6px">Coming soon</div><div class="muted" style="font-size:12px">No ACADs, flashcards, tests or references loaded for MCAS Miramar yet. Content is added once the station's LQS and FACMAN are provided and validated.</div></div>`; }
   function appScreen(){ let inner='';
     if(S.tab==='sim'||S.tab==='cards') S.tab=(S.tab==='cards'?'learn':'home'); /* SIM tab removed v0.8.29 */
-    if(S.station==='KNKX'){ return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain" id="vatc-main" tabindex="-1">${S.tab==='home'?'':trackbar()}<div class="body">${shellView()}</div>${statusbar()}</div>`; }
+    if(S.station==='KNKX'){ return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain" ${studyPanelAttrs()}>${S.tab==='home'?'':trackbar()}<div class="body">${shellView()}</div>${statusbar()}</div>`; }
     if(S.tab==='home')inner=homeView(); else if(S.tab==='ask')inner=askView(); else if(S.tab==='learn'||S.tab==='train')inner=learnView();
     else if(S.tab==='reference')inner=refView(); else if(S.tab==='crew')inner=crewView();
     const track=(S.tab==='home'||S.tab==='crew')?'':trackbar();
-    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain" id="vatc-main" tabindex="-1">${track}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
+    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain" ${studyPanelAttrs()}>${track}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
 
   function doAsk(){
     const inp=document.getElementById('reflk')||document.getElementById('askq');
@@ -8622,7 +8667,7 @@ function pdfPaneHTML(){
     const paint=()=>{ if(globalThis.VATC_DEVICE&&VATC_DEVICE.paint) VATC_DEVICE.paint(); };
     if(S.screen==='station'||S.screen==='guide'||S.screen==='feedback'){
       root.innerHTML=shellWrap(S.screen==='station'?stationScreen():S.screen==='guide'?guideScreen():feedbackScreen());
-      lastViewKey=''; paint(); return;
+      lastViewKey=''; keepDeviceFocus(); paint(); return;
     }
     const vk=viewKey(), smOld=document.querySelector('#vatc .scrollmain'), yOld=(smOld&&smOld.scrollTop)||0;
     root.innerHTML=shellWrap(appScreen());
@@ -8633,7 +8678,7 @@ function pdfPaneHTML(){
     if(S.tab==='ask'||S.tab==='reference'){ bindLookup(); bindPdf(); if(S.tab==='reference'&&!S.pub){ document.querySelectorAll('#vatc .scrollmain details.pos-acads').forEach(d=>{ d.open=false; }); } if(S.tab==='ask'||S.lkFocus){ S.lkFocus=false; setTimeout(()=>focusLookup(),20); } if(S.tab==='reference'&&(S.refQ||'').trim()) drawLookup(S.refQ); }
     if(S.tab==='learn'&&S.pub&&S.learnReturn){ bindPdf(); }
     bindFcGroups(); if(document.getElementById('fcwr')) fcAfterPaint(); if(S.tab==='crew'){ try{ crewHydrateThumbs(); }catch(e){} }
-    paint();
+    keepDeviceFocus(); paint();
   }
 
   // ===== events =====
@@ -8706,16 +8751,16 @@ function pdfPaneHTML(){
     if(a.indexOf('crw')===0){ crewAction(a, el, e); return; }
     if(a==='today'){
       const go=el.dataset.go;
-      if(go==='positions'){ const g=document.getElementById('posgrid'); if(g){ g.scrollIntoView({block:'nearest'}); const b=g.querySelector('[data-action="poslearn"]'); if(b) b.focus(); } return; }
-      if(go==='ask') return set({screen:'app', tab:'ask', lkFocus:true});
-      if(go==='crew') return set({screen:'app', tab:'crew', crewView:'board'});
-      if(go==='device'){ S.deviceOpen=true; render(); focusDevice(); return; }
+      if(go==='positions'){ const g=document.getElementById('posgrid'); if(g){ g.scrollIntoView({block:'nearest'}); const b=g.querySelector('[data-action="poslearn"]'); if(b) focusEl(b); } return; }
+      if(go==='ask'||go==='reference'){ const tab=go==='ask'?'ask':'reference'; set({screen:'app', tab:tab, lkFocus:tab==='ask'}); const t=document.querySelector('#vatc .tab[data-t="'+tab+'"]'); if(t) focusEl(t); return; }
+      if(go==='crew'){ set({screen:'app', tab:'crew', crewView:'board'}); const t=document.querySelector('#vatc .tab[data-t="crew"]'); if(t) focusEl(t); return; }
+      if(go==='device'){ openDevice(el); return; }
       return;
     }
-    if(a==='device'){ S.deviceOpen=true; render(); focusDevice(); return; }
-    if(a==='deviceclose'){ S.deviceOpen=false; render(); focusDeviceBtn(); return; }
-    if(a==='guide'){ S.deviceOpen=false; return set({screen:'guide'}); }
-    if(a==='feedback'){ S.deviceOpen=false; return set({screen:'feedback'}); }
+    if(a==='device'){ openDevice(el); return; }
+    if(a==='deviceclose'){ S.deviceOpen=false; render(); restoreAfterDevice(); return; }
+    if(a==='guide'){ const fromDevice=!!S.deviceOpen; S.deviceOpen=false; set({screen:'guide'}); if(fromDevice) focusScreenHeading(); return; }
+    if(a==='feedback'){ const fromDevice=!!S.deviceOpen; S.deviceOpen=false; set({screen:'feedback'}); if(fromDevice) focusScreenHeading(); return; }
     if(a==='guidehome'){ S.deviceOpen=false; return set({screen:'app', tab:'home'}); }
     if(a==='installapp'){ if(globalThis.VATC_DEVICE) VATC_DEVICE.install(); return; }
     if(a==='retryrefs'){ if(globalThis.VATC_DEVICE) VATC_DEVICE.kickRefs(); return; }
@@ -8824,6 +8869,23 @@ function pdfPaneHTML(){
     if(!typing && (e.key==='Enter'||e.key===' ') && e.target && e.target.getAttribute && e.target.getAttribute('role')==='button' && tag!=='button'){
       e.preventDefault(); e.target.click(); return;
     }
+    if(S.deviceOpen && e.key==='Tab'){
+      const items=deviceFocusables();
+      if(!items.length){ e.preventDefault(); return; }
+      const i=items.indexOf(document.activeElement);
+      const next=e.shiftKey ? (i<=0?items[items.length-1]:items[i-1]) : (i<0||i>=items.length-1?items[0]:items[i+1]);
+      e.preventDefault(); focusEl(next); return;
+    }
+    if(!S.deviceOpen && !typing && e.target && e.target.classList && e.target.classList.contains('tab')){
+      const tabs=[...document.querySelectorAll('#vatc .tabs .tab')];
+      const i=tabs.indexOf(e.target);
+      let n=-1;
+      if(e.key==='ArrowRight') n=(i+1)%tabs.length;
+      else if(e.key==='ArrowLeft') n=(i-1+tabs.length)%tabs.length;
+      else if(e.key==='Home') n=0;
+      else if(e.key==='End') n=tabs.length-1;
+      if(n>=0 && tabs[n]){ e.preventDefault(); tabs[n].click(); const on=document.querySelector('#vatc .tab.on'); if(on) focusEl(on); return; }
+    }
     if((e.key==='f'||e.key==='F')&&(e.ctrlKey||e.metaKey)){
       // Ask query field / Ask without PDF: do not steal browser Find or re-focus Ask while typing
       if(S.tab==='ask' && (!S.pub || (e.target && e.target.id==='reflk'))) return;
@@ -8841,7 +8903,7 @@ function pdfPaneHTML(){
       return focusLookup();
     }
     if(e.key==='Escape'){
-      if(S.deviceOpen){ e.preventDefault(); S.deviceOpen=false; render(); focusDeviceBtn(); return; }
+      if(S.deviceOpen){ e.preventDefault(); S.deviceOpen=false; render(); restoreAfterDevice(); return; }
       if((S.tab==='reference'||S.tab==='ask') && S.pub && document.activeElement && document.activeElement.id==='pdffind'){
         e.preventDefault(); document.activeElement.value=''; S.pubQ=''; pdfHits=[]; pdfHitI=0; const h=document.getElementById('pdfhits'); if(h)h.textContent=''; return;
       }
