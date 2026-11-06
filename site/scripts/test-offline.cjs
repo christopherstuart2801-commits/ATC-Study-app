@@ -39,7 +39,7 @@ ok('committed manifest matches enumeration', JSON.stringify(manifest) === JSON.s
 ok('precache is an explicit list', Array.isArray(manifest.precache) && manifest.precache.every(p => typeof p === 'string' && !/[*?]/.test(p)));
 ok('lazy list is explicit pdfs only', manifest.lazy.length === 25 && manifest.lazy.every(p => p.startsWith('docs/') && p.endsWith('.pdf') && !/[*?]/.test(p)));
 ok('shell includes guide, pdf.js, and study data',
-  ['index.html', 'manifest.webmanifest', 'offline/head-guide.js', 'offline/client.js', 'offline/backup.js', 'offline/core.js', 'data/para-index.json', 'data/ask-aliases.json', 'vendor/pdfjs/pdf.min.js', 'vendor/pdfjs/pdf.worker.min.js', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png'].every(p => manifest.precache.includes(p)));
+  ['index.html', 'manifest.webmanifest', 'offline/head-guide.js', 'offline/client.js', 'offline/backup.js', 'offline/core.js', 'data/para-index.json', 'data/ref-span.json', 'data/ask-aliases.json', 'vendor/pdfjs/pdf.min.js', 'vendor/pdfjs/pdf.worker.min.js', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png'].every(p => manifest.precache.includes(p)));
 ok('lazy list includes JO and a plate', manifest.lazy.includes('docs/JO-7110.65BB.pdf') && manifest.lazy.includes('docs/flip/KNFG-AIRPORT-DIAGRAM.pdf'));
 ok('notes and scripts are not cached', !manifest.precache.concat(manifest.lazy).some(p => /\.(md|txt|cjs)$/.test(p) || p.includes('NOTES')));
 ok('no external or api urls in the manifest', manifest.precache.concat(manifest.lazy).every(p => !/^https?:/i.test(p) && !/supabase|\/api\//i.test(p)));
