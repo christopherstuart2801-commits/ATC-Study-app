@@ -519,7 +519,7 @@ ok('PUB map TBL 6-3 p83 / 6-1-11 p82 / TBL C-2 p129', /['"]TBL 6-3['"]:83/.test(
 ok('strip learning cite-first 6-1-11', /ACAD-0522 · strip learning/.test(html) && /btn\('FACMAN 6-1-11'/.test(html) && /btn\('FACMAN TBL 6-3'/.test(html));
 ok('syllabusFor helper', /function\s+syllabusFor\s*\(/.test(html));
 ok('acadChipRow uses syllabusFor', /function acadChipRow\(\)\{[\s\S]{0,120}syllabusFor\(S\.pos\)/.test(html));
-ok('syllabusFor no Final stand-in', /return \{list:own, demo:false, src:k\}/.test(html) && !/Radar Final as SAMPLE stand-in/.test(html));
+ok('syllabusFor no Final stand-in', /return \{list:own, demo:false, src:k, shared:/.test(html) && !/Radar Final as SAMPLE stand-in/.test(html));
 ok('default pos is fin', /const S=\{ screen:'app', station:'KNFG', pos:'fin'/.test(html));
 ok('default learnMode acad', /learnMode:'acad'/.test(html));
 ok('poslearn opens Learn', /if\(a==='poslearn'\)\{const k=el\.dataset\.p/.test(html) && /tab:'learn'/.test(html) && /learnMode:'acad'/.test(html));
@@ -566,7 +566,7 @@ ok('main nav HOME / ASK / LEARN / FLASHCARDS / REFERENCE, no SIM', /t\('home'[^)
 ok('Flashcards tab opens the set picker', /if\(t==='cards'\)\{[^}]*learnMode:'cards'[^}]*fcPick:true/.test(html));
 ok('stale saved tab sim → home', /S\.tab==='sim'\|\|S\.tab==='cards'/.test(html));
 ok('poscards opens Learn flashcards', /if\(a==='poscards'\)return set\(\{pos:el\.dataset\.p,tab:'learn',learnMode:'cards'/.test(html));
-ok('SYLLABUS cd/gnd/lcl empty; arr has packet', /cd:\[\],gnd:\[\],lcl:\[/.test(html) && !/,arr:\[\]\}/.test(html));
+ok('SYLLABUS cd/gnd/lcl share the tower packet; arr has its own', /cd:TOWER_SYL,gnd:TOWER_SYL,lcl:TOWER_SYL/.test(html) && !/,arr:\[\]\}/.test(html));
 ok('SYLLABUS.rfd not empty', /rfd:\[\{/.test(html));
 ok('SYLLABUS.rfd has ACAD-0520', /rfd:\[\{"n":1,"id":"ACAD-0520"/.test(html));
 ok('SYLLABUS.rfd has ACAD-0534', /rfd:\[[\s\S]*?"id":"ACAD-0534"/.test(html));
@@ -574,7 +574,10 @@ ok('SYLLABUS.rfd ACAD-0520 paper extras', /rfd:\[[\s\S]*?ACAD-0520[\s\S]*?7110\.
 ok('SYLLABUS.rfd ACAD-0534 paper extras', /rfd:\[[\s\S]*?ACAD-0534[\s\S]*?FACMAN 6-1-5[\s\S]*?FACMAN 6-2-12[\s\S]*?FACMAN TBL 6-4/.test(html));
 {
   const sylM = html.match(/const SYLLABUS=(\{[\s\S]*?\});\n\n  function stripHtml/);
-  const SYL = sylM ? Function('return ('+sylM[1]+')')() : null;
+  const twAt = html.indexOf('const TOWER_SYL=');
+  const twEnd = html.indexOf(';\n  const SYLLABUS=', twAt);
+  const twDecl = (twAt>=0 && twEnd>twAt) ? html.slice(twAt, twEnd+1) : 'const TOWER_SYL=[];';
+  const SYL = sylM ? Function(twDecl+'\nreturn ('+sylM[1]+')')() : null;
   const fin = (SYL && SYL.fin) || [];
   const rfd = (SYL && SYL.rfd) || [];
   const finIds = fin.map(a => a.id);
@@ -617,7 +620,7 @@ ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
 ok('ask console no instructor subtitle', !/ATC instructor · sourced · experimental/.test(html));
 ok('home quizlets closed by default', !/fcOpen:\{gca:true\}/.test(html) && /fcOpen:\{\}/.test(html));
 ok('home quizlet explain blurb removed', !/Tap-to-reveal decks/.test(html));
-ok('statusbar v0.8.35 my sets', /v0\.8\.35 · my sets<\/span>/.test(html) && !/v0\.8\.34 · my sets<\/span>/.test(html));
+ok('statusbar v0.8.36 tower paper', /v0\.8\.36 · tower paper<\/span>/.test(html) && !/v0\.8\.35 · my sets<\/span>/.test(html));
 ok('tab explainers present', /Search every pub and get a cited answer\./.test(html) && /Study sets by position and ACAD\./.test(html));
 ok('my sets: OCR lazy-loaded + honest draft label', /Drafted from your photo — check before studying\./.test(html) && !/<script[^>]+tesseract/i.test(html) && /accept="image\/\*" capture=/.test(html));
 ok('appBase/assetUrl kept', /function appBase\(/.test(html) && /function assetUrl\(/.test(html));
@@ -1995,7 +1998,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           ok('pos-usecase: every set has a guide (covers/from/how)', Object.entries(U).every(([p,o])=>Object.keys(o).every(k=>G[p]&&G[p][k]&&G[p][k].covers&&G[p][k].from&&G[p][k].how)));
           const known=new Set(); Object.values(V.FC_SETS||{}).forEach(a=>(a||[]).forEach(c=>known.add(c.id))); Object.values(V.FC_POS||{}).forEach(a=>(a||[]).forEach(c=>known.add(c.id)));
           const nw=[].concat(...Object.values(V.FC_UC_NEW||{}));
-          ok('pos-usecase: new ucr-*/ucf-*/uca-* ids do not collide with existing cards', nw.every(c=>/^uc[rfac]-/.test(c.id) && !known.has(c.id)) && new Set(nw.map(c=>c.id)).size===nw.length, 'n='+nw.length);
+          ok('pos-usecase: new ucr-*/ucf-*/uca-*/twr-* ids do not collide with existing cards', nw.every(c=>/^(?:uc[rfac]|twr)-/.test(c.id) && !known.has(c.id)) && new Set(nw.map(c=>c.id)).size===nw.length, 'n='+nw.length);
           ok('pos-usecase: new cards cite FACMAN July 2026 or JO 7110.65BB with a highlight', nw.every(c=>c.src && (c.src.doc==='NFG FACMAN July 2026' || c.src.doc==='JO 7110.65BB' || c.src.doc==='JO 7110.65BB Chg 2') && c.src.pg && c.src.hl), nw.filter(c=>!(c.src&&c.src.hl)).map(c=>c.id).join(','));
           const t=U.rfd&&U.rfd['uc-test']||[];
           ok('pos-usecase: CHECKOUT set covers all 5 RFD ACAD blocks', ['ACAD-0520','ACAD-0534','ACAD-0532','ACAD-0521/0522','ACAD-0523/0538'].every(a=>t.some(c=>c.o===a)));
@@ -2038,7 +2041,7 @@ ok('home parts closed by default', !/<details class="fc-crt qz-part" open>/.test
           V.S.pos='arr'; V.S.fcDeck='uc-test';
           ok('arr-usecase: guide renders on Arrival CHECKOUT set', /class="fc-guide"/.test(V.fcBody()) && /ACAD-0536/.test(V.fcBody()));
           /* v0.8.32 cd-usecase: Clearance / Flight Data sets (FACMAN-only until the LQS paper arrives) */
-          ok('cd-usecase: Clearance/FD has LIVE + NEW sets, no ACAD set yet', !!(U.cd && (U.cd['uc-live']||[]).length>=55 && (U.cd['uc-new']||[]).length>=30 && !U.cd['uc-test']), U.cd?Object.keys(U.cd).map(k=>k+'='+U.cd[k].length).join(' '):'none');
+          ok('cd-usecase: Clearance/FD has LIVE + NEW and the shared tower ACADS set', !!(U.cd && (U.cd['uc-live']||[]).length>=55 && (U.cd['uc-new']||[]).length>=30 && (U.cd['uc-test']||[]).length>=20), U.cd?Object.keys(U.cd).map(k=>k+'='+U.cd[k].length).join(' '):'none');
           const cnw=(V.FC_UC_NEW&&V.FC_UC_NEW.cd)||[];
           ok('cd-usecase: new cards are ucc-* tagged pos cd with a highlight', cnw.length>=60 && cnw.every(c=>/^ucc-/.test(c.id) && c.pos==='cd' && c.src && c.src.hl), 'n='+cnw.length);
           ok('cd-usecase: TBL 5-8 initial altitudes match FACMAN July 2026', ['ucc-t58-quntn:3000','ucc-t58-bldg:4000','ucc-t58-munn:4000'].every(x=>{ const [i,a]=x.split(':'); const c=cnw.find(z=>z.id===i); return c && c.a.indexOf(a)===0; }) && /Maintain as coordinated/.test((cnw.find(z=>z.id==='ucc-t58-corri')||{}).a||''));

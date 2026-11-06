@@ -519,7 +519,7 @@ ok('PUB map TBL 6-3 p83 / 6-1-11 p82 / TBL C-2 p129', /['"]TBL 6-3['"]:83/.test(
 ok('strip learning cite-first 6-1-11', /ACAD-0522 · strip learning/.test(html) && /btn\('FACMAN 6-1-11'/.test(html) && /btn\('FACMAN TBL 6-3'/.test(html));
 ok('syllabusFor helper', /function\s+syllabusFor\s*\(/.test(html));
 ok('acadChipRow uses syllabusFor', /function acadChipRow\(\)\{[\s\S]{0,120}syllabusFor\(S\.pos\)/.test(html));
-ok('syllabusFor no Final stand-in', /return \{list:own, demo:false, src:k\}/.test(html) && !/Radar Final as SAMPLE stand-in/.test(html));
+ok('syllabusFor no Final stand-in', /return \{list:own, demo:false, src:k, shared:/.test(html) && !/Radar Final as SAMPLE stand-in/.test(html));
 ok('default pos is fin', /const S=\{ screen:'app', station:'KNFG', pos:'fin'/.test(html));
 ok('default learnMode acad', /learnMode:'acad'/.test(html));
 ok('poslearn opens Learn', /if\(a==='poslearn'\)\{const k=el\.dataset\.p/.test(html) && /tab:'learn'/.test(html) && /learnMode:'acad'/.test(html));
@@ -566,7 +566,7 @@ ok('main nav HOME / ASK / LEARN / FLASHCARDS / REFERENCE, no SIM', /t\('home'[^)
 ok('Flashcards tab opens the set picker', /if\(t==='cards'\)\{[^}]*learnMode:'cards'[^}]*fcPick:true/.test(html));
 ok('stale saved tab sim → home', /S\.tab==='sim'\|\|S\.tab==='cards'/.test(html));
 ok('poscards opens Learn flashcards', /if\(a==='poscards'\)return set\(\{pos:el\.dataset\.p,tab:'learn',learnMode:'cards'/.test(html));
-ok('SYLLABUS cd/gnd/lcl empty; arr has packet', /cd:\[\],gnd:\[\],lcl:\[/.test(html) && !/,arr:\[\]\}/.test(html));
+ok('SYLLABUS cd/gnd/lcl share the tower packet; arr has its own', /cd:TOWER_SYL,gnd:TOWER_SYL,lcl:TOWER_SYL/.test(html) && !/,arr:\[\]\}/.test(html));
 ok('SYLLABUS.rfd not empty', /rfd:\[\{/.test(html));
 ok('SYLLABUS.rfd has ACAD-0520', /rfd:\[\{"n":1,"id":"ACAD-0520"/.test(html));
 ok('SYLLABUS.rfd has ACAD-0534', /rfd:\[[\s\S]*?"id":"ACAD-0534"/.test(html));
@@ -574,7 +574,10 @@ ok('SYLLABUS.rfd ACAD-0520 paper extras', /rfd:\[[\s\S]*?ACAD-0520[\s\S]*?7110\.
 ok('SYLLABUS.rfd ACAD-0534 paper extras', /rfd:\[[\s\S]*?ACAD-0534[\s\S]*?FACMAN 6-1-5[\s\S]*?FACMAN 6-2-12[\s\S]*?FACMAN TBL 6-4/.test(html));
 {
   const sylM = html.match(/const SYLLABUS=(\{[\s\S]*?\});\n\n  function stripHtml/);
-  const SYL = sylM ? Function('return ('+sylM[1]+')')() : null;
+  const twAt = html.indexOf('const TOWER_SYL=');
+  const twEnd = html.indexOf(';\n  const SYLLABUS=', twAt);
+  const twDecl = (twAt>=0 && twEnd>twAt) ? html.slice(twAt, twEnd+1) : 'const TOWER_SYL=[];';
+  const SYL = sylM ? Function(twDecl+'\nreturn ('+sylM[1]+')')() : null;
   const fin = (SYL && SYL.fin) || [];
   const rfd = (SYL && SYL.rfd) || [];
   const finIds = fin.map(a => a.id);
