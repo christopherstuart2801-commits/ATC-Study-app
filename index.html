@@ -4093,6 +4093,44 @@
     for(let i=0;i<keys.length;i++){ if(keys[i].toUpperCase()===up) return bag[keys[i]]; }
     return null;
   }
+  function chapterFallbackPage(pub, sec){
+    const map=PUB_CH_PAGES[pub]||{};
+    let raw=String(sec||'').replace(/[\u2010-\u2015\u2212]/g,'-').replace(/\s+/g,' ').trim();
+    if(!raw || /^PG:\d+$/i.test(raw)) return null;
+    raw=raw.replace(/^(?:TBL|FIG)\s+/i,'');
+    const ch=parseInt(raw.split('-')[0],10);
+    if(!ch) return null;
+    if(map[ch]!=null) return map[ch];
+    if(map[String(ch)]!=null) return map[String(ch)];
+    return null;
+  }
+  /* Page precedence. exact is an exact PUB_CH_PAGES key. coarse is only the
+     chapter start from that map. idxPage is the SEC_IDX heading page.
+     An exact key beats a missing page and a coarse chapter page. SEC_IDX
+     refines a chapter fallback, and an explicit request for the indexed
+     body page is kept. A disagreement such as TBL 2-3-10 stays on the
+     exact map page unless the caller named the indexed page. */
+  function resolveCiteSource(o){
+    o=o||{};
+    const prefer=Math.max(0, parseInt(o.prefer,10)||0);
+    const key=o.key||'';
+    const heading=o.heading||'';
+    if(o.pgPage) return {page:o.pgPage|0, source:'explicit', key, heading};
+    const exact=o.exact==null?null:o.exact;
+    const idxPage=o.idxPage==null?null:o.idxPage;
+    const mapped=Math.max(0, parseInt(o.mapped,10)||0);
+    const coarse=o.coarse==null?null:o.coarse;
+    const onCoarse=!!(prefer && coarse!=null && prefer===coarse);
+    if(exact!=null && (!prefer || prefer===exact || onCoarse))
+      return {page:exact, source:'pubmap', key, heading};
+    if(idxPage!=null && prefer===idxPage)
+      return {page:idxPage, source:'secidx', key, heading};
+    const mappedIsCoarse=exact==null && coarse!=null && mapped===coarse;
+    if(idxPage!=null && mappedIsCoarse && (!prefer || onCoarse))
+      return {page:idxPage, source:'secidx', key, heading};
+    if(exact!=null) return {page:exact, source:'pubmap', key, heading};
+    return {page:prefer||mapped||1, source:'mapped', key, heading};
+  }
   function resolveKnownCitePage(pub, sec, preferPage, extra){
     const prefer=Math.max(0, parseInt(preferPage,10)||0);
     const pgm=/^PG:(\d+)$/i.exec(normKeySrc(sec));
@@ -4100,12 +4138,16 @@
     const idx=secIdxEntry(pub, key);
     const heading=idx?String(idx[0]||''):'';
     if(pgm) return {page:parseInt(pgm[1],10), key, source:'explicit', heading};
-    if(idx && prefer===idx[1]) return {page:idx[1], key, source:'secidx', heading};
     const exact=pubMapExact(pub, key);
-    if(exact!=null && (!prefer || prefer===exact)) return {page:exact, key, source:'pubmap', heading};
-    const mapped=pageForCite(pub, key||sec||'');
-    if(idx && (!prefer || prefer===mapped)) return {page:idx[1], key, source:'secidx', heading};
-    return {page:prefer||mapped||1, key, source:'mapped', heading};
+    const lookup=key||sec||'';
+    const decided=resolveCiteSource({
+      key:key, heading:heading, prefer:prefer,
+      exact:exact==null?null:exact,
+      idxPage:idx?idx[1]:null,
+      mapped:pageForCite(pub, lookup),
+      coarse:chapterFallbackPage(pub, lookup)
+    });
+    return {page:decided.page, key:key, source:decided.source, heading:heading};
   }
   function joinSrcItems(items){
     let raw='';

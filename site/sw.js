@@ -1,5 +1,6 @@
 /* VECTOR ATC service worker. Scope is the directory of this file (GitHub Pages includes /ATC-Study-app/).
-   Precaches the enumerated shell. Publication PDFs are cached from the enumerated lazy list.
+   Precaches the enumerated shell, including data/ref-span.json, before a cite can open offline.
+   Publication PDFs are cached from the enumerated lazy list.
    Does not read or write the saved study profile. Does not cache other websites. */
 importScripts('offline/core.js', 'offline/manifest.js');
 

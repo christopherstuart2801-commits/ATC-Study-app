@@ -53,8 +53,8 @@ ctx.addEventListener=document.addEventListener;
 ctx.globalThis=ctx;
 vm.createContext(ctx);
 let code=html.match(/<script>([\s\S]*)<\/script>\s*<\/body>/)[1];
-const exported='S,pageForCite,citePubAndSec,openLearnCite,stepLearnCite,leavePdfToLearn,acadTopicRefs,matchSourceSpans,sourceSpanBoxes,resolveKnownCitePage,sectionKeyOf,cancelSourceHighlight,commitSourceHighlight,sourceHighlightGen,pdfFindAuto,loadRefSpan,refSpanPhrase,SEC_IDX';
-const end=/render\(\);\s*navInit\(\); render\(\);\s*\}\)\(\);/;
+const exported='S,pageForCite,citePubAndSec,openLearnCite,stepLearnCite,leavePdfToLearn,acadTopicRefs,matchSourceSpans,sourceSpanBoxes,resolveKnownCitePage,resolveCiteSource,chapterFallbackPage,sectionKeyOf,cancelSourceHighlight,commitSourceHighlight,sourceHighlightGen,pdfFindAuto,loadRefSpan,refSpanPhrase,SEC_IDX';
+const end=/render\(\);\s*navInit\(\);\s*render\(\);\s*\}\)\(\);/;
 assert(end.test(code), 'runtime instrumentation point');
 code=code.replace(end, `render(); navInit(); render(); globalThis.V={${exported}};})();`);
 vm.runInContext(code, ctx);
@@ -109,6 +109,40 @@ function check(name, fn){ return Promise.resolve().then(fn).then(()=>{ checks++;
     assert.equal(V.matchSourceSpans(items, {sec:'3-1-1', heading:'GENERAL'}).status, 'miss');
     assert.equal(V.matchSourceSpans(items, {sec:'', phrase:'the'}).status, 'miss');
     assert.equal(V.matchSourceSpans(items, {sec:'2-1-8', heading:'MINIMUM FUEL'}).status, 'miss');
+  });
+
+  await check('exact publication page beats a coarse chapter page and a later section-index page', ()=>{
+    // FACMAN 4-3-2 is the reported conflict shape: exact map page 47, heading index page 50.
+    const missing=V.resolveCiteSource({key:'4-3-2', prefer:0, exact:47, idxPage:50, mapped:42, coarse:42, heading:'SAMPLE'});
+    assert.equal(missing.page, 47);
+    assert.equal(missing.source, 'pubmap');
+    const coarsePrefer=V.resolveCiteSource({key:'4-3-2', prefer:42, exact:47, idxPage:50, mapped:42, coarse:42, heading:'SAMPLE'});
+    assert.equal(coarsePrefer.page, 47);
+    assert.equal(coarsePrefer.source, 'pubmap');
+    const namedBody=V.resolveCiteSource({key:'4-3-2', prefer:50, exact:47, idxPage:50, mapped:47, coarse:42, heading:'SAMPLE'});
+    assert.equal(namedBody.page, 50);
+    assert.equal(namedBody.source, 'secidx');
+    // JO 2-1-7: the live exact key and the body index are page 42; chapter 2 starts at 37.
+    const chapter=V.pageForCite('jo','2');
+    assert.equal(chapter, 37);
+    assert.equal(V.pageForCite('jo','2-1-7'), 42);
+    assert.equal(V.SEC_IDX.jo['2-1-7'][1], 42);
+    const fromChapter=V.resolveKnownCitePage('jo','2-1-7', chapter, []);
+    assert.equal(fromChapter.page, 42);
+    assert.equal(fromChapter.source, 'pubmap');
+    const fromMissing=V.resolveKnownCitePage('jo','2-1-7', 0, []);
+    assert.equal(fromMissing.page, 42);
+    assert.equal(fromMissing.source, 'pubmap');
+    // Chapter-only sections still refine to the indexed body page.
+    const safety=V.resolveKnownCitePage('jo','2-1-6', chapter, []);
+    assert.equal(safety.page, V.SEC_IDX.jo['2-1-6'][1]);
+    assert.equal(safety.source, 'secidx');
+    assert.notEqual(safety.page, chapter);
+    // TBL 2-3-10 stays on the mapped page when that page disagrees with the index.
+    const tblChapter=V.resolveKnownCitePage('jo','TBL 2-3-10', chapter, []);
+    assert.equal(tblChapter.page, 73);
+    assert.equal(tblChapter.source, 'pubmap');
+    assert.notEqual(tblChapter.page, V.SEC_IDX.jo['TBL 2-3-10'][1]);
   });
 
   await check('a superseded highlight pass is cancelled and does not apply', ()=>{
