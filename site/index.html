@@ -6,8 +6,15 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070d0c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VECTOR ATC">
 <title>VECTOR ATC — KNFG</title>
-<link rel="icon" href="data:,">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 </head>
 <body style="margin:0;background:#070d0c;">
 <style>
@@ -713,13 +720,42 @@
 #vatc .rfc-item.tower-blocked{display:block;cursor:default;overflow-wrap:anywhere}
 #vatc .tower-blocked .rfc-pg{white-space:normal;display:block;color:var(--muted);text-decoration:none}
 #vatc .tower-blocked .rfc-pt{display:block}
+#vatc .status .dot.off{ background:var(--amber); box-shadow:0 0 8px var(--amber); animation:none; }
+#vatc .status .btn-ghost{ padding:3px 8px; min-height:26px; }
+#vatc .hg-lead{ font-size:12.5px; line-height:1.5; color:var(--muted); margin:0 0 14px; }
+#vatc .hg-sec{ border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:0 0 10px; background:var(--panel); }
+#vatc .hg-h{ display:flex; justify-content:space-between; gap:8px; align-items:center; margin-bottom:8px; }
+#vatc .hg-h h2{ font-family:var(--fd); font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--green); }
+#vatc .hg-b p, #vatc .hg-b li{ font-size:12.5px; line-height:1.5; }
+#vatc .hg-b p{ margin:0 0 8px; }
+#vatc .hg-b ul{ margin:0 0 8px 1.1em; }
+#vatc .health{ margin:0; }
+#vatc .health dt{ color:var(--muted); font-size:10px; letter-spacing:.08em; }
+#vatc .health dd{ margin:0 0 8px; font-size:12.5px; line-height:1.4; }
+#vatc .modal.device{ max-width:560px; max-height:min(86vh,860px); overflow:auto; }
+@media(max-width:640px){
+  #vatc .overlay{ padding:10px; }
+  #vatc .modal.device{ width:100%; max-height:min(92vh,920px); }
+}
+#vatc .modal.device h4{ font-family:var(--fd); letter-spacing:.14em; font-size:11px; color:var(--amber); margin:14px 0 6px; }
+#vatc .modal.device label, #vatc .fbbox label{ display:block; font-size:10px; letter-spacing:.08em; color:var(--muted); margin:8px 0 4px; }
+#vatc .modal.device input, #vatc .fbbox textarea{ width:100%; font-family:var(--fm); font-size:13px; background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:8px; }
+#vatc .fbbox textarea{ min-height:120px; }
+#vatc .modal.device .row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+#vatc-update{ position:fixed; z-index:80; left:50%; bottom:16px; transform:translateX(-50%); width:min(520px, calc(100% - 24px)); background:#102019; color:#d6e7df; border:1px solid #1f9c66; border-radius:12px; padding:12px 14px; font:13px/1.45 ui-monospace,Menlo,monospace; box-shadow:0 12px 40px rgba(0,0,0,.45); }
+#vatc-update button{ font:inherit; margin:8px 8px 0 0; padding:8px 12px; border-radius:8px; border:1px solid #1f9c66; background:#39f0a0; color:#04150d; cursor:pointer; }
+#vatc-update #vatc-update-later{ background:transparent; color:#d6e7df; }
 </style>
 
 <div id="vatc"><div class="grid-bg"></div><div class="wrap"><div id="app"></div></div></div>
 
+<script src="offline/backup.js"></script>
+<script src="offline/head-guide.js"></script>
+<script src="offline/client.js"></script>
 <script>
 (function(){
   const root=document.getElementById('app');
+  const APP_VER='0.8.37';
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -4595,7 +4631,7 @@ function vectorAnswerHTML(query, hits){
     Object.assign(S,o); render();
     if(navK0!=null && navKey()!==navK0){
       try{ const cur=navEntry()||{vatc:1,n:NAV.n,p:null}; history.replaceState(Object.assign({}, cur, {s:navS0, ui:navU0}), '');
-        NAV.n=(cur.n||0)+1; history.pushState({vatc:1, n:NAV.n, s:navSnapS(), ui:null, p:navMini(navS0)}, ''); const nb=document.querySelector('#vatc .navback'); if(nb) nb.disabled=false; }catch(e){}
+        NAV.n=(cur.n||0)+1; history.pushState({vatc:1, n:NAV.n, s:navSnapS(), ui:null, p:navMini(navS0)}, '', location.pathname+location.search+(S.screen==='guide'?'#guide':S.screen==='feedback'?'#feedback':'')); const nb=document.querySelector('#vatc .navback'); if(nb) nb.disabled=false; }catch(e){}
     } else if(NAV.ready && !NAV.restoring){ try{ const cur=navEntry(); if(cur) history.replaceState(Object.assign({}, cur, {s:navSnapS()}), ''); }catch(e){} }
     if(keep){
       const sm=document.querySelector('#vatc .scrollmain');
@@ -4661,10 +4697,70 @@ function vectorAnswerHTML(query, hits){
     <text x="124" y="14" fill="#9fc7b6" font-family="monospace" font-size="8">final 211°</text></svg></div>`; }
 
   // ===== chrome =====
+  function fmtBytes(n){ if(n==null||!isFinite(n)) return 'unavailable'; if(n<1024) return Math.round(n)+' B'; if(n<1048576) return (n/1024).toFixed(1)+' KB'; return (n/1048576).toFixed(1)+' MB'; }
+  function deviceSnap(){ return (globalThis.VATC_DEVICE&&VATC_DEVICE.snapshot)?VATC_DEVICE.snapshot():{online:navigator.onLine!==false, version:APP_VER, sw:'unknown', swError:'', shellReady:false, refs:{total:0,cached:0,failed:[],running:false}, canInstall:false, installed:false, storage:null}; }
+  function deviceStatusHTML(){
+    const d=deviceSnap(), refs=d.refs||{total:0,cached:0,failed:[],running:false};
+    const fails=(refs.failed||[]).slice(0,6).map(f=>escTxt(String(f.url||f).split('/').pop())+(f.error?' — '+escTxt(f.error):'')).join('<br>');
+    const store=d.storage?'About '+fmtBytes(d.storage.usage)+' used of '+fmtBytes(d.storage.quota)+'.':'This browser did not report a storage estimate.';
+    return `<dl class="health"><dt>VERSION</dt><dd>v${escTxt(d.version||APP_VER)} · progress stamp ${escTxt(PROGRESS_VER)}</dd><dt>CONNECTION</dt><dd>${d.online?'Online':'Offline'}</dd><dt>ACCOUNT</dt><dd>None on this version</dd><dt>APP SHELL</dt><dd>${d.shellReady?'Saved on this device, including the Head Guide':'Not saved yet. Open this site once while online.'}</dd><dt>SERVICE WORKER</dt><dd>${escTxt(d.sw||'unknown')}${d.swError?' — '+escTxt(d.swError):''}</dd><dt>PUBLICATIONS</dt><dd>${refs.cached||0} / ${refs.total||0} saved${refs.running?' · saving':''}${fails?'<div class="note">'+fails+'</div>':''}</dd><dt>INSTALL</dt><dd>${d.installed?'Installed on this device.':d.canInstall?'This browser can install.':'Use the browser steps below.'}</dd><dt>STORAGE</dt><dd>${store}</dd></dl>`;
+  }
+  function installHelpHTML(){
+    const d=deviceSnap();
+    const btn=d.canInstall?'<button type="button" class="btn" data-action="installapp">INSTALL</button>':'';
+    return btn+`<div class="note"><p><b>Windows (Chrome or Edge).</b> Use Install when it is shown, the install icon in the address bar, or the menu → Apps → Install VECTOR ATC.</p><p><b>iPhone.</b> In Safari, tap Share, then Add to Home Screen. There is no App Store download.</p><p>Installing adds an icon on this device. It is not an app-store download, and it is not a Department of Defense approval.</p></div>`;
+  }
+  function devicePanelHTML(){
+    const t=loadTrainee()||{name:'', initials:''};
+    return `<div class="overlay"><div class="modal device"><h3>THIS DEVICE</h3><div id="vatc-devstatus">${deviceStatusHTML()}</div><div class="row"><button type="button" class="btn sec" data-action="retryrefs">RETRY SAVE</button><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><h4>PROFILE</h4><label for="trname">TRAINEE NAME</label><input id="trname" maxlength="120" autocomplete="name" value="${escTxt(t.name)}"><label for="trinit">INITIALS</label><input id="trinit" maxlength="3" autocapitalize="characters" value="${escTxt(t.initials)}"><div class="row"><button type="button" class="btn" data-action="saveprofile">SAVE PROFILE</button></div><h4>INSTALL</h4>${installHelpHTML()}<h4>BACKUP</h4><p class="note">Device backup, not cloud sync. Nothing is uploaded.</p><div class="row"><button type="button" class="btn" data-action="exportbackup">EXPORT BACKUP</button><label class="btn sec">IMPORT BACKUP<input type="file" accept="application/json,.json" data-action="importbackup" hidden></label></div><div class="row"><button type="button" class="btn sec" data-action="deviceclose">CLOSE</button></div></div></div>`;
+  }
+  function guideScreen(){
+    const G=globalThis.VATC_HEAD_GUIDE||{lead:'', sections:[]};
+    const body=(G.sections||[]).map(s=>`<section class="hg-sec" id="hg-${escTxt(s.id)}"><div class="hg-h"><h2>${escTxt(s.title)}</h2><span class="pill ${s.badge==='NOW'?'ok':'warn'}">${escTxt(s.badge)}</span></div><div class="hg-b">${s.html||''}</div></section>`).join('');
+    return `<div class="stickhead">${topbar()}</div><div class="scrollmain"><div class="body hg" data-guide="vector-head"><h2 class="sec">VECTOR HEAD GUIDE</h2><p class="hg-lead">${escTxt(G.lead||'')}</p>${body}<section class="hg-sec" id="hg-health"><div class="hg-h"><h2>Version and app health</h2><span class="pill ok">NOW</span></div><div id="vatc-health">${deviceStatusHTML()}</div><div class="row"><button type="button" class="btn sec" data-action="copyhealth">COPY HEALTH</button></div></section><div class="row"><button type="button" class="btn sec" data-action="guidehome">STUDY</button><button type="button" class="btn sec" data-action="device">DEVICE</button><button type="button" class="btn" data-action="feedback">REPORT FEEDBACK</button></div></div></div>`;
+  }
+  function feedbackScreen(){
+    return `<div class="stickhead">${topbar()}</div><div class="scrollmain"><div class="body fbbox" data-route="feedback"><h2 class="sec">REPORT FEEDBACK</h2><p class="hg-lead">Nothing on this page is sent. VECTOR ATC does not transmit feedback, email, or a report by itself. The route is #feedback.</p><label for="fbreport">NOTE</label><textarea id="fbreport" placeholder="What happened"></textarea><div class="row"><button type="button" class="btn" data-action="copyfeedback">COPY REPORT</button><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><p class="note">Paste the copy into your own message if you want to share it.</p></div></div>`;
+  }
+  function shellWrap(html){ return html+(S.deviceOpen?devicePanelHTML():''); }
+  async function copyText(text){
+    try{ if(navigator.clipboard&&navigator.clipboard.writeText){ await navigator.clipboard.writeText(text); return true; } }catch(e){}
+    try{ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); const ok=document.execCommand('copy'); ta.remove(); return !!ok; }catch(e){ return false; }
+  }
+  function doExport(){
+    if(!globalThis.VATC_BACKUP){ alert('Backup tools did not load. Nothing was changed.'); return; }
+    const raw={};
+    try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k) raw[k]=localStorage.getItem(k); } }
+    catch(e){ alert('Could not read progress on this device. Nothing was changed.'); return; }
+    if(!raw['vector_progress_ver']) raw['vector_progress_ver']=JSON.stringify(PROGRESS_VER);
+    const built=VATC_BACKUP.build(raw,{appVersion:APP_VER, exportedAt:new Date().toISOString(), progressVer:PROGRESS_VER});
+    if(!built.ok){ alert('Export stopped. Nothing was changed.\n'+built.errors.join('\n')); return; }
+    const blob=new Blob([JSON.stringify(built.backup,null,1)],{type:'application/json'});
+    const u=URL.createObjectURL(blob); const ln=document.createElement('a'); ln.href=u; ln.download='vector-atc-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(ln); ln.click(); ln.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000);
+  }
+  async function importBackupFile(el){
+    const f=el.files&&el.files[0]; el.value='';
+    if(!f) return;
+    if(!globalThis.VATC_BACKUP){ alert('Backup tools did not load. Current progress on this device was not changed.'); return; }
+    let text='';
+    try{ text=await f.text(); }catch(e){ alert('Could not read that file. Current progress on this device was not changed.'); return; }
+    const parsed=VATC_BACKUP.parse(text);
+    if(!parsed.ok){ alert('This backup was not imported.\n'+parsed.errors.join('\n')+'\n\nCurrent progress on this device was not changed.'); return; }
+    const when=parsed.backup.exportedAt||'an unknown time';
+    const n=Object.keys(parsed.backup.keys||{}).length;
+    let go=false;
+    try{ go=window.confirm('Replace all study progress on this device with this backup ('+n+' saved items, exported '+when+')?\n\nThis overwrites trainee name and initials, study marks, checks, lessons, flashcards, tests, custom sets, and pocket keys on this device. Cancel leaves current progress unchanged.'); }
+    catch(e){ go=false; }
+    if(!go) return;
+    const res=VATC_BACKUP.apply(localStorage, parsed.backup, {progressVer:PROGRESS_VER});
+    if(!res.ok){ alert('Import failed. Current progress was left unchanged.\n'+res.error); return; }
+    location.reload();
+  }
   function topbar(){ return `<div class="top"><button type="button" class="navback" data-action="navback" aria-label="Back" title="Back"${(NAV.ready&&NAV.n>0)?'':' disabled'}>←</button><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
-    <div class="stnchip">${S.tab==='home'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">${S.station==='KNKX'?'MCAS Miramar':'MCAS Camp Pendleton · Munn Field'}</div></div>`}
-    <button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ return `<div class="status"><span><span class="dot"></span> NO CONTROLLED DATA LOADED</span><span>v0.8.36 · tower paper</span></div>`; }
+    <div class="stnchip">${S.tab==='home'?'':S.screen!=='app'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">${S.station==='KNKX'?'MCAS Miramar':'MCAS Camp Pendleton · Munn Field'}</div></div>`}
+    <button class="btn-ghost" data-action="guide">GUIDE</button><button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
+  function statusbar(){ const d=deviceSnap(); return `<div class="status"><span><span class="dot${d.online?'':' off'}" id="netdot"></span> <span id="netlab">${d.online?'ONLINE':'OFFLINE'}</span> · NO CONTROLLED DATA LOADED</span><span><button type="button" class="btn-ghost" data-action="device">DEVICE</button> v${APP_VER}</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}</div>${tabHint()}`; }
@@ -7240,7 +7336,7 @@ function pdfPaneHTML(){
     return lk+pubShelfHTML()+pdfPaneHTML()+`<details class="pos-acads" id="refdump"${hide}><summary>FIELD QUICK REF</summary><div class="refdump-inner">${quickRefHTML()}</div></details>`; }
 
   function stationScreen(){ const lock=(c,n)=>`<div class="stn lock"><div class="code">${c}</div><div class="nm">${n}</div><div class="lockrow">${I.lock} Content in validation — coming soon</div></div>`;
-    return `<div class="body reveal"><h2 class="sec">${I.target} SELECT STATION</h2><div class="stationgrid">
+    return `<div class="body reveal"><h2 class="sec">${I.target} SELECT STATION</h2><div class="navrow" style="margin:-4px 0 12px"><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><div class="stationgrid">
       <div class="stn open" data-action="pick" data-s="KNFG"><span class="pill ok" style="position:absolute;top:14px;right:14px">UNLOCKED</span><div class="code">KNFG</div><div class="nm">MCAS Camp Pendleton · Munn Field</div><div class="lockrow" style="color:var(--green)">${I.chk} 6 positions · live</div></div>
       <div class="stn open" data-action="pick" data-s="KNKX"><span class="pill" style="position:absolute;top:14px;right:14px">SHELL</span><div class="code">KNKX</div><div class="nm">MCAS Miramar</div><div class="lockrow">${I.lock} Content coming soon</div></div>${lock('KNYL','MCAS Yuma')}${lock('KNKT','MCAS Cherry Point')}${lock('KNCA','MCAS New River')}${lock('KNBC','MCAS Beaufort')}</div></div>`; }
 
@@ -7273,20 +7369,27 @@ function pdfPaneHTML(){
   /* Same view re-rendered (check-off, card mark, reveal…) → keep the scroll position instead of jumping to top */
   let lastViewKey='';
   function viewKey(){ return [S.screen,S.tab,S.learnMode,S.trainMode,S.rfcTopic,S.pub,S.pos,S.fcDeck,S.aaFocus,S.rfcQi,S.qIdx,S.pIdx,S.scnIdx,S.qDone].join('|'); }
-  function render(){ if(S.screen==='station'){root.innerHTML=stationScreen();lastViewKey='';return;}
+  function render(){
+    const paint=()=>{ if(globalThis.VATC_DEVICE&&VATC_DEVICE.paint) VATC_DEVICE.paint(); };
+    if(S.screen==='station'||S.screen==='guide'||S.screen==='feedback'){
+      root.innerHTML=shellWrap(S.screen==='station'?stationScreen():S.screen==='guide'?guideScreen():feedbackScreen());
+      lastViewKey=''; paint(); return;
+    }
     const vk=viewKey(), smOld=document.querySelector('#vatc .scrollmain'), yOld=(smOld&&smOld.scrollTop)||0;
-    root.innerHTML=appScreen();
+    root.innerHTML=shellWrap(appScreen());
     if(vk===lastViewKey && yOld){ const smNew=document.querySelector('#vatc .scrollmain'); if(smNew) smNew.scrollTop=yOld; }
     lastViewKey=vk;
-    
     if(S.tab==='ask'||S.tab==='reference'){ bindLookup(); bindPdf(); if(S.tab==='reference'&&!S.pub){ document.querySelectorAll('#vatc .scrollmain details.pos-acads').forEach(d=>{ d.open=false; }); } if(S.tab==='ask'||S.lkFocus){ S.lkFocus=false; setTimeout(()=>focusLookup(),20); } if(S.tab==='reference'&&(S.refQ||'').trim()) drawLookup(S.refQ); }
     if(S.tab==='learn'&&S.pub&&S.learnReturn){ bindPdf(); }
-    bindFcGroups(); if(document.getElementById('fcwr')) fcAfterPaint(); }
+    bindFcGroups(); if(document.getElementById('fcwr')) fcAfterPaint();
+    paint();
+  }
 
   // ===== events =====
   document.getElementById('vatc').addEventListener('change',e=>{
     const el=e.target.closest('[data-action]'); if(!el) return;
     const a=el.dataset.action;
+    if(a==='importbackup'){ importBackupFile(el); return; }
     if(a==='myimport'||a==='myimpjson'){ myFile(a, el); return; }
     if(a==='citesel'){
       const cite=String(el.value||'').trim();
@@ -7346,6 +7449,28 @@ function pdfPaneHTML(){
     return false;
   }
   document.getElementById('vatc').addEventListener('click',e=>{ const el=e.target.closest('[data-action]'); if(!el)return; const a=el.dataset.action;
+    if(a==='device'){ S.deviceOpen=true; render(); return; }
+    if(a==='deviceclose'){ S.deviceOpen=false; render(); return; }
+    if(a==='guide'){ S.deviceOpen=false; return set({screen:'guide'}); }
+    if(a==='feedback'){ S.deviceOpen=false; return set({screen:'feedback'}); }
+    if(a==='guidehome'){ S.deviceOpen=false; return set({screen:'app', tab:'home'}); }
+    if(a==='installapp'){ if(globalThis.VATC_DEVICE) VATC_DEVICE.install(); return; }
+    if(a==='retryrefs'){ if(globalThis.VATC_DEVICE) VATC_DEVICE.kickRefs(); return; }
+    if(a==='exportbackup'){ doExport(); return; }
+    if(a==='saveprofile'){
+      const name=((document.getElementById('trname')||{}).value||'').trim();
+      const initials=((document.getElementById('trinit')||{}).value||'').trim().toUpperCase().slice(0,3);
+      if(!name&&!initials){ saveTrainee(null); S.deviceOpen=true; render(); return; }
+      if(!name||!initials){ alert('Enter both a name and initials, or clear both.'); return; }
+      saveTrainee({name:name, initials:initials});
+      render(); return;
+    }
+    if(a==='copyhealth'||a==='copyfeedback'){
+      const note=a==='copyfeedback'?((document.getElementById('fbreport')||{}).value||''):'';
+      const text=a==='copyfeedback'&&globalThis.VATC_DEVICE?VATC_DEVICE.feedbackText(note):('VECTOR ATC health\n'+((document.getElementById('vatc-health')||document.getElementById('vatc-devstatus')||{}).innerText||''));
+      copyText(text).then(ok=>{ alert(ok?'Copied on this device. Nothing was sent.':'Copy failed. Nothing was sent.'); });
+      return;
+    }
     if(a==='simspeed'){document.querySelectorAll('#vatc #spd button').forEach(b=>b.classList.remove('on'));el.classList.add('on');return;}
     if(a==='asksubmit'||a==='findgo')return doAsk();
     if(a==='askchip'||a==='skillchip'){const inp=document.getElementById('reflk')||document.getElementById('askq');if(inp){inp.value=el.dataset.q;doAsk();}return;}
@@ -7450,6 +7575,7 @@ function pdfPaneHTML(){
       return focusLookup();
     }
     if(e.key==='Escape'){
+      if(S.deviceOpen){ e.preventDefault(); S.deviceOpen=false; render(); return; }
       if((S.tab==='reference'||S.tab==='ask') && S.pub && document.activeElement && document.activeElement.id==='pdffind'){
         e.preventDefault(); document.activeElement.value=''; S.pubQ=''; pdfHits=[]; pdfHitI=0; const h=document.getElementById('pdfhits'); if(h)h.textContent=''; return;
       }
@@ -7464,8 +7590,35 @@ function pdfPaneHTML(){
     }
   });
 
+  (function bootRoutes(){
+    let h='';
+    try{ if(typeof location!=='undefined' && location) h=String(location.hash||'').replace(/^#\/?/,'').toLowerCase(); }catch(e){}
+    if(h==='guide'||h==='head-guide') S.screen='guide';
+    else if(h==='feedback'||h==='report') S.screen='feedback';
+  })();
+  if(globalThis.VATC_DEVICE){
+    VATC_DEVICE.paint=function(){
+      const d=deviceSnap();
+      const dot=document.getElementById('netdot');
+      const lab=document.getElementById('netlab');
+      if(dot) dot.classList.toggle('off', !d.online);
+      if(lab) lab.textContent=d.online?'ONLINE':'OFFLINE';
+      const health=document.getElementById('vatc-health');
+      if(health) health.innerHTML=deviceStatusHTML();
+      const dev=document.getElementById('vatc-devstatus');
+      if(dev) dev.innerHTML=deviceStatusHTML();
+    };
+    VATC_DEVICE.start({version:APP_VER, onChange:function(){ if(VATC_DEVICE.paint) VATC_DEVICE.paint(); }});
+  }
+  try{ window.addEventListener('hashchange', ()=>{
+    const h=String(location.hash||'').replace(/^#\/?/,'').toLowerCase();
+    const s=(h==='guide'||h==='head-guide')?'guide':(h==='feedback'||h==='report')?'feedback':'';
+    if(s && S.screen!==s) set({screen:s});
+    else if(!s && (S.screen==='guide'||S.screen==='feedback')) set({screen:'app', tab:'home'});
+  }); }catch(e){}
   render();
-  navInit(); render();
+  navInit();
+  render();
 })();
 </script>
 </body>
