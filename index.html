@@ -23,7 +23,7 @@
 #vatc{
   --bg:#070d0c; --panel:#0c1614; --panel2:#102019; --line:#1b2f29;
   --green:#39f0a0; --green2:#1f9c66; --green-dim:#0f3c2a;
-  --amber:#ffb24d; --red:#ff6363; --sky:#5fd0ff; --text:#d6e7df; --muted:#7d9489;
+  --amber:#ffb24d; --red:#ff6363; --sky:#5fd0ff; --text:#d6e7df; --muted:#a8c4b6;
   --fd:'Oswald','Arial Narrow',sans-serif; --fm:'JetBrains Mono',ui-monospace,Menlo,monospace;
   /* v0.8.30 TYPE SCALE — one heading font (Oswald: tabs, section heads, buttons, dropdown titles),
      one body font (JetBrains Mono: the terminal-style reading text), and mono for codes/cites/freqs (same family, tabular).
@@ -35,8 +35,8 @@
   border:1px solid var(--line); border-radius:16px; overflow:hidden; position:relative; min-height:700px; box-shadow:0 30px 80px rgba(0,0,0,.55);
   max-height:100vh; max-height:100dvh; display:flex; flex-direction:column;
 }
-#vatc::after{ content:''; position:absolute; inset:0; pointer-events:none; z-index:55; opacity:.45; background:repeating-linear-gradient(0deg, rgba(57,240,160,.03) 0 1px, transparent 1px 3px); mix-blend-mode:screen; }
-#vatc .grid-bg{ position:absolute; inset:0; pointer-events:none; opacity:.45; background-image:linear-gradient(rgba(31,156,102,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(31,156,102,.06) 1px,transparent 1px); background-size:34px 34px; }
+#vatc::after{ content:''; position:absolute; inset:0; pointer-events:none; z-index:55; opacity:.08; background:repeating-linear-gradient(0deg, rgba(57,240,160,.03) 0 1px, transparent 1px 3px); mix-blend-mode:screen; }
+#vatc .grid-bg{ position:absolute; inset:0; pointer-events:none; opacity:.18; background-image:linear-gradient(rgba(31,156,102,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(31,156,102,.06) 1px,transparent 1px); background-size:34px 34px; }
 #vatc .wrap{ position:relative; z-index:2; display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden; }
 #vatc #app{ display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden; }
 #vatc .stickhead{ flex:none; z-index:40; background:linear-gradient(180deg,#0c1614,#0a1211); box-shadow:0 10px 24px rgba(0,0,0,.45); border-bottom:1px solid var(--line); }
@@ -48,11 +48,13 @@
 #vatc .logo{ width:34px; height:34px; border:1.5px solid var(--green2); border-radius:8px; display:grid; place-items:center; background:radial-gradient(circle at 50% 120%, rgba(57,240,160,.25), transparent 60%); }
 #vatc .logo svg{ width:20px; height:20px; }
 #vatc .brand h1{ font-family:var(--fd); font-size:18px; letter-spacing:.16em; font-weight:700; }
-#vatc .brand .sub{ font-size:9px; letter-spacing:.32em; color:var(--green2); }
-#vatc .stnchip{ display:flex; align-items:center; gap:9px; font-size:11px; }
-#vatc .btn-ghost{ font-family:var(--fm); background:transparent; border:1px solid var(--line); color:var(--muted); padding:6px 10px; border-radius:7px; cursor:pointer; font-size:10px; letter-spacing:.1em; }
+#vatc .brand .sub{ font-size:11px; letter-spacing:.08em; color:#b7ead4; }
+#vatc .stnchip{ display:flex; align-items:center; gap:8px; font-size:12px; min-width:0; margin-left:auto; }
+#vatc .stnchip > div{ max-width:min(280px, 34vw); min-width:0; }
+#vatc .stnchip > div > div{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#vatc .btn-ghost{ font-family:var(--fm); background:transparent; border:1px solid var(--line); color:var(--text); padding:8px 10px; border-radius:7px; cursor:pointer; font-size:11px; letter-spacing:.06em; min-height:40px; }
 #vatc .btn-ghost:hover{ color:var(--green); border-color:var(--green2); }
-#vatc .status{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 16px; border-top:1px solid var(--line); background:#0a1211; font-size:9px; letter-spacing:.08em; color:var(--muted); }
+#vatc .status{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; padding:8px 16px; border-top:1px solid var(--line); background:#0a1211; font-size:12px; letter-spacing:.04em; line-height:1.4; color:var(--muted); }
 #vatc .dot{ width:7px; height:7px; border-radius:50%; background:var(--green); display:inline-block; box-shadow:0 0 8px var(--green); animation:pulse 2.4s infinite; }
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 #vatc .body{ padding:18px 18px 20px; }
@@ -64,37 +66,12 @@
 #vatc .pill.warn{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.06);} #vatc .pill.ok{ color:var(--green); border-color:var(--green-dim);}
 #vatc .pill.sample{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.08); }
 
-/* tabs — Home/Ask/Learn/Sim/Reference standout (no Train in top row) */
-#vatc .tabs{ display:flex; gap:4px; align-items:stretch; border-bottom:1px solid var(--line); padding:6px 10px 0; background:#0a1211; overflow-x:auto; -webkit-overflow-scrolling:touch; position:sticky; top:0; z-index:41; box-shadow:0 0 18px rgba(57,240,160,.08); }
-#vatc .tab{ font-family:var(--fd); letter-spacing:.12em; text-transform:uppercase; font-size:12px; color:#9aafA4; background:transparent; border:1px solid transparent; border-bottom:2px solid transparent; border-radius:8px 8px 0 0; padding:12px 12px; min-height:44px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:7px; flex:0 0 auto; }
-#vatc .tab:hover{ color:var(--text); border-color:var(--green-dim); }
-#vatc .tab.on{ color:var(--green); border-color:rgba(57,240,160,.45); border-bottom-color:var(--green); background:rgba(57,240,160,.10); box-shadow:0 0 10px rgba(57,240,160,.15); }
+/* tabs — one row for Home, Ask, Learn, Flashcards, Reference, and Crew */
+#vatc .tabs{ display:flex; gap:2px; align-items:stretch; border-bottom:1px solid var(--line); padding:6px 8px 0; background:#0a1211; overflow-x:auto; -webkit-overflow-scrolling:touch; position:sticky; top:0; z-index:41; scrollbar-width:thin; }
+#vatc .tab{ font-family:var(--fd); letter-spacing:.08em; text-transform:uppercase; font-size:13px; font-weight:600; color:#c5ddd3; background:transparent; border:1px solid transparent; border-bottom:2px solid transparent; border-radius:8px 8px 0 0; padding:12px 12px; min-height:44px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:7px; flex:0 0 auto; }
+#vatc .tab:hover{ color:var(--text); background:rgba(57,240,160,.06); }
+#vatc .tab.on{ color:#04150d; background:var(--green); border-color:var(--green); border-bottom-color:var(--green); }
 #vatc .tab svg{ width:15px; height:15px; flex:none; }
-/* top nav: all tabs same standout style */
-#vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
-#vatc .tab[data-t="cards"], #vatc .tab[data-t="reference"]{
-  font-size:13px; font-weight:600; letter-spacing:.14em; color:#c5ddd3;
-  border:1px solid rgba(57,240,160,.42); border-bottom:2px solid transparent;
-  padding:13px 15px; min-height:46px;
-  background:rgba(57,240,160,.06);
-  box-shadow:0 0 0 1px rgba(57,240,160,.08) inset, 0 0 12px rgba(57,240,160,.12);
-}
-#vatc .tab[data-t="home"]:hover, #vatc .tab[data-t="ask"]:hover, #vatc .tab[data-t="learn"]:hover,
-#vatc .tab[data-t="cards"]:hover, #vatc .tab[data-t="reference"]:hover{
-  color:var(--green); border-color:var(--green); background:rgba(57,240,160,.12);
-}
-#vatc .tab[data-t="home"].on, #vatc .tab[data-t="ask"].on, #vatc .tab[data-t="learn"].on,
-#vatc .tab[data-t="cards"].on, #vatc .tab[data-t="reference"].on{
-  color:#04150d; background:var(--green); border-color:var(--green); border-bottom-color:var(--green);
-  box-shadow:0 0 16px rgba(57,240,160,.4);
-}
-@media(max-width:640px){
-  #vatc .tabs{ gap:3px; padding:4px 6px 0; }
-  #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
-  #vatc .tab[data-t="cards"], #vatc .tab[data-t="reference"]{
-    font-size:12px; padding:12px 11px; letter-spacing:.1em; min-height:44px;
-  }
-}
 /* trackbar */
 #vatc .trackbar{ display:flex; align-items:center; gap:6px; padding:10px 18px; border-bottom:1px solid var(--line); background:#0b1413; flex-wrap:wrap; }
 #vatc .grplbl{ font-size:8px; letter-spacing:.18em; color:var(--amber); text-transform:uppercase; margin:0 2px 0 8px;}
@@ -126,7 +103,7 @@
 #vatc .pcard.ptile .psub{ font-family:var(--fm); font-size:9.5px; letter-spacing:.06em; color:var(--muted); margin-top:4px; }
 #vatc .pgrid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px;} @media(max-width:640px){#vatc .pgrid{grid-template-columns:1fr;}}
 #vatc .pcard{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--panel); cursor:default; transition:.15s; position:relative;}
-#vatc .pcard:hover{ border-color:var(--green); transform:translateY(-1px);} #vatc .pcard.on{ border-color:var(--green); box-shadow:0 0 0 1px var(--green) inset;}
+#vatc .pcard:hover{ border-color:var(--green);} #vatc .pcard.on{ border-color:var(--green); box-shadow:0 0 0 1px var(--green) inset;}
 #vatc .pcard .pn{ font-family:var(--fd); letter-spacing:.04em; font-size:14px; padding-right:46px;}
 #vatc .pcard .pd, #vatc .pcard .pt{ display:none; }
 #vatc .pcpct{ position:absolute; top:10px; right:12px; font-family:var(--fm); font-size:13px; font-weight:700; color:var(--green); letter-spacing:.04em; }
@@ -156,7 +133,7 @@
 #vatc .rwidget{ display:flex; align-items:center; gap:16px;}
 /* ask */
 #vatc .askbar{ display:flex; gap:8px; margin-bottom:12px;}
-#vatc .askbar input{ flex:1; font-family:var(--fm); font-size:13px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:13px 14px; outline:none;}
+#vatc .askbar input{ flex:1; font-family:var(--fm); font-size:13px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:13px 14px;}
 #vatc .askbar input:focus{ border-color:var(--green2);}
 #vatc .askchips{ display:flex; gap:7px; flex-wrap:wrap; margin-bottom:16px;}
 #vatc .findhits{ display:flex; flex-direction:column; gap:5px; margin-top:8px; }
@@ -187,7 +164,7 @@
 #vatc .findhit .fh-quote{ font-family:var(--fm); font-size:12px; line-height:1.4; color:var(--muted); margin-top:3px; white-space:pre-wrap; }
 #vatc .findhit .fh-band{ float:right; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin-left:8px; }
 #vatc .findbar{ display:flex; gap:7px; align-items:center; margin-bottom:6px; }
-#vatc .findbar input{ flex:1; font-family:var(--fm); font-size:13px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:8px; padding:11px 12px; outline:none; }
+#vatc .findbar input{ flex:1; font-family:var(--fm); font-size:13px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:8px; padding:11px 12px; min-height:44px; }
 #vatc .findbar input:focus{ border-color:var(--green2); }
 #vatc .findtools{ display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin:0 0 6px; position:sticky; top:0; z-index:6; padding:6px 0; background:linear-gradient(180deg, var(--bg) 70%, transparent); }
 #vatc .findtools .btn-back{ font-family:var(--fm); background:var(--panel2); border:1px solid var(--green2); color:var(--green); padding:8px 14px; border-radius:8px; cursor:pointer; font-size:11px; letter-spacing:.12em; font-weight:600; min-height:36px; }
@@ -266,7 +243,7 @@
 #vatc .fcface .a.def{ font-family:var(--fm); font-size:clamp(15px,4.3vw,18px); font-weight:700; color:var(--green); line-height:1.45; white-space:pre-wrap; overflow-wrap:anywhere;}
 #vatc .fcface .qsm{ font-family:var(--fd); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); line-height:1.3; max-width:100%; overflow-wrap:anywhere;}
 #vatc .fcface.back{ gap:10px; }
-#vatc button.fcsrc{ all:unset; box-sizing:border-box; max-width:100%; font-family:var(--fm); font-size:10px; line-height:1.4; color:#5f7469; text-align:center; white-space:normal; overflow-wrap:anywhere; cursor:pointer; text-decoration:underline dotted rgba(125,148,137,.45); text-underline-offset:3px; padding:2px 4px; margin-top:2px;}
+#vatc button.fcsrc{ all:unset; box-sizing:border-box; max-width:100%; font-family:var(--fm); font-size:10px; line-height:1.4; color:var(--muted); text-align:center; white-space:normal; overflow-wrap:anywhere; cursor:pointer; text-decoration:underline dotted rgba(168,196,182,.7); text-underline-offset:3px; padding:2px 4px; margin-top:2px;}
 #vatc button.fcsrc:hover, #vatc button.fcsrc:focus-visible{ color:var(--muted); }
 #vatc .fc-prog{ font-family:var(--fm); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;}
 #vatc .qz-part summary{ display:flex; align-items:baseline; gap:10px; padding:12px 14px; font-size:13px; letter-spacing:.14em; }
@@ -336,7 +313,7 @@
 #vatc .lkwrap .qmeta{ margin-bottom:8px; }
 #vatc .lkwrap .qmeta .muted{ letter-spacing:.02em; }
 #vatc .lkbar{ display:flex; gap:8px; }
-#vatc .lkbar input{ flex:1; font-family:var(--fm); font-size:15px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:16px 16px; outline:none; width:100%; }
+#vatc .lkbar input{ flex:1; font-family:var(--fm); font-size:15px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:16px 16px; width:100%; }
 #vatc .lkbar input:focus{ border-color:var(--green); box-shadow:0 0 0 1px var(--green-dim); }
 #vatc .lkhint{ font-size:9px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase; margin:8px 0 12px; }
 #vatc .lkcard{ border:1px solid var(--line); border-radius:10px; background:var(--panel); padding:12px 14px; margin-bottom:8px; }
@@ -433,7 +410,7 @@
 #vatc .sm-hl{ background:rgba(255,214,10,.35); color:inherit; border-radius:2px; }
 #vatc .sm-ul{ text-decoration:underline; text-decoration-color:var(--green); text-underline-offset:3px; }
 #vatc .pdfbar .btn-back{ font-family:var(--fm); background:var(--bg); border:1px solid var(--green2); color:var(--green); padding:7px 12px; border-radius:7px; cursor:pointer; font-size:11px; letter-spacing:.12em; font-weight:600; min-height:32px; }
-#vatc .pdfbar input{ flex:1; min-width:140px; font-family:var(--fm); font-size:12px; background:var(--bg); border:1px solid var(--line); color:var(--text); border-radius:7px; padding:7px 9px; outline:none; }
+#vatc .pdfbar input{ flex:1; min-width:0; font-family:var(--fm); font-size:13px; background:var(--bg); border:1px solid var(--line); color:var(--text); border-radius:7px; padding:7px 9px; }
 #vatc .pdfbar input:focus{ border-color:var(--green2); }
 #vatc .pdfpg{ font-family:var(--fm); font-size:11px; color:var(--green); min-width:64px; text-align:center; letter-spacing:.04em; }
 #vatc .pdfstage{ background:#070d0c; overflow:auto; max-height:72vh; }
@@ -499,7 +476,7 @@
 #vatc .lkwrap.hasq .lkcard.book{ border:none; background:transparent; padding:8px 4px 18px; }
 #vatc .lkwrap.hasq .booktxt{ font-size:13px; line-height:1.65; }
 #vatc #refdump[hidden]{ display:none; }
-#vatc .fillbox{ width:100%; min-height:88px; font-family:var(--fm); font-size:13px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:12px; outline:none; resize:vertical; }
+#vatc .fillbox{ width:100%; min-height:88px; font-family:var(--fm); font-size:13px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:12px; resize:vertical; }
 #vatc .fillbox:focus{ border-color:var(--green2); }
 /* FACMAN App D mock strips (Topic 4 Learn) */
 #vatc .fps-block{ margin:16px 0 6px; }
@@ -633,7 +610,7 @@
 #vatc .pk-bar{ height:3px; background:var(--line); border-radius:2px; overflow:hidden; }
 #vatc .pk-bar i{ display:block; height:100%; background:var(--acc,#39f0a0); }
 #vatc .pk-back{ display:flex; align-items:center; gap:10px; margin:0 0 10px; font-size:12px; }
-#vatc .tabhint{ font-size:10.5px; color:var(--muted,#8a9); padding:3px 12px 5px; letter-spacing:.02em; line-height:1.3; }
+#vatc .tabhint{ font-size:13px; color:var(--muted,#8a9); padding:6px 14px 8px; letter-spacing:.01em; line-height:1.4; }
 #vatc .my-sets{ margin:8px 0 10px; border:1px solid var(--green2); border-radius:10px; padding:8px; background:var(--panel2); }
 #vatc .my-hd{ display:flex; justify-content:space-between; align-items:center; gap:6px; font-size:11px; letter-spacing:.14em; color:var(--green); font-weight:600; margin-bottom:6px; flex-wrap:wrap; }
 #vatc .my-btns{ display:flex; gap:6px; }
@@ -745,7 +722,7 @@
 #vatc .fsel{ display:flex; flex-direction:column; gap:4px; min-width:0; }
 #vatc .fsel span{ font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--amber); }
 #vatc .fsel select{ width:100%; min-width:0; font-family:var(--fm); font-size:13px; color:var(--text); background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:9px 8px; min-height:40px; }
-#vatc .fsel select:focus{ outline:none; border-color:var(--green2); }
+#vatc .fsel select:focus{ border-color:var(--green2); }
 #vatc .fc-mark{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 0 8px; }
 #vatc .fc-mark .btn{ justify-content:center; min-height:46px; }
 #vatc .fc-mark .btn svg{ width:16px; height:16px; }
@@ -791,7 +768,7 @@
 #vatc .fc-mc .ch{ min-height:48px; line-height:1.35; overflow-wrap:anywhere; }
 #vatc .fc-mc{ margin-bottom:10px; }
 #vatc .fc-wr{ display:flex; gap:8px; }
-#vatc .fc-wr input{ flex:1; min-width:0; font-family:var(--fm); font-size:16px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:12px; outline:none; }
+#vatc .fc-wr input{ flex:1; min-width:0; font-family:var(--fm); font-size:16px; background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:12px; }
 #vatc .fc-wr input:focus{ border-color:var(--green2); }
 #vatc .fc-dk{ margin-top:10px; font-size:10px; }
 #vatc .fbk{ font-family:var(--fd); letter-spacing:.06em; font-size:15px; margin:4px 0 6px; }
@@ -808,18 +785,23 @@
 #vatc .fc-shuf{ position:absolute; right:0; top:50%; transform:translateY(-50%); width:28px; height:28px; display:flex; align-items:center; justify-content:center; padding:0; border-radius:8px; border:1px solid var(--line); background:transparent; color:var(--muted); font-size:15px; line-height:1; cursor:pointer; }
 #vatc .fc-shuf:hover, #vatc .fc-shuf:focus-visible{ color:var(--green); border-color:var(--green2); }
 #vatc .fc-note{ display:block; text-transform:none; letter-spacing:.02em; font-size:11px; line-height:1.4; padding:7px 10px; border-radius:8px; margin:0 0 8px; }
-/* mobile: full-bleed, five tabs fit, no duplicate station text */
+/* mobile: full-bleed. Tabs scroll instead of squeezing Crew off the row. */
 @media(max-width:640px){
   #vatc{ border:none; border-radius:0; box-shadow:none; min-height:100vh; min-height:100dvh; }
-  #vatc .top{ padding:10px 14px; }
-  #vatc .brand .sub{ letter-spacing:.24em; }
+  #vatc .top{ padding:10px 12px; gap:8px; min-width:0; }
+  #vatc .brand{ min-width:0; flex:1 1 auto; }
+  #vatc .brand h1{ font-size:16px; letter-spacing:.12em; }
+  #vatc .brand .sub{ display:none; }
   #vatc .stnchip > div{ display:none; }
-  #vatc .tabs{ gap:4px; padding:6px 6px 0; overflow-x:visible; }
-  #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"], #vatc .tab[data-t="cards"], #vatc .tab[data-t="reference"]{ flex:1 1 0; justify-content:center; font-size:11px; letter-spacing:.06em; padding:11px 2px; min-width:0; }
+  #vatc .tabs{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); overflow:visible; gap:4px; padding:6px 8px 4px; }
+  #vatc .tab{ justify-content:center; border-radius:8px; font-size:12px; letter-spacing:.04em; padding:10px 4px; min-height:44px; min-width:0; }
   #vatc .tab svg{ display:none; }
   #vatc .trackbar{ padding:8px 12px; gap:5px; }
+  #vatc .tk{ min-height:36px; font-size:12px; }
   #vatc .body{ padding:14px 12px 18px; }
   #vatc .status{ padding:8px 12px; }
+  #vatc .findbar input, #vatc .lkbar input, #vatc .askbar input, #vatc .pdfbar input{ font-size:16px; }
+  #vatc .pdfbar .btn-ghost, #vatc .pdfbar .btn-back{ min-height:44px; }
   #vatc .fc-td{ grid-template-columns:1fr; gap:3px; }
   #vatc .fc-filters{ grid-template-columns:1fr 1fr; }
   #vatc .fc-filters .fsel:first-child{ grid-column:1/-1; }
@@ -834,8 +816,8 @@
 #vatc .tower-blocked .rfc-pg{white-space:normal;display:block;color:var(--muted);text-decoration:none}
 #vatc .tower-blocked .rfc-pt{display:block}
 #vatc .status .dot.off{ background:var(--amber); box-shadow:0 0 8px var(--amber); animation:none; }
-#vatc .status .btn-ghost{ padding:3px 8px; min-height:26px; }
-#vatc .hg-lead{ font-size:12.5px; line-height:1.5; color:var(--muted); margin:0 0 14px; }
+#vatc .status .btn-ghost{ padding:6px 10px; min-height:40px; font-size:12px; }
+#vatc .hg-lead{ font-size:14px; line-height:1.5; color:var(--text); margin:0 0 14px; }
 #vatc .hg-sec{ border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:0 0 10px; background:var(--panel); }
 #vatc .hg-h{ display:flex; justify-content:space-between; gap:8px; align-items:center; margin-bottom:8px; }
 #vatc .hg-h h2{ font-family:var(--fd); font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--green); }
@@ -843,24 +825,46 @@
 #vatc .hg-b p{ margin:0 0 8px; }
 #vatc .hg-b ul{ margin:0 0 8px 1.1em; }
 #vatc .health{ margin:0; }
-#vatc .health dt{ color:var(--muted); font-size:10px; letter-spacing:.08em; }
+#vatc .health dt{ color:var(--muted); font-size:12px; letter-spacing:.06em; }
 #vatc .health dd{ margin:0 0 8px; font-size:12.5px; line-height:1.4; }
 #vatc .modal.device{ max-width:560px; max-height:min(86vh,860px); overflow:auto; }
 @media(max-width:640px){
   #vatc .overlay{ padding:10px; }
   #vatc .modal.device{ width:100%; max-height:min(92vh,920px); }
 }
-#vatc .modal.device h4{ font-family:var(--fd); letter-spacing:.14em; font-size:11px; color:var(--amber); margin:14px 0 6px; }
-#vatc .modal.device label, #vatc .fbbox label{ display:block; font-size:10px; letter-spacing:.08em; color:var(--muted); margin:8px 0 4px; }
-#vatc .modal.device input, #vatc .fbbox textarea{ width:100%; font-family:var(--fm); font-size:13px; background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:8px; }
+#vatc .modal.device h4{ font-family:var(--fd); letter-spacing:.12em; font-size:12px; color:var(--amber); margin:16px 0 6px; }
+#vatc .modal.device label, #vatc .fbbox label{ display:block; font-size:12px; letter-spacing:.06em; color:var(--muted); margin:8px 0 4px; }
+#vatc .modal.device input, #vatc .fbbox textarea{ width:100%; font-family:var(--fm); font-size:16px; background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:10px; min-height:44px; }
+#vatc .modal.device:focus{ outline:none; }
+#vatc .modal.device:focus-visible{ outline:2px solid #e7fff4; outline-offset:3px; }
 #vatc .fbbox textarea{ min-height:120px; }
 #vatc .modal.device .row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
 #vatc-update{ position:fixed; z-index:80; left:50%; bottom:16px; transform:translateX(-50%); width:min(520px, calc(100% - 24px)); background:#102019; color:#d6e7df; border:1px solid #1f9c66; border-radius:12px; padding:12px 14px; font:13px/1.45 ui-monospace,Menlo,monospace; box-shadow:0 12px 40px rgba(0,0,0,.45); }
 #vatc-update button{ font:inherit; margin:8px 8px 0 0; padding:8px 12px; border-radius:8px; border:1px solid #1f9c66; background:#39f0a0; color:#04150d; cursor:pointer; }
 #vatc-update #vatc-update-later{ background:transparent; color:#d6e7df; }
+#vatc .skip{ position:absolute; left:8px; top:8px; z-index:70; transform:translateY(-140%); background:#e7fff4; color:#04150d; padding:8px 12px; border-radius:8px; font-size:14px; font-weight:700; }
+#vatc .skip:focus{ transform:none; }
+#vatc .today{ margin:0 0 16px; }
+#vatc .today-lead, #vatc .today-note, #vatc .lkintro{ font-size:14px; line-height:1.45; color:var(--text); margin:0 0 10px; }
+#vatc .today-note{ color:var(--muted); font-size:13px; }
+#vatc .today-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+#vatc .today-card{ display:flex; flex-direction:column; align-items:flex-start; gap:6px; text-align:left; min-height:44px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--panel); color:var(--text); cursor:pointer; }
+#vatc .today-card:hover{ border-color:var(--green2); }
+#vatc .today-k{ font-family:var(--fd); letter-spacing:.06em; text-transform:uppercase; font-size:14px; color:var(--green); }
+#vatc .today-d{ font-size:13px; line-height:1.45; color:var(--text); }
+#vatc button:focus-visible, #vatc [role="button"]:focus-visible, #vatc a:focus-visible, #vatc input:focus-visible, #vatc select:focus-visible, #vatc textarea:focus-visible, #vatc summary:focus-visible{ outline:2px solid #e7fff4; outline-offset:2px; }
+#vatc .crw-office{ margin:0 0 10px; }
+@media(max-width:640px){
+  #vatc .today-grid{ grid-template-columns:1fr; }
+  #vatc .navback, #vatc .btn-ghost{ min-height:44px; }
+}
+@media (prefers-reduced-motion: reduce){
+  #vatc .reveal, #vatc .dot{ animation:none; }
+  #vatc .pcard{ transition:none; }
+}
 </style>
 
-<div id="vatc"><div class="grid-bg"></div><div class="wrap"><div id="app"></div></div></div>
+<div id="vatc"><a class="skip" href="#vatc-main">Skip to content</a><div class="grid-bg"></div><div class="wrap"><div id="app"></div></div></div>
 
 <script src="offline/backup.js"></script>
 <script src="offline/head-guide.js"></script>
@@ -5124,15 +5128,15 @@ function vectorAnswerHTML(query, hits){
   }
   function devicePanelHTML(){
     const t=loadTrainee()||{name:'', initials:''};
-    return `<div class="overlay"><div class="modal device"><h3>THIS DEVICE</h3><div id="vatc-devstatus">${deviceStatusHTML()}</div><div class="row"><button type="button" class="btn sec" data-action="retryrefs">RETRY SAVE</button><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><h4>PROFILE</h4><label for="trname">TRAINEE NAME</label><input id="trname" maxlength="120" autocomplete="name" value="${escTxt(t.name)}"><label for="trinit">INITIALS</label><input id="trinit" maxlength="3" autocapitalize="characters" value="${escTxt(t.initials)}"><div class="row"><button type="button" class="btn" data-action="saveprofile">SAVE PROFILE</button></div><h4>INSTALL</h4>${installHelpHTML()}<h4>BACKUP</h4><p class="note">Device backup, not cloud sync. Nothing is uploaded.</p><div class="row"><button type="button" class="btn" data-action="exportbackup">EXPORT BACKUP</button><label class="btn sec">IMPORT BACKUP<input type="file" accept="application/json,.json" data-action="importbackup" hidden></label></div><div class="row"><button type="button" class="btn sec" data-action="deviceclose">CLOSE</button></div></div></div>`;
+    return `<div class="overlay"><div class="modal device" role="dialog" aria-modal="true" aria-labelledby="devicetitle" tabindex="-1"><h3 id="devicetitle">THIS DEVICE</h3><p class="note">Study files on this browser. A backup stays on this device. Nothing is uploaded.</p><div id="vatc-devstatus">${deviceStatusHTML()}</div><div class="row"><button type="button" class="btn sec" data-action="retryrefs">RETRY SAVE</button><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><h4>PROFILE</h4><label for="trname">TRAINEE NAME</label><input id="trname" maxlength="120" autocomplete="name" value="${escTxt(t.name)}"><label for="trinit">INITIALS</label><input id="trinit" maxlength="3" autocapitalize="characters" value="${escTxt(t.initials)}"><div class="row"><button type="button" class="btn" data-action="saveprofile">SAVE PROFILE</button></div><h4>INSTALL</h4>${installHelpHTML()}<h4>BACKUP</h4><p class="note">Device backup, not cloud sync. Nothing is uploaded.</p><div class="row"><button type="button" class="btn" data-action="exportbackup">EXPORT BACKUP</button><label class="btn sec">IMPORT BACKUP<input type="file" accept="application/json,.json" data-action="importbackup" hidden></label></div><div class="row"><button type="button" class="btn sec" data-action="deviceclose">CLOSE</button></div></div></div>`;
   }
   function guideScreen(){
     const G=globalThis.VATC_HEAD_GUIDE||{lead:'', sections:[]};
     const body=(G.sections||[]).map(s=>`<section class="hg-sec" id="hg-${escTxt(s.id)}"><div class="hg-h"><h2>${escTxt(s.title)}</h2><span class="pill ${s.badge==='NOW'?'ok':'warn'}">${escTxt(s.badge)}</span></div><div class="hg-b">${s.html||''}</div></section>`).join('');
-    return `<div class="stickhead">${topbar()}</div><div class="scrollmain"><div class="body hg" data-guide="vector-head"><h2 class="sec">VECTOR HEAD GUIDE</h2><p class="hg-lead">${escTxt(G.lead||'')}</p>${body}<section class="hg-sec" id="hg-health"><div class="hg-h"><h2>Version and app health</h2><span class="pill ok">NOW</span></div><div id="vatc-health">${deviceStatusHTML()}</div><div class="row"><button type="button" class="btn sec" data-action="copyhealth">COPY HEALTH</button></div></section><div class="row"><button type="button" class="btn sec" data-action="guidehome">STUDY</button><button type="button" class="btn sec" data-action="device">DEVICE</button><button type="button" class="btn" data-action="feedback">REPORT FEEDBACK</button></div></div></div>`;
+    return `<div class="stickhead">${topbar()}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body hg" data-guide="vector-head"><h2 class="sec">VECTOR HEAD GUIDE</h2><p class="hg-lead">${escTxt(G.lead||'')}</p>${body}<section class="hg-sec" id="hg-health"><div class="hg-h"><h2>Version and app health</h2><span class="pill ok">NOW</span></div><div id="vatc-health">${deviceStatusHTML()}</div><div class="row"><button type="button" class="btn sec" data-action="copyhealth">COPY HEALTH</button></div></section><div class="row"><button type="button" class="btn sec" data-action="guidehome">STUDY</button><button type="button" class="btn sec" data-action="device">DEVICE</button><button type="button" class="btn" data-action="feedback">REPORT FEEDBACK</button></div></div></div>`;
   }
   function feedbackScreen(){
-    return `<div class="stickhead">${topbar()}</div><div class="scrollmain"><div class="body fbbox" data-route="feedback"><h2 class="sec">REPORT FEEDBACK</h2><p class="hg-lead">Nothing on this page is sent. VECTOR ATC does not transmit feedback, email, or a report by itself. The route is #feedback.</p><label for="fbreport">NOTE</label><textarea id="fbreport" placeholder="What happened"></textarea><div class="row"><button type="button" class="btn" data-action="copyfeedback">COPY REPORT</button><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><p class="note">Paste the copy into your own message if you want to share it.</p></div></div>`;
+    return `<div class="stickhead">${topbar()}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body fbbox" data-route="feedback"><h2 class="sec">REPORT FEEDBACK</h2><p class="hg-lead">Nothing on this page is sent. VECTOR ATC does not transmit feedback, email, or a report by itself. The route is #feedback.</p><label for="fbreport">NOTE</label><textarea id="fbreport" placeholder="What happened"></textarea><div class="row"><button type="button" class="btn" data-action="copyfeedback">COPY REPORT</button><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><p class="note">Paste the copy into your own message if you want to share it.</p></div></div>`;
   }
   function shellWrap(html){ return html+(S.deviceOpen?devicePanelHTML():''); }
   async function copyText(text){
@@ -5179,16 +5183,18 @@ function vectorAnswerHTML(query, hits){
   }
   function topbar(){ return `<div class="top"><button type="button" class="navback" data-action="navback" aria-label="Back" title="Back"${(NAV.ready&&NAV.n>0)?'':' disabled'}>←</button><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':S.screen!=='app'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">${S.station==='KNKX'?'MCAS Miramar':'MCAS Camp Pendleton · Munn Field'}</div></div>`}
-    <button class="btn-ghost" data-action="guide">GUIDE</button><button class="btn-ghost" data-action="stations">STATIONS</button></div></div>`; }
-  function statusbar(){ const d=deviceSnap(); return `<div class="status"><span><span class="dot${d.online?'':' off'}" id="netdot"></span> <span id="netlab">${d.online?'ONLINE':'OFFLINE'}</span> · NO CONTROLLED DATA LOADED</span><span><button type="button" class="btn-ghost" data-action="device">DEVICE</button> v${APP_VER}</span></div>`; }
+    <button type="button" class="btn-ghost" data-action="guide" aria-label="Head Guide">GUIDE</button><button type="button" class="btn-ghost" data-action="stations" aria-label="Choose station">STATIONS</button></div></div>`; }
+  function statusbar(){ const d=deviceSnap(); return `<div class="status"><span><span class="dot${d.online?'':' off'}" id="netdot"></span> <span id="netlab">${d.online?'ONLINE':'OFFLINE'}</span> · NO CONTROLLED DATA LOADED</span><span><button type="button" class="btn-ghost" data-action="device" aria-label="This device">DEVICE</button> v${APP_VER}</span></div>`; }
+  function focusDevice(){ const dlg=document.querySelector('#vatc .modal.device'); if(dlg) dlg.focus(); }
+  function focusDeviceBtn(){ const b=document.querySelector('#vatc [data-action="device"]'); if(b) b.focus(); }
 
-  function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
-    return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}${t('crew',I.users,'Crew')}</div>${tabHint()}`; }
+  function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button type="button" role="tab" aria-selected="${on?'true':'false'}" class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
+    return `<div class="tabs" role="tablist" aria-label="Study">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}${t('crew',I.users,'Crew')}</div>${tabHint()}`; }
   const TAB_HINT={ask:'Search every pub and get a cited answer.',learn:'Your LQS ACADs with references and tests.',cards:'Study sets by position and ACAD.',reference:'7110.65, FACMAN, FLIP plates and more.',crew:'Training aid. Photograph a sheet, review the text, then save it on this browser. It does not replace the official source.'};
   function tabHint(){ let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const h=TAB_HINT[tab]; return h?`<div class="tabhint">${h}</div>`:''; }
   function trackbar(){ let out='<span class="grplbl">TWR</span>'; let g='TOWER';
-    out+=POS.filter(p=>p.g==='TOWER').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
-    out+='<span class="grplbl">RDR</span>'+POS.filter(p=>p.g==='RADAR').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
+    out+=POS.filter(p=>p.g==='TOWER').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" role="button" tabindex="0" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
+    out+='<span class="grplbl">RDR</span>'+POS.filter(p=>p.g==='RADAR').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" role="button" tabindex="0" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
     return `<div class="trackbar">${out}</div>`; }
   
   /* v0.8.18: VIDS/METAR strip removed — aviationweather.gov blocks browser (CORS) fetches, so it only ever showed a sample METAR. */
@@ -6366,14 +6372,22 @@ function vectorAnswerHTML(query, hits){
     const tile=p=>{
       const P=posProgress(p.k);
       const pending=!syllabusFor(p.k).list.length;
-      return `<div class="pcard ptile ${S.pos===p.k?'on':''}" data-action="poslearn" data-p="${p.k}">
+      return `<div class="pcard ptile ${S.pos===p.k?'on':''}" data-action="poslearn" data-p="${p.k}" tabindex="0" role="button">
         <span class="ptg">${p.g==='TOWER'?'TWR':'RDR'}</span><span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div>${pending?'<div class="psub">ACAD pending</div>':''}</div>`;
     };
     const first6=POS.slice(0,6), rest=POS.slice(6);
-    const quiz=`<div class="grp">KNFG Quizlets</div>
+    const today=`<section class="today" aria-labelledby="today-h"><h2 class="sec" id="today-h">Today</h2><p class="today-lead">Study and training aid for the material already in this app. Not a live airfield status and not a substitute for the current official source.</p><div class="today-grid">
+      <button type="button" class="today-card" data-action="today" data-go="positions"><span class="today-k">Study a position</span><span class="today-d">Open ACADs, tests, and flashcards. The percent on each tile is study progress on this device, not a qualification.</span></button>
+      <button type="button" class="today-card" data-action="today" data-go="ask"><span class="today-k">Cited pages</span><span class="today-d">Ask or open a publication in this app. A passage is highlighted only when the page text matches. Otherwise verify that page.</span></button>
+      <button type="button" class="today-card" data-action="today" data-go="crew"><span class="today-k">Crew 1 and Crew 2</span><span class="today-d">Photograph a training sheet, review the text, and save it in this browser. Check the official current notice. Text read from a photo is not authoritative.</span></button>
+      <button type="button" class="today-card" data-action="today" data-go="device"><span class="today-k">Offline on this device</span><span class="today-d">Install, keep the publications already in this app, and export a backup that includes crew photos. Nothing is uploaded.</span></button>
+    </div></section>`;
+    const quiz=`<div class="grp">KNFG Quizlets</div><p class="today-note">Study sets already in this app.</p>
       ${homeQuizHTML()}`;
     return `<div class="stnbar">MCAS Camp Pendleton (KNFG)</div>
-      <div class="pos6">${first6.map(tile).join('')}</div>
+      ${today}
+      <div class="grp">Positions</div><p class="today-note">Choose a position. Study progress stays on this device.</p>
+      <div class="pos6" id="posgrid">${first6.map(tile).join('')}</div>
       ${rest.length?`<div class="pos6">${rest.map(tile).join('')}</div>`:''}
       ${quiz}`; }
 
@@ -7451,7 +7465,8 @@ function vectorAnswerHTML(query, hits){
     const nLook=rows.filter(crewNeedsLook).length;
     return `<div class="crw" data-crw="board"><h2 class="sec">Crew notices</h2>${crewMsgHTML()}${crewAidHTML()}
       <div class="crw-seg"><button type="button" class="${id==='1'?'on':''}" data-action="crwcrew" data-c="1">Crew 1</button><button type="button" class="${id==='2'?'on':''}" data-action="crwcrew" data-c="2">Crew 2</button></div>
-      <p class="crw-fine"><button type="button" class="crw-quiet" data-action="crwoffice">Training office</button></p>
+      <button type="button" class="btn sec crw-wide" data-action="crwoffice">Training office</button>
+      <p class="crw-k">Add a training record for Crew ${id}</p>
       <div class="crw-form">
         <label>Shift<select id="crw-shift" class="crw-in">${crewShiftOpts('')}</select></label>
         <label>Shift date<input id="crw-date" class="crw-in" type="date"></label>
@@ -8569,7 +8584,7 @@ function pdfPaneHTML(){
     return lk+pubShelfHTML()+pdfPaneHTML()+`<details class="pos-acads" id="refdump"${hide}><summary>FIELD QUICK REF</summary><div class="refdump-inner">${quickRefHTML()}</div></details>`; }
 
   function stationScreen(){ const lock=(c,n)=>`<div class="stn lock"><div class="code">${c}</div><div class="nm">${n}</div><div class="lockrow">${I.lock} Content in validation — coming soon</div></div>`;
-    return `<div class="body reveal"><h2 class="sec">${I.target} SELECT STATION</h2><div class="navrow" style="margin:-4px 0 12px"><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><div class="stationgrid">
+    return `<div class="body reveal" id="vatc-main" tabindex="-1"><h2 class="sec">${I.target} SELECT STATION</h2><div class="navrow" style="margin:-4px 0 12px"><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><div class="stationgrid">
       <div class="stn open" data-action="pick" data-s="KNFG"><span class="pill ok" style="position:absolute;top:14px;right:14px">UNLOCKED</span><div class="code">KNFG</div><div class="nm">MCAS Camp Pendleton · Munn Field</div><div class="lockrow" style="color:var(--green)">${I.chk} 6 positions · live</div></div>
       <div class="stn open" data-action="pick" data-s="KNKX"><span class="pill" style="position:absolute;top:14px;right:14px">SHELL</span><div class="code">KNKX</div><div class="nm">MCAS Miramar</div><div class="lockrow">${I.lock} Content coming soon</div></div>${lock('KNYL','MCAS Yuma')}${lock('KNKT','MCAS Cherry Point')}${lock('KNCA','MCAS New River')}${lock('KNBC','MCAS Beaufort')}</div></div>`; }
 
@@ -8581,11 +8596,11 @@ function pdfPaneHTML(){
     return `${S.tab==='home'?'<div class="stnbar">MCAS Miramar (KNKX)</div>':''}<div class="card" style="padding:22px;text-align:center;margin-top:12px" data-shell="KNKX"><div class="code" style="font-family:var(--fm);letter-spacing:.2em;color:var(--green)">KNKX · ${escTxt(lab.toUpperCase())}</div><div style="font-size:18px;margin:10px 0 6px">Coming soon</div><div class="muted" style="font-size:12px">No ACADs, flashcards, tests or references loaded for MCAS Miramar yet. Content is added once the station's LQS and FACMAN are provided and validated.</div></div>`; }
   function appScreen(){ let inner='';
     if(S.tab==='sim'||S.tab==='cards') S.tab=(S.tab==='cards'?'learn':'home'); /* SIM tab removed v0.8.29 */
-    if(S.station==='KNKX'){ return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${S.tab==='home'?'':trackbar()}<div class="body">${shellView()}</div>${statusbar()}</div>`; }
+    if(S.station==='KNKX'){ return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain" id="vatc-main" tabindex="-1">${S.tab==='home'?'':trackbar()}<div class="body">${shellView()}</div>${statusbar()}</div>`; }
     if(S.tab==='home')inner=homeView(); else if(S.tab==='ask')inner=askView(); else if(S.tab==='learn'||S.tab==='train')inner=learnView();
     else if(S.tab==='reference')inner=refView(); else if(S.tab==='crew')inner=crewView();
     const track=(S.tab==='home'||S.tab==='crew')?'':trackbar();
-    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${track}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
+    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain" id="vatc-main" tabindex="-1">${track}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
 
   function doAsk(){
     const inp=document.getElementById('reflk')||document.getElementById('askq');
@@ -8611,6 +8626,8 @@ function pdfPaneHTML(){
     }
     const vk=viewKey(), smOld=document.querySelector('#vatc .scrollmain'), yOld=(smOld&&smOld.scrollTop)||0;
     root.innerHTML=shellWrap(appScreen());
+    const tabBar=document.querySelector('#vatc .tabs'), tabOn=document.querySelector('#vatc .tab.on');
+    if(tabBar && tabOn){ const right=tabOn.offsetLeft+tabOn.offsetWidth; if(tabOn.offsetLeft<tabBar.scrollLeft) tabBar.scrollLeft=tabOn.offsetLeft; else if(right>tabBar.scrollLeft+tabBar.clientWidth) tabBar.scrollLeft=right-tabBar.clientWidth; }
     if(vk===lastViewKey && yOld){ const smNew=document.querySelector('#vatc .scrollmain'); if(smNew) smNew.scrollTop=yOld; }
     lastViewKey=vk;
     if(S.tab==='ask'||S.tab==='reference'){ bindLookup(); bindPdf(); if(S.tab==='reference'&&!S.pub){ document.querySelectorAll('#vatc .scrollmain details.pos-acads').forEach(d=>{ d.open=false; }); } if(S.tab==='ask'||S.lkFocus){ S.lkFocus=false; setTimeout(()=>focusLookup(),20); } if(S.tab==='reference'&&(S.refQ||'').trim()) drawLookup(S.refQ); }
@@ -8687,8 +8704,16 @@ function pdfPaneHTML(){
   }
   document.getElementById('vatc').addEventListener('click',e=>{ const el=e.target.closest('[data-action]'); if(!el)return; const a=el.dataset.action;
     if(a.indexOf('crw')===0){ crewAction(a, el, e); return; }
-    if(a==='device'){ S.deviceOpen=true; render(); return; }
-    if(a==='deviceclose'){ S.deviceOpen=false; render(); return; }
+    if(a==='today'){
+      const go=el.dataset.go;
+      if(go==='positions'){ const g=document.getElementById('posgrid'); if(g){ g.scrollIntoView({block:'nearest'}); const b=g.querySelector('[data-action="poslearn"]'); if(b) b.focus(); } return; }
+      if(go==='ask') return set({screen:'app', tab:'ask', lkFocus:true});
+      if(go==='crew') return set({screen:'app', tab:'crew', crewView:'board'});
+      if(go==='device'){ S.deviceOpen=true; render(); focusDevice(); return; }
+      return;
+    }
+    if(a==='device'){ S.deviceOpen=true; render(); focusDevice(); return; }
+    if(a==='deviceclose'){ S.deviceOpen=false; render(); focusDeviceBtn(); return; }
     if(a==='guide'){ S.deviceOpen=false; return set({screen:'guide'}); }
     if(a==='feedback'){ S.deviceOpen=false; return set({screen:'feedback'}); }
     if(a==='guidehome'){ S.deviceOpen=false; return set({screen:'app', tab:'home'}); }
@@ -8795,7 +8820,10 @@ function pdfPaneHTML(){
 
   document.addEventListener('keydown',e=>{
     const tag=(e.target&&e.target.tagName||'').toLowerCase();
-    const typing=tag==='input'||tag==='textarea';
+    const typing=tag==='input'||tag==='textarea'||tag==='select';
+    if(!typing && (e.key==='Enter'||e.key===' ') && e.target && e.target.getAttribute && e.target.getAttribute('role')==='button' && tag!=='button'){
+      e.preventDefault(); e.target.click(); return;
+    }
     if((e.key==='f'||e.key==='F')&&(e.ctrlKey||e.metaKey)){
       // Ask query field / Ask without PDF: do not steal browser Find or re-focus Ask while typing
       if(S.tab==='ask' && (!S.pub || (e.target && e.target.id==='reflk'))) return;
@@ -8813,7 +8841,7 @@ function pdfPaneHTML(){
       return focusLookup();
     }
     if(e.key==='Escape'){
-      if(S.deviceOpen){ e.preventDefault(); S.deviceOpen=false; render(); return; }
+      if(S.deviceOpen){ e.preventDefault(); S.deviceOpen=false; render(); focusDeviceBtn(); return; }
       if((S.tab==='reference'||S.tab==='ask') && S.pub && document.activeElement && document.activeElement.id==='pdffind'){
         e.preventDefault(); document.activeElement.value=''; S.pubQ=''; pdfHits=[]; pdfHitI=0; const h=document.getElementById('pdfhits'); if(h)h.textContent=''; return;
       }
