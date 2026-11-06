@@ -39,7 +39,7 @@ ok('committed manifest matches enumeration', JSON.stringify(manifest) === JSON.s
 ok('precache is an explicit list', Array.isArray(manifest.precache) && manifest.precache.every(p => typeof p === 'string' && !/[*?]/.test(p)));
 ok('lazy list is explicit pdfs only', manifest.lazy.length === 25 && manifest.lazy.every(p => p.startsWith('docs/') && p.endsWith('.pdf') && !/[*?]/.test(p)));
 ok('shell includes guide, pdf.js, and study data',
-  ['index.html', 'manifest.webmanifest', 'offline/head-guide.js', 'offline/client.js', 'offline/backup.js', 'offline/core.js', 'data/para-index.json', 'data/ask-aliases.json', 'vendor/pdfjs/pdf.min.js', 'vendor/pdfjs/pdf.worker.min.js', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png'].every(p => manifest.precache.includes(p)));
+  ['index.html', 'manifest.webmanifest', 'offline/head-guide.js', 'offline/client.js', 'offline/backup.js', 'offline/core.js', 'data/para-index.json', 'data/ref-span.json', 'data/ask-aliases.json', 'vendor/pdfjs/pdf.min.js', 'vendor/pdfjs/pdf.worker.min.js', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png'].every(p => manifest.precache.includes(p)));
 ok('lazy list includes JO and a plate', manifest.lazy.includes('docs/JO-7110.65BB.pdf') && manifest.lazy.includes('docs/flip/KNFG-AIRPORT-DIAGRAM.pdf'));
 ok('notes and scripts are not cached', !manifest.precache.concat(manifest.lazy).some(p => /\.(md|txt|cjs)$/.test(p) || p.includes('NOTES')));
 ok('no external or api urls in the manifest', manifest.precache.concat(manifest.lazy).every(p => !/^https?:/i.test(p) && !/supabase|\/api\//i.test(p)));
@@ -226,6 +226,10 @@ function envFor(fetchImpl, caches) {
   ok('install guidance names Windows and iPhone without a store', /Add to Home Screen/.test(html) && /Install VECTOR ATC/.test(html) && /not an app-store download/.test(html) && /not a Department of Defense approval/.test(html));
   ok('import asks before replace', /Replace all study progress on this device with this backup/.test(html) && /Cancel leaves current progress unchanged/.test(html) && /VATC_BACKUP\.apply\(/.test(html));
   ok('page does not add supabase or clear storage on update', !/supabase/i.test(html) && !/localStorage\.clear/.test(html));
+  ok('storage status separates saved files from the browser estimate',
+    /function siteFilesLine/.test(html) && /Site files saved:/.test(html) && /App shell is not saved yet/.test(html) &&
+    /Browser storage estimate:/.test(html) && /may exclude the cache/.test(html) && /does not mean the files above are missing/.test(html) &&
+    !/About '\+fmtBytes/.test(html));
 
   function sliceBetween(a, b) {
     const i = html.indexOf(a);

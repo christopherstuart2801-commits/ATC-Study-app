@@ -15,13 +15,13 @@ The manifest and icons are next to `site/index.html`. Paths are relative, so Git
 
 Open the site once while online. The service worker (`site/sw.js`) saves an enumerated shell: the page, this guide, study JSON, pdf.js, and icons. Publication PDFs referenced by the page are saved from that same enumerated list, one file at a time. A file that fails is reported and is not replaced with the app page.
 
-The worker does not cache other websites, notes, credentials, or API responses. A new app version waits until you choose Update. That reload does not erase study progress. There is no official-publication updater in this version.
+The worker does not cache other websites, notes, credentials, or API responses. Device shows the publication count only after the app shell is saved. The browser storage estimate is a separate origin figure and can stay at 0 even when those files are saved; the page says so instead of treating 0 as an empty cache. A new app version waits until you choose Update. That reload does not erase study progress. There is no official-publication updater in this version.
 
 `file://` cannot register a service worker. Use the hosted site or a local HTTP server.
 
 ## Device backup
 
-Device → Export backup downloads one JSON file (`format` `vector-atc-backup`, version 1) of the `vatc.*` values on this device, including trainee name and initials, marks, checks, lessons, flashcards, tests, custom sets, and pocket keys. Import checks the file and asks before it replaces progress on this device. A bad file or a failed write leaves current progress in place. Nothing is uploaded.
+Device → Export backup downloads one JSON file (`format` `vector-atc-backup`, version 1) of the `vatc.*` values on this device, including trainee name and initials, marks, checks, lessons, flashcards, tests, custom sets, and pocket keys. Crew training notices on this device are included with their photos in `crewPhotos` (`bridge` `vector-atc-crew-photos`). If a saved notice claims a photo and the bytes are missing, the export stops. It does not write a complete backup that silently omits photos. The separate Crew control downloads crew text and photos only and is labeled as not the full device backup. Saved crew notices are a training aid. They are not an official notice source and they do not approve operational use. Import checks the file and asks before it replaces progress on this device. A bad file or a failed write leaves current progress in place. Nothing is uploaded.
 
 ## Head Guide
 

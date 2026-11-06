@@ -651,6 +651,80 @@
 #vatc .my-draft{ border:1px dashed var(--amber); border-radius:10px; padding:8px; margin:8px 0; }
 #vatc .my-raw pre{ white-space:pre-wrap; font-size:10px; max-height:160px; overflow:auto; }
 #vatc .my-prog{ font-size:11px; margin:4px 0; }
+/* CREW_NOTICES:BEGIN — scoped local crew-notice UI. Does not restyle Learn / Ask / Reference. */
+#vatc .crw{ padding:2px 0 12px; }
+#vatc .crw-aid{ border:1px solid #5a431d; background:rgba(255,178,77,.08); color:var(--amber); border-radius:10px; padding:10px 12px; font-size:13px; line-height:1.45; margin:0 0 12px; text-transform:none; letter-spacing:0; }
+#vatc .crw-ex{ border:1px dashed var(--amber); color:var(--amber); border-radius:8px; padding:8px 10px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; margin:0 0 10px; }
+#vatc .crw-msg{ border:1px solid var(--green-dim); color:var(--green); border-radius:8px; padding:8px 10px; font-size:12px; line-height:1.4; margin:0 0 10px; }
+#vatc .crw-fine{ font-size:11px; color:var(--muted); line-height:1.45; margin:8px 0; text-transform:none; letter-spacing:0; }
+#vatc .crw-k{ font-size:12px; color:var(--text); margin:0 0 4px; }
+#vatc .crw-src{ font-size:12px; color:var(--muted); display:block; margin:0 0 6px; }
+#vatc .crw-seg{ display:flex; gap:8px; margin:0 0 8px; }
+#vatc .crw-seg button{ flex:1; min-height:44px; border-radius:9px; border:1px solid var(--line); background:var(--panel2); color:var(--text); font-family:var(--fd); letter-spacing:.1em; text-transform:uppercase; cursor:pointer; }
+#vatc .crw-seg button.on{ background:var(--green); color:#04150d; border-color:var(--green); font-weight:600; }
+#vatc .crw-form{ display:grid; grid-template-columns:1fr 1fr; gap:0 10px; }
+#vatc .crw label{ display:block; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:0 0 10px; }
+#vatc .crw label.span{ grid-column:1 / -1; }
+#vatc .crw-in,#vatc .crw-text{ display:block; width:100%; box-sizing:border-box; margin-top:4px; font-size:16px; text-transform:none; letter-spacing:0; color:var(--text); background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:10px; }
+#vatc .crw-text{ min-height:140px; resize:vertical; line-height:1.4; }
+#vatc .crw-cam{ display:flex; align-items:center; justify-content:center; min-height:52px; width:100%; box-sizing:border-box; margin:0 0 8px; border-radius:10px; background:var(--green); color:#04150d; font-family:var(--fd); letter-spacing:.12em; text-transform:uppercase; font-weight:600; cursor:pointer; }
+#vatc .crw-cam.alt{ background:transparent; color:var(--green); border:1px solid var(--green2); }
+#vatc .crw-wide{ width:100%; justify-content:center; min-height:44px; margin:0 0 8px; }
+#vatc .crw-quiet{ background:none; border:0; padding:0; margin:0 4px 0 0; color:var(--green2); font-size:12px; letter-spacing:0; text-transform:none; text-decoration:underline; cursor:pointer; }
+#vatc .crw-listhead{ display:flex; justify-content:space-between; gap:8px; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:14px 0 6px; }
+#vatc .crw-empty{ font-size:12px; color:var(--muted); border:1px dashed var(--line); border-radius:8px; padding:12px; margin:0 0 8px; }
+#vatc .crw-item{ display:flex; gap:8px; align-items:stretch; margin:0 0 8px; }
+#vatc .crw-tick{ display:flex; align-items:center; margin:0; padding:0 2px; text-transform:none; letter-spacing:0; }
+#vatc .crw-tick input{ width:22px; height:22px; accent-color:#39f0a0; }
+#vatc .crw-open{ flex:1; text-align:left; background:var(--panel); border:1px solid var(--line); border-radius:10px; color:var(--text); padding:10px; cursor:pointer; min-height:44px; }
+#vatc .crw-prev{ display:block; font-size:12px; color:var(--text); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#vatc .crw-pills{ display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
+#vatc .crw-pill{ font-size:9px; letter-spacing:.06em; text-transform:uppercase; border:1px solid #5a431d; color:var(--amber); border-radius:20px; padding:3px 7px; }
+#vatc .crw-pill.note{ border-color:var(--green-dim); color:var(--green); }
+#vatc .crw-pill.ex{ border-color:var(--amber); }
+#vatc .crw-chips{ display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px; }
+#vatc .crw-chip{ min-height:36px; padding:6px 10px; border-radius:20px; border:1px solid var(--line); background:transparent; color:var(--muted); font-size:11px; letter-spacing:.04em; cursor:pointer; }
+#vatc .crw-chip.on{ color:#04150d; background:var(--green); border-color:var(--green); }
+#vatc .crw-tools{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+#vatc .crw-tools button,#vatc .crw-tool{ font-size:10px; letter-spacing:.08em; text-transform:uppercase; background:transparent; border:1px solid var(--line); color:var(--muted); border-radius:8px; padding:8px 10px; min-height:40px; cursor:pointer; }
+#vatc .crw-hot{ color:var(--red); border-color:var(--red); }
+#vatc .crw-photo{ display:block; width:100%; max-height:240px; object-fit:contain; background:#000; border-radius:8px; margin:0 0 8px; }
+#vatc .crw-parse{ border:1px solid var(--line); border-radius:10px; padding:8px 10px; margin:8px 0; background:var(--panel); }
+#vatc .crw-ph{ font-family:var(--fd); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin:0 0 4px; }
+#vatc .crw-pn{ font-size:12px; color:var(--muted); line-height:1.4; margin:0 0 6px; }
+#vatc .crw-line{ border-top:1px solid var(--line); padding:8px 0; }
+#vatc .crw-line .raw{ font-size:13px; white-space:pre-wrap; }
+#vatc .crw-line .st{ color:var(--amber); font-size:10px; letter-spacing:.06em; text-transform:uppercase; margin-top:3px; }
+#vatc .crw-mini{ margin-top:6px; background:transparent; border:1px solid var(--line); color:var(--text); border-radius:7px; padding:6px 8px; font-size:10px; letter-spacing:.06em; cursor:pointer; min-height:36px; }
+#vatc .crw-check{ display:flex; align-items:flex-start; gap:8px; text-transform:none; letter-spacing:0; font-size:14px; color:var(--text); line-height:1.4; margin:8px 0; }
+#vatc .crw-check input{ width:22px; height:22px; margin:1px 0 0; flex:none; accent-color:#39f0a0; }
+#vatc .crw-actions{ display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+#vatc .crw-actions .btn{ min-height:48px; }
+#vatc #crw-save:disabled{ opacity:.4; cursor:not-allowed; }
+#vatc .crw-savedtext{ white-space:pre-wrap; font-size:14px; line-height:1.45; border:1px solid var(--line); border-radius:10px; padding:10px; margin:8px 0; background:var(--panel); }
+#vatc .crw-raw pre{ white-space:pre-wrap; font-size:11px; max-height:160px; overflow:auto; margin-top:6px; }
+#vatc .crw-ask{ border:1px solid var(--red); border-radius:10px; padding:12px; margin:10px 0; background:rgba(255,99,99,.06); }
+#vatc .crw-ask b{ display:block; margin:0 0 6px; }
+#vatc .crw-ask p{ font-size:13px; line-height:1.4; margin:0 0 8px; }
+#vatc .crw-demo{ margin:12px 0; font-size:12px; color:var(--muted); }
+#vatc .crw-demo summary{ cursor:pointer; letter-spacing:.08em; text-transform:uppercase; font-size:10px; min-height:36px; }
+#vatc .crw-demo-row{ display:flex; flex-direction:column; gap:2px; border-top:1px solid var(--line); padding:8px 0; }
+#vatc .crw-demo-row b{ color:var(--text); font-size:13px; letter-spacing:0; text-transform:none; }
+#vatc .crw-roles{ margin:12px 0; font-size:12px; color:var(--muted); }
+#vatc .crw-roles summary{ cursor:pointer; letter-spacing:.08em; text-transform:uppercase; font-size:10px; color:var(--muted); min-height:36px; }
+#vatc .crw-roles ul{ margin:6px 0 0; padding:0 0 0 16px; }
+#vatc .crw-roles li{ margin:0 0 4px; line-height:1.4; }
+#vatc .crw-office-rows{ display:flex; flex-direction:column; gap:8px; margin:8px 0; }
+#vatc .crw-office-rows button{ display:flex; justify-content:space-between; gap:8px; align-items:center; text-align:left; background:var(--panel); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:10px 12px; min-height:48px; cursor:pointer; font-size:13px; text-transform:none; letter-spacing:0; }
+#vatc .crw-office-rows b{ font-family:var(--fd); letter-spacing:.08em; text-transform:uppercase; }
+#vatc .crw button:focus-visible,#vatc .crw input:focus-visible,#vatc .crw textarea:focus-visible,#vatc .crw select:focus-visible{ outline:2px solid var(--green); outline-offset:2px; }
+@media(max-width:640px){
+  #vatc .crw-form{ grid-template-columns:1fr; }
+  #vatc .crw-actions{ flex-direction:column; }
+  #vatc .crw-actions .btn{ width:100%; justify-content:center; }
+}
+/* CREW_NOTICES:END */
+
 #vatc .pk-back .btn-back{ font-family:var(--fm); background:var(--panel2); border:1px solid var(--green2); color:var(--green); padding:7px 12px; border-radius:8px; cursor:pointer; font-size:11px; letter-spacing:.12em; font-weight:600; min-height:32px; -webkit-appearance:none; appearance:none; }
 #vatc .pk-back .btn-back:hover{ background:var(--green-dim); }
 #vatc .fc-guide{ border:1px solid var(--line); border-radius:10px; background:var(--panel); margin:0 0 10px; }
@@ -4019,6 +4093,44 @@
     for(let i=0;i<keys.length;i++){ if(keys[i].toUpperCase()===up) return bag[keys[i]]; }
     return null;
   }
+  function chapterFallbackPage(pub, sec){
+    const map=PUB_CH_PAGES[pub]||{};
+    let raw=String(sec||'').replace(/[\u2010-\u2015\u2212]/g,'-').replace(/\s+/g,' ').trim();
+    if(!raw || /^PG:\d+$/i.test(raw)) return null;
+    raw=raw.replace(/^(?:TBL|FIG)\s+/i,'');
+    const ch=parseInt(raw.split('-')[0],10);
+    if(!ch) return null;
+    if(map[ch]!=null) return map[ch];
+    if(map[String(ch)]!=null) return map[String(ch)];
+    return null;
+  }
+  /* Page precedence. exact is an exact PUB_CH_PAGES key. coarse is only the
+     chapter start from that map. idxPage is the SEC_IDX heading page.
+     An exact key beats a missing page and a coarse chapter page. SEC_IDX
+     refines a chapter fallback, and an explicit request for the indexed
+     body page is kept. A disagreement such as TBL 2-3-10 stays on the
+     exact map page unless the caller named the indexed page. */
+  function resolveCiteSource(o){
+    o=o||{};
+    const prefer=Math.max(0, parseInt(o.prefer,10)||0);
+    const key=o.key||'';
+    const heading=o.heading||'';
+    if(o.pgPage) return {page:o.pgPage|0, source:'explicit', key, heading};
+    const exact=o.exact==null?null:o.exact;
+    const idxPage=o.idxPage==null?null:o.idxPage;
+    const mapped=Math.max(0, parseInt(o.mapped,10)||0);
+    const coarse=o.coarse==null?null:o.coarse;
+    const onCoarse=!!(prefer && coarse!=null && prefer===coarse);
+    if(exact!=null && (!prefer || prefer===exact || onCoarse))
+      return {page:exact, source:'pubmap', key, heading};
+    if(idxPage!=null && prefer===idxPage)
+      return {page:idxPage, source:'secidx', key, heading};
+    const mappedIsCoarse=exact==null && coarse!=null && mapped===coarse;
+    if(idxPage!=null && mappedIsCoarse && (!prefer || onCoarse))
+      return {page:idxPage, source:'secidx', key, heading};
+    if(exact!=null) return {page:exact, source:'pubmap', key, heading};
+    return {page:prefer||mapped||1, source:'mapped', key, heading};
+  }
   function resolveKnownCitePage(pub, sec, preferPage, extra){
     const prefer=Math.max(0, parseInt(preferPage,10)||0);
     const pgm=/^PG:(\d+)$/i.exec(normKeySrc(sec));
@@ -4026,12 +4138,16 @@
     const idx=secIdxEntry(pub, key);
     const heading=idx?String(idx[0]||''):'';
     if(pgm) return {page:parseInt(pgm[1],10), key, source:'explicit', heading};
-    if(idx && prefer===idx[1]) return {page:idx[1], key, source:'secidx', heading};
     const exact=pubMapExact(pub, key);
-    if(exact!=null && (!prefer || prefer===exact)) return {page:exact, key, source:'pubmap', heading};
-    const mapped=pageForCite(pub, key||sec||'');
-    if(idx && (!prefer || prefer===mapped)) return {page:idx[1], key, source:'secidx', heading};
-    return {page:prefer||mapped||1, key, source:'mapped', heading};
+    const lookup=key||sec||'';
+    const decided=resolveCiteSource({
+      key:key, heading:heading, prefer:prefer,
+      exact:exact==null?null:exact,
+      idxPage:idx?idx[1]:null,
+      mapped:pageForCite(pub, lookup),
+      coarse:chapterFallbackPage(pub, lookup)
+    });
+    return {page:decided.page, key:key, source:decided.source, heading:heading};
   }
   function joinSrcItems(items){
     let raw='';
@@ -4856,13 +4972,13 @@ function vectorAnswerHTML(query, hits){
   function saveFcStats(){ try{ localStorage.setItem(FC_STATS_KEY, JSON.stringify(S.fcStats||{})); }catch(_){} }
   const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'acad',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcDeck:'pos',fcGrp:'',fcOpen:{},fcOrder:null,fcMode:'cards',fcOnlyNot:false,fcStats:loadFcStats(),fcSess:null,fcLastId:null,fcSetsOpen:false,sqShow:'cs',sqType:'',sqTbl:'',
-    lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'' };
+    lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'', crewView:'board', crewId:'1', crewFilt:'all', crewDraft:null, crewReadId:'', crewSel:{}, crewAsk:null, crewMsg:'', crewRolesOpen:false };
   /* ===== v0.8.30 NAV: in-app + browser/phone back via history.pushState/popstate.
      Each history entry = snapshot of navigational S keys + UI (scroll, open <details>, search inputs). ===== */
   const NAV_KEYS=['screen','tab','learnMode','trainMode','pos','rfcTopic','pub','pubPage','pubQ','pubGuessNote','pubCiteLab','pubCiteQuote','pubPreferPage','pubCiteSec','pubSecBan','learnReturn','learnBlockedNote',
-    'fcPick','fcDeck','fcIdx','fcFlip','fcOrder','fcMode','fcGrp','fcOpen','tst','tstNote','refQ','askDoneQ','aaFocus','posOpen','hitsScroll','sqShow','sqType','sqTbl'];
+    'fcPick','fcDeck','fcIdx','fcFlip','fcOrder','fcMode','fcGrp','fcOpen','tst','tstNote','refQ','askDoneQ','aaFocus','posOpen','hitsScroll','sqShow','sqType','sqTbl','crewView','crewId','crewFilt','crewDraft','crewReadId','crewRolesOpen'];
   const NAV={n:0, restoring:false, ready:false};
-  function navKey(){ const t=S.tst; return [S.screen,S.tab,S.learnMode,S.pos,S.rfcTopic,S.pub||'',S.fcPick?1:0,S.fcPick?'':S.fcDeck,t?(t.pos+t.n+t.kind+(t.phase==='done'?'d':'')):''].join('|'); }
+  function navKey(){ const t=S.tst; const d=S.crewDraft; return [S.screen,S.tab,S.learnMode,S.pos,S.rfcTopic,S.pub||'',S.fcPick?1:0,S.fcPick?'':S.fcDeck,t?(t.pos+t.n+t.kind+(t.phase==='done'?'d':'')):'',S.crewView||'',S.crewId||'',S.crewReadId||'',d&&d.token?d.token:''].join('|'); }
   function navSnapS(){ const o={}; NAV_KEYS.forEach(k=>{ o[k]=(S[k]===undefined)?null:S[k]; }); try{ return JSON.parse(JSON.stringify(o)); }catch(e){ return {}; } }
   function navSnapUI(){
     const sm=document.querySelector('#vatc .scrollmain');
@@ -4978,11 +5094,28 @@ function vectorAnswerHTML(query, hits){
   // ===== chrome =====
   function fmtBytes(n){ if(n==null||!isFinite(n)) return 'unavailable'; if(n<1024) return Math.round(n)+' B'; if(n<1048576) return (n/1024).toFixed(1)+' KB'; return (n/1048576).toFixed(1)+' MB'; }
   function deviceSnap(){ return (globalThis.VATC_DEVICE&&VATC_DEVICE.snapshot)?VATC_DEVICE.snapshot():{online:navigator.onLine!==false, version:APP_VER, sw:'unknown', swError:'', shellReady:false, refs:{total:0,cached:0,failed:[],running:false}, canInstall:false, installed:false, storage:null}; }
+  /* File counts come from the service worker. navigator.storage.estimate() is separate origin metadata and may stay 0 even when those files are saved. */
+  function siteFilesLine(d, refs){
+    const total=refs.total||0, cached=refs.cached||0, failed=refs.failed||[];
+    if(!d.shellReady) return 'App shell is not saved yet. Publication save waits until the shell is saved.';
+    if(refs.running || (total>0 && cached<total && !failed.length)) return 'Saving site files… '+cached+'/'+(total||'…')+' publications.';
+    if(!total) return 'App shell is saved. The publication list is not in yet.';
+    const head='Site files saved: '+cached+'/'+total+' publications.';
+    if(failed.length) return head+' '+failed.length+' could not be saved.';
+    return head;
+  }
+  function storageEstimateLine(d){
+    const s=d.storage;
+    if(!s||!s.reported) return 'Browser storage estimate: not reported. This is origin metadata, not the publication count.';
+    const usage=s.usage==null?'not reported':fmtBytes(s.usage);
+    const quota=s.quota==null?'':' of '+fmtBytes(s.quota);
+    if(s.usage===0) return 'Browser storage estimate: '+usage+quota+'. Reported 0 from origin metadata. The estimate may exclude the cache and does not mean the files above are missing.';
+    return 'Browser storage estimate: '+usage+quota+' (estimate may exclude the cache).';
+  }
   function deviceStatusHTML(){
     const d=deviceSnap(), refs=d.refs||{total:0,cached:0,failed:[],running:false};
     const fails=(refs.failed||[]).slice(0,6).map(f=>escTxt(String(f.url||f).split('/').pop())+(f.error?' — '+escTxt(f.error):'')).join('<br>');
-    const store=d.storage?'About '+fmtBytes(d.storage.usage)+' used of '+fmtBytes(d.storage.quota)+'.':'This browser did not report a storage estimate.';
-    return `<dl class="health"><dt>VERSION</dt><dd>v${escTxt(d.version||APP_VER)} · progress stamp ${escTxt(PROGRESS_VER)}</dd><dt>CONNECTION</dt><dd>${d.online?'Online':'Offline'}</dd><dt>ACCOUNT</dt><dd>None on this version</dd><dt>APP SHELL</dt><dd>${d.shellReady?'Saved on this device, including the Head Guide':'Not saved yet. Open this site once while online.'}</dd><dt>SERVICE WORKER</dt><dd>${escTxt(d.sw||'unknown')}${d.swError?' — '+escTxt(d.swError):''}</dd><dt>PUBLICATIONS</dt><dd>${refs.cached||0} / ${refs.total||0} saved${refs.running?' · saving':''}${fails?'<div class="note">'+fails+'</div>':''}</dd><dt>INSTALL</dt><dd>${d.installed?'Installed on this device.':d.canInstall?'This browser can install.':'Use the browser steps below.'}</dd><dt>STORAGE</dt><dd>${store}</dd></dl>`;
+    return `<dl class="health"><dt>VERSION</dt><dd>v${escTxt(d.version||APP_VER)} · progress stamp ${escTxt(PROGRESS_VER)}</dd><dt>CONNECTION</dt><dd>${d.online?'Online':'Offline'}</dd><dt>ACCOUNT</dt><dd>None on this version</dd><dt>APP SHELL</dt><dd>${d.shellReady?'Saved on this device, including the Head Guide':'Not saved yet. Open this site once while online.'}</dd><dt>SERVICE WORKER</dt><dd>${escTxt(d.sw||'unknown')}${d.swError?' — '+escTxt(d.swError):''}</dd><dt>SITE FILES</dt><dd>${escTxt(siteFilesLine(d, refs))}${fails?'<div class="note">'+fails+'</div>':''}</dd><dt>BROWSER STORAGE ESTIMATE</dt><dd>${escTxt(storageEstimateLine(d))}</dd><dt>INSTALL</dt><dd>${d.installed?'Installed on this device.':d.canInstall?'This browser can install.':'Use the browser steps below.'}</dd></dl>`;
   }
   function installHelpHTML(){
     const d=deviceSnap();
@@ -5006,7 +5139,7 @@ function vectorAnswerHTML(query, hits){
     try{ if(navigator.clipboard&&navigator.clipboard.writeText){ await navigator.clipboard.writeText(text); return true; } }catch(e){}
     try{ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); const ok=document.execCommand('copy'); ta.remove(); return !!ok; }catch(e){ return false; }
   }
-  function doExport(){
+  async function doExport(){
     if(!globalThis.VATC_BACKUP){ alert('Backup tools did not load. Nothing was changed.'); return; }
     const raw={};
     try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k) raw[k]=localStorage.getItem(k); } }
@@ -5014,7 +5147,12 @@ function vectorAnswerHTML(query, hits){
     if(!raw['vector_progress_ver']) raw['vector_progress_ver']=JSON.stringify(PROGRESS_VER);
     const built=VATC_BACKUP.build(raw,{appVersion:APP_VER, exportedAt:new Date().toISOString(), progressVer:PROGRESS_VER});
     if(!built.ok){ alert('Export stopped. Nothing was changed.\n'+built.errors.join('\n')); return; }
-    const blob=new Blob([JSON.stringify(built.backup,null,1)],{type:'application/json'});
+    let bundle;
+    try{ bundle=await crewPhotoBundle(); }
+    catch(e){ alert('Device backup stopped. Crew photos could not be read, so no file was saved. Nothing was uploaded.'); return; }
+    const attached=crewAttachToDeviceBackup(built.backup, bundle);
+    if(!attached.ok){ alert('Device backup stopped so it would not leave out crew photos.\n'+(attached.errors||[]).join('\n')+'\n\nNothing was uploaded.'); return; }
+    const blob=new Blob([JSON.stringify(attached.backup,null,1)],{type:'application/json'});
     const u=URL.createObjectURL(blob); const ln=document.createElement('a'); ln.href=u; ln.download='vector-atc-backup-'+new Date().toISOString().slice(0,10)+'.json';
     document.body.appendChild(ln); ln.click(); ln.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000);
   }
@@ -5029,11 +5167,14 @@ function vectorAnswerHTML(query, hits){
     const when=parsed.backup.exportedAt||'an unknown time';
     const n=Object.keys(parsed.backup.keys||{}).length;
     let go=false;
-    try{ go=window.confirm('Replace all study progress on this device with this backup ('+n+' saved items, exported '+when+')?\n\nThis overwrites trainee name and initials, study marks, checks, lessons, flashcards, tests, custom sets, and pocket keys on this device. Cancel leaves current progress unchanged.'); }
+    try{ go=window.confirm('Replace all study progress on this device with this backup ('+n+' saved items, exported '+when+')?\n\nThis overwrites trainee name and initials, study marks, checks, lessons, flashcards, tests, custom sets, and pocket keys on this device. It also replaces local crew training notices and restores photos included in the file. Cancel leaves current progress unchanged.'); }
     catch(e){ go=false; }
     if(!go) return;
     const res=VATC_BACKUP.apply(localStorage, parsed.backup, {progressVer:PROGRESS_VER});
     if(!res.ok){ alert('Import failed. Current progress was left unchanged.\n'+res.error); return; }
+    try{ crewWrite(crewLoad()); }catch(e){}
+    const photoRes=await crewRestoreDevicePhotos(parsed.backup);
+    if(!photoRes.ok){ alert('Study progress was imported. Crew photos were not all restored.\n'+(photoRes.errors||[]).join('\n')+'\n\nReviewed training text was kept. This is not an official notice source.'); }
     location.reload();
   }
   function topbar(){ return `<div class="top"><button type="button" class="navback" data-action="navback" aria-label="Back" title="Back"${(NAV.ready&&NAV.n>0)?'':' disabled'}>←</button><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
@@ -5042,8 +5183,8 @@ function vectorAnswerHTML(query, hits){
   function statusbar(){ const d=deviceSnap(); return `<div class="status"><span><span class="dot${d.online?'':' off'}" id="netdot"></span> <span id="netlab">${d.online?'ONLINE':'OFFLINE'}</span> · NO CONTROLLED DATA LOADED</span><span><button type="button" class="btn-ghost" data-action="device">DEVICE</button> v${APP_VER}</span></div>`; }
 
   function tabs(){ const t=(k,ic,l)=>{let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const on=tab===k; return `<button class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
-    return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}</div>${tabHint()}`; }
-  const TAB_HINT={ask:'Search every pub and get a cited answer.',learn:'Your LQS ACADs with references and tests.',cards:'Study sets by position and ACAD.',reference:'7110.65, FACMAN, FLIP plates and more.'};
+    return `<div class="tabs">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}${t('crew',I.users,'Crew')}</div>${tabHint()}`; }
+  const TAB_HINT={ask:'Search every pub and get a cited answer.',learn:'Your LQS ACADs with references and tests.',cards:'Study sets by position and ACAD.',reference:'7110.65, FACMAN, FLIP plates and more.',crew:'Training aid. Photograph a sheet, review the text, then save it on this browser. It does not replace the official source.'};
   function tabHint(){ let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const h=TAB_HINT[tab]; return h?`<div class="tabhint">${h}</div>`:''; }
   function trackbar(){ let out='<span class="grplbl">TWR</span>'; let g='TOWER';
     out+=POS.filter(p=>p.g==='TOWER').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
@@ -6901,6 +7042,750 @@ function vectorAnswerHTML(query, hits){
     E.busy=''; set({myEd:E});
   }
   globalThis.vatcMyFile=myFile;
+/* CREW_NOTICES:BEGIN — local training-aid prototype. OCR is not authoritative. Planned roles are not in effect. */
+  const CREW_KEY='vatc.crewNotices.v1';
+  const CREW_DB='vatcCrewLocal';
+  const CREW_AID='Training aid only. Verify against the official current NOTAM source. Not a live status and not an operational notice.';
+  /* Fictional demo roster only. Not taken from a personnel file and not stored. */
+  const CREW_DEMO_ROSTER=[
+    {id:'demo-01', label:'Demo Controller 01', crew:'1', status:'Demo', date:'2099-01-06', outcome:'Dummy outcome — sample reviewed', fictional:true},
+    {id:'demo-02', label:'Demo Controller 02', crew:'2', status:'Demo', date:'2099-01-07', outcome:'Dummy outcome — sample not started', fictional:true}
+  ];
+  function crewCanon(v){ const s=String(v==null?'':v).trim().toUpperCase(); if(s==='1'||s==='A') return '1'; if(s==='2'||s==='B') return '2'; return ''; }
+  function crewDemoHTML(which){
+    const id=crewCanon(which);
+    const rows=id?CREW_DEMO_ROSTER.filter(r=>r.crew===id):CREW_DEMO_ROSTER;
+    const body=rows.map(r=>`<div class="crw-demo-row"><b>${escTxt(r.label)}</b><span>Crew ${r.crew} · ${escTxt(r.status)} · ${escTxt(r.date)}</span><span>${escTxt(r.outcome)}</span></div>`).join('');
+    return `<details class="crw-demo"><summary>Demo roster</summary><p>Fictional labels for this screen and for tests. Not assignments, not scores, and not saved as personnel records.</p>${body}</details>`;
+  }
+  let crewBlob=null, crewBlobUrl='', crewHydra=0;
+  function crewNewId(){ return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+  function crewCleanId(id){ const s=String(id||''); return /^[A-Za-z0-9_-]{1,40}$/.test(s)?s:crewNewId(); }
+  function crewPlannedAccess(){
+    return {effective:false, login:false, cloud:false, owner:null, admin:null, roles:[
+      {id:'atcfo', title:'ATCFO', intent:'overall owner', effective:false},
+      {id:'training-chief', title:'Master sergeant', intent:'Training Chief / training-office lead with training-wide visibility', effective:false},
+      {id:'vector-head', title:'Vector Head', intent:'one per crew; maintainer for that crew daily training-notice input', effective:false},
+      {id:'office-staff', title:'Training-office staff', intent:'viewer', effective:false},
+      {id:'controller', title:'Controller', intent:'own training and approved crew reads', effective:false}
+    ]};
+  }
+  function crewDateTokens(line){
+    const out=[], seen=new Set();
+    const add=(token, iso)=>{ const k=token+'|'+(iso||''); if(seen.has(k)) return; seen.add(k); out.push({token:token, iso:iso||null, status:'needs-review'}); };
+    const months={JAN:1,FEB:2,MAR:3,APR:4,MAY:5,JUN:6,JUL:7,AUG:8,SEP:9,OCT:10,NOV:11,DEC:12};
+    const isoOk=(y,m,d)=>{
+      y=+y; m=+m; d=+d;
+      if(y<1970||y>2100||m<1||m>12||d<1||d>31) return null;
+      const dt=new Date(Date.UTC(y,m-1,d));
+      if(dt.getUTCFullYear()!==y||dt.getUTCMonth()!==m-1||dt.getUTCDate()!==d) return null;
+      return y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    };
+    const s=String(line||'');
+    s.replace(/\b(20\d{2})-(\d{2})-(\d{2})\b/g,(t,y,m,d)=>{ add(t, isoOk(y,m,d)); return t; });
+    s.replace(/\b(\d{1,2})(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(\d{2}|\d{4})\b/gi,(t,d,mo,y)=>{
+      let yy=+y; if(yy<100) yy+=2000; add(String(t).toUpperCase(), isoOk(yy, months[String(mo).toUpperCase()], d)); return t;
+    });
+    s.replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})\b/g,(t,m,d,y)=>{ let yy=+y; if(yy<100) yy+=2000; add(t, isoOk(yy,m,d)); return t; });
+    s.replace(/\b(\d{1,2})\/(\d{1,2})\b(?!\/)/g,(t)=>{ add(t, null); return t; });
+    const uf=s.match(/\b(UFN|PERM|PERMANENT)\b/i); if(uf) add(uf[0].toUpperCase(), null);
+    return out;
+  }
+  function crewParseNotice(text){
+    const items=String(text||'').replace(/\r/g,'').split('\n').map(l=>l.trim()).filter(Boolean).slice(0,400).map(raw=>({raw:raw, dates:crewDateTokens(raw)}));
+    return {status:'needs-review', authoritative:false, decisions:[], items:items,
+      note:'Best-effort line check only. Unresolved text and dates stay needs review. This is not a runway, airfield, or control instruction.'};
+  }
+  function crewFlags(rec){
+    const f=['parse-needs-review'];
+    if(rec.example) f.push('example');
+    if(rec.ocrStatus!=='read') f.push('ocr-pending');
+    if(!rec.shift||!rec.shiftDate) f.push('shift-needs-review');
+    if(!rec.sourceNote) f.push('source-needs-review');
+    const items=(rec.parse&&rec.parse.items)||[];
+    let unresolved=false, any=false, resolvable=0, noted=0;
+    items.forEach((it,i)=>{ (it.dates||[]).forEach(dt=>{ any=true; if(!dt.iso) unresolved=true; else { resolvable++; if(rec.lineNotes&&rec.lineNotes[i]) noted++; } }); });
+    if(any&&(unresolved||noted<resolvable)) f.push('date-unresolved');
+    if(any&&!unresolved&&resolvable>0&&noted===resolvable) f.push('date-noted');
+    return f;
+  }
+  function crewNeedsLook(rec){
+    const f=rec.flags||[];
+    return f.indexOf('ocr-pending')>=0||f.indexOf('shift-needs-review')>=0||f.indexOf('source-needs-review')>=0||f.indexOf('date-unresolved')>=0;
+  }
+  function crewSanitizeRecord(r){
+    const crew=crewCanon(r&&r.crew);
+    if(!r||!crew) return null;
+    const reviewed=String(r.reviewedText!=null?r.reviewedText:(r.text||'')).slice(0,20000);
+    const rec={
+      id:crewCleanId(r.id), crew:crew,
+      shift:['day','swing','mid'].indexOf(r.shift)>=0?r.shift:'',
+      shiftDate:/^\d{4}-\d{2}-\d{2}$/.test(String(r.shiftDate||''))?String(r.shiftDate):'',
+      sourceNote:String(r.sourceNote||'').slice(0,500),
+      ocrStatus:['read','pending','failed','empty'].indexOf(r.ocrStatus)>=0?r.ocrStatus:'pending',
+      ocrText:String(r.ocrText||'').slice(0,20000), reviewedText:reviewed, reviewAck:!!r.reviewAck,
+      lineNotes:Array.isArray(r.lineNotes)?r.lineNotes.map(Boolean).slice(0,400):[],
+      example:!!(r.example||/\bEXAMPLE\b/i.test(reviewed)),
+      savedAt:String(r.savedAt||'').slice(0,40), localNote:String(r.localNote||'').slice(0,1000),
+      thumb:!!r.thumb, aid:true, authoritative:false, decisions:[], permanence:r.permanence==='text-local-photo-not-stored'?'text-local-photo-not-stored':'local-browser'
+    };
+    rec.parse=crewParseNotice(reviewed);
+    rec.flags=crewFlags(rec);
+    return rec;
+  }
+  function crewCanSave(d){
+    if(!d) return {ok:false, reason:'Nothing to save.'};
+    if(!crewCanon(d.crew)) return {ok:false, reason:'Choose Crew 1 or Crew 2.'};
+    if(d.ocrStatus==='reading') return {ok:false, reason:'Text reader is still running.'};
+    if(!d.ack) return {ok:false, reason:'Review the text and check the box before saving.'};
+    return {ok:true, reason:''};
+  }
+  function crewBuildRecord(d, now){
+    const gate=crewCanSave(d);
+    if(!gate.ok) return {ok:false, reason:gate.reason, rec:null};
+    const rec=crewSanitizeRecord({
+      id:d.editId||crewNewId(), crew:crewCanon(d.crew), shift:d.shift, shiftDate:d.shiftDate, sourceNote:d.sourceNote,
+      ocrStatus:d.ocrStatus, ocrText:d.ocrText, reviewedText:d.text, reviewAck:true, lineNotes:d.lineNotes,
+      example:!!(d.example||/\bEXAMPLE\b/i.test(d.text||'')), savedAt:now||new Date().toISOString(),
+      localNote:d.localNote||'', thumb:!!d.thumb, permanence:d.permanence
+    });
+    return {ok:!!rec, reason:rec?'':'Could not build the record.', rec:rec};
+  }
+  function crewMergeBackup(existing, data){
+    if(!data||data.vectorAtcCrewBackup!==1||!Array.isArray(data.records)){ const err=new Error('Not a VECTOR ATC crew backup.'); err.code='bad-backup'; throw err; }
+    const out=(existing||[]).map(crewSanitizeRecord).filter(Boolean);
+    data.records.forEach(raw=>{
+      const rec=crewSanitizeRecord(raw);
+      if(!rec) return;
+      rec.authoritative=false; rec.decisions=[]; rec.aid=true;
+      const i=out.findIndex(x=>x.id===rec.id);
+      if(i>=0) out[i]=rec; else out.push(rec);
+    });
+    return out;
+  }
+  function crewLoad(){
+    try{ const a=JSON.parse(localStorage.getItem(CREW_KEY)||'[]'); if(!Array.isArray(a)) return []; return a.map(crewSanitizeRecord).filter(Boolean); }
+    catch(e){ return []; }
+  }
+  function crewWrite(list){
+    const clean=(list||[]).map(crewSanitizeRecord).filter(Boolean);
+    localStorage.setItem(CREW_KEY, JSON.stringify(clean));
+    return clean;
+  }
+  function crewSort(a,b){ return String(b.savedAt).localeCompare(String(a.savedAt)); }
+  function crewCurrentRows(){
+    const list=crewLoad();
+    if((S.crewView||'board')==='office'){
+      const f=S.crewFilt||'all';
+      let rows=list;
+      const filt=crewCanon(f);
+      if(filt) rows=list.filter(r=>r.crew===filt);
+      else if(f==='look') rows=list.filter(crewNeedsLook);
+      else if(f==='ocr') rows=list.filter(r=>(r.flags||[]).indexOf('ocr-pending')>=0);
+      return rows.slice().sort(crewSort);
+    }
+    const id=crewCanon(S.crewId)||'1';
+    return list.filter(r=>r.crew===id).sort(crewSort);
+  }
+  function crewSelectedIds(){ const sel=S.crewSel||{}; return Object.keys(sel).filter(id=>sel[id]); }
+  function crewBlankDraft(){
+    return {token:'', editId:'', crew:crewCanon(S.crewId)||'1', shift:'', shiftDate:'', sourceNote:'', text:'', ocrText:'', ocrStatus:'', ocrError:'', example:false, ack:false, lineNotes:[], hadThumb:false, localNote:'', thumb:false};
+  }
+  function crewPull(d){
+    if(!d) return d;
+    const g=id=>document.getElementById(id);
+    const sh=g('crw-shift'); if(sh) d.shift=sh.value;
+    const dt=g('crw-date'); if(dt) d.shiftDate=dt.value;
+    const src=g('crw-src'); if(src) d.sourceNote=src.value;
+    const tx=g('crw-text'); if(tx) d.text=tx.value;
+    const ex=g('crw-ex'); if(ex) d.example=!!ex.checked;
+    const ack=g('crw-ack'); if(ack) d.ack=!!ack.checked;
+    return d;
+  }
+  function crewDraftFromScreen(){ const d=crewBlankDraft(); d.crew=crewCanon(S.crewId)||'1'; crewPull(d); d.crew=crewCanon(d.crew)||crewCanon(S.crewId)||'1'; return d; }
+  function crewSetBlob(file){
+    if(crewBlobUrl){ try{ URL.revokeObjectURL(crewBlobUrl); }catch(e){} }
+    crewBlob=file||null;
+    crewBlobUrl=(file&&globalThis.URL)?URL.createObjectURL(file):'';
+  }
+  function crewIsImage(f){
+    const type=String(f&&f.type||''), name=String(f&&f.name||'');
+    if(/^image\//i.test(type)) return true;
+    return /\.(png|jpe?g|gif|webp|bmp|heic|heif)$/i.test(name);
+  }
+  function crewOcrLab(st, saved){
+    if(st==='read') return saved?'Text was read on this device and then reviewed. It is not authoritative.':'Text was read on this device. Correct it before you save. It is not authoritative.';
+    if(st==='empty') return 'No text was read. OCR is empty and needs review.';
+    if(st==='failed') return 'The image could not be read. OCR is pending. Nothing was uploaded.';
+    if(st==='pending') return 'OCR is pending and needs review. The text was not read. Nothing was uploaded.';
+    if(st==='reading') return 'Reading text on this device…';
+    return 'OCR has not run.';
+  }
+  function crewShiftLab(s){ return s==='day'?'Day':s==='swing'?'Swing':s==='mid'?'Mid':'Shift not set'; }
+  function crewShiftOpts(cur){
+    return [['','Unspecified'],['day','Day'],['swing','Swing'],['mid','Mid']].map(([v,l])=>`<option value="${v}"${cur===v?' selected':''}>${l}</option>`).join('');
+  }
+  function crewDb(){
+    return new Promise((resolve,reject)=>{
+      if(!globalThis.indexedDB){ reject(new Error('no-idb')); return; }
+      const req=indexedDB.open(CREW_DB,1);
+      req.onupgradeneeded=()=>{ const db=req.result; if(!db.objectStoreNames.contains('thumbs')) db.createObjectStore('thumbs'); };
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>reject(req.error||new Error('idb'));
+    });
+  }
+  function crewThumbPut(id, blob){
+    return crewDb().then(db=>new Promise((resolve,reject)=>{
+      const tx=db.transaction('thumbs','readwrite');
+      tx.objectStore('thumbs').put(blob, id);
+      tx.oncomplete=()=>{ try{db.close();}catch(e){} resolve(true); };
+      tx.onerror=()=>reject(tx.error||new Error('idb-put'));
+    }));
+  }
+  function crewThumbGet(id){
+    if(!globalThis.indexedDB) return Promise.resolve(null);
+    return crewDb().then(db=>new Promise((resolve,reject)=>{
+      const tx=db.transaction('thumbs','readonly');
+      const rq=tx.objectStore('thumbs').get(id);
+      rq.onsuccess=()=>{ try{db.close();}catch(e){} resolve(rq.result||null); };
+      rq.onerror=()=>reject(rq.error||new Error('idb-get'));
+    })).catch(()=>null);
+  }
+  function crewThumbDel(id){
+    if(!globalThis.indexedDB) return Promise.resolve(false);
+    return crewDb().then(db=>new Promise((resolve,reject)=>{
+      const tx=db.transaction('thumbs','readwrite');
+      tx.objectStore('thumbs').delete(id);
+      tx.oncomplete=()=>{ try{db.close();}catch(e){} resolve(true); };
+      tx.onerror=()=>reject(tx.error||new Error('idb-del'));
+    })).catch(()=>false);
+  }
+  function crewHydrateThumbs(){
+    const n=++crewHydra;
+    document.querySelectorAll('#vatc img[data-crw-thumb]').forEach(img=>{
+      const id=img.getAttribute('data-crw-thumb'); if(!id) return;
+      crewThumbGet(id).then(b=>{
+        if(n!==crewHydra||!b) return;
+        const u=URL.createObjectURL(b);
+        img.src=u; img.hidden=false;
+        const miss=img.nextElementSibling;
+        if(miss&&miss.classList&&miss.classList.contains('crw-photomiss')) miss.hidden=true;
+      }).catch(()=>{});
+    });
+  }
+  function crewDataUrlBlob(url){
+    const m=/^data:(image\/[a-zA-Z0-9.+-]+);base64,([A-Za-z0-9+/=\s]+)$/.exec(String(url||''));
+    if(!m) return null;
+    const bin=atob(m[2].replace(/\s/g,''));
+    const bytes=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    return new Blob([bytes],{type:m[1]});
+  }
+  function crewBlobDataUrl(blob){
+    return new Promise((resolve,reject)=>{
+      const fr=new FileReader();
+      fr.onload=()=>resolve(String(fr.result||''));
+      fr.onerror=()=>reject(fr.error||new Error('read'));
+      fr.readAsDataURL(blob);
+    });
+  }
+  function crewDownload(name, text){
+    const blob=new Blob([text],{type:'application/json'});
+    const u=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(u),2000);
+  }
+  async function crewPhotoBundle(){
+    const records=crewLoad();
+    const photos={}; const missing=[];
+    for(const r of records){
+      if(!r.thumb) continue;
+      try{ const b=await crewThumbGet(r.id); if(!b){ missing.push(r.id); continue; } photos[r.id]=await crewBlobDataUrl(b); }
+      catch(e){ missing.push(r.id); }
+    }
+    return {records:records, photos:photos, missing:missing};
+  }
+  function crewAttachToDeviceBackup(deviceBackup, bundle){
+    if(!deviceBackup||deviceBackup.format!=='vector-atc-backup'||!deviceBackup.keys||typeof deviceBackup.keys!=='object'||Array.isArray(deviceBackup.keys)){
+      return {ok:false, complete:false, missing:[], errors:['not a device backup']};
+    }
+    const records=((bundle&&bundle.records)||[]).map(crewSanitizeRecord).filter(Boolean);
+    const photos=(bundle&&bundle.photos)||{};
+    const missing=[];
+    records.forEach(r=>{ if(r.thumb && !(typeof photos[r.id]==='string' && photos[r.id].indexOf('data:image/')===0)) missing.push(r.id); });
+    if(missing.length) return {ok:false, complete:false, missing:missing, errors:['device backup would omit crew photos: '+missing.join(', ')]};
+    const keys=Object.assign({}, deviceBackup.keys);
+    keys[CREW_KEY]=records.map(r=>{ const c=Object.assign({}, r); c.authoritative=false; c.decisions=[]; c.aid=true; return c; });
+    const backup=Object.assign({}, deviceBackup, {keys:keys, crewPhotos:{bridge:'vector-atc-crew-photos', bridgeVersion:1, aid:true, notOfficialSource:true, photos:photos}});
+    if(JSON.stringify(backup).length>12*1024*1024) return {ok:false, complete:false, missing:missing, errors:['backup is too large to keep the crew photos']};
+    return {ok:true, complete:true, missing:[], backup:backup};
+  }
+  async function crewRestoreDevicePhotos(backup){
+    const records=crewLoad();
+    const pack=backup&&backup.crewPhotos;
+    const photos=(pack&&pack.photos)||{};
+    if(pack&&pack.bridge!=='vector-atc-crew-photos') return {ok:false, restored:0, missing:[], errors:['crew photo section is not the training-aid bridge']};
+    let restored=0; const missing=[];
+    for(const rec of records){
+      if(!rec.thumb) continue;
+      const blob=typeof photos[rec.id]==='string'?crewDataUrlBlob(photos[rec.id]):null;
+      if(!blob){ rec.thumb=false; missing.push(rec.id); continue; }
+      try{ await crewThumbPut(rec.id, blob); restored++; }
+      catch(e){ rec.thumb=false; missing.push(rec.id); }
+    }
+    if(missing.length){ try{ crewWrite(records); }catch(e){} return {ok:false, restored:restored, missing:missing, errors:['missing crew photos: '+missing.join(', ')]}; }
+    return {ok:true, restored:restored, missing:[]};
+  }
+  async function crewCommit(rec, blob, deps){
+    deps=deps||{};
+    const put=deps.put||crewThumbPut, del=deps.del||crewThumbDel, write=deps.write||crewWrite, load=deps.load||crewLoad, get=deps.get||crewThumbGet;
+    const copy=Object.assign({}, rec);
+    copy.authoritative=false; copy.decisions=[]; copy.aid=true;
+    let image;
+    if(blob){
+      try{ await put(copy.id, blob); image={stored:true, reason:'stored'}; copy.thumb=true; copy.permanence='local-browser'; }
+      catch(e){ copy.thumb=false; return {ok:false, complete:false, record:copy, image:{stored:false, reason:'indexeddb-failed'}}; }
+    }else if(deps.keepExisting){
+      let existing=null;
+      try{ existing=await get(copy.id); }catch(e){ existing=null; }
+      if(!existing){ copy.thumb=false; return {ok:false, complete:false, record:copy, image:{stored:false, reason:'missing'}}; }
+      image={stored:true, reason:'kept'}; copy.thumb=true;
+    }else{ image={stored:false, reason:'no-photo'}; copy.thumb=false; }
+    const all=(load()||[]).filter(r=>r.id!==copy.id);
+    all.unshift(copy);
+    try{ write(all); }
+    catch(e){
+      if(blob&&image.stored){ try{ await del(copy.id); }catch(_){} }
+      return {ok:false, complete:false, record:copy, image:{stored:false, reason:'text-not-stored'}};
+    }
+    return {ok:true, complete:true, record:copy, image:image};
+  }
+  async function crewExport(){
+    const bundle=await crewPhotoBundle();
+    const photosMissing=bundle.missing.slice();
+    const thumbs=bundle.photos;
+    const payload={vectorAtcCrewBackup:1, island:'crew-text-and-photos', notDeviceBackup:true, kind:'training-aid-local',
+      warning:CREW_AID+' This file is crew text and photos only. It is not the full device backup and it is not an official notice source.',
+      exportedAt:new Date().toISOString(), photosComplete:photosMissing.length===0, photosMissing:photosMissing,
+      records:bundle.records.map(r=>{ const c=crewSanitizeRecord(r); if(photosMissing.indexOf(c.id)>=0) c.thumb=false; c.decisions=[]; c.authoritative=false; c.aid=true; return c; }),
+      thumbs:thumbs};
+    crewDownload('vector-atc-crew-local-backup.json', JSON.stringify(payload));
+    return {n:payload.records.length, missed:photosMissing.length>0, photosMissing:photosMissing, photosComplete:photosMissing.length===0};
+  }
+  function crewMsgHTML(){ return S.crewMsg?`<div class="crw-msg" role="status">${escTxt(S.crewMsg)}</div>`:''; }
+  function crewAidHTML(){ return `<div class="crw-aid" role="note">${escTxt(CREW_AID)} This tool does not issue runway, airfield, or control instructions.</div>`; }
+  function crewRolesHTML(open){
+    return `<details class="crw-roles"${open?' open':''}><summary>Planned access model / roles</summary>
+      <p>Not in effect. No login. There is no access code. This page does not make anyone owner or admin. No cloud account service is connected.</p>
+      <ul>
+        <li>ATCFO — intended overall owner.</li>
+        <li>Master sergeant — intended Training Chief and training-office lead, with training-wide visibility.</li>
+        <li>Vector Head — one per crew, intended maintainer for that crew's daily training-notice input.</li>
+        <li>Other training-office staff — intended viewer.</li>
+        <li>Controllers — intended to see their own training and approved crew reads.</li>
+      </ul>
+      <p>Handoff between these roles is upcoming and is not active on this device. Anyone using this browser can open both crews.</p>
+    </details>`;
+  }
+  function crewChipsHTML(rec){
+    const f=rec.flags||[]; const labs=[];
+    if(f.indexOf('example')>=0) labs.push(['ex','EXAMPLE']);
+    if(f.indexOf('ocr-pending')>=0) labs.push(['bad','OCR pending']);
+    if(f.indexOf('shift-needs-review')>=0) labs.push(['bad','Shift/date needs review']);
+    if(f.indexOf('source-needs-review')>=0) labs.push(['bad','Source needs review']);
+    if(f.indexOf('date-unresolved')>=0) labs.push(['bad','Date needs review']);
+    if(f.indexOf('date-noted')>=0) labs.push(['note','Date noted — not live']);
+    labs.push(['bad','Parse needs review']);
+    return `<div class="crw-pills">${labs.map(([k,t])=>`<span class="crw-pill ${k}">${t}</span>`).join('')}</div>`;
+  }
+  function crewItemHTML(rec){
+    const on=!!(S.crewSel&&S.crewSel[rec.id]);
+    const when=escTxt((rec.shiftDate||'Date not set')+' · '+crewShiftLab(rec.shift));
+    const src=rec.sourceNote?escTxt(rec.sourceNote):'Source not noted';
+    const preview=escTxt((rec.reviewedText||'').replace(/\s+/g,' ').trim().slice(0,90)||'No reviewed text');
+    return `<div class="crw-item"><label class="crw-tick"><input type="checkbox" data-action="crwtoggle" data-id="${escTxt(rec.id)}"${on?' checked':''} aria-label="Select Crew ${rec.crew} notice"></label><button type="button" class="crw-open" data-action="crwread" data-id="${escTxt(rec.id)}"><span class="crw-k">Crew ${rec.crew} · ${when}</span><span class="crw-src">${src}</span><span class="crw-prev">${preview}</span>${crewChipsHTML(rec)}</button></div>`;
+  }
+  function crewToolsHTML(rows){
+    const vis=(rows||[]).map(r=>r.id);
+    const sel=S.crewSel||{};
+    const allOn=vis.length&&vis.every(id=>sel[id]);
+    const n=crewSelectedIds().length;
+    return `<div class="crw-tools"><button type="button" data-action="crwall">${allOn?'CLEAR SELECTION':'SELECT ALL'}</button><button type="button" data-action="crwexport">EXPORT CREW</button><button type="button" data-action="crwdel"${n?' class="crw-hot"':''}>DELETE${n?' ('+n+')':''}</button></div>`;
+  }
+  function crewAskHTML(){
+    const q=S.crewAsk; if(!q||q.kind!=='del') return '';
+    const second=q.step===2;
+    const title=second?'Delete every local crew notice?':('Delete '+q.ids.length+' local notice'+(q.ids.length===1?'':'s')+'?');
+    const body=second?'This removes every crew notice stored in this browser, including photos. It cannot be undone. Nothing is deleted from a server, because nothing was uploaded.':'This removes the selected notices and their photos from this browser only. It cannot be undone.';
+    const go=second?'crwdelallgo':'crwdelgo';
+    const lab=second?'DELETE ALL LOCAL NOTICES':'DELETE SELECTED';
+    return `<div class="crw-ask" role="alertdialog" aria-label="Confirm delete"><b>${title}</b><p>${body}</p><div class="crw-actions"><button type="button" class="btn" data-action="${go}">${lab}</button><button type="button" class="btn sec" data-action="crwaskno">CANCEL</button></div></div>`;
+  }
+  function crewParseBoxHTML(src){
+    const text=src&&src.text!=null?src.text:((src&&src.reviewedText)||'');
+    const notes=(src&&src.lineNotes)||[];
+    const parse=crewParseNotice(text||'');
+    const lines=parse.items.length?parse.items.map((it,i)=>{
+      const noted=!!notes[i];
+      const dates=it.dates||[];
+      const dst=!dates.length?'<div class="st">No date token — needs review</div>':dates.map(dt=>{
+        if(!dt.iso) return `<div class="st">Unresolved “${escTxt(dt.token)}” — needs review</div>`;
+        if(noted) return `<div class="st">Reviewer noted ${escTxt(dt.iso)} — not a live expiry</div>`;
+        return `<div class="st">Date token ${escTxt(dt.iso)} — needs review</div>`;
+      }).join('');
+      const canNote=dates.some(dt=>!!dt.iso);
+      const btn=canNote?`<button type="button" class="crw-mini" data-action="crwnotedate" data-i="${i}">${noted?'CLEAR DATE NOTE':'NOTE THIS DATE'}</button>`:'';
+      return `<div class="crw-line"><div class="raw">${escTxt(it.raw)}</div>${dst}${btn}</div>`;
+    }).join(''):'<div class="crw-line"><div class="st">No lines — parse needs review</div></div>';
+    return `<div class="crw-parse"><div class="crw-ph">Line check</div><p class="crw-pn">${escTxt(parse.note)}</p>${lines}</div>`;
+  }
+  function crewPhotoBlock(thumbId){
+    if(crewBlobUrl) return `<img class="crw-photo" alt="Local notice photo" src="${crewBlobUrl}">`;
+    if(thumbId) return `<img class="crw-photo" alt="Saved notice photo" hidden data-crw-thumb="${escTxt(thumbId)}"><p class="crw-fine crw-photomiss">Photo marked saved. If it does not appear, it is not in this browser storage.</p>`;
+    return '<div class="crw-empty">No photo in this step.</div>';
+  }
+  function crewBoardHTML(){
+    const id=crewCanon(S.crewId)||'1';
+    const rows=crewCurrentRows();
+    const nLook=rows.filter(crewNeedsLook).length;
+    return `<div class="crw" data-crw="board"><h2 class="sec">Crew notices</h2>${crewMsgHTML()}${crewAidHTML()}
+      <div class="crw-seg"><button type="button" class="${id==='1'?'on':''}" data-action="crwcrew" data-c="1">Crew 1</button><button type="button" class="${id==='2'?'on':''}" data-action="crwcrew" data-c="2">Crew 2</button></div>
+      <p class="crw-fine"><button type="button" class="crw-quiet" data-action="crwoffice">Training office</button></p>
+      <div class="crw-form">
+        <label>Shift<select id="crw-shift" class="crw-in">${crewShiftOpts('')}</select></label>
+        <label>Shift date<input id="crw-date" class="crw-in" type="date"></label>
+        <label class="span">Source note<input id="crw-src" class="crw-in" maxlength="500" placeholder="Board or sheet. Not a live feed." autocomplete="off"></label>
+      </div>
+      <label class="crw-cam">Take photo<input type="file" accept="image/*" capture="environment" data-action="crwfile" hidden></label>
+      <label class="crw-cam alt">Import image<input type="file" accept="image/*" data-action="crwfile" hidden></label>
+      <button type="button" class="btn sec crw-wide" data-action="crwnophoto">Review without a photo</button>
+      <p class="crw-fine">Text and photos stay in this browser. They are not uploaded. A saved photo is kept in IndexedDB on this device. The text reader, the first time, may download its own software. The photo is not sent with that.</p>
+      <div class="crw-listhead"><span>Crew ${id} on this browser</span><span>${rows.length} saved · ${nLook} need a look</span></div>
+      ${rows.length?rows.map(crewItemHTML).join(''):'<div class="crw-empty">No saved notice for this crew yet.</div>'}
+      ${crewToolsHTML(rows)}${crewAskHTML()}${crewDemoHTML(id)}
+      <p class="crw-fine">No login on this device. <button type="button" class="crw-quiet" data-action="crwoffice" data-open="1">Planned access model</button> Pubs stay in <button type="button" class="crw-quiet" data-action="tab" data-t="reference">Reference</button>.</p>
+    </div>`;
+  }
+  function crewFiltHTML(){
+    const f=S.crewFilt||'all';
+    const btn=(k,lab)=>`<button type="button" class="crw-chip${f===k?' on':''}" data-action="crwfilt" data-f="${k}">${lab}</button>`;
+    return `<div class="crw-chips">${btn('all','All')}${btn('1','Crew 1')}${btn('2','Crew 2')}${btn('look','Needs a look')}${btn('ocr','OCR pending')}</div>`;
+  }
+  function crewOfficeHTML(){
+    const list=crewLoad();
+    const rows=crewCurrentRows();
+    const ca=list.filter(r=>r.crew==='1'), cb=list.filter(r=>r.crew==='2');
+    return `<div class="crw" data-crw="office"><h2 class="sec">Training office</h2>${crewMsgHTML()}${crewAidHTML()}
+      <p class="crw-fine">Local training history on this browser. Not a live notice feed and not an official source. <button type="button" class="crw-quiet" data-action="crwboard">Crew workspace</button></p>
+      <div class="crw-office-rows">
+        <button type="button" data-action="crwcrew" data-c="1"><b>Crew 1</b><span>${ca.length} saved · ${ca.filter(crewNeedsLook).length} need a look</span></button>
+        <button type="button" data-action="crwcrew" data-c="2"><b>Crew 2</b><span>${cb.length} saved · ${cb.filter(crewNeedsLook).length} need a look</span></button>
+      </div>
+      ${crewFiltHTML()}
+      <div class="crw-listhead"><span>Local history</span><span>${rows.length}</span></div>
+      ${rows.length?rows.map(crewItemHTML).join(''):'<div class="crw-empty">No notices in this filter.</div>'}
+      ${crewToolsHTML(rows)}
+      <label class="crw-tool">Restore backup<input type="file" accept="application/json,.json" data-action="crwrestore" hidden></label>
+      ${crewDemoHTML(crewCanon(S.crewFilt)?S.crewFilt:'all')}
+      ${crewAskHTML()}${crewRolesHTML(!!S.crewRolesOpen)}
+      <p class="crw-fine">${escTxt(CREW_AID)} ${escTxt('Saved in this browser only. Clearing site data removes notices and photos. Nothing is sent to a server.')}</p>
+    </div>`;
+  }
+  function crewReviewHTML(){
+    const d=S.crewDraft||crewBlankDraft();
+    const id=crewCanon(d.crew)||'1';
+    const reading=d.ocrStatus==='reading';
+    const ex=!!(d.example||/\bEXAMPLE\b/i.test(d.text||''));
+    const photoNote=crewBlobUrl?'This photo is held for this visit until you save. Save keeps it in this browser only.':(d.hadThumb&&d.editId?'Saved photo is stored in this browser.':'No photo is held for this notice.');
+    return `<div class="crw" data-crw="review"><h2 class="sec">Review before save</h2>${crewMsgHTML()}${crewAidHTML()}
+      <div id="crw-example" class="crw-ex"${ex?'':' hidden'}>EXAMPLE — no operational data</div>
+      <p class="crw-k">Crew ${id} · not saved yet</p>
+      ${crewPhotoBlock(d.hadThumb&&d.editId?d.editId:'')}
+      <p class="crw-fine">${photoNote}</p>
+      <p id="crw-status" data-ocr="${escTxt(d.ocrStatus||'')}">${escTxt(d.ocrError&&d.ocrStatus!=='reading'?d.ocrError:crewOcrLab(d.ocrStatus,false))}</p>
+      <div class="crw-form">
+        <label>Shift<select id="crw-shift" class="crw-in" data-action="crwfield">${crewShiftOpts(d.shift||'')}</select></label>
+        <label>Shift date<input id="crw-date" class="crw-in" type="date" value="${escTxt(d.shiftDate||'')}" oninput="vatcCrewSync()"></label>
+        <label class="span">Source note<input id="crw-src" class="crw-in" maxlength="500" value="${escTxt(d.sourceNote||'')}" placeholder="Board or sheet. Not a live feed." oninput="vatcCrewSync()"></label>
+        <label class="span crw-check"><input id="crw-ex" type="checkbox" data-action="crwfield"${d.example?' checked':''}> Mark as EXAMPLE</label>
+      </div>
+      <label class="span">Correct the text<textarea id="crw-text" class="crw-text" oninput="vatcCrewEdit(this)">${escTxt(d.text||'')}</textarea></label>
+      <div id="crw-parse">${crewParseBoxHTML(d)}</div>
+      ${d.ocrText&&d.ocrText!==d.text?`<details class="crw-raw"><summary>Uncorrected text from the photo</summary><pre>${escTxt(d.ocrText)}</pre></details>`:''}
+      <label class="crw-check"><input id="crw-ack" type="checkbox" data-action="crwack"${d.ack?' checked':''}${reading?' disabled':''}> I reviewed this text. It is a training note only.</label>
+      <div class="crw-actions"><button type="button" class="btn" id="crw-save" data-action="crwsave"${(!d.ack||reading)?' disabled':''}>SAVE ON THIS DEVICE</button><button type="button" class="btn sec" data-action="crwcancel">BACK</button></div>
+      <p class="crw-fine">Nothing is saved until you use Save. OCR is not authoritative.</p>
+      <label class="crw-cam alt">Replace photo<input type="file" accept="image/*" data-action="crwfile" hidden></label>
+    </div>`;
+  }
+  function crewReadHTML(){
+    const rec=crewLoad().find(r=>r.id===S.crewReadId);
+    if(!rec) return `<div class="crw" data-crw="read"><p class="crw-empty">That notice is not on this browser.</p><button type="button" class="btn sec" data-action="crwboard">BACK</button></div>`;
+    return `<div class="crw" data-crw="read"><button type="button" class="crw-quiet" data-action="crwboard">← Crew ${rec.crew}</button>
+      <h2 class="sec">Saved notice</h2>${crewMsgHTML()}${crewAidHTML()}${rec.example?'<div class="crw-ex">EXAMPLE — no operational data</div>':''}
+      <p class="crw-k">Crew ${rec.crew} · ${escTxt(crewShiftLab(rec.shift))} · ${escTxt(rec.shiftDate||'Date not set')}</p>
+      <p class="crw-src">${rec.sourceNote?escTxt(rec.sourceNote):'Source not noted — needs review'}</p>
+      ${crewChipsHTML(rec)}${crewPhotoBlock(rec.thumb?rec.id:'')}
+      <div class="crw-savedtext">${escTxt(rec.reviewedText||'No reviewed text.')}</div>
+      <p id="crw-status" data-ocr="${escTxt(rec.ocrStatus)}">${escTxt(crewOcrLab(rec.ocrStatus,true))}</p>
+      ${crewParseBoxHTML({text:rec.reviewedText, lineNotes:rec.lineNotes})}
+      <div class="crw-note"><div class="crw-ph">Optional note</div><p class="crw-fine">Stays on this device. Nothing is sent.</p>
+        <textarea id="crw-note" class="crw-text" maxlength="1000" placeholder="Optional note">${escTxt(rec.localNote||'')}</textarea>
+        <button type="button" class="btn sec" data-action="crwnote">KEEP NOTE ON THIS DEVICE</button></div>
+      <div class="crw-actions"><button type="button" class="btn" data-action="crwcorrect">CORRECT TEXT</button><button type="button" class="btn sec" data-action="crwoffice">TRAINING OFFICE</button></div>
+    </div>`;
+  }
+  function crewView(){
+    const v=S.crewView||'board';
+    if(v==='office') return crewOfficeHTML();
+    if(v==='review') return crewReviewHTML();
+    if(v==='read') return crewReadHTML();
+    return crewBoardHTML();
+  }
+  globalThis.vatcCrewSync=function(){ if(S.crewView==='review'&&S.crewDraft) crewPull(S.crewDraft); };
+  globalThis.vatcCrewEdit=function(el){
+    if(!S.crewDraft) return;
+    const prev=S.crewDraft.text;
+    S.crewDraft.text=el.value;
+    if(prev!==el.value){
+      S.crewDraft.lineNotes=[];
+      if(S.crewDraft.ack){
+        S.crewDraft.ack=false;
+        const ack=document.getElementById('crw-ack'); if(ack) ack.checked=false;
+        const b=document.getElementById('crw-save'); if(b) b.disabled=true;
+      }
+    }
+    const box=document.getElementById('crw-parse'); if(box) box.innerHTML=crewParseBoxHTML(S.crewDraft);
+    const badge=document.getElementById('crw-example');
+    const ex=document.getElementById('crw-ex');
+    if(badge) badge.hidden=!((ex&&ex.checked)||/\bEXAMPLE\b/i.test(el.value||''));
+  };
+  function crewOnField(a){
+    if(S.crewDraft) crewPull(S.crewDraft);
+    if(a==='crwack'){
+      const b=document.getElementById('crw-save');
+      if(b) b.disabled=!(S.crewDraft&&S.crewDraft.ack)||(S.crewDraft&&S.crewDraft.ocrStatus==='reading');
+    }
+    if(a==='crwfield'){
+      const badge=document.getElementById('crw-example');
+      if(badge&&S.crewDraft) badge.hidden=!(S.crewDraft.example||/\bEXAMPLE\b/i.test(S.crewDraft.text||''));
+    }
+  }
+  async function crewOnFile(el){
+    const f=el.files&&el.files[0];
+    try{ el.value=''; }catch(e){}
+    if(!f) return;
+    const replacing=S.crewView==='review'&&S.crewDraft;
+    const d=replacing?Object.assign(crewBlankDraft(), S.crewDraft):crewDraftFromScreen();
+    if(replacing) crewPull(d);
+    d.crew=crewCanon(S.crewId)||'1';
+    if(replacing&&S.crewDraft&&crewCanon(S.crewDraft.crew)) d.crew=crewCanon(S.crewDraft.crew);
+    d.token=crewNewId();
+    d.ack=false;
+    d.lineNotes=[];
+    d.ocrError='';
+    if(!f.size){
+      crewSetBlob(null); d.ocrStatus='failed'; d.ocrError='That file is empty. Nothing was read and nothing was saved.'; d.text='';
+      set({tab:'crew', crewView:'review', crewDraft:d, crewId:d.crew, crewMsg:''}); return;
+    }
+    if(!crewIsImage(f)){
+      crewSetBlob(null); d.ocrStatus='failed'; d.ocrError='That file is not an image. Nothing was read and nothing was saved.'; d.text='';
+      set({tab:'crew', crewView:'review', crewDraft:d, crewId:d.crew, crewMsg:''}); return;
+    }
+    crewSetBlob(f);
+    d.ocrStatus='reading'; d.hadThumb=true; d.text=''; d.ocrText='';
+    const token=d.token;
+    set({tab:'crew', crewView:'review', crewDraft:d, crewId:d.crew, crewMsg:''});
+    const prog=t=>{ if(!S.crewDraft||S.crewDraft.token!==token) return; const p=document.getElementById('crw-status'); if(p) p.textContent=t; };
+    try{
+      if(!globalThis.Tesseract&&typeof navigator!=='undefined'&&navigator.onLine===false){
+        d.ocrStatus='pending';
+        d.ocrError='OCR is pending. You can type the notice, review it, and save. Nothing was uploaded.';
+        d.text='';
+      }else{
+        prog('Reading text on this device…');
+        const text=await Promise.race([myOcrImg(f, prog), new Promise((_,rej)=>setTimeout(()=>rej(new Error('ocr-timeout')),45000))]);
+        if(!S.crewDraft||S.crewDraft.token!==token) return;
+        d.ocrText=String(text||''); d.text=d.ocrText;
+        d.ocrStatus=d.ocrText.trim()?'read':'empty';
+        d.ocrError=d.ocrText.trim()?'':'No text was read. OCR is empty and needs review.';
+      }
+    }catch(err){
+      if(!S.crewDraft||S.crewDraft.token!==token) return;
+      const offline=typeof navigator!=='undefined'&&navigator.onLine===false;
+      const timed=err&&String(err.message||err)==='ocr-timeout';
+      d.text=d.text||'';
+      if(offline||timed){ d.ocrStatus='pending'; d.ocrError='OCR is pending. You can type the notice, review it, and save. Nothing was uploaded.'; }
+      else { d.ocrStatus='failed'; d.ocrError='Could not read that image. OCR is pending. You can type the notice, review it, and save. Nothing was uploaded.'; }
+    }
+    if(!S.crewDraft||S.crewDraft.token!==token) return;
+    d.ack=false; d.lineNotes=[];
+    set({crewDraft:d, crewView:'review', crewMsg:''});
+  }
+  async function crewOnRestore(el){
+    const f=el.files&&el.files[0];
+    try{ el.value=''; }catch(e){}
+    if(!f) return;
+    try{
+      const data=JSON.parse(await f.text());
+      const beforeText={};
+      (data.records||[]).forEach(raw=>{ if(raw&&raw.id!=null) beforeText[String(raw.id)]=raw.reviewedText!=null?String(raw.reviewedText):null; });
+      const merged=crewMergeBackup(crewLoad(), data);
+      const thumbs=(data&&data.thumbs)||{};
+      const listed=new Set((data.photosMissing||[]).map(String));
+      let photos=0; const missing=[];
+      for(const rec of merged){
+        if(beforeText[rec.id]!=null) rec.reviewedText=String(beforeText[rec.id]).slice(0,20000);
+        const t=thumbs[rec.id];
+        const claimed=!!rec.thumb||listed.has(rec.id);
+        if(typeof t==='string'&&t.indexOf('data:image/')===0){
+          const blob=crewDataUrlBlob(t);
+          if(blob){ try{ await crewThumbPut(rec.id, blob); rec.thumb=true; photos++; continue; }catch(e){ rec.thumb=false; missing.push(rec.id); continue; } }
+        }
+        if(claimed){ rec.thumb=false; if(missing.indexOf(rec.id)<0) missing.push(rec.id); }
+      }
+      merged.forEach(r=>{ const again=crewSanitizeRecord(r); if(again){ r.parse=again.parse; r.flags=again.flags; r.crew=again.crew; } });
+      crewWrite(merged);
+      set({crewView:'office', crewMsg:'Restored '+(data.records||[]).length+' notices onto this browser only. Photos restored: '+photos+'. Missing photos: '+missing.length+'. Reviewed text was kept. Training aid only. Nothing was uploaded.', crewAsk:null});
+    }catch(e){
+      set({crewMsg:'That file is not a crew backup. Nothing was changed.'});
+    }
+  }
+  async function crewDoSave(){
+    const d=S.crewDraft; if(!d) return;
+    crewPull(d);
+    const built=crewBuildRecord(d);
+    if(!built.ok){ set({crewMsg:built.reason}); return; }
+    const outcome=await crewCommit(built.rec, crewBlob, {keepExisting:!crewBlob&&!!(d.hadThumb&&d.editId)});
+    if(!outcome.complete){
+      const why=outcome.image&&outcome.image.reason==='indexeddb-failed'
+        ?'Not saved. The photo could not be stored, so the notice was not written.'
+        :'Not saved. The notice and photo were not stored together.';
+      set({crewMsg:why+' Training aid only. Nothing was uploaded.'});
+      return;
+    }
+    crewSetBlob(null);
+    const msg=outcome.image&&outcome.image.reason==='no-photo'
+      ?'Saved on this browser. No photo was stored with this notice. Training aid only — verify against the official current NOTAM source.'
+      :'Saved on this browser, including the photo. Training aid only — verify against the official current NOTAM source. This is not a live status.';
+    set({crewDraft:null, crewView:'read', crewReadId:outcome.record.id, crewId:outcome.record.crew, crewMsg:msg, crewAsk:null});
+  }
+  async function crewDoDelete(ids){
+    const have=new Set(crewLoad().map(r=>r.id));
+    const drop=(ids||[]).filter(id=>have.has(id));
+    const keep=crewLoad().filter(r=>drop.indexOf(r.id)<0);
+    try{ crewWrite(keep); }catch(e){ set({crewMsg:'Could not delete local notices.'}); return; }
+    for(const id of drop){ await crewThumbDel(id); }
+    const sel={};
+    set({crewSel:sel, crewAsk:null, crewMsg:'Deleted '+drop.length+' local notice'+(drop.length===1?'':'s')+' from this browser.'});
+  }
+  function crewAction(a, el, ev){
+    if(a==='crwfile'||a==='crwrestore') return;
+    if(a==='crwtoggle'){
+      if(ev) ev.preventDefault();
+      const sel=Object.assign({}, S.crewSel||{});
+      if(sel[el.dataset.id]) delete sel[el.dataset.id]; else sel[el.dataset.id]=true;
+      set({crewSel:sel},{keepScroll:true}); return;
+    }
+    if(a==='crwcrew'){
+      const c=crewCanon(el.dataset.c)||'1';
+      crewSetBlob(null);
+      set({tab:'crew', crewId:c, crewView:'board', crewDraft:null, crewAsk:null, crewMsg:''}); return;
+    }
+    if(a==='crwoffice'){ set({tab:'crew', crewView:'office', crewDraft:null, crewAsk:null, crewRolesOpen:el.dataset.open==='1'}); return; }
+    if(a==='crwboard'){ crewSetBlob(null); set({crewView:'board', crewDraft:null, crewAsk:null, crewRolesOpen:false}); return; }
+    if(a==='crwfilt'){ set({crewFilt:el.dataset.f||'all', crewAsk:null}); return; }
+    if(a==='crwread'){
+      const rec=crewLoad().find(r=>r.id===el.dataset.id);
+      crewSetBlob(null);
+      set({crewView:'read', crewReadId:el.dataset.id, crewDraft:null, crewId:rec?rec.crew:S.crewId, crewMsg:''}); return;
+    }
+    if(a==='crwnophoto'){
+      const d=crewDraftFromScreen();
+      d.token=crewNewId(); d.ocrStatus='pending'; d.ack=false;
+      d.ocrError='No photo. OCR is pending and needs review. Type the notice if you have it. Nothing is saved until you review and save.';
+      crewSetBlob(null);
+      set({tab:'crew', crewView:'review', crewDraft:d, crewMsg:''}); return;
+    }
+    if(a==='crwcancel'){
+      const d=S.crewDraft;
+      crewSetBlob(null);
+      set({crewView:d&&d.editId?'read':'board', crewReadId:d&&d.editId?d.editId:'', crewDraft:null, crewMsg:''}); return;
+    }
+    if(a==='crwsave'){ crewDoSave(); return; }
+    if(a==='crwcorrect'){
+      const rec=crewLoad().find(r=>r.id===S.crewReadId); if(!rec) return;
+      crewSetBlob(null);
+      const d=crewBlankDraft();
+      d.editId=rec.id; d.token=crewNewId(); d.crew=rec.crew; d.shift=rec.shift; d.shiftDate=rec.shiftDate;
+      d.sourceNote=rec.sourceNote; d.text=rec.reviewedText; d.ocrText=rec.ocrText; d.ocrStatus=rec.ocrStatus;
+      d.example=rec.example; d.ack=false; d.lineNotes=(rec.lineNotes||[]).slice(); d.hadThumb=!!rec.thumb; d.localNote=rec.localNote||''; d.thumb=!!rec.thumb;
+      set({crewView:'review', crewDraft:d, crewId:rec.crew, crewMsg:''}); return;
+    }
+    if(a==='crwnotedate'){
+      const i=+el.dataset.i;
+      if(S.crewView==='review'&&S.crewDraft){
+        crewPull(S.crewDraft);
+        const notes=(S.crewDraft.lineNotes||[]).slice();
+        notes[i]=!notes[i]; S.crewDraft.lineNotes=notes;
+        set({crewDraft:S.crewDraft},{keepScroll:true}); return;
+      }
+      if(S.crewView==='read'&&S.crewReadId){
+        const all=crewLoad(); const rec=all.find(r=>r.id===S.crewReadId); if(!rec) return;
+        const notes=(rec.lineNotes||[]).slice(); notes[i]=!notes[i]; rec.lineNotes=notes;
+        const idx=all.findIndex(r=>r.id===rec.id); all[idx]=rec;
+        try{ crewWrite(all); }catch(e){ set({crewMsg:'Could not update the date note.'}); return; }
+        set({crewMsg:'Date note updated on this browser. Not a live status.'},{keepScroll:true});
+      }
+      return;
+    }
+    if(a==='crwnote'){
+      const recId=S.crewReadId; const all=crewLoad(); const rec=all.find(r=>r.id===recId); if(!rec) return;
+      const tx=String((document.getElementById('crw-note')||{}).value||'').slice(0,1000);
+      rec.localNote=tx;
+      const idx=all.findIndex(r=>r.id===rec.id); all[idx]=rec;
+      try{ crewWrite(all); }catch(e){ set({crewMsg:'Could not keep the note on this device.'}); return; }
+      set({crewMsg:tx.trim()?'Note kept on this device. Nothing was sent.':'Note cleared on this device. Nothing was sent.'});
+      return;
+    }
+    if(a==='crwall'){
+      const vis=crewCurrentRows().map(r=>r.id);
+      if(!vis.length){ set({crewMsg:'No local notices in this list.'}); return; }
+      const sel=Object.assign({}, S.crewSel||{});
+      const allOn=vis.every(id=>sel[id]);
+      vis.forEach(id=>{ if(allOn) delete sel[id]; else sel[id]=true; });
+      set({crewSel:sel, crewAsk:null}); return;
+    }
+    if(a==='crwdel'){
+      const ids=crewSelectedIds();
+      if(!ids.length){ set({crewMsg:'Select at least one local notice first.'}); return; }
+      set({crewAsk:{kind:'del', ids:ids, step:1}}); return;
+    }
+    if(a==='crwdelgo'){
+      const q=S.crewAsk; if(!q) return;
+      const all=crewLoad();
+      if(q.ids.length&&q.ids.length===all.length){ set({crewAsk:{kind:'del', ids:q.ids.slice(), step:2}}); return; }
+      crewDoDelete(q.ids); return;
+    }
+    if(a==='crwdelallgo'){
+      const q=S.crewAsk; if(!q||q.step!==2) return;
+      crewDoDelete(q.ids); return;
+    }
+    if(a==='crwaskno'){ set({crewAsk:null}); return; }
+    if(a==='crwexport'){
+      crewExport().then(r=>set({crewMsg:r.missed?('Crew text-and-photos file downloaded. It is not the full device backup. '+r.photosMissing.length+' photo(s) were missing and are listed in the file, so this copy is not complete.'):'Crew text and photos downloaded. This is not the full device backup. It was not uploaded.'})).catch(()=>set({crewMsg:'Could not build the crew text-and-photos file.'}));
+      return;
+    }
+  }
+  globalThis.vatcCrew={
+    key:CREW_KEY, aid:CREW_AID, parse:crewParseNotice, canSave:crewCanSave, build:crewBuildRecord,
+    flags:crewFlags, sanitize:crewSanitizeRecord, merge:crewMergeBackup, needsLook:crewNeedsLook,
+    access:crewPlannedAccess, rolesHTML:crewRolesHTML, ocrLab:crewOcrLab, demoRoster:CREW_DEMO_ROSTER, demoHTML:crewDemoHTML,
+    canon:crewCanon, commit:crewCommit, attachToDeviceBackup:crewAttachToDeviceBackup
+  };
+  /* CREW_NOTICES:END */
+
   function fcPickerHTML(){
     const sets=pkSets();
     const row=s=>{ const ids=s.cards.map(c=>c.id); const c=FCQ.counts(ids,S.fcStats); const pct=ids.length?Math.round(c.KNOWN/ids.length*100):0;
@@ -7691,15 +8576,16 @@ function pdfPaneHTML(){
   function modal(){ const q=Q[S.source]; return `<div class="overlay" data-action="srcclose"><div class="modal" onclick="event.stopPropagation()"><h3>${I.ext} JUMP TO SOURCE</h3><div class="docframe"><div class="pg">${q.src.doc.toUpperCase()} — PAGE ${q.src.pg} · ¶ ${q.src.pa}</div><div class="hl">${q.src.hl}</div></div><div class="note">In the live app this opens your locally-imported document to this page and highlights the passage. Controlled publications are never bundled — you import your own authorized copy on-device.</div><div class="navrow" style="margin-top:14px"><span></span><button class="btn" data-action="srcclose">CLOSE</button></div></div></div>`; }
 
   /* v0.8.33: MCAS Miramar (KNKX) empty shell — same layout/tabs, no station content. */
-  function shellView(){ const T={home:'Home',ask:'Ask',learn:'Learn — ACADS / TEST',train:'Learn — ACADS / TEST',cards:'Flashcards',reference:'Reference'};
+  function shellView(){ const T={home:'Home',ask:'Ask',learn:'Learn — ACADS / TEST',train:'Learn — ACADS / TEST',cards:'Flashcards',reference:'Reference',crew:'Crew notices'};
     const lab=T[S.tab==='learn'&&S.learnMode==='cards'?'cards':S.tab]||'This tab';
     return `${S.tab==='home'?'<div class="stnbar">MCAS Miramar (KNKX)</div>':''}<div class="card" style="padding:22px;text-align:center;margin-top:12px" data-shell="KNKX"><div class="code" style="font-family:var(--fm);letter-spacing:.2em;color:var(--green)">KNKX · ${escTxt(lab.toUpperCase())}</div><div style="font-size:18px;margin:10px 0 6px">Coming soon</div><div class="muted" style="font-size:12px">No ACADs, flashcards, tests or references loaded for MCAS Miramar yet. Content is added once the station's LQS and FACMAN are provided and validated.</div></div>`; }
   function appScreen(){ let inner='';
     if(S.tab==='sim'||S.tab==='cards') S.tab=(S.tab==='cards'?'learn':'home'); /* SIM tab removed v0.8.29 */
     if(S.station==='KNKX'){ return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${S.tab==='home'?'':trackbar()}<div class="body">${shellView()}</div>${statusbar()}</div>`; }
     if(S.tab==='home')inner=homeView(); else if(S.tab==='ask')inner=askView(); else if(S.tab==='learn'||S.tab==='train')inner=learnView();
-    else if(S.tab==='reference')inner=refView();
-    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${S.tab==='home'?'':trackbar()}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
+    else if(S.tab==='reference')inner=refView(); else if(S.tab==='crew')inner=crewView();
+    const track=(S.tab==='home'||S.tab==='crew')?'':trackbar();
+    return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain">${track}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
 
   function doAsk(){
     const inp=document.getElementById('reflk')||document.getElementById('askq');
@@ -7716,7 +8602,7 @@ function pdfPaneHTML(){
 
   /* Same view re-rendered (check-off, card mark, reveal…) → keep the scroll position instead of jumping to top */
   let lastViewKey='';
-  function viewKey(){ return [S.screen,S.tab,S.learnMode,S.trainMode,S.rfcTopic,S.pub,S.pos,S.fcDeck,S.aaFocus,S.rfcQi,S.qIdx,S.pIdx,S.scnIdx,S.qDone].join('|'); }
+  function viewKey(){ return [S.screen,S.tab,S.learnMode,S.trainMode,S.rfcTopic,S.pub,S.pos,S.fcDeck,S.aaFocus,S.rfcQi,S.qIdx,S.pIdx,S.scnIdx,S.qDone,S.crewView||'',S.crewReadId||'',(S.crewDraft&&S.crewDraft.token)||''].join('|'); }
   function render(){
     const paint=()=>{ if(globalThis.VATC_DEVICE&&VATC_DEVICE.paint) VATC_DEVICE.paint(); };
     if(S.screen==='station'||S.screen==='guide'||S.screen==='feedback'){
@@ -7729,7 +8615,7 @@ function pdfPaneHTML(){
     lastViewKey=vk;
     if(S.tab==='ask'||S.tab==='reference'){ bindLookup(); bindPdf(); if(S.tab==='reference'&&!S.pub){ document.querySelectorAll('#vatc .scrollmain details.pos-acads').forEach(d=>{ d.open=false; }); } if(S.tab==='ask'||S.lkFocus){ S.lkFocus=false; setTimeout(()=>focusLookup(),20); } if(S.tab==='reference'&&(S.refQ||'').trim()) drawLookup(S.refQ); }
     if(S.tab==='learn'&&S.pub&&S.learnReturn){ bindPdf(); }
-    bindFcGroups(); if(document.getElementById('fcwr')) fcAfterPaint();
+    bindFcGroups(); if(document.getElementById('fcwr')) fcAfterPaint(); if(S.tab==='crew'){ try{ crewHydrateThumbs(); }catch(e){} }
     paint();
   }
 
@@ -7737,6 +8623,9 @@ function pdfPaneHTML(){
   document.getElementById('vatc').addEventListener('change',e=>{
     const el=e.target.closest('[data-action]'); if(!el) return;
     const a=el.dataset.action;
+    if(a==='crwfile'){ crewOnFile(el); return; }
+    if(a==='crwrestore'){ crewOnRestore(el); return; }
+    if(a==='crwack'||a==='crwfield'){ crewOnField(a, el); return; }
     if(a==='importbackup'){ importBackupFile(el); return; }
     if(a==='myimport'||a==='myimpjson'){ myFile(a, el); return; }
     if(a==='citesel'){
@@ -7797,6 +8686,7 @@ function pdfPaneHTML(){
     return false;
   }
   document.getElementById('vatc').addEventListener('click',e=>{ const el=e.target.closest('[data-action]'); if(!el)return; const a=el.dataset.action;
+    if(a.indexOf('crw')===0){ crewAction(a, el, e); return; }
     if(a==='device'){ S.deviceOpen=true; render(); return; }
     if(a==='deviceclose'){ S.deviceOpen=false; render(); return; }
     if(a==='guide'){ S.deviceOpen=false; return set({screen:'guide'}); }

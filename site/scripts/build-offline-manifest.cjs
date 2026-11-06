@@ -20,6 +20,7 @@ const SHELL = [
   'icons/icon-maskable-512.png',
   'icons/apple-touch-icon.png',
   'data/para-index.json',
+  'data/ref-span.json',
   'data/ask-aliases.json',
   'vendor/pdfjs/pdf.min.js',
   'vendor/pdfjs/pdf.worker.min.js'

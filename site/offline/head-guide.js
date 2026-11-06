@@ -36,7 +36,7 @@
         id: 'backup',
         title: 'Device backup',
         badge: 'NOW',
-        html: '<p>Device → Export backup downloads one JSON file of this device\'s study profile: trainee name and initials, study marks, checks, lessons, flashcard progress, tests, custom sets, open pocket keys, and any other vatc.* values stored here.</p><p>Import reads a file only after you choose it, checks it, and asks you to confirm before it replaces progress on this device. If the file is not valid, or the write fails, current progress is left as it was.</p><p>This is a device backup you keep, not cloud sync. Nothing is uploaded.</p>'
+        html: '<p>Device → Export backup downloads one JSON file of this device\'s study profile: trainee name and initials, study marks, checks, lessons, flashcard progress, tests, custom sets, open pocket keys, and any other vatc.* values stored here.</p><p>If this device has crew training notices, that file also carries their text and photos. A missing photo stops the export instead of leaving them out. Those notices are a training aid. They are not an official notice source.</p><p>Import reads a file only after you choose it, checks it, and asks you to confirm before it replaces progress on this device. If the file is not valid, or the write fails, current progress is left as it was.</p><p>This is a device backup you keep, not cloud sync. Nothing is uploaded.</p>'
       },
       {
         id: 'chief',
