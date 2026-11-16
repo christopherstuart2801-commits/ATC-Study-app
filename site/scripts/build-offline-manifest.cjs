@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = '0.8.40';
+const VERSION = '0.8.41';
 const SITE = path.join(__dirname, '..');
 
 const SHELL = [
@@ -13,6 +13,7 @@ const SHELL = [
   'offline/core.js',
   'offline/position-records.js',
   'offline/student-log.js',
+  'offline/local-lq.js',
   'offline/backup.js',
   'offline/client.js',
   'offline/head-guide.js',
