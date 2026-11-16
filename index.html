@@ -901,18 +901,52 @@
   #vatc .reveal, #vatc .dot{ animation:none; }
   #vatc .pcard{ transition:none; }
 }
+#vatc .log-open{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 10px; }
+#vatc .log-open .btn{ min-height:40px; }
+#vatc .log-open .muted{ font-size:11px; }
+#vatc .log-lead{ font-size:13px; line-height:1.4; margin:0 0 10px; }
+#vatc .log-chips{ display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px; }
+#vatc .log-chips button{ font-family:var(--fd); font-size:11px; letter-spacing:.06em; text-transform:uppercase; min-height:36px; padding:6px 10px; border-radius:20px; border:1px solid var(--line); background:transparent; color:var(--muted); cursor:pointer; }
+#vatc .log-chips button.on{ color:#04150d; background:var(--green); border-color:var(--green); }
+#vatc .log-tot{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin:0 0 10px; background:var(--panel); }
+#vatc .log-tot b{ color:var(--green); }
+#vatc .log-posline{ display:flex; justify-content:space-between; gap:8px; font-size:12px; line-height:1.35; margin:4px 0; }
+#vatc .log-posline span{ color:var(--muted); text-align:right; }
+#vatc .log-form{ display:grid; gap:8px; margin:0 0 12px; }
+#vatc .log-form label{ display:block; font-size:12px; color:var(--muted); }
+#vatc .log-form input, #vatc .log-form select, #vatc .log-form textarea{ display:block; width:100%; margin-top:4px; min-height:44px; font-family:var(--fm); font-size:16px; color:var(--text); background:#102019; border:1px solid var(--line); border-radius:8px; padding:8px; }
+#vatc .log-form textarea{ min-height:72px; }
+#vatc .log-form input[type="checkbox"]{ width:auto; min-height:18px; display:inline-block; margin:0 8px 0 0; }
+#vatc .log-ap{ display:grid; grid-template-columns:1.4fr .6fr 1fr; gap:6px; }
+#vatc .log-row{ border-top:1px solid var(--line); padding:8px 0; display:grid; gap:2px; }
+#vatc .log-row .log-meta{ font-family:var(--fm); font-size:12px; color:var(--green); }
+#vatc .log-tools{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 12px; }
+#vatc .log-empty{ color:var(--muted); font-size:13px; line-height:1.4; border:1px dashed var(--line); border-radius:10px; padding:12px; }
+#vatc .log-err{ color:#ffb4b4; font-size:13px; min-height:0; }
+#vatc .log-err:empty{ display:none; }
+@media(max-width:640px){
+  #vatc .log-ap{ grid-template-columns:1fr; }
+  #vatc .log-posline{ flex-direction:column; }
+  #vatc .log-posline span{ text-align:left; }
+}
+@media print{
+  #vatc .stickhead, #vatc .status, #vatc .log-form, #vatc .log-tools, #vatc .tabs, #vatc .log-open, #vatc::after, #vatc .grid-bg{ display:none !important; }
+  #vatc, #vatc .scrollmain{ max-height:none; overflow:visible; background:#fff; color:#111; box-shadow:none; border:none; }
+  #vatc .log-print, #vatc .log-tot, #vatc .log-row{ color:#111; }
+}
 </style>
 
 <div id="vatc"><a class="skip" href="#vatc-main">Skip to content</a><div class="grid-bg"></div><div class="wrap"><div id="app"></div></div></div>
 
 <script src="offline/position-records.js"></script>
+<script src="offline/student-log.js"></script>
 <script src="offline/backup.js"></script>
 <script src="offline/head-guide.js"></script>
 <script src="offline/client.js"></script>
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.38'; /* home-terminal */
+  const APP_VER='0.8.39'; /* student-log */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -5016,13 +5050,13 @@ function vectorAnswerHTML(query, hits){
   function saveFcStats(){ try{ localStorage.setItem(FC_STATS_KEY, JSON.stringify(S.fcStats||{})); }catch(_){} }
   const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'acad',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcDeck:'pos',fcGrp:'',fcOpen:{},fcOrder:null,fcMode:'cards',fcOnlyNot:false,fcStats:loadFcStats(),fcSess:null,fcLastId:null,fcSetsOpen:false,sqShow:'cs',sqType:'',sqTbl:'',
-    lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'', crewView:'board', crewId:'1', crewFilt:'all', crewDraft:null, crewReadId:'', crewSel:{}, crewAsk:null, crewMsg:'', crewRolesOpen:false };
+    lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'', crewView:'board', crewId:'1', crewFilt:'all', crewDraft:null, crewReadId:'', crewSel:{}, crewAsk:null, crewMsg:'', crewRolesOpen:false, logPos:'all', logMsg:'' };
   /* ===== v0.8.30 NAV: in-app + browser/phone back via history.pushState/popstate.
      Each history entry = snapshot of navigational S keys + UI (scroll, open <details>, search inputs). ===== */
   const NAV_KEYS=['screen','tab','learnMode','trainMode','pos','rfcTopic','pub','pubPage','pubQ','pubGuessNote','pubCiteLab','pubCiteQuote','pubPreferPage','pubCiteSec','pubSecBan','learnReturn','learnBlockedNote',
-    'fcPick','fcDeck','fcIdx','fcFlip','fcOrder','fcMode','fcGrp','fcOpen','tst','tstNote','refQ','askDoneQ','aaFocus','posOpen','hitsScroll','sqShow','sqType','sqTbl','crewView','crewId','crewFilt','crewDraft','crewReadId','crewRolesOpen'];
+    'fcPick','fcDeck','fcIdx','fcFlip','fcOrder','fcMode','fcGrp','fcOpen','tst','tstNote','refQ','askDoneQ','aaFocus','posOpen','hitsScroll','sqShow','sqType','sqTbl','crewView','crewId','crewFilt','crewDraft','crewReadId','crewRolesOpen','logPos'];
   const NAV={n:0, restoring:false, ready:false};
-  function navKey(){ const t=S.tst; const d=S.crewDraft; return [S.screen,S.tab,S.learnMode,S.pos,S.rfcTopic,S.pub||'',S.fcPick?1:0,S.fcPick?'':S.fcDeck,t?(t.pos+t.n+t.kind+(t.phase==='done'?'d':'')):'',S.crewView||'',S.crewId||'',S.crewReadId||'',d&&d.token?d.token:''].join('|'); }
+  function navKey(){ const t=S.tst; const d=S.crewDraft; return [S.screen,S.tab,S.learnMode,S.pos,S.rfcTopic,S.pub||'',S.fcPick?1:0,S.fcPick?'':S.fcDeck,t?(t.pos+t.n+t.kind+(t.phase==='done'?'d':'')):'',S.crewView||'',S.crewId||'',S.crewReadId||'',d&&d.token?d.token:'',S.logPos||''].join('|'); }
   function navSnapS(){ const o={}; NAV_KEYS.forEach(k=>{ o[k]=(S[k]===undefined)?null:S[k]; }); try{ return JSON.parse(JSON.stringify(o)); }catch(e){ return {}; } }
   function navSnapUI(){
     const sm=document.querySelector('#vatc .scrollmain');
@@ -5070,7 +5104,7 @@ function vectorAnswerHTML(query, hits){
     Object.assign(S,o); render();
     if(navK0!=null && navKey()!==navK0){
       try{ const cur=navEntry()||{vatc:1,n:NAV.n,p:null}; history.replaceState(Object.assign({}, cur, {s:navS0, ui:navU0}), '');
-        NAV.n=(cur.n||0)+1; history.pushState({vatc:1, n:NAV.n, s:navSnapS(), ui:null, p:navMini(navS0)}, '', location.pathname+location.search+(S.screen==='guide'?'#guide':S.screen==='feedback'?'#feedback':'')); const nb=document.querySelector('#vatc .navback'); if(nb) nb.disabled=false; }catch(e){}
+        NAV.n=(cur.n||0)+1; history.pushState({vatc:1, n:NAV.n, s:navSnapS(), ui:null, p:navMini(navS0)}, '', location.pathname+location.search+(S.screen==='guide'?'#guide':S.screen==='feedback'?'#feedback':S.screen==='log'?'#log':'')); const nb=document.querySelector('#vatc .navback'); if(nb) nb.disabled=false; }catch(e){}
     } else if(NAV.ready && !NAV.restoring){ try{ const cur=navEntry(); if(cur) history.replaceState(Object.assign({}, cur, {s:navSnapS()}), ''); }catch(e){} }
     if(keep){
       const sm=document.querySelector('#vatc .scrollmain');
@@ -5211,7 +5245,7 @@ function vectorAnswerHTML(query, hits){
     const when=parsed.backup.exportedAt||'an unknown time';
     const n=Object.keys(parsed.backup.keys||{}).length;
     let go=false;
-    try{ go=window.confirm('Replace all study progress on this device with this backup ('+n+' saved items, exported '+when+')?\n\nThis overwrites trainee name and initials, study marks, checks, lessons, flashcards, tests, custom sets, pocket keys, and position records on this device. It also replaces local crew training notices and restores photos included in the file. Cancel leaves current progress unchanged.'); }
+    try{ go=window.confirm('Replace all study progress on this device with this backup ('+n+' saved items, exported '+when+')?\n\nThis overwrites trainee name and initials, study marks, checks, lessons, flashcards, tests, custom sets, pocket keys, position records, and the position log on this device. It also replaces local crew training notices and restores photos included in the file. Cancel leaves current progress unchanged.'); }
     catch(e){ go=false; }
     if(!go) return;
     const res=VATC_BACKUP.apply(localStorage, parsed.backup, {progressVer:PROGRESS_VER});
@@ -6468,6 +6502,91 @@ function vectorAnswerHTML(query, hits){
     const note=sum.note?`<p class="prec-note"><b>${escTxt(sum.note)}</b></p>`:'';
     return `<details class="prec" data-station="${escTxt(S.station)}" data-pos="${id}"${open}><summary><span class="prec-lab">Position record</span><span>${escTxt(sum.headline)}</span>${sum.add?'<span>Add record</span>':''}</summary><div class="prec-body"><p class="prec-note">Official signoffs stay in the training process. This note does not grant a qualification. Study percent is separate and does not set this status.</p><p class="prec-note">Dates cannot be in the future. A qualified date must be on or after the started date.</p>${lines}${note}<p id="prec-err-${id}" class="prec-err" role="alert"></p><label for="prec-st-${id}">Status<select id="prec-st-${id}">${[['none','No record'],['training','In training'],['qualified','Recorded qualified']].map(([v,l])=>`<option value="${v}"${st===v?' selected':''}>${l}</option>`).join('')}</select></label><label for="prec-sd-${id}">Started date<input id="prec-sd-${id}" type="date" value="${escTxt(started)}"></label><label for="prec-qd-${id}">Qualified date<input id="prec-qd-${id}" type="date" value="${escTxt(qualified)}"></label><button type="button" class="btn" data-action="precsave" data-pos="${id}">Save record</button></div></details>`;
   }
+  function logApproachFields(){
+    const types=['','Precision','Nonprecision','Visual','Other'];
+    let html='';
+    for(let i=0;i<3;i++){
+      html+=`<div class="log-ap"><label>Approach ${i+1}<select id="log-at-${i}">${types.map(t=>`<option value="${t}">${t||'None'}</option>`).join('')}</select></label><label>Count<input id="log-ac-${i}" inputmode="numeric" maxlength="2"></label><label>Name if other<input id="log-al-${i}" maxlength="40" autocomplete="off"></label></div>`;
+    }
+    return html;
+  }
+  function logApproachSummary(map){
+    const keys=Object.keys(map||{});
+    if(!keys.length) return 'No approaches';
+    return keys.map(k=>k+' '+map[k]).join(' · ');
+  }
+  function logBody(){
+    const api=globalThis.VATC_LOG;
+    const store=api?api.load(localStorage):{entries:[]};
+    const pos=S.logPos&&S.logPos!=='all'?S.logPos:'';
+    const rows=api?api.recent(store.entries, pos, 30):[];
+    const allTot=api?api.totals(store.entries):{all:{hours:0,entries:0,approaches:{}}, byPosition:{}};
+    const tot=api?api.totals(pos?store.entries.filter(r=>r.position===pos):store.entries):allTot;
+    const who=loadTrainee()||{name:'', initials:''};
+    const today=api?api.localToday():'';
+    const chips=['all'].concat(POS.map(p=>p.k)).map(k=>{
+      const on=(S.logPos||'all')===k;
+      const lab=k==='all'?'All':(PN[k]||k);
+      return `<button type="button" class="${on?'on':''}" data-action="logpos" data-p="${k}">${escTxt(lab)}</button>`;
+    }).join('');
+    const by=POS.map(p=>{
+      const t=allTot.byPosition[p.k];
+      const line=t?(t.hours+' h · '+t.entries+' '+(t.entries===1?'entry':'entries')+' · '+logApproachSummary(t.approaches)):'No entries yet';
+      return `<p class="log-posline"><b>${escTxt(p.n)}</b><span>${escTxt(line)}</span></p>`;
+    }).join('');
+    const study=pos?(()=>{ const P=posProgress(pos); return `<p class="log-lead">Study progress on ${escTxt(PN[pos]||pos)}: ${P.pct}%. ${escTxt(P.learnLabel)} ${P.learnDone}/${P.learnTot}. Cards ${P.fcDone}/${P.fcTot}. That percent is separate from hours.</p>`; })():'';
+    const list=rows.length?rows.map(r=>`<div class="log-row"><div class="log-meta">${escTxt(r.date)} · ${escTxt(PN[r.position]||r.position)} · ${escTxt(String(r.hours))} h${r.fromPaper?' · from paper':''}</div><div>${escTxt(r.activity||'No activity noted')}</div><div class="muted">${escTxt(api.approachText(r)||'No approaches')}</div>${r.paperRef?`<div class="muted">Paper ${escTxt(r.paperRef)}${r.paperDate?' · '+escTxt(r.paperDate):''}</div>`:''}<button type="button" class="btn sec" data-action="logdel" data-id="${escTxt(r.id)}">Remove</button></div>`).join(''):'<div class="log-empty">No entries yet. Add hours from a session, or copy a line from a paper sheet.</div>';
+    return `<h2 class="sec">Position log</h2>
+      <p class="log-lead">On this device for the person using it. Not an official form and not sent anywhere. A paper sheet can still be the record.</p>
+      ${S.logMsg?`<p class="log-lead">${escTxt(S.logMsg)}</p>`:''}
+      <div class="log-chips" role="group" aria-label="Position">${chips}</div>
+      <div class="log-tot"><b>${escTxt(String(tot.all.hours))} h</b> · ${tot.all.entries} ${tot.all.entries===1?'entry':'entries'} · ${escTxt(logApproachSummary(tot.all.approaches))}${by}</div>
+      ${study}
+      <div class="log-tools"><button type="button" class="btn sec" data-action="logcsv">Export CSV</button><button type="button" class="btn sec" data-action="logprint">Printable view</button><button type="button" class="btn sec" data-action="logback">Back</button></div>
+      <form class="log-form" data-log="entry" onsubmit="return false">
+        <p id="log-err" class="log-err" role="alert"></p>
+        <label>Name<input id="log-name" maxlength="120" autocomplete="name" value="${escTxt(who.name)}"></label>
+        <label>Initials<input id="log-init" maxlength="8" autocapitalize="characters" value="${escTxt(who.initials)}"></label>
+        <label>Date<input id="log-date" type="date" value="${escTxt(today)}"></label>
+        <label>Position<select id="log-pos">${POS.map(p=>`<option value="${p.k}"${(pos||S.pos)===p.k?' selected':''}>${escTxt(p.n)}</option>`).join('')}</select></label>
+        <label>Hours on position<input id="log-hours" inputmode="decimal" placeholder="0.00"></label>
+        <label>Activity<input id="log-activity" maxlength="240" placeholder="What was worked"></label>
+        ${logApproachFields()}
+        <label>Paper record reference<input id="log-paper" maxlength="80" placeholder="Where the paper sheet is kept"></label>
+        <label>Paper date<input id="log-pdate" type="date"></label>
+        <label class="log-check"><input id="log-from" type="checkbox"> Entered from a paper sheet</label>
+        <label>Note<textarea id="log-note" maxlength="500"></textarea></label>
+        <button type="button" class="btn" data-action="logsave">Save on this device</button>
+      </form>
+      <h2 class="sec">Recent</h2>
+      <div class="log-print">${list}</div>`;
+  }
+  function logScreen(){ return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body">${logBody()}</div>${statusbar()}</div>`; }
+  function logReadForm(){
+    const approaches=[];
+    for(let i=0;i<3;i++){
+      const sel=(document.getElementById('log-at-'+i)||{}).value||'';
+      const other=(document.getElementById('log-al-'+i)||{}).value||'';
+      const count=(document.getElementById('log-ac-'+i)||{}).value||'';
+      const type=sel==='Other'?other:sel;
+      if(!type && !String(count).trim()) continue;
+      approaches.push({type:type, count:count});
+    }
+    return {
+      trainee:(document.getElementById('log-name')||{}).value||'',
+      initials:(document.getElementById('log-init')||{}).value||'',
+      date:(document.getElementById('log-date')||{}).value||'',
+      position:(document.getElementById('log-pos')||{}).value||'',
+      hours:(document.getElementById('log-hours')||{}).value||'',
+      activity:(document.getElementById('log-activity')||{}).value||'',
+      approaches:approaches,
+      paperRef:(document.getElementById('log-paper')||{}).value||'',
+      paperDate:(document.getElementById('log-pdate')||{}).value||'',
+      fromPaper:!!((document.getElementById('log-from')||{}).checked),
+      note:(document.getElementById('log-note')||{}).value||'',
+      station:S.station||'KNFG'
+    };
+  }
   function homeView(){
     /* v0.8.38 home-terminal: tile grid from 5106a90 / 01a98f4. Position records stay under each tile. */
     const tile=p=>{
@@ -6480,6 +6599,7 @@ function vectorAnswerHTML(query, hits){
     const quiz=`<div class="grp">KNFG Quizlets</div>
       ${homeQuizHTML()}`;
     return `<div class="stnbar">MCAS Camp Pendleton (KNFG)</div>
+      <div class="log-open"><button type="button" class="btn sec" data-action="openlog">Position log</button><span class="muted">Hours, approaches, paper note</span></div>
       <div class="pos6" id="posgrid">${first6.map(tile).join('')}</div>
       ${rest.length?`<div class="pos6">${rest.map(tile).join('')}</div>`:''}
       ${quiz}`; }
@@ -8780,8 +8900,9 @@ function pdfPaneHTML(){
   function viewKey(){ return [S.screen,S.tab,S.learnMode,S.trainMode,S.rfcTopic,S.pub,S.pos,S.fcDeck,S.aaFocus,S.rfcQi,S.qIdx,S.pIdx,S.scnIdx,S.qDone,S.crewView||'',S.crewReadId||'',(S.crewDraft&&S.crewDraft.token)||''].join('|'); }
   function render(){
     const paint=()=>{ if(globalThis.VATC_DEVICE&&VATC_DEVICE.paint) VATC_DEVICE.paint(); };
-    if(S.screen==='station'||S.screen==='guide'||S.screen==='feedback'){
-      root.innerHTML=shellWrap(S.screen==='station'?stationScreen():S.screen==='guide'?guideScreen():feedbackScreen());
+    if(S.screen==='station'||S.screen==='guide'||S.screen==='feedback'||S.screen==='log'){
+      const special=S.screen==='station'?stationScreen():S.screen==='guide'?guideScreen():S.screen==='log'?logScreen():feedbackScreen();
+      root.innerHTML=shellWrap(special);
       lastViewKey=''; keepDeviceFocus(); paint(); return;
     }
     const vk=viewKey(), smOld=document.querySelector('#vatc .scrollmain'), yOld=(smOld&&smOld.scrollTop)||0;
@@ -8864,6 +8985,39 @@ function pdfPaneHTML(){
   }
   document.getElementById('vatc').addEventListener('click',e=>{ const el=e.target.closest('[data-action]'); if(!el)return; const a=el.dataset.action;
     if(a.indexOf('crw')===0){ crewAction(a, el, e); return; }
+    if(a==='openlog'){ set({screen:'log', logPos:el.dataset.p||'all', logMsg:''}); return; }
+    if(a==='logback'){ set({screen:'app', tab:'home', logMsg:''}); return; }
+    if(a==='logpos'){ set({logPos:el.dataset.p||'all', logMsg:''}); return; }
+    if(a==='logsave'){
+      const api=globalThis.VATC_LOG;
+      const errEl=document.getElementById('log-err');
+      if(!api){ if(errEl) errEl.textContent='The log did not load. Nothing was saved.'; return; }
+      const res=api.add(localStorage, logReadForm());
+      if(!res.ok){ if(errEl) errEl.textContent=res.errors.join(' '); return; }
+      set({logMsg:'Saved on this device. Nothing was uploaded.', logPos:res.entry.position});
+      return;
+    }
+    if(a==='logdel'){
+      const api=globalThis.VATC_LOG;
+      if(!api) return;
+      let go=false;
+      try{ go=window.confirm('Remove this log entry from this device?'); }catch(e){ go=false; }
+      if(!go) return;
+      const wrote=api.remove(localStorage, el.dataset.id);
+      if(!wrote.ok){ set({logMsg:'Could not remove that entry. Nothing else was changed.'}); return; }
+      set({logMsg:'Removed from this device.'});
+      return;
+    }
+    if(a==='logcsv'){
+      const api=globalThis.VATC_LOG;
+      if(!api) return;
+      const store=api.load(localStorage);
+      const blob=new Blob([api.csv(store.entries)],{type:'text/csv'});
+      const u=URL.createObjectURL(blob); const ln=document.createElement('a'); ln.href=u; ln.download='vector-atc-position-log.csv';
+      document.body.appendChild(ln); ln.click(); ln.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000);
+      return;
+    }
+    if(a==='logprint'){ try{ window.print(); }catch(e){} return; }
     if(a==='precsave'){
       e.preventDefault();
       e.stopPropagation();
@@ -8944,7 +9098,7 @@ function pdfPaneHTML(){
     if(a==='citesel'){ return; }
     if(a==='stations')return set({screen:'station'});
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
-    if(a==='tab'){const t=el.dataset.t; if(t==='cards'){ if(S.pub&&S.learnReturn) resetCitePdfFind(); return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcPick:true,fcSess:null,pub:null,learnReturn:null}); } if(t==='learn') return set({tab:'learn',learnMode:'acad',trainMode:'practice'}); return set({tab:t});}
+    if(a==='tab'){const t=el.dataset.t; if(t==='cards'){ if(S.pub&&S.learnReturn) resetCitePdfFind(); set({screen:'app', tab:'learn',learnMode:'cards',trainMode:'cards',fcPick:true,fcSess:null,pub:null,learnReturn:null}); } else if(t==='learn') set({screen:'app', tab:'learn',learnMode:'acad',trainMode:'practice'}); else set({screen:'app', tab:t}); const btn=document.querySelector('#vatc .tab[data-t="'+t+'"]'); if(btn) focusEl(btn); return; }
     if(a==='learnmode'){const m=el.dataset.m; if(S.pub&&S.learnReturn){ resetCitePdfFind(); return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false,pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null}); } return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false,fcPick:(m==='cards')});}
     if(a==='pos')return set({pos:el.dataset.p,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='posfocus'){const k=el.dataset.p; return set({pos:k,tab:'learn',rfcTopic:0,posOpen:k,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});}
@@ -9067,6 +9221,7 @@ function pdfPaneHTML(){
     try{ if(typeof location!=='undefined' && location) h=String(location.hash||'').replace(/^#\/?/,'').toLowerCase(); }catch(e){}
     if(h==='guide'||h==='head-guide') S.screen='guide';
     else if(h==='feedback'||h==='report') S.screen='feedback';
+    else if(h==='log'||h==='position-log') S.screen='log';
   })();
   if(globalThis.VATC_DEVICE){
     VATC_DEVICE.paint=function(){
@@ -9084,9 +9239,9 @@ function pdfPaneHTML(){
   }
   try{ window.addEventListener('hashchange', ()=>{
     const h=String(location.hash||'').replace(/^#\/?/,'').toLowerCase();
-    const s=(h==='guide'||h==='head-guide')?'guide':(h==='feedback'||h==='report')?'feedback':'';
+    const s=(h==='guide'||h==='head-guide')?'guide':(h==='feedback'||h==='report')?'feedback':(h==='log'||h==='position-log')?'log':'';
     if(s && S.screen!==s) set({screen:s});
-    else if(!s && (S.screen==='guide'||S.screen==='feedback')) set({screen:'app', tab:'home'});
+    else if(!s && (S.screen==='guide'||S.screen==='feedback'||S.screen==='log')) set({screen:'app', tab:'home'});
   }); }catch(e){}
   document.getElementById('vatc').addEventListener('toggle', function(e){
     const d=e.target;

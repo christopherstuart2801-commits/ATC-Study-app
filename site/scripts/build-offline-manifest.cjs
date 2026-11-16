@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = '0.8.38';
+const VERSION = '0.8.39';
 const SITE = path.join(__dirname, '..');
 
 const SHELL = [
@@ -12,6 +12,7 @@ const SHELL = [
   'manifest.webmanifest',
   'offline/core.js',
   'offline/position-records.js',
+  'offline/student-log.js',
   'offline/backup.js',
   'offline/client.js',
   'offline/head-guide.js',
