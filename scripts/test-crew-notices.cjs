@@ -9,7 +9,7 @@ const html = fs.readFileSync(path.join(root, 'site/index.html'), 'utf8');
 assert.equal(html, fs.readFileSync(path.join(root, 'index.html'), 'utf8'), 'root/site mirror');
 assert(html.includes('TOWER_PAPER:BEGIN — v0.8.36'), 'tower packet signature kept');
 assert(html.includes('NO CONTROLLED DATA LOADED'));
-assert(html.includes("const APP_VER='0.8.37'"));
+assert(html.includes("const APP_VER='0.8.38'"));
 assert(html.includes("learn:'Your LQS ACADs with references and tests.'"));
 assert(html.includes("cards:'Study sets by position and ACAD.'"));
 assert(html.includes("reference:'7110.65, FACMAN, FLIP plates and more.'"));
@@ -278,7 +278,7 @@ async function browserChecks() {
   await page.click('#vatc [data-action="tab"][data-t="crew"]');
   await page.waitForSelector('[data-crw="board"]');
   const board = await page.textContent('[data-crw="board"]');
-  ok('crew workspace is the training-aid capture screen', /Crew notices/.test(board) && /Take photo/.test(board) && /Import image/.test(board) && /not uploaded/.test(board));
+  ok('crew tab leads with access codes and loaded editions', /Training office/.test(board) && /Coming soon/.test(board) && /does not issue a code/.test(board) && /July 2026/.test(board) && /Take photo/.test(board) && /Import image/.test(board) && /not uploaded/.test(board));
   ok('capture inputs: camera and file', await page.locator('input[capture="environment"]').count() >= 1 && await page.locator('input[data-action="crwfile"]:not([capture])').count() >= 1);
   await page.click('[data-action="crwoffice"][data-open="1"]');
   await page.waitForSelector('[data-crw="office"] details.crw-roles[open]');
@@ -291,6 +291,7 @@ async function browserChecks() {
   await page.click('[data-action="crwboard"]');
   const aBoard = await page.textContent('[data-crw="board"]');
   ok('crew 1 shows only its fictional demo row', /Demo Controller 01/.test(aBoard) && !/Demo Controller 02/.test(aBoard) && /Crew 1/.test(aBoard) && !/Crew A/.test(aBoard));
+  await page.locator('details.crw-records').evaluate(el => { el.open = true; });
   await page.selectOption('#crw-shift', 'day');
   await page.fill('#crw-date', '2099-01-01');
   await page.fill('#crw-src', 'EXAMPLE sheet');
@@ -331,6 +332,7 @@ async function browserChecks() {
   ok('crew 1 filter shows the saved notice', (await page.locator('.crw-item').count()) === 1);
   await page.click('[data-action="crwcrew"][data-c="2"]');
   await page.evaluate(() => { window.Tesseract = { recognize: async () => ({ data: { text: 'EXAMPLE CREW B ONLY' } }) }; });
+  await page.locator('details.crw-records').evaluate(el => { el.open = true; });
   await page.selectOption('#crw-shift', 'swing');
   await page.fill('#crw-date', '2099-01-02');
   await page.fill('#crw-src', 'EXAMPLE crew B sheet');
@@ -424,6 +426,7 @@ async function browserChecks() {
   await deskPage.addInitScript(() => { window.Tesseract = { recognize: async () => ({ data: { text: 'EXAMPLE DESKTOP' } }) }; });
   await deskPage.goto(url);
   await deskPage.click('#vatc [data-action="tab"][data-t="crew"]');
+  await deskPage.locator('details.crw-records').evaluate(el => { el.open = true; });
   await deskPage.selectOption('#crw-shift', 'mid');
   await deskPage.fill('#crw-date', '2099-03-03');
   await deskPage.fill('#crw-src', 'EXAMPLE desktop');
@@ -467,6 +470,7 @@ async function browserChecks() {
   await offPage.goto(url);
   await offPage.click('#vatc [data-action="tab"][data-t="crew"]');
   await off.setOffline(true);
+  await offPage.locator('details.crw-records').evaluate(el => { el.open = true; });
   await offPage.click('[data-action="crwnophoto"]');
   await offPage.waitForSelector('#crw-text');
   await offPage.fill('#crw-text', 'EXAMPLE typed while the text reader is unavailable');

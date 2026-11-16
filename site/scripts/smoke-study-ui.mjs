@@ -77,36 +77,35 @@ try {
     page.on('pageerror', err => errors.push(String(err)));
     page.on('request', req => { if (req.method() !== 'GET' && req.method() !== 'HEAD') posts.push(req.method() + ' ' + req.url()); });
     await page.goto(base, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForSelector('.home-go button');
+    await page.waitForSelector('#posgrid .pcard.ptile');
     return { page, errors, posts };
   }
 
   const desk = await session(1280, 800, false);
   const home = await desk.page.evaluate(() => document.body.innerText);
-  const homeBtns = await desk.page.$$eval('.home-go button', els => els.map(el => el.textContent.trim()));
-  ok('desktop home shortcuts are Study, References, Crew, and Device', homeBtns.join('|') === 'Study|References|Crew|Device');
+  ok('desktop home is the terminal station grid', /MARINE AIR TRAFFIC CONTROL/.test(home) && /MCAS CAMP PENDLETON \(KNFG\)/.test(home) && /KNFG QUIZLETS/.test(home) && /Clearance \/ Flight Data/.test(home) && /ACAD pending/i.test(home) && /NO CONTROLLED DATA LOADED/.test(home));
   ok('desktop home does not repeat the long today notes', !/today/i.test(home) && !/not a qualification/i.test(home) && !/not a live airfield status/i.test(home) && !/study a position/i.test(home));
-  ok('desktop home keeps the station and quizlets', /MCAS Camp Pendleton \(KNFG\)/i.test(home) && /KNFG Quizlets/i.test(home) && /NO CONTROLLED DATA LOADED/.test(home) && /Positions/i.test(home));
   const deskFit = await desk.page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1);
   ok('desktop home does not widen the page', deskFit);
   await desk.page.screenshot({ path: path.join(artifacts, 'study-home-desktop.png') });
 
   const ratio = await desk.page.evaluate(() => {
-    const card = document.querySelector('.home-go button');
+    const tile = document.querySelector('.pcard.ptile .pn');
     const tab = document.querySelector('.tab:not(.on)');
     const on = document.querySelector('.tab.on');
     const bar = document.querySelector('.tabs');
+    const cardBg = getComputedStyle(document.querySelector('.pcard.ptile')).backgroundColor;
     return {
-      card: [getComputedStyle(card).color, getComputedStyle(card).backgroundColor],
+      card: [getComputedStyle(tile).color, cardBg],
       tab: [getComputedStyle(tab).color, getComputedStyle(bar).backgroundColor],
       on: [getComputedStyle(on).color, getComputedStyle(on).backgroundColor]
     };
   });
-  ok('home shortcut contrast is at least 4.5:1', contrast(ratio.card[0], ratio.card[1]) >= 4.5, contrast(ratio.card[0], ratio.card[1]).toFixed(2));
+  ok('home tile contrast is at least 4.5:1', contrast(ratio.card[0], ratio.card[1]) >= 4.5, contrast(ratio.card[0], ratio.card[1]).toFixed(2));
   ok('inactive tab contrast is at least 4.5:1', contrast(ratio.tab[0], ratio.tab[1]) >= 4.5, contrast(ratio.tab[0], ratio.tab[1]).toFixed(2));
   ok('active tab contrast is at least 4.5:1', contrast(ratio.on[0], ratio.on[1]) >= 4.5, contrast(ratio.on[0], ratio.on[1]).toFixed(2));
 
-  await desk.page.focus('[data-action="today"][data-go="reference"]');
+  await desk.page.focus('.tab[data-t="reference"]');
   await desk.page.keyboard.press('Enter');
   await desk.page.waitForSelector('#reflk');
   const refs = await desk.page.evaluate(() => ({
@@ -116,7 +115,7 @@ try {
     labelled: document.getElementById('vatc-main') && document.getElementById('vatc-main').getAttribute('aria-labelledby'),
     text: document.body.innerText
   }));
-  ok('keyboard References opens the Reference tab', refs.on === 'true' && refs.focused === 'reference' && /7110\.65, FACMAN, FLIP plates and more\./.test(refs.text));
+  ok('keyboard Reference opens the Reference tab', refs.on === 'true' && /7110\.65, FACMAN, FLIP plates and more\./.test(refs.text) && /PUBLICATIONS/.test(refs.text) && /FIELD QUICK REF/.test(refs.text));
   ok('study panel is a tabpanel named by the selected tab', refs.panel === 'tabpanel' && refs.labelled === 'tab-reference');
   await desk.page.screenshot({ path: path.join(artifacts, 'study-reference-desktop.png') });
   await desk.page.focus('.tab[data-t="reference"]');
@@ -140,8 +139,8 @@ try {
 
   await desk.page.click('.tab[data-t="crew"]');
   await desk.page.waitForSelector('[data-crw="board"]');
-  const crew = await desk.page.evaluate(() => document.querySelector('[data-crw="board"]').innerText);
-  ok('crew board keeps capture, both crews, and the training-aid limit', /crew notices/i.test(crew) && /crew 1/i.test(crew) && /crew 2/i.test(crew) && /take photo/i.test(crew) && /import image/i.test(crew) && /training office/i.test(crew) && /not uploaded/i.test(crew) && /Training aid only/.test(crew) && /official current NOTAM source/.test(crew));
+  const crew = await desk.page.evaluate(() => document.querySelector('[data-crw="board"]').textContent);
+  ok('crew leads with codes and editions, records stay available', /training office/i.test(crew) && /access codes/i.test(crew) && /coming soon/i.test(crew) && /does not issue a code/i.test(crew) && /july 2026/i.test(crew) && /training aid on this device only/i.test(crew) && /take photo/i.test(crew) && /not uploaded/i.test(crew));
   await desk.page.screenshot({ path: path.join(artifacts, 'study-crew-desktop.png') });
 
   const beforeScroll = await desk.page.evaluate(() => {
@@ -180,7 +179,7 @@ try {
   }));
   ok('Escape closes the dialog and returns to Device', closed.action === 'device' && closed.scroll === beforeScroll);
   await desk.page.click('.tab[data-t="home"]');
-  await desk.page.focus('[data-go="device"]');
+  await desk.page.focus('[data-action="device"]');
   await desk.page.keyboard.press('Enter');
   await desk.page.waitForSelector('.modal.device [data-action="guide"]');
   await desk.page.click('.modal.device [data-action="guide"]');
@@ -201,24 +200,25 @@ try {
   const phone = await session(390, 844, true);
   const phoneHome = await phone.page.evaluate(() => document.body.innerText);
   const phoneGo = await phone.page.evaluate(() => {
-    const view = { w: window.innerWidth, h: window.innerHeight, top: document.querySelector('.scrollmain').scrollTop };
-    const btns = [...document.querySelectorAll('.home-go button')].map(el => {
+    const view = { w: window.innerWidth, h: window.innerHeight };
+    const tiles = [...document.querySelectorAll('#posgrid .pcard.ptile')].map(el => {
       const r = el.getBoundingClientRect();
-      return { t: el.textContent.trim(), left: r.left, right: r.right, top: r.top, bottom: r.bottom, clipped: el.scrollWidth > el.clientWidth + 1 };
+      return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, w: r.width };
     });
-    const pos = document.querySelector('#posgrid').getBoundingClientRect().top;
-    return { view, btns, pos };
+    const sub = document.querySelector('.brand .sub');
+    const tabs = document.querySelector('.tabs').getBoundingClientRect();
+    return { view, tiles, sub: sub && getComputedStyle(sub).display !== 'none', tabsTop: tabs.top };
   });
-  ok('mobile home shortcuts are the four labels', phoneGo.btns.map(b => b.t).join('|') === 'Study|References|Crew|Device' && /NO CONTROLLED DATA LOADED/.test(phoneHome) && !/not a qualification/i.test(phoneHome) && /Not started/.test(phoneHome) && /Training/.test(phoneHome));
-  ok('mobile shows all four shortcuts on screen', phoneGo.btns.length === 4 && phoneGo.btns.every(b => b.top >= 0 && b.bottom <= phoneGo.view.h && b.left >= -1 && b.right <= phoneGo.view.w + 1 && !b.clipped) && phoneGo.pos < phoneGo.view.h);
+  ok('mobile home is the terminal grid', /MARINE AIR TRAFFIC CONTROL/.test(phoneHome) && /MCAS CAMP PENDLETON \(KNFG\)/.test(phoneHome) && /KNFG QUIZLETS/.test(phoneHome) && /TWR/.test(phoneHome) && /ACAD pending/i.test(phoneHome) && /NO CONTROLLED DATA LOADED/.test(phoneHome) && phoneGo.sub && phoneGo.tabsTop < 180);
+  ok('mobile shows the position tiles in two columns', phoneGo.tiles.length === 6 && phoneGo.tiles.every(t => t.left >= -1 && t.right <= phoneGo.view.w + 1) && phoneGo.tiles[0].top < phoneGo.view.h && Math.abs(phoneGo.tiles[1].top - phoneGo.tiles[0].top) < 8);
   const phoneFit = await phone.page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1);
   ok('mobile home does not widen the page', phoneFit, await phone.page.evaluate(() => document.documentElement.scrollWidth + '/' + document.documentElement.clientWidth));
   await phone.page.screenshot({ path: path.join(artifacts, 'study-home-mobile.png') });
-  await phone.page.focus('[data-go="device"]');
+  await phone.page.focus('[data-action="device"]');
   await phone.page.keyboard.press('Enter');
   await phone.page.waitForSelector('.modal.device');
   await phone.page.keyboard.press('Escape');
-  ok('mobile Escape returns to the Device shortcut', await phone.page.evaluate(() => !document.querySelector('.modal.device') && document.activeElement && document.activeElement.getAttribute('data-go') === 'device'));
+  ok('mobile Escape returns to Device', await phone.page.evaluate(() => !document.querySelector('.modal.device') && document.activeElement && document.activeElement.getAttribute('data-action') === 'device'));
   await phone.page.focus('.tab[data-t="home"]');
   await phone.page.keyboard.press('ArrowLeft');
   ok('mobile ArrowLeft from Home wraps to Crew', await phone.page.evaluate(() => document.activeElement && document.activeElement.getAttribute('data-t') === 'crew'));
@@ -229,8 +229,11 @@ try {
   const crewFit = await phone.page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1);
   ok('mobile crew does not widen the page', crewFit);
   const phoneCrew = await phone.page.evaluate(() => document.body.innerText);
-  ok('mobile crew shows both crews', /crew 1/i.test(phoneCrew) && /crew 2/i.test(phoneCrew));
+  ok('mobile crew leads with the training office', /access codes/i.test(phoneCrew) && /coming soon/i.test(phoneCrew) && /july 2026/i.test(phoneCrew));
   await phone.page.screenshot({ path: path.join(artifacts, 'study-crew-mobile.png') });
+  await phone.page.click('details.crw-records > summary');
+  const phoneRecords = await phone.page.evaluate(() => document.body.innerText);
+  ok('mobile crew records show both crews', /crew 1/i.test(phoneRecords) && /crew 2/i.test(phoneRecords) && /take photo/i.test(phoneRecords));
 
   await phone.page.click('.tab[data-t="cards"]');
   ok('Flashcards explainer unchanged', (await phone.page.$eval('.tabhint', el => el.textContent)) === 'Study sets by position and ACAD.');
@@ -239,14 +242,11 @@ try {
   await phone.page.screenshot({ path: path.join(artifacts, 'study-reference-mobile.png') });
 
   await phone.page.click('.tab[data-t="home"]');
-  await phone.page.waitForSelector('[data-go="positions"]');
-  await phone.page.focus('[data-go="positions"]');
+  await phone.page.waitForSelector('#posgrid .pcard.ptile');
+  await phone.page.focus('#posgrid .pcard.ptile');
   await phone.page.keyboard.press('Enter');
-  const focusedPos = await phone.page.evaluate(() => {
-    const el = document.activeElement;
-    return !!(el && el.getAttribute && el.getAttribute('data-action') === 'poslearn');
-  });
-  ok('keyboard from Study a position focuses a position tile', focusedPos);
+  const focusedPos = await phone.page.evaluate(() => document.querySelector('.tab[data-t="learn"]').classList.contains('on'));
+  ok('a position tile opens Learn', focusedPos);
 
   ok('no page errors on desktop', desk.errors.length === 0, desk.errors.join(' | '));
   ok('no page errors on mobile', phone.errors.length === 0, phone.errors.join(' | '));
