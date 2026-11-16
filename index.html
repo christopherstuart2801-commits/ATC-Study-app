@@ -6498,9 +6498,10 @@ function vectorAnswerHTML(query, hits){
     const started=rec&&rec.started||'';
     const qualified=rec&&rec.qualified||'';
     const id=escTxt(p.k);
+    const dayMax=api?api.today():'';
     const lines=sum.lines.map(l=>`<p class="prec-note">${escTxt(l)}</p>`).join('');
     const note=sum.note?`<p class="prec-note"><b>${escTxt(sum.note)}</b></p>`:'';
-    return `<details class="prec" data-station="${escTxt(S.station)}" data-pos="${id}"${open}><summary><span class="prec-lab">Position record</span><span>${escTxt(sum.headline)}</span>${sum.add?'<span>Add record</span>':''}</summary><div class="prec-body"><p class="prec-note">Official signoffs stay in the training process. This note does not grant a qualification. Study percent is separate and does not set this status.</p><p class="prec-note">Dates cannot be in the future. A qualified date must be on or after the started date.</p>${lines}${note}<p id="prec-err-${id}" class="prec-err" role="alert"></p><label for="prec-st-${id}">Status<select id="prec-st-${id}">${[['none','No record'],['training','In training'],['qualified','Recorded qualified']].map(([v,l])=>`<option value="${v}"${st===v?' selected':''}>${l}</option>`).join('')}</select></label><label for="prec-sd-${id}">Started date<input id="prec-sd-${id}" type="date" value="${escTxt(started)}"></label><label for="prec-qd-${id}">Qualified date<input id="prec-qd-${id}" type="date" value="${escTxt(qualified)}"></label><button type="button" class="btn" data-action="precsave" data-pos="${id}">Save record</button></div></details>`;
+    return `<details class="prec" data-station="${escTxt(S.station)}" data-pos="${id}"${open}><summary><span class="prec-lab">Position record</span><span>${escTxt(sum.headline)}</span>${sum.add?'<span>Add record</span>':''}</summary><div class="prec-body"><p class="prec-note">Official signoffs stay in the training process. This note does not grant a qualification. Study percent is separate and does not set this status.</p><p class="prec-note">Dates cannot be in the future. A qualified date must be on or after the started date.</p>${lines}${note}<p id="prec-err-${id}" class="prec-err" role="alert"></p><label for="prec-st-${id}">Status<select id="prec-st-${id}">${[['none','No record'],['training','In training'],['qualified','Recorded qualified']].map(([v,l])=>`<option value="${v}"${st===v?' selected':''}>${l}</option>`).join('')}</select></label><label for="prec-sd-${id}">Started date<input id="prec-sd-${id}" type="date" max="${escTxt(dayMax)}" value="${escTxt(started)}"></label><label for="prec-qd-${id}">Qualified date<input id="prec-qd-${id}" type="date" max="${escTxt(dayMax)}" value="${escTxt(qualified)}"></label><button type="button" class="btn" data-action="precsave" data-pos="${id}">Save record</button></div></details>`;
   }
   function logApproachFields(){
     const types=['','Precision','Nonprecision','Visual','Other'];
@@ -9247,7 +9248,13 @@ function pdfPaneHTML(){
     const d=e.target;
     if(!d||!d.classList||!d.classList.contains('prec')) return;
     const key=(d.dataset.station||'')+':'+(d.dataset.pos||'');
-    if(d.open) S.precOpen=key;
+    if(d.open){
+      S.precOpen=key;
+      if(globalThis.VATC_POSREC){
+        const day=VATC_POSREC.today();
+        d.querySelectorAll('input[type="date"]').forEach(inp=>{ inp.max=day; });
+      }
+    }
     else if(S.precOpen===key) S.precOpen='';
   }, true);
   render();
