@@ -897,6 +897,33 @@
 #vatc .prec-err{ font-size:13px; color:#ffb4b4; min-height:0; }
 #vatc .prec-err:empty{ display:none; }
 #vatc .prec .btn{ min-height:44px; border-radius:2px; }
+#vatc .pos-study{ margin:0 0 14px; padding:0 0 8px; border-bottom:1px solid var(--line); }
+#vatc .pos-study-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 4px; }
+#vatc .pos-study-name{ font-size:18px; font-weight:700; color:#f7fbf8; letter-spacing:-.02em; }
+#vatc .pos-study-meta{ font-size:12px; color:#c5d9cf; margin-top:2px; }
+#vatc .pos-study-pct{ font-size:28px; font-weight:700; color:#3dbe86; line-height:1; }
+#vatc .pos-study .prec{ margin:0; }
+#vatc .demo-entry{ margin:0 0 10px; }
+#vatc .demo-open{ background:transparent; border:0; padding:0; color:#c5d9cf; font-weight:700; font-size:14px; cursor:pointer; text-decoration:underline; text-underline-offset:3px; min-height:40px; }
+#vatc .demo-gate{ display:grid; gap:8px; max-width:420px; margin:0 0 14px; }
+#vatc .demo-gate input{ min-height:44px; font-size:16px; background:#102019; color:var(--text); border:1px solid var(--line); border-radius:2px; padding:8px; }
+#vatc .demo-note, #vatc .demo-msg{ margin:0; font-size:13px; line-height:1.4; color:#c5d9cf; }
+#vatc .demo-banner{ display:flex; flex-wrap:wrap; gap:8px 10px; align-items:center; padding:8px 12px; background:#102019; color:#f7fbf8; border-bottom:1px solid var(--green); font-size:13px; font-weight:700; }
+#vatc .demo-banner button, #vatc .demo-panel button{ font:inherit; }
+#vatc .demo-panel{ margin:0; padding:12px 14px 4px; background:#0c1612; border-bottom:1px solid var(--line); }
+#vatc .demo-panel h2{ margin:0 0 8px; font-size:16px; }
+#vatc .demo-panel p, #vatc .demo-panel li{ font-size:14px; line-height:1.4; color:#d6e7df; font-weight:400; }
+#vatc .demo-panel ol{ margin:0 0 10px 1.2em; padding:0; }
+#vatc .demo-panel li{ margin:0 0 8px; }
+#vatc .fc-study-filters{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 0 10px; }
+#vatc .fc-study-filters label{ display:grid; gap:4px; font-size:12px; color:#c5d9cf; }
+#vatc .fc-study-filters select{ min-height:44px; font-size:16px; color:var(--text); background:#102019; border:1px solid var(--line); border-radius:2px; padding:8px; }
+#vatc .fc-quote{ margin:8px 0 0; padding:8px 10px; border-left:2px solid var(--green); color:#d6e7df; font-size:13px; line-height:1.4; text-align:left; width:100%; box-sizing:border-box; }
+#vatc .fcard{ height:min(32vh,240px); min-height:168px; }
+@media(max-width:640px){
+  #vatc .fcard{ height:min(24vh,180px); min-height:140px; }
+}
+#vatc .pcard.ptile{ min-height:64px; padding:10px 2px; }
 #vatc .fcface .a.big{ text-shadow:none; }
 #vatc .btn, #vatc .tab, #vatc .crw, #vatc .qstem, #vatc .fcface .q, #vatc .lesson, #vatc .note, #vatc .tabhint, #vatc .status, #vatc .btn-ghost, #vatc .hg-b, #vatc .crw-aid{ font-family:var(--sans); }
 #vatc .fccite, #vatc button.fcsrc, #vatc .citation, #vatc .srcchip, #vatc .pdfpg, #vatc .freqrow .v, #vatc .booktxt{ font-family:var(--fm); }
@@ -916,6 +943,7 @@
 <div id="vatc"><a class="skip" href="#vatc-main">Skip to content</a><div class="grid-bg"></div><div class="wrap"><div id="app"></div></div></div>
 
 <script src="offline/position-records.js"></script>
+<script src="offline/demo.js"></script>
 <script src="offline/backup.js"></script>
 <script src="offline/head-guide.js"></script>
 <script src="offline/client.js"></script>
@@ -5025,12 +5053,12 @@ function vectorAnswerHTML(query, hits){
   function loadFcStats(){ try{ const o=JSON.parse(localStorage.getItem(FC_STATS_KEY)||'{}'); return (o&&typeof o==='object')?o:{}; }catch(_){ return {}; } }
   function saveFcStats(){ try{ localStorage.setItem(FC_STATS_KEY, JSON.stringify(S.fcStats||{})); }catch(_){} }
   const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'acad',
-    pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcDeck:'pos',fcGrp:'',fcOpen:{},fcOrder:null,fcMode:'cards',fcOnlyNot:false,fcStats:loadFcStats(),fcSess:null,fcLastId:null,fcSetsOpen:false,sqShow:'cs',sqType:'',sqTbl:'',
+    pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcDeck:'pos',fcGrp:'',fcOpen:{},fcOrder:null,fcMode:'cards',fcOnlyNot:false,fcStats:loadFcStats(),fcSess:null,fcLastId:null,fcSetsOpen:false,fcTopic:'',demoEntry:false,demoMsg:'',demoTour:false,demoRoles:false,sqShow:'cs',sqType:'',sqTbl:'',
     lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'', crewView:'board', crewId:'1', crewFilt:'all', crewDraft:null, crewReadId:'', crewSel:{}, crewAsk:null, crewMsg:'', crewRolesOpen:false };
   /* ===== v0.8.30 NAV: in-app + browser/phone back via history.pushState/popstate.
      Each history entry = snapshot of navigational S keys + UI (scroll, open <details>, search inputs). ===== */
   const NAV_KEYS=['screen','tab','learnMode','trainMode','pos','rfcTopic','pub','pubPage','pubQ','pubGuessNote','pubCiteLab','pubCiteQuote','pubPreferPage','pubCiteSec','pubSecBan','learnReturn','learnBlockedNote',
-    'fcPick','fcDeck','fcIdx','fcFlip','fcOrder','fcMode','fcGrp','fcOpen','tst','tstNote','refQ','askDoneQ','aaFocus','posOpen','hitsScroll','sqShow','sqType','sqTbl','crewView','crewId','crewFilt','crewDraft','crewReadId','crewRolesOpen'];
+    'fcPick','fcDeck','fcIdx','fcFlip','fcOrder','fcMode','fcGrp','fcOpen','fcTopic','tst','tstNote','refQ','askDoneQ','aaFocus','posOpen','hitsScroll','sqShow','sqType','sqTbl','crewView','crewId','crewFilt','crewDraft','crewReadId','crewRolesOpen'];
   const NAV={n:0, restoring:false, ready:false};
   function navKey(){ const t=S.tst; const d=S.crewDraft; return [S.screen,S.tab,S.learnMode,S.pos,S.rfcTopic,S.pub||'',S.fcPick?1:0,S.fcPick?'':S.fcDeck,t?(t.pos+t.n+t.kind+(t.phase==='done'?'d':'')):'',S.crewView||'',S.crewId||'',S.crewReadId||'',d&&d.token?d.token:''].join('|'); }
   function navSnapS(){ const o={}; NAV_KEYS.forEach(k=>{ o[k]=(S[k]===undefined)?null:S[k]; }); try{ return JSON.parse(JSON.stringify(o)); }catch(e){ return {}; } }
@@ -5178,7 +5206,7 @@ function vectorAnswerHTML(query, hits){
   }
   function devicePanelHTML(){
     const t=loadTrainee()||{name:'', initials:''};
-    return `<div class="overlay"><div class="modal device" role="dialog" aria-modal="true" aria-labelledby="devicetitle" tabindex="-1"><h3 id="devicetitle">THIS DEVICE</h3><p class="note">Study files on this browser. A backup stays on this device. Nothing is uploaded.</p><div id="vatc-devstatus">${deviceStatusHTML()}</div><div class="row"><button type="button" class="btn sec" data-action="retryrefs">RETRY SAVE</button><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><h4>PROFILE</h4><label for="trname">TRAINEE NAME</label><input id="trname" maxlength="120" autocomplete="name" value="${escTxt(t.name)}"><label for="trinit">INITIALS</label><input id="trinit" maxlength="3" autocapitalize="characters" value="${escTxt(t.initials)}"><div class="row"><button type="button" class="btn" data-action="saveprofile">SAVE PROFILE</button></div><h4>INSTALL</h4>${installHelpHTML()}<h4>BACKUP</h4><p class="note">Device backup, not cloud sync. Nothing is uploaded. Position records entered on this device are included.</p><div class="row"><button type="button" class="btn" data-action="exportbackup">EXPORT BACKUP</button><label class="btn sec">IMPORT BACKUP<input type="file" accept="application/json,.json" data-action="importbackup" hidden></label></div><div class="row"><button type="button" class="btn sec" data-action="deviceclose">CLOSE</button></div></div></div>`;
+    return `<div class="overlay"><div class="modal device" role="dialog" aria-modal="true" aria-labelledby="devicetitle" tabindex="-1"><h3 id="devicetitle">THIS DEVICE</h3><p class="note">Study files on this browser. A backup stays on this device. Nothing is uploaded.</p><div id="vatc-devstatus">${deviceStatusHTML()}</div><div class="row"><button type="button" class="btn sec" data-action="retryrefs">RETRY SAVE</button><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><h4>PROFILE</h4><label for="trname">TRAINEE NAME</label><input id="trname" maxlength="120" autocomplete="name" value="${escTxt(t.name)}"><label for="trinit">INITIALS</label><input id="trinit" maxlength="3" autocapitalize="characters" value="${escTxt(t.initials)}"><div class="row"><button type="button" class="btn" data-action="saveprofile">SAVE PROFILE</button></div><h4>INSTALL</h4>${installHelpHTML()}<h4>BACKUP</h4><p class="note">Device backup, not cloud sync. Nothing is uploaded. Position records entered on this device are included.</p>${(globalThis.VATC_DEMO&&VATC_DEMO.active())?'<p class="note">This export is the demo workspace only. It is marked fictional and does not include the normal study profile.</p>':''}<div class="row"><button type="button" class="btn" data-action="exportbackup">EXPORT BACKUP</button><label class="btn sec">IMPORT BACKUP<input type="file" accept="application/json,.json" data-action="importbackup" hidden></label></div><div class="row"><button type="button" class="btn sec" data-action="deviceclose">CLOSE</button></div></div></div>`;
   }
   function guideScreen(){
     const G=globalThis.VATC_HEAD_GUIDE||{lead:'', sections:[]};
@@ -5188,7 +5216,7 @@ function vectorAnswerHTML(query, hits){
   function feedbackScreen(){
     return `<div class="stickhead">${topbar()}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body fbbox" data-route="feedback"><h2 class="sec">REPORT FEEDBACK</h2><p class="hg-lead">Nothing on this page is sent. VECTOR ATC does not transmit feedback, email, or a report by itself. The route is #feedback.</p><label for="fbreport">NOTE</label><textarea id="fbreport" placeholder="What happened"></textarea><div class="row"><button type="button" class="btn" data-action="copyfeedback">COPY REPORT</button><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><p class="note">Paste the copy into your own message if you want to share it.</p></div></div>`;
   }
-  function shellWrap(html){ return html+(S.deviceOpen?devicePanelHTML():''); }
+  function shellWrap(html){ return demoChrome()+html+(S.deviceOpen?devicePanelHTML():''); }
   async function copyText(text){
     try{ if(navigator.clipboard&&navigator.clipboard.writeText){ await navigator.clipboard.writeText(text); return true; } }catch(e){}
     try{ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); const ok=document.execCommand('copy'); ta.remove(); return !!ok; }catch(e){ return false; }
@@ -5201,14 +5229,17 @@ function vectorAnswerHTML(query, hits){
     if(!raw['vector_progress_ver']) raw['vector_progress_ver']=JSON.stringify(PROGRESS_VER);
     const built=VATC_BACKUP.build(raw,{appVersion:APP_VER, exportedAt:new Date().toISOString(), progressVer:PROGRESS_VER});
     if(!built.ok){ alert('Export stopped. Nothing was changed.\n'+built.errors.join('\n')); return; }
+    const demoOn=!!(globalThis.VATC_DEMO&&VATC_DEMO.active());
+    if(demoOn){ built.backup.demo=true; built.backup.demoNote='Fictional demo data. Not a training record and not an account.'; }
     let bundle;
     try{ bundle=await crewPhotoBundle(); }
     catch(e){ alert('Device backup stopped. Crew photos could not be read, so no file was saved. Nothing was uploaded.'); return; }
     const attached=crewAttachToDeviceBackup(built.backup, bundle);
     if(!attached.ok){ alert('Device backup stopped so it would not leave out crew photos.\n'+(attached.errors||[]).join('\n')+'\n\nNothing was uploaded.'); return; }
     const blob=new Blob([JSON.stringify(attached.backup,null,1)],{type:'application/json'});
-    const u=URL.createObjectURL(blob); const ln=document.createElement('a'); ln.href=u; ln.download='vector-atc-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    const u=URL.createObjectURL(blob); const ln=document.createElement('a'); ln.href=u; ln.download=(demoOn?'vector-atc-demo-backup-':'vector-atc-backup-')+new Date().toISOString().slice(0,10)+'.json';
     document.body.appendChild(ln); ln.click(); ln.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000);
+    if(demoOn) VATC_DEMO.markExported();
   }
   async function importBackupFile(el){
     const f=el.files&&el.files[0]; el.value='';
@@ -5218,10 +5249,15 @@ function vectorAnswerHTML(query, hits){
     try{ text=await f.text(); }catch(e){ alert('Could not read that file. Current progress on this device was not changed.'); return; }
     const parsed=VATC_BACKUP.parse(text);
     if(!parsed.ok){ alert('This backup was not imported.\n'+parsed.errors.join('\n')+'\n\nCurrent progress on this device was not changed.'); return; }
+    const demoOn=!!(globalThis.VATC_DEMO&&VATC_DEMO.active());
+    if(parsed.backup.demo && !demoOn){ alert('This file is a demo backup. Open the demo before importing it. Current progress on this device was not changed.'); return; }
     const when=parsed.backup.exportedAt||'an unknown time';
     const n=Object.keys(parsed.backup.keys||{}).length;
     let go=false;
-    try{ go=window.confirm('Replace all study progress on this device with this backup ('+n+' saved items, exported '+when+')?\n\nThis overwrites trainee name and initials, study marks, checks, lessons, flashcards, tests, custom sets, pocket keys, and position records on this device. It also replaces local crew training notices and restores photos included in the file. Cancel leaves current progress unchanged.'); }
+    const ask=demoOn
+      ?'Replace the demo workspace on this device with this backup ('+n+' saved items, exported '+when+')?\n\nNormal study data outside the demo is not changed. Cancel leaves the demo as it is.'
+      :'Replace all study progress on this device with this backup ('+n+' saved items, exported '+when+')?\n\nThis overwrites trainee name and initials, study marks, checks, lessons, flashcards, tests, custom sets, pocket keys, and position records on this device. It also replaces local crew training notices and restores photos included in the file. Cancel leaves current progress unchanged.';
+    try{ go=window.confirm(ask); }
     catch(e){ go=false; }
     if(!go) return;
     const res=VATC_BACKUP.apply(localStorage, parsed.backup, {progressVer:PROGRESS_VER});
@@ -6474,10 +6510,34 @@ function vectorAnswerHTML(query, hits){
     const started=rec&&rec.started||'';
     const qualified=rec&&rec.qualified||'';
     const id=escTxt(p.k);
+    const demo=!!(globalThis.VATC_DEMO&&VATC_DEMO.active());
+    const headline=sum.headline==='No record'?'Not entered':(demo&&sum.headline==='Recorded qualified'?'Demo record':sum.headline);
     const lines=sum.lines.map(l=>`<p class="prec-note">${escTxt(l)}</p>`).join('');
-    const note=sum.note?`<p class="prec-note"><b>${escTxt(sum.note)}</b></p>`:'';
-    return `<details class="prec" data-station="${escTxt(S.station)}" data-pos="${id}"${open}><summary><span class="prec-lab">Position record</span><span>${escTxt(sum.headline)}</span>${sum.add?'<span>Add record</span>':''}</summary><div class="prec-body"><p class="prec-note">Official signoffs stay in the training process. This note does not grant a qualification. Study percent is separate and does not set this status.</p><p class="prec-note">Dates cannot be in the future. A qualified date must be on or after the started date.</p>${lines}${note}<p id="prec-err-${id}" class="prec-err" role="alert"></p><label for="prec-st-${id}">Status<select id="prec-st-${id}">${[['none','No record'],['training','In training'],['qualified','Recorded qualified']].map(([v,l])=>`<option value="${v}"${st===v?' selected':''}>${l}</option>`).join('')}</select></label><label for="prec-sd-${id}">Started date<input id="prec-sd-${id}" type="date" value="${escTxt(started)}"></label><label for="prec-qd-${id}">Qualified date<input id="prec-qd-${id}" type="date" value="${escTxt(qualified)}"></label><button type="button" class="btn" data-action="precsave" data-pos="${id}">Save record</button></div></details>`;
+    const noteText=demo?(st==='none'?'':'Demo position note – fictional – confirm existing training records'):(sum.note||'');
+    const note=noteText?`<p class="prec-note"><b>${escTxt(noteText)}</b></p>`:'';
+    return `<details class="prec" data-testid="training-record" data-station="${escTxt(S.station)}" data-pos="${id}"${open}><summary><span class="prec-lab">Training record</span><span>${escTxt(headline)}</span></summary><div class="prec-body"><p class="prec-note">Official signoffs stay in the training process. This note does not grant a qualification. Study percent is separate and does not set this status.</p><p class="prec-note">Dates cannot be in the future. A qualified date must be on or after the started date.</p>${lines}${note}<p id="prec-err-${id}" class="prec-err" role="alert"></p><label for="prec-st-${id}">Status<select id="prec-st-${id}">${[['none','No record'],['training','In training'],['qualified','Recorded qualified']].map(([v,l])=>`<option value="${v}"${st===v?' selected':''}>${l}</option>`).join('')}</select></label><label for="prec-sd-${id}">Started date<input id="prec-sd-${id}" type="date" value="${escTxt(started)}"></label><label for="prec-qd-${id}">Qualified date<input id="prec-qd-${id}" type="date" value="${escTxt(qualified)}"></label><button type="button" class="btn" data-action="precsave" data-pos="${id}">Save record</button></div></details>`;
   }
+  function positionStudyHead(){
+    const p=POS.find(x=>x.k===S.pos);
+    if(!p) return '';
+    const P=posProgress(p.k);
+    const pending=!syllabusFor(p.k).list.length;
+    const state=P.pct>0?'Study':'Not started';
+    return `<section class="pos-study" data-testid="position-study" data-pos="${escTxt(p.k)}"><div class="pos-study-row"><div><div class="pos-study-name">${escTxt(p.n)}</div><div class="pos-study-meta">${state}${pending?' · ACAD pending':''}</div></div><div class="pos-study-pct">${P.pct}%</div></div>${posRecHTML(p)}</section>`;
+  }
+  function demoEntryHTML(){
+    if(globalThis.VATC_DEMO&&VATC_DEMO.active()) return '';
+    if(!S.demoEntry) return `<p class="demo-entry"><button type="button" class="demo-open" data-action="demoopen" data-testid="try-demo">Try VECTOR demo</button></p>`;
+    return `<div class="demo-gate" data-testid="demo-gate"><p class="demo-note">Public demo code: VECTOR-DEMO. Demo only — does not create an account or grant permissions.</p><label for="democode">Demo code</label><input id="democode" autocomplete="off" autocapitalize="characters" spellcheck="false"><p class="demo-note">This opens fictional demo data on this device.</p>${S.demoMsg?`<p class="demo-msg" role="status">${escTxt(S.demoMsg)}</p>`:''}<button type="button" class="btn" data-action="demoenter">Enter</button></div>`;
+  }
+  function demoChrome(){
+    const D=globalThis.VATC_DEMO;
+    if(!D||!D.active()) return '';
+    const tour=S.demoTour?`<section class="demo-panel" id="demo-tour" data-testid="demo-tour"><h2>Demo tour</h2><ol><li><button type="button" data-action="poslearn" data-p="gnd">Open Ground study</button> The training record is on that page.</li><li><button type="button" data-action="democite">Open JO 7110.65 2-1-7</button> Clearance Delivery ACAD-0520, page 42.</li><li><button type="button" data-action="democards">Open flashcards</button> Choose a position and topic, reveal, then Again or Got it.</li><li>Crew is the training-aid board. This demo does not add a notice photo.</li><li><button type="button" data-action="device">Open Device</button> Export backup downloads this demo only, and only when you tap it.</li><li>Device shows online or offline for this browser. It does not promise a phone.</li></ol><button type="button" class="btn sec" data-action="demoreset">Reset demo</button></section>`:'';
+    const roles=S.demoRoles?`<section class="demo-panel" data-testid="demo-roles"><h2>Preview future roles</h2><p>Separate study profiles are planned and not built. This preview does not sign you in or grant a role.</p><p>Placeholder label: Demo controller. Not a facility position.</p></section>`:'';
+    return `<div class="demo-banner" data-testid="demo-banner" role="status"><span>DEMO · fictional data · no sign-in or authorization</span><button type="button" data-action="demotour">${S.demoTour?'Close tour':'Demo tour'}</button><button type="button" data-action="demoroles">${S.demoRoles?'Close preview':'Preview future roles'}</button><button type="button" data-action="demoexit">Exit demo</button></div>${tour}${roles}`;
+  }
+
   function homeView(){
     /* v0.8.13 home-slim: one-line station bar + first six positions as big tap tiles (POS order). No field stats / TACAN / VIDS on Home. */
     const tile=(p,i)=>{
@@ -6487,7 +6547,7 @@ function vectorAnswerHTML(query, hits){
       const state=P.pct>0?'Study':'Not started';
       const num=String(i+1).padStart(2,'0');
       return `<div class="home-row" data-station="${escTxt(S.station)}" data-pos="${escTxt(p.k)}"><div class="pcard ptile ${rail} ${S.pos===p.k?'on':''}" data-action="poslearn" data-p="${p.k}" tabindex="0" role="button">
-        <span class="pidx">${num}</span><span class="ptg">${p.g==='TOWER'?'Tower':'Radar'}</span><span class="pname"><span class="pn">${p.n}</span><span class="pstate">${state}</span>${pending?'<span class="psub">ACAD pending</span>':''}</span><span class="pcpct">${P.pct}%</span></div>${posRecHTML(p)}</div>`;
+        <span class="pidx">${num}</span><span class="ptg">${p.g==='TOWER'?'Tower':'Radar'}</span><span class="pname"><span class="pn">${p.n}</span><span class="pstate">${state}</span>${pending?'<span class="psub">ACAD pending</span>':''}</span><span class="pcpct">${P.pct}%</span></div></div>`;
     };
     const first6=POS.slice(0,6), rest=POS.slice(6);
     const go=(go,tone,icon,label)=>`<button type="button" class="go-${tone}" data-action="today" data-go="${go}"><span class="go-ic" aria-hidden="true">${icon}</span><span class="go-lb">${label}</span></button>`;
@@ -6496,6 +6556,7 @@ function vectorAnswerHTML(query, hits){
       ${homeQuizHTML()}`;
     return `<header class="home-id"><p class="home-title">Training</p><div class="stnbar">MCAS Camp Pendleton (KNFG)</div></header>
       ${shortcuts}
+      ${demoEntryHTML()}
       <h2 class="sec home-sec">Positions</h2>
       <div class="pos6" id="posgrid">${first6.map((p,i)=>tile(p,i)).join('')}</div>
       ${rest.length?`<div class="pos6">${rest.map((p,i)=>tile(p,i+first6.length)).join('')}</div>`:''}
@@ -6605,14 +6666,15 @@ function vectorAnswerHTML(query, hits){
     if(mode!=='acad' && mode!=='cards' && mode!=='test') mode='acad';
     const seg=`<div class="seg"><button type="button" class="${mode==='acad'?'on':''}" data-action="learnmode" data-m="acad">ACADS</button>`+
       `<button type="button" class="${mode==='test'?'on':''}" data-action="learnmode" data-m="test">TEST</button></div>`;
+    const studyHead=mode==='cards'?'':positionStudyHead();
     if(mode==='cards') return fcBody();
-    if(mode==='test') return seg+tstBody();
+    if(mode==='test') return studyHead+seg+tstBody();
     if(!hasAcad){
-      return seg+`<div class="qmeta"><span class="pill warn">ACADs · ${(PN[S.pos]||S.pos).toUpperCase()}</span></div>`+
+      return studyHead+seg+`<div class="qmeta"><span class="pill warn">ACADs · ${(PN[S.pos]||S.pos).toUpperCase()}</span></div>`+
         `<div class="explain">No ACAD packet for this position yet.</div>`;
     }
-    if(S.trainMode==='rfc') return seg+rfcExerciseBody();
-    return seg+rfcLearn();
+    if(S.trainMode==='rfc') return studyHead+seg+rfcExerciseBody();
+    return studyHead+seg+rfcLearn();
   }
   function scopeDiagram(){ return `<svg viewBox="0 0 360 160" style="width:100%;max-width:360px;margin-top:10px;border:1px solid var(--line);border-radius:10px;background:radial-gradient(circle at 35% 50%,#0e2150,#081334)">
     <circle cx="110" cy="80" r="56" fill="none" stroke="rgba(150,180,225,.4)"/><circle cx="110" cy="80" r="30" fill="none" stroke="rgba(150,180,225,.4)"/>
@@ -6792,7 +6854,71 @@ function vectorAnswerHTML(query, hits){
       const sim=1-lev(la,lu)/Math.max(la.length,lu.length);
       return sim>=0.8?{ok:true, typo:true, strict:false, sim}:{ok:false, typo:false, strict:false, sim};
     }
-    return {NEW, SL, KN, ROUND, shuffle, blank, stat, status, counts, touch, avoidFirst, sortStart, sortCurrent, sortMark, sortSkip, sortBack, sortJump, sortNextRound, stageOf, learnPick, learnStart, learnCurrent, learnAnswer, learnOverride, learnContinue, learnNextRound, mcChoices, normAns, lev, isStrict, grade};
+    /* Recall queue: no replacement. Again goes to the end once. Got it leaves the queue.
+       Still-learning cards lead the next session. This does not score a qualification. */
+    function studyStart(ids, stats, rng, saved, opts){
+      opts=opts||{};
+      const includeKnown=!!opts.includeKnown;
+      const base=[]; const seen0={};
+      (ids||[]).forEach(id=>{
+        if(!id||seen0[id]) return; seen0[id]=1;
+        if(!includeKnown && status(stats,id)===KN) return;
+        base.push(id);
+      });
+      const allow={}; base.forEach(id=>{ allow[id]=1; });
+      if(saved && Array.isArray(saved.queue) && saved.queue.length){
+        const q=[]; const seen={};
+        saved.queue.forEach(id=>{ if(!allow[id]||seen[id]) return; seen[id]=1; q.push(id); });
+        if(q.length){
+          let i=saved.i|0; if(i<0||i>=q.length) i=0;
+          const again=saved.againOnce && typeof saved.againOnce==='object'?saved.againOnce:{};
+          return {mode:'study', queue:q, i:i, againOnce:again, done:false, lastId:saved.lastId||null};
+        }
+      }
+      const sl=[], nw=[], kn=[];
+      base.forEach(id=>{ const s=status(stats,id); if(s===SL) sl.push(id); else if(s===KN) kn.push(id); else nw.push(id); });
+      const q=sl.concat(shuffle(nw, rng)).concat(kn);
+      return {mode:'study', queue:q, i:0, againOnce:{}, done:q.length===0, lastId:null};
+    }
+    function studyCurrent(st){ return (!st||st.done||!st.queue||!st.queue.length)?null:st.queue[st.i]; }
+    function studyAgain(st, stats, now){
+      const id=studyCurrent(st); if(id==null) return st;
+      const s=stat(stats,id);
+      touch(stats,id,{status:SL, times_missed:s.times_missed+1}, now);
+      st.lastId=id;
+      st.queue.splice(st.i,1);
+      if(!st.againOnce[id]){ st.againOnce[id]=1; st.queue.push(id); }
+      if(!st.queue.length){ st.done=true; st.i=0; }
+      else if(st.i>=st.queue.length) st.i=0;
+      return st;
+    }
+    function studyGot(st, stats, now){
+      const id=studyCurrent(st); if(id==null) return st;
+      const s=stat(stats,id);
+      touch(stats,id,{status:KN, times_correct:s.times_correct+1}, now);
+      st.lastId=id;
+      st.queue.splice(st.i,1);
+      if(!st.queue.length){ st.done=true; st.i=0; }
+      else if(st.i>=st.queue.length) st.i=0;
+      return st;
+    }
+    function studySkip(st){
+      if(!st||st.done||!st.queue||!st.queue.length) return st;
+      st.i++; if(st.i>=st.queue.length) st.i=0; return st;
+    }
+    function studyBack(st){
+      if(!st||!st.queue||!st.queue.length) return st;
+      st.done=false; st.i=st.i<=0?st.queue.length-1:st.i-1; return st;
+    }
+    function studyJump(st, id){
+      if(!st||id==null) return st;
+      st.done=false;
+      const j=st.queue.indexOf(id);
+      if(j>=0) st.i=j;
+      else { st.queue.splice(st.i,0,id); }
+      return st;
+    }
+    return {NEW, SL, KN, ROUND, shuffle, blank, stat, status, counts, touch, avoidFirst, sortStart, sortCurrent, sortMark, sortSkip, sortBack, sortJump, sortNextRound, stageOf, learnPick, learnStart, learnCurrent, learnAnswer, learnOverride, learnContinue, learnNextRound, mcChoices, normAns, lev, isStrict, grade, studyStart, studyCurrent, studyAgain, studyGot, studySkip, studyBack, studyJump};
   })();
   /* FCQ:END */
   /* ===== v0.8.18 brief-polish: flashcard progress (localStorage per card id) + Cards / Sort / Learn ===== */
@@ -6830,26 +6956,65 @@ function vectorAnswerHTML(query, hits){
   }
   function fcUniq(cards){ const seen=new Set(), out=[]; (cards||[]).forEach(c=>{ if(c&&c.id&&!seen.has(c.id)){ seen.add(c.id); out.push(c); } }); return out; }
   function fcMark(st){ return st==='KNOWN'?'<span class="fcm k" title="Known">✓</span>':st==='STILL_LEARNING'?'<span class="fcm l" title="Still learning">◐</span>':'<span class="fcm n" title="New">○</span>'; }
+  function fcAccepted(card){
+    const s=card&&card.src;
+    if(!s||!String(s.doc||'').trim()) return false;
+    if(!String(s.pg||'').trim() && !String(s.pa||'').trim()) return false;
+    if(!String(s.hl||'').trim()) return false;
+    return true;
+  }
+  function fcAudit(){
+    const all=[];
+    const push=c=>{ if(c) all.push(c); };
+    Object.keys(FC_POS||{}).forEach(k=>(FC_POS[k]||[]).forEach(push));
+    Object.keys(FC_SETS||{}).forEach(k=>{ const v=FC_SETS[k]; if(Array.isArray(v)) v.forEach(push); });
+    const seen=new Set(); const uniq=[];
+    all.forEach(c=>{ const id=c&&c.id; if(!id||seen.has(id)) return; seen.add(id); uniq.push(c); });
+    const accepted=[]; const rejected=[];
+    uniq.forEach(c=>{
+      const src=c.src||{};
+      const row={id:c.id, pos:c.pos||'', tag:c.tag||'', doc:src.doc||'', pg:src.pg||'', pa:src.pa||''};
+      if(fcAccepted(c)) accepted.push(row);
+      else rejected.push(Object.assign({missing:!c.src?'src':!src.doc?'doc':!(src.pg||src.pa)?'place':'hl'}, row));
+    });
+    return {accepted:accepted.length, rejected:rejected.length, acceptedItems:accepted, rejectedItems:rejected};
+  }
   function fcFaceHTML(card){
-    const citeLab=card.src?`${card.src.doc} · ${card.src.pg||''}${card.src.pa?' · '+card.src.pa:''}`:'';
-    const cite=fcCiteStr(card.src);
-    const title=escTxt(String(card.src&&card.src.pa||card.tag||''));
-    const q=escTxt(String(card.q||'')), a=escTxt(String(card.a||''));
+    const src=card.src||null;
+    const citeLab=src?`${src.doc} · ${src.pg||''}${src.pa?' · '+src.pa:''}`:'';
+    const cite=fcCiteStr(src);
+    const title=escTxt(String(src&&src.pa||card.tag||''));
+    const q=escTxt(String(card.q||''));
+    const a=escTxt(String(card.a||''));
+    const quote=String(src&&src.hl||'').trim();
     const oLab=card.o?(FC_SET_LAB[card.o]||card.o):'';
     const tag=escTxt(String(card.tag||'')+(oLab && String(oLab).toLowerCase()!==String(card.tag||'').toLowerCase()?' · '+oLab:''));
     const aCls=String(card.a||'').length<=48?'a big':'a def';
-    const citeBtn=cite?`<button type="button" class="fcsrc fccitebtn" data-action="fccite" data-needle="${escTxt(String(card.id||'').startsWith('tower-paper-')?(card.src.hl||''):'')}" data-cite="${escTxt(cite)}" data-title="${title}">${escTxt(citeLab)}</button>`:'';
-    const front=`<div class="fcface front" data-answer="${a}"><div class="tag">${tag}</div><div class="q">${q}</div><div class="fchint">tap to reveal</div></div>`;
-    const back=`<div class="fcface back revealed" data-answer="${a}"><div class="qsm">${q}</div><div class="${aCls}">${a}</div>${citeBtn}</div>`;
-    return `<div class="fcard${S.fcFlip?' is-revealed':''}" data-action="fcflip">${front}${back}</div>`;
+    const citeBtn=cite?`<button type="button" class="fcsrc fccitebtn" data-action="fccite" data-testid="fc-source" data-needle="${escTxt(quote)}" data-cite="${escTxt(cite)}" data-title="${title}">${escTxt(citeLab)}</button>`:'';
+    const quoteHtml=quote?`<blockquote class="fc-quote" data-testid="fc-quote">${escTxt(quote)}</blockquote>`:'';
+    const front=`<div class="fcface front"><div class="tag">${tag}</div><div class="q">${q}</div><div class="fchint">Tap to reveal</div></div>`;
+    const back=S.fcFlip?`<div class="fcface back revealed"><div class="qsm">${q}</div><div class="${aCls}">${a}</div>${quoteHtml}${citeBtn}</div>`:`<div class="fcface back"></div>`;
+    const role=S.fcFlip?'':` role="button" tabindex="0" aria-label="Reveal answer"`;
+    return `<div class="fcard${S.fcFlip?' is-revealed':''}" data-action="fcflip" data-testid="fc-card"${role}>${front}${back}</div>`;
+  }
+  const FC_QUEUE_KEY='vatc.fcQueue.v1';
+  function loadStudyQueue(){ try{ const o=JSON.parse(localStorage.getItem(FC_QUEUE_KEY)||'null'); return (o&&typeof o==='object')?o:null; }catch(e){ return null; } }
+  function saveStudyQueue(key, st){
+    if(!st) return;
+    try{ localStorage.setItem(FC_QUEUE_KEY, JSON.stringify({key:key, queue:st.queue||[], i:st.i||0, againOnce:st.againOnce||{}, lastId:st.lastId||null})); }catch(e){}
   }
   function fcSession(mode, ids, key){
-    const k=key+'|'+mode+(mode==='cards'?'|'+(S.fcOnlyNot?1:0)+'|'+ids.join('.'):'');
+    const k=key+'|t:'+(S.fcTopic||'')+'|'+mode+(mode==='cards'?'|'+(S.fcOnlyNot?1:0)+'|'+ids.join('.'):'');
     /* one live session per set+mode, so CARDS ↔ PRACTICE keeps each one's place; fcSess:null = reset request */
     if(S.fcSess===null || !S.fcSessMap) S.fcSessMap={};
     let ss=S.fcSessMap[k];
     if(!ss){
-      const st=mode==='cards'?FCQ.sortStart(ids, S.fcStats, null, S.fcLastId, {keepOrder:true, includeKnown:!S.fcOnlyNot}):FCQ.learnStart(ids, S.fcStats, null, S.fcLastId, 1);
+      let st;
+      if(mode==='cards'){
+        const saved=loadStudyQueue();
+        st=FCQ.studyStart(ids, S.fcStats, null, saved&&saved.key===k?saved:null, {includeKnown:!S.fcOnlyNot});
+        saveStudyQueue(k, st);
+      }else st=FCQ.learnStart(ids, S.fcStats, null, S.fcLastId, 1);
       ss={k, st, choices:null, chId:null, pick:-1, typed:'', grade:null};
       S.fcSessMap[k]=ss;
     }
@@ -6858,24 +7023,24 @@ function vectorAnswerHTML(query, hits){
   }
   function fcCountsHTML(c){ return `<span class="ck">${c.KNOWN} known</span><span class="dot2">·</span><span class="cl">${c.STILL_LEARNING} learning</span><span class="dot2">·</span><span class="cn">${c.NEW} new</span>`; }
   /* CARDS = flip + Know / Still learning (Sort rules): round 1 in deck order (SHUFFLE to mix), then Still-learning-only rounds */
+  function fcStudyBar(cards){
+    const accepted=(cards||[]).filter(fcAccepted);
+    const tags=[]; accepted.forEach(c=>{ if(c.tag && tags.indexOf(c.tag)<0) tags.push(c.tag); });
+    const posOpts=POS.map(p=>`<option value="${p.k}"${S.pos===p.k?' selected':''}>${escTxt(p.n)}</option>`).join('');
+    const topicOpts=`<option value="">All topics</option>`+tags.map(t=>`<option value="${escTxt(t)}"${S.fcTopic===t?' selected':''}>${escTxt(t)}</option>`).join('');
+    return `<div class="fc-study-filters" data-testid="fc-study-filters"><label>Position<select data-action="fcstudypos" aria-label="Study position">${posOpts}</select></label><label>Topic<select data-action="fcstudytopic" aria-label="Study topic">${topicOpts}</select></label></div>`;
+  }
   function fcCardsHTML(orderedIds, byId, key, cnt, lab){
     const ss=fcSession('cards', orderedIds, key), st=ss.st;
-    if(st.done && st.finished){
-      const all=cnt.KNOWN===orderedIds.length;
-      return `<div class="fc-panel"><div class="fc-big">${all?`All ${orderedIds.length} cards KNOWN`:'Nothing left in Still learning'}</div><div class="muted">${all?'Every card in this set is marked Know.':'Every card in this round was marked Know.'}</div>
-        <div class="fc-row2"><button type="button" class="btn sec" data-action="fcrestart">GO AGAIN</button><button type="button" class="btn" data-action="fcresetset">RESET DECK</button></div></div>`;
+    if(!orderedIds.length || !st || st.done || !st.queue.length){
+      const empty=!orderedIds.length;
+      return `<div class="explain" data-testid="fc-empty">${empty?'No validated cards for this position and topic. Pick another topic.':'End of this queue.'}</div>`;
     }
-    if(st.done){
-      const n=st.learning.length, sk=(st.skipped||[]).length;
-      return `<div class="fc-panel"><div class="fc-cap">ROUND ${st.round} COMPLETE</div>
-        <div class="fc-piles"><div class="pile k"><b>${st.known.length}</b><span>Know</span></div><div class="pile l"><b>${n}</b><span>Still learning</span></div>${sk?`<div class="pile n"><b>${sk}</b><span>Not marked</span></div>`:''}</div>
-        <div class="fc-row2"><button type="button" class="btn sec" data-action="fcprev">BACK</button><button type="button" class="btn" data-action="fcsortnext">NEXT ROUND · ${sk?`${n+sk} NOT KNOWN`:`${n} STILL LEARNING`} ${I.arrow}</button></div></div>`;
-    }
-    const id=FCQ.sortCurrent(st), card=byId[id]||{}, cur=FCQ.status(S.fcStats,id);
-    const prog=st.round===1?`${lab} · ${st.i+1} / ${st.queue.length}`:`${lab} · ROUND ${st.round} · ${st.i+1} / ${st.queue.length} · ${st.carried?'NOT KNOWN YET':'STILL LEARNING ONLY'}`;
-    return `<div class="fc-progrow"><div class="fc-prog">${prog}</div><button type="button" class="fc-shuf" data-action="fcshuffle" aria-label="Shuffle" title="Shuffle">⇄</button></div>${fcFaceHTML(card)}
-      <div class="fc-mark"><button type="button" class="btn sec fc-sl${cur==='STILL_LEARNING'?' on':''}" data-action="fcrate" data-k="0">STILL LEARNING</button><button type="button" class="btn fc-kn${cur==='KNOWN'?' on':''}" data-action="fcrate" data-k="1">KNOW ${I.chk}</button></div>
-      <div class="fc-nav two"><button type="button" class="btn sec" data-action="fcprev"${st.i<=0?' disabled':''}>‹ PREV</button><button type="button" class="btn sec" data-action="fcnext" title="Next card (no mark)">NEXT ›</button></div>`;
+    const id=FCQ.studyCurrent(st), card=byId[id]||{};
+    const prog=`${lab} · ${st.i+1} / ${st.queue.length}`;
+    return `<div class="fc-progrow"><div class="fc-prog">${prog}</div></div>${fcFaceHTML(card)}
+      <div class="fc-mark"><button type="button" class="btn sec fc-sl" data-action="fcrate" data-k="0" data-testid="fc-again"${S.fcFlip?'':' disabled'}>Again</button><button type="button" class="btn fc-kn" data-action="fcrate" data-k="1" data-testid="fc-got"${S.fcFlip?'':' disabled'}>Got it</button></div>
+      <div class="fc-nav two"><button type="button" class="btn sec" data-action="fcprev">‹ Back</button><button type="button" class="btn sec" data-action="fcnext">Next ›</button></div>`;
   }
   function fcLearnHTML(ids, byId, key, cnt, deckCards){
     const ss=fcSession('learn', ids, key), st=ss.st;
@@ -7960,23 +8125,22 @@ function vectorAnswerHTML(query, hits){
     const byId={}; deckCards.forEach(c=>{ byId[c.id]=c; });
     const cnt=FCQ.counts(ids, S.fcStats);
     const mode=S.fcMode==='practice'?'practice':'cards';
+    const studyCards=deckCards.filter(fcAccepted).filter(c=>!S.fcTopic || c.tag===S.fcTopic);
     const seg=`<div class="seg fc-modes">${[['cards','CARDS'],['practice','PRACTICE']].map(m=>`<button type="button" class="${mode===m[0]?'on':''}" data-action="fcmode" data-m="${m[0]}">${m[1]}</button>`).join('')}</div>`;
     const head=`<div class="fc-head"><div class="fc-counts">${fcCountsHTML(cnt)}</div>${seg}</div>`;
     const sq=sqBarHTML()+fcGuideHTML();
     if(!deckCards.length){
       return `<div id="fcwrap">${sets}${sq}<div class="qmeta"><span class="pill warn">FLASHCARDS · ${lab}</span></div><div class="explain">${isSqDeck(S.fcDeck)?'No cards for this combination — TBL C-3 lists no modex or aircraft type.':'No sourced cards for this '+(named?'deck':'position')+' yet.'}</div></div>`;
     }
-    const orderedIds=fcUniq(ordered).map(c=>c.id);
-    const start=orderedIds.length?((S.fcIdx%orderedIds.length)+orderedIds.length)%orderedIds.length:0;
-    const roundIds=orderedIds.slice(start).concat(orderedIds.slice(0,start));
-    const main=mode==='practice'?fcLearnHTML(ids, byId, key, cnt, deckCards):fcCardsHTML(roundIds, byId, key, cnt, lab);
+    const studyIds=studyCards.map(c=>c.id);
+    const main=mode==='practice'?fcLearnHTML(ids, byId, key, cnt, deckCards):fcStudyBar(deckCards)+fcCardsHTML(studyIds, byId, key, cnt, lab);
     const tools=`<div class="fc-tools">${mode==='cards'?`<label class="fc-chk"><input type="checkbox" data-action="fconlynot"${S.fcOnlyNot?' checked':''}> Not known only</label>`:'<span></span>'}<button type="button" class="btn-ghost" data-action="fcresetset">Reset set progress</button></div>`;
     const listCards=fcUniq(ordered);
     const st=S.fcSess&&S.fcSess.st;
-    const curId=st?(mode==='practice'?FCQ.learnCurrent(st):FCQ.sortCurrent(st)):null;
+    const curId=st?(mode==='practice'?FCQ.learnCurrent(st):FCQ.studyCurrent(st)):null;
     const rows=listCards.map((c,ix)=>{
-      const click=mode==='cards'?` data-action="fcjump" data-id="${escTxt(c.id)}"`:'';
-      return `<div class="fc-row${c.id===curId?' on':''}${mode==='cards'?' tap':''}"${click}><span class="fc-i">${ix+1}</span><div class="fc-td"><div class="fc-term">${escTxt(c.q||'')}</div><div class="fc-def">${mode==='practice'?'<span class="muted">answer hidden in Practice</span>':escTxt(c.a||'')}</div></div>${fcMark(FCQ.status(S.fcStats,c.id))}</div>`;
+      const click=mode==='cards'&&fcAccepted(c)?` data-action="fcjump" data-id="${escTxt(c.id)}"`:'';
+      return `<div class="fc-row${c.id===curId?' on':''}${mode==='cards'&&fcAccepted(c)?' tap':''}"${click}><span class="fc-i">${ix+1}</span><div class="fc-td"><div class="fc-term">${escTxt(c.q||'')}</div><div class="fc-def"><span class="muted">Answer hidden until you reveal the card</span></div></div>${fcMark(FCQ.status(S.fcStats,c.id))}</div>`;
     }).join('');
     const list=`<div class="fc-listhd"><span>ALL CARDS IN THIS SET · ${listCards.length}</span><span class="muted">✓ known · ◐ learning · ○ new</span></div><div class="fc-list">${rows}</div>`;
     const note=S.fcNote?`<div class="pill warn fc-note">${escTxt(S.fcNote)}</div>`:'';
@@ -8001,6 +8165,8 @@ function vectorAnswerHTML(query, hits){
     }
     const cont=document.getElementById('fccont');
     if(cont){ try{ cont.focus({preventScroll:true}); }catch(_){} }
+    const again=document.querySelector('#vatc .fcard.is-revealed')&&document.querySelector('#vatc [data-testid="fc-again"]');
+    if(again){ try{ again.focus({preventScroll:true}); }catch(_){} }
   }
   function fcLearnIds(){ const {deck}=fcOrderedDeck(); return fcUniq(deck).map(c=>c.id); }
   function fcWrittenSubmit(dontKnow){
@@ -8827,6 +8993,8 @@ function pdfPaneHTML(){
     }
     if(a==='mkdone'){ markRfcChk(el.dataset.k, !!el.checked); syncChk(el.dataset.k); return; }
     if(a==='fconlynot'){ return fcKeep({fcOnlyNot:!!el.checked, fcIdx:0, fcFlip:false}); }
+    if(a==='fcstudypos'){ return set({pos:el.value, tab:'learn', learnMode:'cards', trainMode:'cards', fcDeck:'pos', fcPick:false, fcFlip:false, fcSess:null, fcTopic:'', fcOrder:null}); }
+    if(a==='fcstudytopic'){ return fcKeep({fcTopic:String(el.value||''), fcFlip:false, fcSess:null}); }
     if(a==='sqshow'||a==='sqtype'||a==='sqtbl'){
       const o={fcIdx:0, fcFlip:false, fcOrder:null, fcSess:null};
       o[a==='sqshow'?'sqShow':(a==='sqtype'?'sqType':'sqTbl')]=String(el.value||'');
@@ -8841,13 +9009,20 @@ function pdfPaneHTML(){
     const ss=S.fcSess;
     if(a==='fcrate'){
       if(!ss||!ss.st||S.fcMode==='practice') return true;
+      if(!S.fcFlip) return true;
+      if(ss.st.mode==='study'){
+        const id=FCQ.studyCurrent(ss.st); if(id==null) return true;
+        if(el.dataset.k==='1') FCQ.studyGot(ss.st, S.fcStats); else FCQ.studyAgain(ss.st, S.fcStats);
+        S.fcLastId=id; saveFcStats(); saveStudyQueue(ss.k, ss.st);
+        fcKeep({fcFlip:false}); return true;
+      }
       const id=FCQ.sortCurrent(ss.st); if(id==null) return true;
       FCQ.sortMark(ss.st, S.fcStats, el.dataset.k==='1'); S.fcLastId=id; saveFcStats();
       fcKeep({fcFlip:false}); return true;
     }
     if(a==='fcsortnext'){ if(ss&&ss.st){ ss.st=FCQ.sortNextRound(ss.st); } fcKeep({fcFlip:false}); return true; }
-    if(a==='fcnext'){ if(ss&&ss.st&&S.fcMode!=='practice'){ FCQ.sortSkip(ss.st, S.fcStats); S.fcLastId=ss.st.lastId; } fcKeep({fcFlip:false}); return true; }
-    if(a==='fcprev'){ if(ss&&ss.st&&S.fcMode!=='practice'){ FCQ.sortBack(ss.st); } fcKeep({fcFlip:false}); return true; }
+    if(a==='fcnext'){ if(ss&&ss.st&&ss.st.mode==='study'){ FCQ.studySkip(ss.st); saveStudyQueue(ss.k, ss.st); } else if(ss&&ss.st&&S.fcMode!=='practice'){ FCQ.sortSkip(ss.st, S.fcStats); S.fcLastId=ss.st.lastId; } fcKeep({fcFlip:false}); return true; }
+    if(a==='fcprev'){ if(ss&&ss.st&&ss.st.mode==='study'){ FCQ.studyBack(ss.st); saveStudyQueue(ss.k, ss.st); } else if(ss&&ss.st&&S.fcMode!=='practice'){ FCQ.sortBack(ss.st); } fcKeep({fcFlip:false}); return true; }
     if(a==='fcrestart'){ fcKeep({fcSess:null, fcIdx:0, fcFlip:false}); return true; }
     if(a==='fcmc'){
       if(!ss||!ss.st||!ss.choices) return true;
@@ -8869,11 +9044,37 @@ function pdfPaneHTML(){
       ids.forEach(id=>{ delete S.fcStats[id]; }); saveFcStats();
       fcKeep({fcSess:null, fcIdx:0, fcFlip:false, fcLastId:null}); return true;
     }
-    if(a==='fcjump'){ if(ss&&ss.st&&S.fcMode!=='practice'&&el.dataset.id){ FCQ.sortJump(ss.st, el.dataset.id); } fcKeep({fcFlip:false}); fcEnsureCardVisible(true); return true; }
+    if(a==='fcjump'){ if(ss&&ss.st&&ss.st.mode==='study'&&el.dataset.id){ FCQ.studyJump(ss.st, el.dataset.id); saveStudyQueue(ss.k, ss.st); } else if(ss&&ss.st&&S.fcMode!=='practice'&&el.dataset.id){ FCQ.sortJump(ss.st, el.dataset.id); } fcKeep({fcFlip:false}); fcEnsureCardVisible(true); return true; }
     return false;
   }
   document.getElementById('vatc').addEventListener('click',e=>{ const el=e.target.closest('[data-action]'); if(!el)return; const a=el.dataset.action;
     if(a.indexOf('crw')===0){ crewAction(a, el, e); return; }
+    if(a==='demoopen'){ S.demoEntry=true; S.demoMsg=''; render(); const inp=document.getElementById('democode'); if(inp) inp.focus(); return; }
+    if(a==='demoenter'){
+      const inp=document.getElementById('democode');
+      const res=globalThis.VATC_DEMO?VATC_DEMO.checkCode(inp&&inp.value):{ok:false, message:'Demo tools did not load.'};
+      if(!res.ok){ S.demoMsg=res.message; S.demoEntry=true; render(); const again=document.getElementById('democode'); if(again) again.focus(); return; }
+      VATC_DEMO.enter();
+      location.reload();
+      return;
+    }
+    if(a==='demotour'){ S.demoTour=!S.demoTour; if(S.demoTour) S.demoRoles=false; render(); const panel=document.getElementById('demo-tour'); if(panel){ const b=panel.querySelector('button'); if(b) b.focus(); } return; }
+    if(a==='demoroles'){ S.demoRoles=!S.demoRoles; if(S.demoRoles) S.demoTour=false; render(); return; }
+    if(a==='demoexit'){
+      const D=globalThis.VATC_DEMO;
+      if(D&&D.needsExportWarning() && !window.confirm('The demo backup has not been exported. Leave the demo anyway? Normal study data on this device is left as it was. Demo notes stay on this browser until you reset the demo.')) return;
+      if(D) D.exit();
+      location.reload();
+      return;
+    }
+    if(a==='demoreset'){
+      if(!window.confirm('Remove demo notes from this browser? Normal study data is not removed.')) return;
+      if(globalThis.VATC_DEMO) VATC_DEMO.reset();
+      location.reload();
+      return;
+    }
+    if(a==='democite'){ S.demoTour=false; set({pos:'cd', tab:'learn', learnMode:'acad', trainMode:'practice', rfcTopic:1}); openLearnCite('7110.65 2-1-7',{title:'Inflight equipment malfunction', needle:'inflight equipment malfunction'}); return; }
+    if(a==='democards'){ S.demoTour=false; return set({tab:'learn', learnMode:'cards', trainMode:'cards', pos:'cd', fcDeck:'pos', fcPick:false, fcFlip:false, fcSess:null, fcTopic:''}); }
     if(a==='precsave'){
       e.preventDefault();
       e.stopPropagation();
@@ -8954,12 +9155,12 @@ function pdfPaneHTML(){
     if(a==='citesel'){ return; }
     if(a==='stations')return set({screen:'station'});
     if(a==='pick')return set({screen:'app',tab:'home',station:el.dataset.s});
-    if(a==='tab'){const t=el.dataset.t; if(t==='cards'){ if(S.pub&&S.learnReturn) resetCitePdfFind(); return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcPick:true,fcSess:null,pub:null,learnReturn:null}); } if(t==='learn') return set({tab:'learn',learnMode:'acad',trainMode:'practice'}); return set({tab:t});}
+    if(a==='tab'){const t=el.dataset.t; S.demoTour=false; if(t==='cards'){ if(S.pub&&S.learnReturn) resetCitePdfFind(); return set({tab:'learn',learnMode:'cards',trainMode:'cards',fcPick:true,fcSess:null,pub:null,learnReturn:null,demoTour:false}); } if(t==='learn') return set({tab:'learn',learnMode:'acad',trainMode:'practice',demoTour:false}); return set({tab:t,demoTour:false});}
     if(a==='learnmode'){const m=el.dataset.m; if(S.pub&&S.learnReturn){ resetCitePdfFind(); return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false,pub:null,pubPage:1,pubQ:'',pubGuessNote:'',pubCiteLab:'',pubCiteQuote:'',pubPreferPage:0,pubCiteSec:'',learnReturn:null}); } return set({learnMode:m,trainMode:(m==='cards'?'cards':'practice'),fcIdx:0,fcFlip:false,fcPick:(m==='cards')});}
     if(a==='pos')return set({pos:el.dataset.p,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});
     if(a==='posfocus'){const k=el.dataset.p; return set({pos:k,tab:'learn',rfcTopic:0,posOpen:k,scnIdx:0,scnAns:false,scnSel:null,scnScore:0});}
     if(a==='poscards')return set({pos:el.dataset.p,tab:'learn',learnMode:'cards',trainMode:'cards',fcIdx:0,fcFlip:false,posOpen:el.dataset.p,fcDeck:'pos',fcOrder:null});
-    if(a==='poslearn'){const k=el.dataset.p; return set({pos:k,tab:'learn',learnMode:'acad',trainMode:'practice',rfcTopic:0,posOpen:k});}
+    if(a==='poslearn'){const k=el.dataset.p; return set({pos:k,tab:'learn',learnMode:'acad',trainMode:'practice',rfcTopic:0,posOpen:k,demoTour:false});}
     if(a==='train'){const m=el.dataset.m; if(m==='cards') return set({tab:'learn',learnMode:'cards',trainMode:'cards'}); if(m==='rfc') return set({tab:'learn',learnMode:'acad',trainMode:'rfc'}); return set({trainMode:m});}
     if(a==='lesson'){const id=el.dataset.id,d=Object.assign({},S.lessonsDone);if(d[id])delete d[id];else d[id]=true;saveLessonsDone(d);return set({lessonsDone:d});}
     if(a==='pchoose'&&!S.pAns)return set({pSel:+el.dataset.i,pAns:true});
@@ -8969,10 +9170,7 @@ function pdfPaneHTML(){
     if(a==='qnext'){if(S.qSel===null)return;const ans=S.qAns.slice();ans[S.qIdx]=S.qSel;const QZ=Q.slice(0,5);if(S.qIdx<QZ.length-1)return set({qAns:ans,qIdx:S.qIdx+1,qSel:null});const {pct}=computeQuiz(ans);return set({qAns:ans,qDone:true,quizBest:Math.max(S.quizBest,pct)});}
     if(a==='qreset')return set({qIdx:0,qSel:null,qAns:[],qDone:false});
     if(a==='fcflip'){
-      S.fcFlip=!S.fcFlip;
-      const card=document.querySelector('#vatc .fcard');
-      if(card){ card.classList.toggle('is-revealed', !!S.fcFlip); return; }
-      return fcKeep({fcFlip:S.fcFlip});
+      return fcKeep({fcFlip:!S.fcFlip});
     }
     if(fcAction(a, el)) return;
     if(a==='fcshuffle'){const {deck,key}=fcOrderedDeck(); return fcKeep({fcOrder:fcShuffleOrder(deck.length,key),fcIdx:0,fcFlip:false});}
@@ -9051,6 +9249,12 @@ function pdfPaneHTML(){
       if(S.screen!=='app'||(S.tab!=='reference'&&S.tab!=='ask')) return set({screen:'app',tab:'ask',lkFocus:true});
       return focusLookup();
     }
+    if(e.key==='Enter' && e.target && e.target.id==='democode'){
+      e.preventDefault();
+      const btn=document.querySelector('#vatc [data-action="demoenter"]');
+      if(btn) btn.click();
+      return;
+    }
     if(e.key==='/' && !e.ctrlKey && !e.metaKey && !e.altKey && !typing){
       e.preventDefault();
       if(S.screen!=='app'||(S.tab!=='reference'&&S.tab!=='ask')) return set({screen:'app',tab:'ask',lkFocus:true});
@@ -9077,6 +9281,7 @@ function pdfPaneHTML(){
     try{ if(typeof location!=='undefined' && location) h=String(location.hash||'').replace(/^#\/?/,'').toLowerCase(); }catch(e){}
     if(h==='guide'||h==='head-guide') S.screen='guide';
     else if(h==='feedback'||h==='report') S.screen='feedback';
+    else if(h==='demo' && !(globalThis.VATC_DEMO&&VATC_DEMO.active())) S.demoEntry=true;
   })();
   if(globalThis.VATC_DEVICE){
     VATC_DEVICE.paint=function(){
@@ -9105,6 +9310,7 @@ function pdfPaneHTML(){
     if(d.open) S.precOpen=key;
     else if(S.precOpen===key) S.precOpen='';
   }, true);
+  globalThis.vatcFcAudit=fcAudit;
   render();
   navInit();
   render();

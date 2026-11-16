@@ -37,32 +37,67 @@ const browser = await puppeteer.launch({
   args: ['--no-sandbox', '--disable-dev-shm-usage']
 });
 const page = await browser.newPage();
+await page.emulateTimezone('America/Los_Angeles');
+await page.evaluateOnNewDocument(() => {
+  const fixed = Date.parse('2026-11-06T00:30:00.000Z');
+  const Orig = Date;
+  function FakeDate(...args) {
+    if (!(this instanceof FakeDate)) return args.length ? String(new Orig(...args)) : String(new Orig(fixed));
+    if (args.length === 0) return new Orig(fixed);
+    return new Orig(...args);
+  }
+  FakeDate.now = () => fixed;
+  FakeDate.parse = Orig.parse;
+  FakeDate.UTC = Orig.UTC;
+  FakeDate.prototype = Orig.prototype;
+  window.Date = FakeDate;
+});
 const posts = [];
 page.on('request', req => { if (req.method() !== 'GET' && req.method() !== 'HEAD') posts.push(req.method() + ' ' + req.url()); });
 page.on('pageerror', err => fails.push('pageerror ' + err));
 await page.goto('http://127.0.0.1:' + port + '/index.html', { waitUntil: 'domcontentloaded' });
 await page.waitForSelector('.home-row');
 
-const empty = await page.evaluate(() => {
-  const row = document.querySelector('.home-row');
+const home = await page.evaluate(() => {
+  const row = document.querySelector('.home-row[data-pos="gnd"]');
   const pct = getComputedStyle(row.querySelector('.pcpct')).fontSize;
-  return {
-    pos: row.getAttribute('data-pos'),
-    station: row.getAttribute('data-station'),
-    text: row.querySelector('.prec summary').innerText,
-    pct: parseFloat(pct)
-  };
+  const text = document.querySelector('#posgrid').innerText;
+  return { pct: parseFloat(pct), text, local: new Date().toDateString() };
 });
-ok('empty record offers Add record and a large percent', /No record/.test(empty.text) && /Add record/.test(empty.text) && empty.pct >= 28, JSON.stringify(empty));
+ok('home has no position-record line and keeps a large percent', home.pct >= 28 && !/POSITION RECORD/i.test(home.text) && !/No record/.test(home.text) && !/Add record/.test(home.text) && !/2020-11-/.test(home.text) && !/2026-11-/.test(home.text), JSON.stringify(home));
+ok('frozen clock is local Nov 5 in PST', /Nov 0?5 2026/.test(home.local), home.local);
 
-await page.evaluate((pos) => {
-  document.querySelector('.prec[data-pos="' + pos + '"]').open = true;
-}, empty.pos);
-await page.select('#prec-st-' + empty.pos, 'qualified');
-await page.$eval('#prec-sd-' + empty.pos, el => { el.value = '2020-11-01'; });
-await page.$eval('#prec-qd-' + empty.pos, el => { el.value = '2020-11-28'; });
-await page.click('.prec[data-pos="' + empty.pos + '"] [data-action="precsave"]');
-await page.waitForFunction((pos) => /Days between entered dates: 27/.test(document.querySelector('.prec[data-pos="' + pos + '"]').innerText), {}, empty.pos);
+await page.click('[data-action="poslearn"][data-p="gnd"]');
+await page.waitForSelector('[data-testid="training-record"][data-pos="gnd"]');
+const opened = await page.evaluate(() => ({
+  home: document.querySelector('#posgrid') ? document.querySelector('#posgrid').innerText : '',
+  study: document.querySelector('[data-testid="position-study"]').innerText
+}));
+ok('Ground study page holds the training record', /training record/i.test(opened.study) && /Not entered/.test(opened.study) && !/POSITION RECORD/i.test(opened.home), opened.study.slice(0, 180));
+
+await page.evaluate(() => { document.querySelector('.prec[data-pos="gnd"]').open = true; });
+await page.select('#prec-st-gnd', 'qualified');
+await page.$eval('#prec-sd-gnd', el => { el.value = '2026-11-01'; });
+await page.$eval('#prec-qd-gnd', el => { el.value = '2026-11-06'; });
+await page.click('.prec[data-pos="gnd"] [data-action="precsave"]');
+const future = await page.evaluate(() => ({
+  err: document.getElementById('prec-err-gnd').textContent,
+  stored: localStorage.getItem('vatc.positionRecords.v1')
+}));
+ok('local Nov 6 is rejected while UTC is already Nov 6', /cannot be in the future/.test(future.err) && !future.stored, JSON.stringify(future));
+
+await page.$eval('#prec-qd-gnd', el => { el.value = '2026-11-05'; });
+await page.click('.prec[data-pos="gnd"] [data-action="precsave"]');
+await page.waitForFunction(() => /Days between entered dates: 4/.test(document.querySelector('.prec[data-pos="gnd"]').innerText));
+ok('Ground Nov 1 to Nov 5 is 4 local days', true);
+
+await page.evaluate(() => { document.querySelector('.prec[data-pos="gnd"]').open = true; });
+await page.select('#prec-st-gnd', 'qualified');
+await page.$eval('#prec-sd-gnd', el => { el.value = '2020-11-01'; });
+await page.$eval('#prec-qd-gnd', el => { el.value = '2020-11-28'; });
+await page.click('.prec[data-pos="gnd"] [data-action="precsave"]');
+await page.waitForFunction(() => /Days between entered dates: 27/.test(document.querySelector('.prec[data-pos="gnd"]').innerText));
+const empty = { pos: 'gnd' };
 const saved = await page.evaluate((pos) => {
   const rec = document.querySelector('.prec[data-pos="' + pos + '"]');
   return { text: rec.innerText, key: localStorage.getItem('vatc.positionRecords.v1') };
@@ -70,11 +105,15 @@ const saved = await page.evaluate((pos) => {
 ok('save shows 27 days and persists the versioned key', /Recorded qualified/.test(saved.text) && /confirm in training records/.test(saved.text) && /2020-11-01/.test(saved.key) && /"status":"qualified"/.test(saved.key));
 
 await page.reload({ waitUntil: 'domcontentloaded' });
-await page.waitForFunction((pos) => {
-  const rec = document.querySelector('.prec[data-pos="' + pos + '"]');
-  return rec && /Days between entered dates: 27/.test(rec.textContent) && /Recorded qualified/.test(rec.querySelector('summary').innerText);
-}, {}, empty.pos);
-ok('reload keeps the entered record', true);
+await page.waitForSelector('.home-row');
+const homeAfter = await page.evaluate(() => document.querySelector('#posgrid').innerText);
+ok('home still hides the saved record', !/POSITION RECORD/i.test(homeAfter) && !/No record/.test(homeAfter) && !/Add record/.test(homeAfter) && !/2020-11-01/.test(homeAfter), homeAfter.slice(0, 240));
+await page.click('[data-action="poslearn"][data-p="gnd"]');
+await page.waitForFunction(() => {
+  const rec = document.querySelector('.prec[data-pos="gnd"]');
+  return rec && /Days between entered dates: 27/.test(rec.textContent) && /Recorded qualified/.test(rec.innerText);
+});
+ok('reload keeps the entered record on the Ground study page', true);
 
 const backup = await page.evaluate(() => {
   const raw = {};
@@ -92,6 +131,8 @@ ok('backup JSON includes the record and restore is not partial', backup.ok && ba
 ok('record save and backup made no upload', posts.length === 0, posts.join(','));
 
 await page.reload({ waitUntil: 'domcontentloaded' });
+await page.click('[data-action="poslearn"][data-p="gnd"]');
+await page.waitForSelector('.prec[data-pos="gnd"]');
 const denied = await page.evaluate(async (pos) => {
   const orig = Storage.prototype.setItem;
   Storage.prototype.setItem = function (k, v) {
@@ -113,11 +154,12 @@ ok('denied storage keeps the form', /Could not save/.test(denied.err) && denied.
 
 await page.evaluate(() => localStorage.setItem('vatc.positionRecords.v1', '{'));
 await page.reload({ waitUntil: 'domcontentloaded' });
-const corrupt = await page.evaluate(() => ({
-  home: !!document.querySelector('.home-row'),
-  text: document.querySelector('.prec summary').innerText
-}));
-ok('corrupt storage still shows No record', corrupt.home && /No record/.test(corrupt.text), JSON.stringify(corrupt));
+await page.waitForSelector('#posgrid');
+const corruptHome = await page.evaluate(() => document.querySelector('#posgrid').innerText);
+await page.click('[data-action="poslearn"][data-p="gnd"]');
+await page.waitForSelector('[data-testid="training-record"]');
+const corruptText = await page.evaluate(() => document.querySelector('[data-testid="training-record"] summary').innerText);
+ok('corrupt storage still offers a training record on the study page only', /Not entered/.test(corruptText) && !/No record/.test(corruptHome) && !/Add record/.test(corruptHome), corruptText + ' | ' + corruptHome.slice(0, 180));
 
 await browser.close();
 server.close();

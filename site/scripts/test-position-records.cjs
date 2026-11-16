@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const assert = require('assert/strict');
+const { spawnSync } = require('child_process');
 
 const site = path.join(__dirname, '..');
 const recSrc = fs.readFileSync(path.join(site, 'offline', 'position-records.js'), 'utf8');
@@ -40,7 +41,8 @@ function ok(name, cond) {
   console.log('PASS ' + name);
 }
 
-ok('Nov 1 to Nov 28 is 27 days', R.daysBetween('2020-11-01', '2020-11-28') === 27);
+ok('Nov 1 to Nov 28 is 27 days', R.daysBetween('2026-11-01', '2026-11-28') === 27);
+ok('calendar span is 27 days across a DST change', R.daysBetween('2026-03-01', '2026-03-28') === 27);
 ok('same day is 0 days', R.daysBetween('2020-11-01', '2020-11-01') === 0);
 
 const qual = R.validate({ status: 'qualified', started: '2020-11-01', qualified: '2020-11-28' }, TODAY);
@@ -118,4 +120,32 @@ const rejected = B.parse(JSON.stringify(poisoned));
 ok('import rejects a qualified date before the start', !rejected.ok);
 
 assert(!/fetch\(|XMLHttpRequest|supabase/i.test(recSrc), 'no network in position records');
+assert(!/getUTCFullYear|getUTCMonth|getUTCDate/.test(recSrc.slice(recSrc.indexOf('function today'), recSrc.indexOf('function validDate'))), 'today uses the local calendar');
+
+function tzCase(tz, iso) {
+  const code = `
+    const vm = require('vm');
+    const sandbox = { globalThis: {}, module: { exports: {} }, console };
+    sandbox.globalThis = sandbox;
+    vm.createContext(sandbox);
+    vm.runInContext(${JSON.stringify(recSrc)}, sandbox);
+    const R = sandbox.VATC_POSREC;
+    const day = R.today(${JSON.stringify(iso)});
+    const nov5 = R.validate({ status: 'qualified', started: '2026-11-01', qualified: '2026-11-05' }, day);
+    const nov6 = R.validate({ status: 'qualified', started: '2026-11-01', qualified: '2026-11-06' }, day);
+    const nov7 = R.validate({ status: 'qualified', started: '2026-11-01', qualified: '2026-11-07' }, day);
+    process.stdout.write(JSON.stringify({ day, nov5: nov5.ok, days: nov5.days, nov6: nov6.ok, nov7: nov7.ok }));
+  `;
+  const res = spawnSync(process.execPath, ['-e', code], { env: Object.assign({}, process.env, { TZ: tz }), encoding: 'utf8' });
+  assert.equal(res.status, 0, tz + ' ' + (res.stderr || res.stdout));
+  return JSON.parse(res.stdout);
+}
+
+const pst = tzCase('America/Los_Angeles', '2026-11-06T00:30:00.000Z');
+ok('PST afternoon keeps local Nov 5 and rejects Nov 6', pst.day === '2026-11-05' && pst.nov5 === true && pst.days === 4 && pst.nov6 === false, JSON.stringify(pst));
+const hnl = tzCase('Pacific/Honolulu', '2026-11-06T04:00:00.000Z');
+ok('Honolulu afternoon keeps local Nov 5 and rejects Nov 6', hnl.day === '2026-11-05' && hnl.nov5 === true && hnl.days === 4 && hnl.nov6 === false, JSON.stringify(hnl));
+const tokyo = tzCase('Asia/Tokyo', '2026-11-05T16:00:00.000Z');
+ok('Tokyo after midnight accepts local Nov 6 while UTC is still Nov 5', tokyo.day === '2026-11-06' && tokyo.nov6 === true && tokyo.nov7 === false, JSON.stringify(tokyo));
+
 console.log(n + ' position-record checks passed');

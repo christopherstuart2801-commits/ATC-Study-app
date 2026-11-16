@@ -36,13 +36,13 @@
         id: 'backup',
         title: 'Device backup',
         badge: 'NOW',
-        html: '<p>Device → Export backup downloads one JSON file of this device\'s study profile: trainee name and initials, study marks, checks, lessons, flashcard progress, tests, custom sets, open pocket keys, position records, and any other vatc.* values stored here.</p><p>If this device has crew training notices, that file also carries their text and photos. A missing photo stops the export instead of leaving them out. Those notices are a training aid. They are not an official notice source.</p><p>Import reads a file only after you choose it, checks it, and asks you to confirm before it replaces progress on this device. If the file is not valid, or the write fails, current progress is left as it was.</p><p>This is a device backup you keep, not cloud sync. Nothing is uploaded.</p>'
+        html: '<p>Device → Export backup downloads one JSON file of this device\'s study profile: trainee name and initials, study marks, checks, lessons, flashcard progress, tests, custom sets, open pocket keys, position records, and any other vatc.* values stored here.</p><p>If this device has crew training notices, that file also carries their text and photos. A missing photo stops the export instead of leaving them out. Those notices are a training aid. They are not an official notice source.</p><p>Import reads a file only after you choose it, checks it, and asks you to confirm before it replaces progress on this device. If the file is not valid, or the write fails, current progress is left as it was.</p><p>A demo export is a separate file, marked as fictional demo data. It does not include the normal study profile, and a demo file is not imported into the normal profile.</p><p>This is a device backup you keep, not cloud sync. Nothing is uploaded.</p>'
       },
       {
         id: 'chief',
         title: 'Training chief',
         badge: 'LATER',
-        html: '<p>A later accounts phase is planned to activate a training-chief role with a one-time code issued outside this app, and to transfer that role to a successor later.</p><p>This version does not create accounts, does not accept a chief code, and does not change anyone\'s permissions. This guide cannot elevate access. No activation code is stored in the app.</p>'
+        html: '<p>A later accounts phase is planned to activate a training-chief role with a one-time code issued outside this app, and to transfer that role to a successor later.</p><p>This version does not create accounts, does not accept a chief code, and does not change anyone\'s permissions. This guide cannot elevate access. No activation code is stored in the app.</p><p>Home can open a fictional demo with the public code VECTOR-DEMO. That code is not a chief code and it does not grant a role. Demo notes are stored apart from normal study data. Exit demo returns the normal study data. Reset demo removes only the demo notes.</p>'
       },
       {
         id: 'feedback',

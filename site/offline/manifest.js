@@ -6,6 +6,7 @@ self.VATC_MANIFEST = {
     "manifest.webmanifest",
     "offline/core.js",
     "offline/position-records.js",
+    "offline/demo.js",
     "offline/backup.js",
     "offline/client.js",
     "offline/head-guide.js",

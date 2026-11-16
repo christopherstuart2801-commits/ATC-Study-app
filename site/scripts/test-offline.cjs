@@ -245,7 +245,8 @@ function envFor(fetchImpl, caches) {
     plates: [(html.match(/^  const PLATES=.*$/m) || [])[0], '585eaa4e62d521cac1f0d751b375193b818c604b80371b7a6f2926bc032cafdc'],
     pubs: [(html.match(/const PUBS=\[[\s\S]*?\];/) || [])[0], '4488619a19f3244f9ef281005ff03c8445f86b2712466b06c53d0ca4a2ec7ab5'],
     reset: [(html.match(/const PROGRESS_VER_KEY[\s\S]*?oneTimeProgressReset\(\)\{[\s\S]*?\}\)\(\);/) || [])[0], 'bfa97648d0d69ffa6b58454a43b93168c7202191b987a693cc196f6e7ee677bd'],
-    fcq: [(html.match(/\/\* FCQ:BEGIN[\s\S]*?\/\* FCQ:END \*\//) || [])[0], 'b2f47de2cbc25bc99325922d0886e6f8257512e651fb6b80d8aafe890c529112']
+    /* Recall queue (Again / Got it) was added inside the FCQ block. Sort and practice checks still cover the older queue. */
+    fcq: [(html.match(/\/\* FCQ:BEGIN[\s\S]*?\/\* FCQ:END \*\//) || [])[0], '73c45185ea2ce06ebe3409668b59f2957347a827010d4260e0f62dcd3fb5f593']
   };
   Object.keys(regions).forEach((name) => {
     ok('study region unchanged ' + name, sha(regions[name][0] || '') === regions[name][1], sha(regions[name][0] || ''));

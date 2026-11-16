@@ -7,9 +7,12 @@
 
   function pad(n) { return n < 10 ? '0' + n : String(n); }
 
+  /* Local calendar date. A PST afternoon is still that local day after UTC has rolled over.
+     daysBetween stays on UTC date parts so the span is calendar math and does not change across DST. */
   function today(now) {
     var d = now ? new Date(now) : new Date();
-    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate());
+    if (isNaN(d.getTime())) d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
   }
 
   function validDate(s) {
