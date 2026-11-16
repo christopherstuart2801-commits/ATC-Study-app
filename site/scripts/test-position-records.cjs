@@ -118,4 +118,34 @@ const rejected = B.parse(JSON.stringify(poisoned));
 ok('import rejects a qualified date before the start', !rejected.ok);
 
 assert(!/fetch\(|XMLHttpRequest|supabase/i.test(recSrc), 'no network in position records');
+
+function ymd(d, utc) {
+  const p = (x) => (x < 10 ? '0' + x : String(x));
+  if (utc) return d.getUTCFullYear() + '-' + p(d.getUTCMonth() + 1) + '-' + p(d.getUTCDate());
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+const pstEvening = new Date('2026-11-06T06:27:00.000Z');
+ok('today() follows the runtime local calendar', R.today() === ymd(new Date()) && R.today(pstEvening) === ymd(pstEvening));
+ok('PST evening is local Nov 5 while UTC is Nov 6', R.today(pstEvening, 'America/Los_Angeles') === '2026-11-05' && R.today(pstEvening, 'UTC') === '2026-11-06');
+ok('Honolulu stays on the previous local date', R.today(new Date('2026-11-06T08:00:00.000Z'), 'Pacific/Honolulu') === '2026-11-05');
+const tokyoMorning = new Date('2026-11-05T16:00:00.000Z');
+ok('Tokyo morning is the next local date', R.today(tokyoMorning, 'Asia/Tokyo') === '2026-11-06' && R.today(tokyoMorning, 'UTC') === '2026-11-05');
+ok('Kiritimati crosses ahead of UTC', R.today(new Date('2026-11-05T10:30:00.000Z'), 'Pacific/Kiritimati') === '2026-11-06');
+ok('Los Angeles keeps the local date across the fall-back hour',
+  R.today(new Date('2026-11-01T06:59:00.000Z'), 'America/Los_Angeles') === '2026-10-31' &&
+  R.today(new Date('2026-11-01T07:01:00.000Z'), 'America/Los_Angeles') === '2026-11-01' &&
+  R.today(new Date('2026-11-01T09:30:00.000Z'), 'America/Los_Angeles') === '2026-11-01');
+ok('calendar days stay exact across the March short day', R.daysBetween('2026-03-07', '2026-03-09') === 2);
+
+const nov5 = R.validate({ status: 'qualified', started: '2026-11-01', qualified: '2026-11-05' }, '2026-11-05');
+ok('Nov 1 to Nov 5 is 4 days when today is Nov 5', nov5.ok && nov5.days === 4);
+const nov6 = R.validate({ status: 'qualified', started: '2026-11-01', qualified: '2026-11-06' }, '2026-11-05');
+ok('Nov 6 is future when local today is Nov 5', !nov6.ok && /cannot be in the future/.test(nov6.errors.join(' ')));
+const nov28 = R.validate({ status: 'qualified', started: '2026-11-01', qualified: '2026-11-28' }, '2026-11-28');
+ok('Nov 1 to Nov 28 is 27 days with today 2026-11-28', nov28.ok && nov28.days === 27);
+const tokyoOk = R.validate({ status: 'qualified', started: '2026-11-01', qualified: '2026-11-06' }, R.today(tokyoMorning, 'Asia/Tokyo'));
+ok('Tokyo local today is accepted', tokyoOk.ok && tokyoOk.days === 5);
+const utcNo = R.validate({ status: 'qualified', started: '2026-11-01', qualified: '2026-11-06' }, R.today(tokyoMorning, 'UTC'));
+ok('the same Tokyo date is still future on the UTC calendar', !utcNo.ok);
+
 console.log(n + ' position-record checks passed');

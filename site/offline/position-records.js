@@ -7,9 +7,23 @@
 
   function pad(n) { return n < 10 ? '0' + n : String(n); }
 
-  function today(now) {
+  function today(now, timeZone) {
     var d = now ? new Date(now) : new Date();
-    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate());
+    if (isNaN(d.getTime())) return '';
+    if (timeZone) {
+      try {
+        var parts = new Intl.DateTimeFormat('en-US', {
+          timeZone: timeZone,
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }).formatToParts(d);
+        var bag = {};
+        for (var i = 0; i < parts.length; i++) bag[parts[i].type] = parts[i].value;
+        if (bag.year && bag.month && bag.day) return bag.year + '-' + bag.month + '-' + bag.day;
+      } catch (e) { /* use the runtime local calendar below */ }
+    }
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
   }
 
   function validDate(s) {

@@ -119,6 +119,95 @@ const corrupt = await page.evaluate(() => ({
 }));
 ok('corrupt storage still shows No record', corrupt.home && /No record/.test(corrupt.text), JSON.stringify(corrupt));
 
+function ymd(d, utc) {
+  const p = (n) => String(n).padStart(2, '0');
+  return utc
+    ? d.getUTCFullYear() + '-' + p(d.getUTCMonth() + 1) + '-' + p(d.getUTCDate())
+    : d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+async function clockOf(target) {
+  return target.evaluate(() => {
+    const d = new Date();
+    const p = (n) => String(n).padStart(2, '0');
+    const local = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+    const utc = d.getUTCFullYear() + '-' + p(d.getUTCMonth() + 1) + '-' + p(d.getUTCDate());
+    return { local, utc, today: globalThis.VATC_POSREC.today() };
+  });
+}
+
+const live = await browser.newPage();
+const livePosts = [];
+live.on('request', req => { if (req.method() !== 'GET' && req.method() !== 'HEAD') livePosts.push(req.method() + ' ' + req.url()); });
+await live.emulateTimezone('America/Los_Angeles');
+await live.goto('http://127.0.0.1:' + port + '/index.html', { waitUntil: 'domcontentloaded' });
+await live.waitForSelector('.home-row');
+const liveClock = await clockOf(live);
+ok('live Pacific today follows the local calendar, not UTC', liveClock.today === liveClock.local && liveClock.local !== liveClock.utc, JSON.stringify(liveClock));
+await live.close();
+
+const pinned = await browser.newPage();
+pinned.on('request', req => { if (req.method() !== 'GET' && req.method() !== 'HEAD') livePosts.push(req.method() + ' ' + req.url()); });
+await pinned.emulateTimezone('America/Los_Angeles');
+await pinned.evaluateOnNewDocument(() => {
+  const fixed = Date.parse('2026-11-06T06:27:00.000Z');
+  const Orig = Date;
+  function Clock(...args) {
+    if (args.length === 0) return new Orig(fixed);
+    return new Orig(...args);
+  }
+  Clock.prototype = Orig.prototype;
+  Clock.now = () => fixed;
+  Clock.parse = Orig.parse;
+  Clock.UTC = Orig.UTC;
+  window.Date = Clock;
+});
+await pinned.goto('http://127.0.0.1:' + port + '/index.html', { waitUntil: 'domcontentloaded', timeout: 20000 });
+await pinned.waitForSelector('.home-row');
+const pinnedClock = await clockOf(pinned);
+ok('pinned PST evening is local Nov 5 while UTC is Nov 6', pinnedClock.local === '2026-11-05' && pinnedClock.utc === '2026-11-06' && pinnedClock.today === '2026-11-05', JSON.stringify(pinnedClock));
+const ground = await pinned.evaluate(() => {
+  const row = [...document.querySelectorAll('.home-row')].find(el => /Ground/.test(el.innerText));
+  const pos = row.getAttribute('data-pos');
+  row.querySelector('summary').click();
+  return pos;
+});
+const limits = await pinned.evaluate((pos) => ({
+  start: document.getElementById('prec-sd-' + pos).max,
+  qual: document.getElementById('prec-qd-' + pos).max
+}), ground);
+ok('date inputs stop at the local today', limits.start === '2026-11-05' && limits.qual === '2026-11-05', JSON.stringify(limits));
+await pinned.select('#prec-st-' + ground, 'qualified');
+await pinned.$eval('#prec-sd-' + ground, el => { el.value = '2026-11-01'; });
+await pinned.$eval('#prec-qd-' + ground, el => { el.value = '2026-11-05'; });
+await pinned.click('.prec[data-pos="' + ground + '"] [data-action="precsave"]');
+await pinned.waitForFunction((pos) => /Days between entered dates: 4/.test(document.querySelector('.prec[data-pos="' + pos + '"]').textContent), {}, ground);
+await pinned.reload({ waitUntil: 'domcontentloaded' });
+await pinned.waitForFunction((pos) => /Days between entered dates: 4/.test(document.querySelector('.prec[data-pos="' + pos + '"]').textContent), {}, ground);
+await pinned.evaluate((pos) => { document.querySelector('.prec[data-pos="' + pos + '"]').open = true; }, ground);
+fs.mkdirSync('/opt/cursor/artifacts', { recursive: true });
+await pinned.screenshot({ path: '/opt/cursor/artifacts/study-record-local-nov5.png' });
+ok('browser saved Nov 1 to Nov 5 as 4 days and reloaded it', true);
+const rejected = await pinned.evaluate((pos) => {
+  const rec = document.querySelector('.prec[data-pos="' + pos + '"]');
+  rec.open = true;
+  document.getElementById('prec-st-' + pos).value = 'qualified';
+  document.getElementById('prec-sd-' + pos).value = '2026-11-01';
+  document.getElementById('prec-qd-' + pos).value = '2026-11-06';
+  document.querySelector('[data-action="precsave"][data-pos="' + pos + '"]').click();
+  return {
+    err: document.getElementById('prec-err-' + pos).textContent,
+    kept: document.getElementById('prec-qd-' + pos).value,
+    stored: localStorage.getItem('vatc.positionRecords.v1')
+  };
+}, ground);
+ok('local Nov 6 is rejected and the saved Nov 5 record stays', /cannot be in the future/.test(rejected.err) && rejected.kept === '2026-11-06' && /2026-11-05/.test(rejected.stored) && !/"qualified":"2026-11-06"/.test(rejected.stored), JSON.stringify(rejected));
+await pinned.evaluate(() => localStorage.removeItem('vatc.positionRecords.v1'));
+await pinned.reload({ waitUntil: 'domcontentloaded' });
+const cleared = await pinned.evaluate((pos) => document.querySelector('.prec[data-pos="' + pos + '"] summary').innerText, ground);
+ok('ephemeral Nov 5 record is cleared', /No record/.test(cleared) && /Add record/.test(cleared), cleared);
+ok('local-date browser checks made no upload', livePosts.length === 0, livePosts.join(','));
+await pinned.close();
+
 await browser.close();
 server.close();
 if (fails.length) {
