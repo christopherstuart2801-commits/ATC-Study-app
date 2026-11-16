@@ -111,7 +111,6 @@
 @media(max-width:640px){ #vatc .pos6{ grid-template-columns:1fr 1fr; } }
 #vatc .pcard.ptile{ cursor:pointer; min-height:92px; padding:12px; display:flex; flex-direction:column; justify-content:flex-end; }
 #vatc .pcard.ptile .pn{ font-size:16px; line-height:1.2; padding-right:0; }
-#vatc .pcard.ptile .ptg{ position:absolute; top:10px; left:12px; font-family:var(--fm); font-size:9px; letter-spacing:.16em; color:var(--amber); }
 #vatc .pcard.ptile .pcpct{ font-size:12px; }
 #vatc .pcard.ptile .psub{ font-family:var(--fm); font-size:9.5px; letter-spacing:.06em; color:var(--muted); margin-top:4px; }
 #vatc .pgrid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px;} @media(max-width:640px){#vatc .pgrid{grid-template-columns:1fr;}}
@@ -868,9 +867,9 @@
 #vatc .skip:focus{ transform:none; }
 #vatc .home-row{ display:flex; flex-direction:column; min-width:0; }
 #vatc .prec{ margin:6px 0 0; }
-#vatc .prec > summary{ display:flex; flex-wrap:wrap; gap:6px 10px; align-items:baseline; cursor:pointer; min-height:40px; padding:4px 0 8px; color:#c5d9cf; font-size:13px; list-style:none; }
+#vatc .prec > summary{ display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; min-height:32px; padding:0; border:1px solid var(--line); border-radius:8px; background:transparent; color:var(--green); font-family:var(--fd); font-size:20px; line-height:1; cursor:pointer; list-style:none; }
 #vatc .prec > summary::-webkit-details-marker{ display:none; }
-#vatc .prec-lab{ color:var(--green); font-weight:700; letter-spacing:.06em; text-transform:uppercase; font-size:11px; }
+#vatc .prec[open] > summary{ border-color:var(--green); }
 #vatc .prec-body{ padding:0 0 12px; display:grid; gap:8px; max-width:420px; }
 #vatc .prec-body label{ display:block; font-size:12px; color:#c5d9cf; }
 #vatc .prec-body select,
@@ -901,9 +900,8 @@
   #vatc .reveal, #vatc .dot{ animation:none; }
   #vatc .pcard{ transition:none; }
 }
-#vatc .log-open{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 10px; }
+#vatc .log-open{ display:flex; align-items:center; gap:8px; margin:0 0 10px; }
 #vatc .log-open .btn{ min-height:40px; }
-#vatc .log-open .muted{ font-size:11px; }
 #vatc .log-lead{ font-size:13px; line-height:1.4; margin:0 0 10px; }
 #vatc .log-chips{ display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px; }
 #vatc .log-chips button{ font-family:var(--fd); font-size:11px; letter-spacing:.06em; text-transform:uppercase; min-height:36px; padding:6px 10px; border-radius:20px; border:1px solid var(--line); background:transparent; color:var(--muted); cursor:pointer; }
@@ -946,7 +944,7 @@
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.39'; /* student-log */
+  const APP_VER='0.8.40'; /* home-quiet */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -6501,7 +6499,7 @@ function vectorAnswerHTML(query, hits){
     const dayMax=api?api.today():'';
     const lines=sum.lines.map(l=>`<p class="prec-note">${escTxt(l)}</p>`).join('');
     const note=sum.note?`<p class="prec-note"><b>${escTxt(sum.note)}</b></p>`:'';
-    return `<details class="prec" data-station="${escTxt(S.station)}" data-pos="${id}"${open}><summary><span class="prec-lab">Position record</span><span>${escTxt(sum.headline)}</span>${sum.add?'<span>Add record</span>':''}</summary><div class="prec-body"><p class="prec-note">Official signoffs stay in the training process. This note does not grant a qualification. Study percent is separate and does not set this status.</p><p class="prec-note">Dates cannot be in the future. A qualified date must be on or after the started date.</p>${lines}${note}<p id="prec-err-${id}" class="prec-err" role="alert"></p><label for="prec-st-${id}">Status<select id="prec-st-${id}">${[['none','No record'],['training','In training'],['qualified','Recorded qualified']].map(([v,l])=>`<option value="${v}"${st===v?' selected':''}>${l}</option>`).join('')}</select></label><label for="prec-sd-${id}">Started date<input id="prec-sd-${id}" type="date" max="${escTxt(dayMax)}" value="${escTxt(started)}"></label><label for="prec-qd-${id}">Qualified date<input id="prec-qd-${id}" type="date" max="${escTxt(dayMax)}" value="${escTxt(qualified)}"></label><button type="button" class="btn" data-action="precsave" data-pos="${id}">Save record</button></div></details>`;
+    return `<details class="prec" data-station="${escTxt(S.station)}" data-pos="${id}"${open}><summary aria-label="Add record for ${escTxt(p.n)}"><span aria-hidden="true">+</span></summary><div class="prec-body"><p class="prec-note">Official signoffs stay in the training process. This note does not grant a qualification. Study percent is separate and does not set this status.</p><p class="prec-note">Dates cannot be in the future. A qualified date must be on or after the started date.</p>${lines}${note}<p id="prec-err-${id}" class="prec-err" role="alert"></p><label for="prec-st-${id}">Status<select id="prec-st-${id}">${[['none','No record'],['training','In training'],['qualified','Recorded qualified']].map(([v,l])=>`<option value="${v}"${st===v?' selected':''}>${l}</option>`).join('')}</select></label><label for="prec-sd-${id}">Started date<input id="prec-sd-${id}" type="date" max="${escTxt(dayMax)}" value="${escTxt(started)}"></label><label for="prec-qd-${id}">Qualified date<input id="prec-qd-${id}" type="date" max="${escTxt(dayMax)}" value="${escTxt(qualified)}"></label><button type="button" class="btn" data-action="precsave" data-pos="${id}">Save record</button></div></details>`;
   }
   function logApproachFields(){
     const types=['','Precision','Nonprecision','Visual','Other'];
@@ -6538,7 +6536,7 @@ function vectorAnswerHTML(query, hits){
     const study=pos?(()=>{ const P=posProgress(pos); return `<p class="log-lead">Study progress on ${escTxt(PN[pos]||pos)}: ${P.pct}%. ${escTxt(P.learnLabel)} ${P.learnDone}/${P.learnTot}. Cards ${P.fcDone}/${P.fcTot}. That percent is separate from hours.</p>`; })():'';
     const list=rows.length?rows.map(r=>`<div class="log-row"><div class="log-meta">${escTxt(r.date)} · ${escTxt(PN[r.position]||r.position)} · ${escTxt(String(r.hours))} h${r.fromPaper?' · from paper':''}</div><div>${escTxt(r.activity||'No activity noted')}</div><div class="muted">${escTxt(api.approachText(r)||'No approaches')}</div>${r.paperRef?`<div class="muted">Paper ${escTxt(r.paperRef)}${r.paperDate?' · '+escTxt(r.paperDate):''}</div>`:''}<button type="button" class="btn sec" data-action="logdel" data-id="${escTxt(r.id)}">Remove</button></div>`).join(''):'<div class="log-empty">No entries yet. Add hours from a session, or copy a line from a paper sheet.</div>';
     return `<h2 class="sec">Position log</h2>
-      <p class="log-lead">On this device for the person using it. Not an official form and not sent anywhere. A paper sheet can still be the record.</p>
+      <p class="log-lead">On this device. Not an official form.</p>
       ${S.logMsg?`<p class="log-lead">${escTxt(S.logMsg)}</p>`:''}
       <div class="log-chips" role="group" aria-label="Position">${chips}</div>
       <div class="log-tot"><b>${escTxt(String(tot.all.hours))} h</b> · ${tot.all.entries} ${tot.all.entries===1?'entry':'entries'} · ${escTxt(logApproachSummary(tot.all.approaches))}${by}</div>
@@ -6589,18 +6587,18 @@ function vectorAnswerHTML(query, hits){
     };
   }
   function homeView(){
-    /* v0.8.38 home-terminal: tile grid from 5106a90 / 01a98f4. Position records stay under each tile. */
+    /* v0.8.40 home-quiet: tiles keep the percent and ACAD pending. A plus opens the record form. */
     const tile=p=>{
       const P=posProgress(p.k);
       const pending=!syllabusFor(p.k).list.length;
       return `<div class="home-row" data-station="${escTxt(S.station)}" data-pos="${escTxt(p.k)}"><div class="pcard ptile ${S.pos===p.k?'on':''}" data-action="poslearn" data-p="${p.k}" tabindex="0" role="button">
-        <span class="ptg">${p.g==='TOWER'?'TWR':'RDR'}</span><span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div>${pending?'<div class="psub">ACAD pending</div>':''}</div>${posRecHTML(p)}</div>`;
+        <span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div>${pending?'<div class="psub">ACAD pending</div>':''}</div>${posRecHTML(p)}</div>`;
     };
     const first6=POS.slice(0,6), rest=POS.slice(6);
     const quiz=`<div class="grp">KNFG Quizlets</div>
       ${homeQuizHTML()}`;
     return `<div class="stnbar">MCAS Camp Pendleton (KNFG)</div>
-      <div class="log-open"><button type="button" class="btn sec" data-action="openlog">Position log</button><span class="muted">Hours, approaches, paper note</span></div>
+      <div class="log-open"><button type="button" class="btn sec" data-action="openlog">Position log</button></div>
       <div class="pos6" id="posgrid">${first6.map(tile).join('')}</div>
       ${rest.length?`<div class="pos6">${rest.map(tile).join('')}</div>`:''}
       ${quiz}`; }
