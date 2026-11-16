@@ -22,7 +22,8 @@
     'vatc.tests.v1': 'tests',
     'vatc.mySets.v1': 'sets',
     'vatc.pkOpen.v1': 'boolmap',
-    'vatc.positionRecords.v1': 'posrecs'
+    'vatc.positionRecords.v1': 'posrecs',
+    'vatc.studentLog.v1': 'stulog'
   };
 
   function isPlain(v) {
@@ -104,6 +105,11 @@
       var pos = root.VATC_POSREC;
       if (!pos || !pos.validateStore) return walk(v, 0);
       return pos.validateStore(v);
+    }
+    if (kind === 'stulog') {
+      var slog = root.VATC_LOG;
+      if (!slog || !slog.validateStore) return walk(v, 0);
+      return slog.validateStore(v);
     }
     if (kind === 'sets') {
       if (!Array.isArray(v)) return 'custom sets must be a list';
