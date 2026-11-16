@@ -199,6 +199,7 @@ try {
 
   const phone = await session(390, 844, true);
   const phoneHome = await phone.page.evaluate(() => document.body.innerText);
+  const phoneTiles = await phone.page.evaluate(() => [...document.querySelectorAll('.pcard.ptile')].map(el => el.innerText).join('\n'));
   const phoneGo = await phone.page.evaluate(() => {
     const view = { w: window.innerWidth, h: window.innerHeight };
     const tiles = [...document.querySelectorAll('#posgrid .pcard.ptile')].map(el => {
@@ -209,7 +210,7 @@ try {
     const tabs = document.querySelector('.tabs').getBoundingClientRect();
     return { view, tiles, sub: sub && getComputedStyle(sub).display !== 'none', tabsTop: tabs.top };
   });
-  ok('mobile home is the terminal grid', /MARINE AIR TRAFFIC CONTROL/.test(phoneHome) && /MCAS CAMP PENDLETON \(KNFG\)/.test(phoneHome) && /KNFG QUIZLETS/.test(phoneHome) && /TWR/.test(phoneHome) && /ACAD pending/i.test(phoneHome) && /NO CONTROLLED DATA LOADED/.test(phoneHome) && phoneGo.sub && phoneGo.tabsTop < 180);
+  ok('mobile home is the terminal grid', /MARINE AIR TRAFFIC CONTROL/.test(phoneHome) && /MCAS CAMP PENDLETON \(KNFG\)/.test(phoneHome) && /KNFG QUIZLETS/.test(phoneHome) && /POSITION LOG/.test(phoneHome) && /ACAD pending/i.test(phoneHome) && !/\bTWR\b|\bRDR\b/.test(phoneTiles) && !/Hours, approaches/.test(phoneHome) && !/POSITION RECORD/.test(phoneHome) && /NO CONTROLLED DATA LOADED/.test(phoneHome) && phoneGo.sub && phoneGo.tabsTop < 180);
   ok('mobile shows the position tiles in two columns', phoneGo.tiles.length === 6 && phoneGo.tiles.every(t => t.left >= -1 && t.right <= phoneGo.view.w + 1) && phoneGo.tiles[0].top < phoneGo.view.h && Math.abs(phoneGo.tiles[1].top - phoneGo.tiles[0].top) < 8);
   const phoneFit = await phone.page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1);
   ok('mobile home does not widen the page', phoneFit, await phone.page.evaluate(() => document.documentElement.scrollWidth + '/' + document.documentElement.clientWidth));

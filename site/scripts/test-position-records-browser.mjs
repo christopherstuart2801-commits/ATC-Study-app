@@ -45,14 +45,16 @@ await page.waitForSelector('.home-row');
 
 const empty = await page.evaluate(() => {
   const row = document.querySelector('.home-row');
+  const sum = row.querySelector('.prec summary');
   return {
     pos: row.getAttribute('data-pos'),
     station: row.getAttribute('data-station'),
-    text: row.querySelector('.prec summary').innerText,
+    text: sum.innerText.trim(),
+    label: sum.getAttribute('aria-label'),
     pctText: row.querySelector('.pcpct').textContent.trim()
   };
 });
-ok('empty record offers Add record and shows the study percent', /No record/.test(empty.text) && /Add record/.test(empty.text) && /%$/.test(empty.pctText), JSON.stringify(empty));
+ok('empty record offers Add record and shows the study percent', empty.text === '+' && /^Add record for /.test(empty.label) && /%$/.test(empty.pctText), JSON.stringify(empty));
 
 await page.evaluate((pos) => {
   document.querySelector('.prec[data-pos="' + pos + '"]').open = true;
@@ -71,7 +73,8 @@ ok('save shows 27 days and persists the versioned key', /Recorded qualified/.tes
 await page.reload({ waitUntil: 'domcontentloaded' });
 await page.waitForFunction((pos) => {
   const rec = document.querySelector('.prec[data-pos="' + pos + '"]');
-  return rec && /Days between entered dates: 27/.test(rec.textContent) && /Recorded qualified/.test(rec.querySelector('summary').innerText);
+  const status = document.getElementById('prec-st-' + pos);
+  return rec && status && status.value === 'qualified' && /Days between entered dates: 27/.test(rec.textContent);
 }, {}, empty.pos);
 ok('reload keeps the entered record', true);
 
@@ -114,9 +117,10 @@ await page.evaluate(() => localStorage.setItem('vatc.positionRecords.v1', '{'));
 await page.reload({ waitUntil: 'domcontentloaded' });
 const corrupt = await page.evaluate(() => ({
   home: !!document.querySelector('.home-row'),
-  text: document.querySelector('.prec summary').innerText
+  label: document.querySelector('.prec summary').getAttribute('aria-label'),
+  status: document.querySelector('.prec select').value
 }));
-ok('corrupt storage still shows No record', corrupt.home && /No record/.test(corrupt.text), JSON.stringify(corrupt));
+ok('corrupt storage still shows No record', corrupt.home && /^Add record for /.test(corrupt.label) && corrupt.status === 'none', JSON.stringify(corrupt));
 
 function ymd(d, utc) {
   const p = (n) => String(n).padStart(2, '0');
@@ -202,8 +206,11 @@ const rejected = await pinned.evaluate((pos) => {
 ok('local Nov 6 is rejected and the saved Nov 5 record stays', /cannot be in the future/.test(rejected.err) && rejected.kept === '2026-11-06' && /2026-11-05/.test(rejected.stored) && !/"qualified":"2026-11-06"/.test(rejected.stored), JSON.stringify(rejected));
 await pinned.evaluate(() => localStorage.removeItem('vatc.positionRecords.v1'));
 await pinned.reload({ waitUntil: 'domcontentloaded' });
-const cleared = await pinned.evaluate((pos) => document.querySelector('.prec[data-pos="' + pos + '"] summary').innerText, ground);
-ok('ephemeral Nov 5 record is cleared', /No record/.test(cleared) && /Add record/.test(cleared), cleared);
+const cleared = await pinned.evaluate((pos) => {
+  const sum = document.querySelector('.prec[data-pos="' + pos + '"] summary');
+  return { label: sum.getAttribute('aria-label'), status: document.getElementById('prec-st-' + pos).value };
+}, ground);
+ok('ephemeral Nov 5 record is cleared', /^Add record for /.test(cleared.label) && cleared.status === 'none', JSON.stringify(cleared));
 ok('local-date browser checks made no upload', livePosts.length === 0, livePosts.join(','));
 await pinned.close();
 
