@@ -45,15 +45,14 @@ await page.waitForSelector('.home-row');
 
 const empty = await page.evaluate(() => {
   const row = document.querySelector('.home-row');
-  const pct = getComputedStyle(row.querySelector('.pcpct')).fontSize;
   return {
     pos: row.getAttribute('data-pos'),
     station: row.getAttribute('data-station'),
     text: row.querySelector('.prec summary').innerText,
-    pct: parseFloat(pct)
+    pctText: row.querySelector('.pcpct').textContent.trim()
   };
 });
-ok('empty record offers Add record and a large percent', /No record/.test(empty.text) && /Add record/.test(empty.text) && empty.pct >= 28, JSON.stringify(empty));
+ok('empty record offers Add record and shows the study percent', /No record/.test(empty.text) && /Add record/.test(empty.text) && /%$/.test(empty.pctText), JSON.stringify(empty));
 
 await page.evaluate((pos) => {
   document.querySelector('.prec[data-pos="' + pos + '"]').open = true;

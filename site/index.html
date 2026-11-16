@@ -20,60 +20,75 @@
 <style>
 #vatc, #vatc *{ box-sizing:border-box; margin:0; padding:0; }
 #vatc{
-  --bg:#0e1a16; --panel:#13241e; --panel2:#173028; --line:#246048;
-  --green:#3dbe86; --green2:#1f8a5b; --green-dim:#143828;
-  --amber:#e2a84b; --red:#e15d5d; --sky:#67c7ef; --text:#f4fbf7; --muted:#b7cdc4;
-  --sans:"Liberation Sans",Arimo,Arial,sans-serif;
-  --fd:var(--sans); --fm:ui-monospace,"Cascadia Mono","Segoe UI Mono",Menlo,monospace;
-  /* UI is a system sans. Mono stays on cites, frequencies, and publication text. */
-  --font-head:var(--sans); --font-body:var(--sans); --font-mono:var(--fm);
+  --bg:#070d0c; --panel:#0c1614; --panel2:#102019; --line:#1b2f29;
+  --green:#39f0a0; --green2:#1f9c66; --green-dim:#0f3c2a;
+  --amber:#ffb24d; --red:#ff6363; --sky:#5fd0ff; --text:#d6e7df; --muted:#7d9489;
+  /* v0.8.38 home-terminal. Local faces only — no network font. */
+  --fd:'Noto Sans Display','Arial Narrow','Liberation Sans',sans-serif;
+  --fm:'JetBrains Mono',ui-monospace,'Cascadia Mono',Menlo,monospace;
+  --sans:var(--fd);
+  --font-head:var(--fd); --font-body:var(--fm); --font-mono:var(--fm);
   --fs-xs:10px; --fs-sm:11px; --fs-base:13px; --fs-md:14px; --fs-lg:16px; --fs-xl:20px; --fs-score:44px;
   --fw-reg:400; --fw-med:500; --fw-bold:700; --ls-caps:.12em; --ls-tight:.02em; --lh-body:1.45;
   font-family:var(--font-body); color:var(--text); max-width:980px; margin:0 auto; background:var(--bg);
-  border:1px solid var(--line); border-radius:4px; overflow:hidden; position:relative; min-height:700px; box-shadow:none;
+  border:1px solid var(--line); border-radius:16px; overflow:hidden; position:relative; min-height:700px; box-shadow:0 30px 80px rgba(0,0,0,.55);
   max-height:100vh; max-height:100dvh; display:flex; flex-direction:column;
 }
-#vatc::after{ content:none; }
-#vatc .grid-bg{ display:none; }
+#vatc::after{ content:''; position:absolute; inset:0; pointer-events:none; z-index:55; opacity:.45; background:repeating-linear-gradient(0deg, rgba(57,240,160,.03) 0 1px, transparent 1px 3px); mix-blend-mode:screen; }
+#vatc .grid-bg{ position:absolute; inset:0; pointer-events:none; opacity:.45; background-image:linear-gradient(rgba(31,156,102,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(31,156,102,.06) 1px,transparent 1px); background-size:34px 34px; }
 #vatc .wrap{ position:relative; z-index:2; display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden; }
 #vatc #app{ display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden; }
-#vatc .stickhead{ flex:none; z-index:40; background:var(--bg); border-bottom:1px solid var(--line); }
+#vatc .stickhead{ flex:none; z-index:40; background:linear-gradient(180deg,#0c1614,#0a1211); box-shadow:0 10px 24px rgba(0,0,0,.45); border-bottom:1px solid var(--line); }
 #vatc .scrollmain{ flex:1; min-height:0; overflow:auto; -webkit-overflow-scrolling:touch; }
 #vatc .dsp{ font-family:var(--fd); letter-spacing:.06em; text-transform:uppercase; }
 #vatc .muted{color:var(--muted);}#vatc .grn{color:var(--green);}#vatc .amb{color:var(--amber);}#vatc .red{color:var(--red);}#vatc .sky{color:var(--sky);}
-#vatc .top{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border-bottom:1px solid var(--line); background:var(--bg); }
-#vatc .brand{ display:flex; align-items:center; gap:11px; }
-#vatc .logo{ width:34px; height:34px; border:1.5px solid var(--green); border-radius:4px; display:grid; place-items:center; background:transparent; }
+#vatc .top{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 14px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,#0c1614,#0a1211); }
+#vatc .brand{ display:flex; align-items:center; gap:11px; min-width:0; }
+#vatc .logo{ width:34px; height:34px; border:1.5px solid var(--green2); border-radius:8px; display:grid; place-items:center; background:radial-gradient(circle at 50% 120%, rgba(57,240,160,.25), transparent 60%); flex:none; }
 #vatc .logo svg{ width:20px; height:20px; }
-#vatc .brand h1{ font-family:var(--sans); font-size:18px; letter-spacing:-.03em; font-weight:700; }
-#vatc .brand .sub{ font-size:12px; letter-spacing:.01em; color:var(--muted); text-transform:none; }
+#vatc .brand h1{ font-family:var(--fd); font-size:18px; letter-spacing:.16em; font-weight:700; }
+#vatc .brand .sub{ font-size:9px; letter-spacing:.22em; color:var(--green2); text-transform:uppercase; }
 #vatc .stnchip{ display:flex; align-items:center; gap:8px; font-size:12px; min-width:0; margin-left:auto; }
 #vatc .stnchip > div{ max-width:min(280px, 34vw); min-width:0; }
 #vatc .stnchip > div > div{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-#vatc .btn-ghost{ font-family:var(--sans); background:transparent; border:1px solid var(--line); color:var(--text); padding:8px 10px; border-radius:4px; cursor:pointer; font-size:12px; letter-spacing:.02em; min-height:40px; }
+#vatc .btn-ghost{ font-family:var(--fm); background:transparent; border:1px solid var(--line); color:var(--muted); padding:6px 10px; border-radius:7px; cursor:pointer; font-size:10px; letter-spacing:.1em; white-space:nowrap; }
 #vatc .btn-ghost:hover{ color:var(--green); border-color:var(--green2); }
 #vatc .status{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; padding:8px 16px; border-top:1px solid var(--line); background:var(--bg); font-size:12px; letter-spacing:.02em; line-height:1.4; color:var(--muted); }
-#vatc .dot{ width:7px; height:7px; border-radius:50%; background:var(--green); display:inline-block; box-shadow:none; animation:none; }
+#vatc .dot{ width:7px; height:7px; border-radius:50%; background:var(--green); display:inline-block; box-shadow:0 0 8px var(--green); animation:pulse 2.4s infinite; }
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 #vatc .body{ padding:18px 18px 20px; }
 #vatc .card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; }
 #vatc .reveal{ animation:rise .45s both; } @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-#vatc h2.sec{ font-family:var(--sans); font-size:15px; letter-spacing:-.02em; color:var(--text); text-transform:none; margin-bottom:12px; display:flex; align-items:center; gap:8px; font-weight:700; }
+#vatc h2.sec{ font-family:var(--fd); font-size:12px; letter-spacing:.22em; color:var(--green); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px; font-weight:600; }
 #vatc h2.sec svg{ width:15px; height:15px; flex:none; }
 #vatc .pill{ font-size:9px; letter-spacing:.14em; padding:3px 8px; border-radius:20px; border:1px solid var(--line); color:var(--muted); text-transform:uppercase; }
 #vatc .pill.warn{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.06);} #vatc .pill.ok{ color:var(--green); border-color:var(--green-dim);}
 #vatc .pill.sample{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.08); }
 
-/* tabs — one row for Home, Ask, Learn, Flashcards, Reference, and Crew */
-#vatc .tabs{ display:flex; gap:4px; align-items:stretch; border-bottom:1px solid var(--line); padding:8px 10px; background:var(--bg); overflow-x:auto; -webkit-overflow-scrolling:touch; position:sticky; top:0; z-index:41; }
-#vatc .tab{ font-family:var(--sans); letter-spacing:0; text-transform:none; font-size:14px; font-weight:650; color:#c9d7d2; background:transparent; border:1px solid transparent; border-radius:999px; padding:8px 12px; min-height:40px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:6px; flex:0 0 auto; }
-#vatc .tab:hover{ color:var(--text); background:#1a2824; }
-#vatc .tab.on{ color:#07140f; background:var(--green); border-color:var(--green); }
-#vatc .tab svg{ width:16px; height:16px; flex:none; }
+/* tabs — mint blocks. Home matches v0.8.36 (5106a90): active tab filled mint. */
+#vatc .tabs{ display:flex; gap:4px; align-items:stretch; border-bottom:1px solid var(--line); padding:6px 8px 0; background:#0a1211; overflow-x:auto; -webkit-overflow-scrolling:touch; position:sticky; top:0; z-index:41; }
+#vatc .tab{ font-family:var(--fd); letter-spacing:.12em; text-transform:uppercase; font-size:12px; font-weight:600; color:#9aafa4; background:transparent; border:1px solid transparent; border-bottom:2px solid transparent; border-radius:8px 8px 0 0; padding:12px 10px; min-height:44px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:6px; flex:0 0 auto; }
+#vatc .tab:hover{ color:var(--text); border-color:var(--green-dim); background:transparent; }
+#vatc .tab.on{ color:var(--green); border-color:rgba(57,240,160,.45); border-bottom-color:var(--green); background:rgba(57,240,160,.10); }
+#vatc .tab svg{ width:15px; height:15px; flex:none; }
+#vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
+#vatc .tab[data-t="cards"], #vatc .tab[data-t="reference"], #vatc .tab[data-t="crew"]{
+  font-size:12px; font-weight:600; letter-spacing:.1em; color:#c5ddd3;
+  border:1px solid rgba(57,240,160,.42); border-bottom:2px solid transparent;
+  padding:12px 10px; min-height:44px; background:rgba(57,240,160,.06);
+}
+#vatc .tab[data-t="home"]:hover, #vatc .tab[data-t="ask"]:hover, #vatc .tab[data-t="learn"]:hover,
+#vatc .tab[data-t="cards"]:hover, #vatc .tab[data-t="reference"]:hover, #vatc .tab[data-t="crew"]:hover{
+  color:var(--green); border-color:var(--green); background:rgba(57,240,160,.12);
+}
+#vatc .tab[data-t="home"].on, #vatc .tab[data-t="ask"].on, #vatc .tab[data-t="learn"].on,
+#vatc .tab[data-t="cards"].on, #vatc .tab[data-t="reference"].on, #vatc .tab[data-t="crew"].on{
+  color:#04150d; background:var(--green); border-color:var(--green); border-bottom-color:var(--green);
+}
 /* trackbar */
 #vatc .trackbar{ display:flex; align-items:center; gap:6px; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--bg); flex-wrap:wrap; }
-#vatc .grplbl{ font-family:var(--sans); font-size:11px; letter-spacing:.04em; color:var(--muted); text-transform:none; margin:0 2px 0 6px;}
-#vatc .tk{ font-family:var(--sans); font-size:13px; letter-spacing:0; text-transform:none; padding:6px 10px; border-radius:999px; border:1px solid var(--line); color:var(--text); cursor:pointer; min-height:36px; }
+#vatc .grplbl{ font-family:var(--fd); font-size:8px; letter-spacing:.18em; color:var(--amber); text-transform:uppercase; margin:0 2px 0 8px;}
+#vatc .tk{ font-family:var(--fd); font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:5px 10px; border-radius:20px; border:1px solid var(--line); color:var(--muted); cursor:pointer; min-height:36px; }
 #vatc .tk:hover{border-color:var(--green2); color:var(--text);} #vatc .tk.on{color:#04150d; background:var(--green); border-color:var(--green); font-weight:600;}
 /* vids */
 #vatc .vids{ display:flex; align-items:stretch; overflow-x:auto; border-bottom:1px solid var(--line); background:linear-gradient(180deg,#0c1614,#0a1211);}
@@ -785,21 +800,24 @@
 #vatc .fc-shuf{ position:absolute; right:0; top:50%; transform:translateY(-50%); width:28px; height:28px; display:flex; align-items:center; justify-content:center; padding:0; border-radius:8px; border:1px solid var(--line); background:transparent; color:var(--muted); font-size:15px; line-height:1; cursor:pointer; }
 #vatc .fc-shuf:hover, #vatc .fc-shuf:focus-visible{ color:var(--green); border-color:var(--green2); }
 #vatc .fc-note{ display:block; text-transform:none; letter-spacing:.02em; font-size:11px; line-height:1.4; padding:7px 10px; border-radius:8px; margin:0 0 8px; }
-/* mobile: full-bleed. Tabs scroll instead of squeezing Crew off the row. */
+/* mobile: full-bleed. Five study tabs fill the row, the same way as v0.8.36. Crew stays on the row and scrolls into view. */
 @media(max-width:640px){
-  #vatc{ border:none; border-radius:0; box-shadow:none; min-height:100vh; min-height:100dvh; }
-  #vatc .top{ padding:10px 12px; gap:8px; min-width:0; }
+  #vatc{ border:none; border-radius:0; box-shadow:none; min-height:100vh; min-height:100dvh; max-width:none; }
+  #vatc .top{ padding:10px 10px; gap:8px; min-width:0; }
   #vatc .brand{ min-width:0; flex:1 1 auto; }
-  #vatc .stickhead{ display:contents; }
-  #vatc .top{ order:0; }
-  #vatc .tabhint{ order:1; }
-  #vatc .scrollmain{ order:2; }
-  #vatc .tabs{ order:3; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:2px; padding:4px 4px 6px; overflow:visible; background:#0e1a16; border-top:1px solid var(--line); border-bottom:0; position:sticky; bottom:0; }
-  #vatc .tab{ flex-direction:column; justify-content:center; gap:2px; min-width:0; min-height:54px; padding:6px 1px; border-radius:12px; font-size:10px; letter-spacing:0; }
-  #vatc .tab svg{ display:block; width:18px; height:18px; }
-  #vatc .brand h1{ font-size:17px; letter-spacing:-.03em; }
-  #vatc .brand .sub{ display:none; }
+  #vatc .brand h1{ font-size:15px; letter-spacing:.12em; }
+  #vatc .brand .sub{ display:block; font-size:7px; letter-spacing:.06em; white-space:nowrap; }
   #vatc .stnchip > div{ display:none; }
+  #vatc .btn-ghost{ min-height:40px; padding:6px 8px; }
+  #vatc .tabs{ display:flex; gap:3px; padding:4px 4px 0; overflow-x:auto; background:#0a1211; border-bottom:1px solid var(--line); border-top:0; position:sticky; top:0; }
+  #vatc .tab{ flex-direction:row; border-radius:8px 8px 0 0; min-height:42px; }
+  #vatc .tab svg{ display:none; }
+  #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
+  #vatc .tab[data-t="cards"], #vatc .tab[data-t="reference"]{
+    flex:1 0 calc((100% - 18px) / 5); min-width:calc((100% - 18px) / 5);
+    justify-content:center; font-size:10px; letter-spacing:.02em; padding:10px 1px;
+  }
+  #vatc .tab[data-t="crew"]{ flex:0 0 auto; min-width:58px; justify-content:center; font-size:10px; padding:10px 8px; }
   #vatc .trackbar{ padding:8px 12px; gap:5px; }
   #vatc .tk{ min-height:36px; font-size:12px; }
   #vatc .body{ padding:14px 12px 18px; }
@@ -848,43 +866,8 @@
 #vatc-update #vatc-update-later{ background:transparent; color:#d6e7df; }
 #vatc .skip{ position:absolute; left:8px; top:8px; z-index:70; transform:translateY(-140%); background:#e7fff4; color:#04150d; padding:8px 12px; border-radius:8px; font-size:14px; font-weight:700; }
 #vatc .skip:focus{ transform:none; }
-#vatc .home-go{ display:grid; grid-template-columns:1fr 1fr; gap:0; margin:4px 0 16px; border-top:1px solid var(--green); }
-#vatc .home-go button{ display:flex; flex-direction:row; align-items:center; justify-content:flex-start; gap:8px; min-height:48px; width:100%; border:0; border-bottom:1px solid var(--line); border-radius:0; background:transparent; color:var(--text); font-family:var(--sans); font-weight:700; letter-spacing:.06em; text-transform:uppercase; font-size:13px; cursor:pointer; padding:8px 4px; }
-#vatc .home-go button:hover{ background:rgba(61,190,134,.08); }
-#vatc .home-go .go-ic{ display:grid; place-items:center; width:22px; height:22px; border-radius:2px; flex:none; }
-#vatc .home-go .go-ic svg{ width:16px; height:16px; }
-#vatc .home-go .go-study .go-ic{ color:#3dbe86; background:rgba(61,190,134,.16); }
-#vatc .home-go .go-ref .go-ic{ color:#67c7ef; background:rgba(103,199,239,.16); }
-#vatc .home-go .go-crew .go-ic{ color:#e2a84b; background:rgba(226,168,75,.16); }
-#vatc .home-go .go-device .go-ic{ color:#d7efe4; background:rgba(215,239,228,.1); }
-#vatc .home-go .go-lb{ line-height:1.1; white-space:nowrap; }
-#vatc .home-id{ margin:0 0 12px; padding-bottom:8px; border-bottom:2px solid var(--green); }
-#vatc .home-title{ font-family:var(--sans); font-size:32px; font-weight:700; letter-spacing:-.03em; color:#f7fbf8; line-height:1; text-transform:none; }
-#vatc .home-place{ margin-top:6px; font-size:13px; letter-spacing:.04em; text-transform:uppercase; color:#c9ddd4; }
-#vatc h2.home-sec{ font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--green); margin:8px 0 0; font-weight:700; }
-#vatc .pos6{ display:block; border-top:1px solid var(--green); margin:0 0 8px; }
-#vatc .pcard.ptile{ display:grid; grid-template-columns:34px 62px minmax(0,1fr) auto; align-items:center; column-gap:8px; min-height:54px; padding:8px 2px; border:0; border-bottom:1px solid var(--line); border-radius:0; background:transparent; box-shadow:none; }
-#vatc .pcard.ptile.twr,
-#vatc .pcard.ptile.rdr,
-#vatc .pcard.ptile.on{ box-shadow:none; }
-#vatc .pcard.ptile.on{ background:rgba(61,190,134,.1); }
-#vatc .pcard.ptile:hover{ background:rgba(61,190,134,.06); }
-#vatc .pcard.ptile .pidx{ font-family:var(--sans); font-size:13px; font-weight:700; color:var(--green); font-variant-numeric:tabular-nums; }
-#vatc .pcard.ptile .ptg{ position:static; font-family:var(--sans); font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
-#vatc .pcard.ptile.twr .ptg{ color:#3dbe86; }
-#vatc .pcard.ptile.rdr .ptg{ color:#67c7ef; }
-#vatc .pcard.ptile .pname{ display:flex; flex-direction:column; min-width:0; }
-#vatc .pcard.ptile .pn{ color:#f7fbf8; font-size:16px; letter-spacing:-.02em; text-transform:none; font-weight:700; padding:0; line-height:1.2; }
-#vatc .pcard.ptile .pstate,
-#vatc .pcard.ptile .psub{ font-family:var(--sans); font-size:12px; color:#c5d9cf; margin:0; letter-spacing:0; }
-#vatc .pcard.ptile .pcpct{ position:static; color:#3dbe86; font-family:var(--sans); font-size:30px; font-weight:700; line-height:1; letter-spacing:-.03em; }
-#vatc .home-row{ display:block; border-bottom:1px solid var(--line); margin:0; }
-#vatc .home-row .pcard.ptile{ border-bottom:0; }
-#vatc .home-id .stnbar{ font-family:var(--sans); font-size:13px; letter-spacing:.04em; text-transform:uppercase; color:#c9ddd4; border:0; margin:6px 0 0; padding:0; white-space:normal; overflow:visible; }
-#vatc .fcard, #vatc .fcard .fcface{ border-radius:4px; }
-#vatc .fcface .q{ font-family:var(--sans); font-size:clamp(16px,4.4vw,22px); letter-spacing:-.02em; text-transform:none; line-height:1.35; }
-#vatc .fcface .a.big{ font-family:var(--sans); letter-spacing:-.03em; }
-#vatc .prec{ margin:0 0 0 34px; }
+#vatc .home-row{ display:flex; flex-direction:column; min-width:0; }
+#vatc .prec{ margin:6px 0 0; }
 #vatc .prec > summary{ display:flex; flex-wrap:wrap; gap:6px 10px; align-items:baseline; cursor:pointer; min-height:40px; padding:4px 0 8px; color:#c5d9cf; font-size:13px; list-style:none; }
 #vatc .prec > summary::-webkit-details-marker{ display:none; }
 #vatc .prec-lab{ color:var(--green); font-weight:700; letter-spacing:.06em; text-transform:uppercase; font-size:11px; }
@@ -903,10 +886,17 @@
 #vatc button:focus-visible, #vatc [role="button"]:focus-visible, #vatc a:focus-visible, #vatc input:focus-visible, #vatc select:focus-visible, #vatc textarea:focus-visible, #vatc summary:focus-visible{ outline:2px solid #e7fff4; outline-offset:2px; }
 #vatc .crw-office{ margin:0 0 10px; }
 @media(max-width:640px){
-  #vatc .home-title{ font-size:28px; }
-  #vatc .home-go button{ font-size:12px; letter-spacing:.04em; min-height:46px; }
-  #vatc .navback, #vatc .btn-ghost{ min-height:44px; }
+  #vatc .navback, #vatc .btn-ghost{ min-height:40px; }
 }
+#vatc .crw-lead{ font-size:14px; line-height:1.35; margin:0 0 8px; color:var(--text); }
+#vatc .crw-block{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin:0 0 10px; background:var(--panel); }
+#vatc .crw-block h3{ font-family:var(--fd); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin:0 0 6px; }
+#vatc .crw-soon{ font-size:13px; line-height:1.4; margin:0; }
+#vatc .crw-pubs{ list-style:none; margin:6px 0 0; padding:0; }
+#vatc .crw-pubs li{ display:flex; justify-content:space-between; gap:8px; align-items:baseline; padding:6px 0; border-top:1px solid var(--line); font-size:12px; line-height:1.3; }
+#vatc .crw-pubs li span{ color:var(--muted); text-align:right; }
+#vatc .crw-records{ margin:4px 0 0; border-top:1px solid var(--line); }
+#vatc .crw-records > summary{ cursor:pointer; min-height:44px; display:flex; align-items:center; font-family:var(--fd); letter-spacing:.12em; text-transform:uppercase; font-size:12px; color:var(--green); }
 @media (prefers-reduced-motion: reduce){
   #vatc .reveal, #vatc .dot{ animation:none; }
   #vatc .pcard{ transition:none; }
@@ -922,7 +912,7 @@
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.37';
+  const APP_VER='0.8.38'; /* home-terminal */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -5280,7 +5270,7 @@ function vectorAnswerHTML(query, hits){
 
   function tabs(){ const t=(k,ic,l)=>{let tab=activeTabKey(); const on=tab===k; return `<button type="button" role="tab" id="tab-${k}" aria-selected="${on?'true':'false'}" aria-controls="vatc-main" class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
     return `<div class="tabs" role="tablist" aria-orientation="horizontal" aria-label="Study">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}${t('crew',I.users,'Crew')}</div>${tabHint()}`; }
-  const TAB_HINT={ask:'Search every pub and get a cited answer.',learn:'Your LQS ACADs with references and tests.',cards:'Study sets by position and ACAD.',reference:'7110.65, FACMAN, FLIP plates and more.',crew:'Training aid. Photograph a sheet, review the text, then save it on this browser. It does not replace the official source.'};
+  const TAB_HINT={ask:'Search every pub and get a cited answer.',learn:'Your LQS ACADs with references and tests.',cards:'Study sets by position and ACAD.',reference:'7110.65, FACMAN, FLIP plates and more.',crew:'Send access codes to the crew, and check that loaded publications are current.'};
   function tabHint(){ let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const h=TAB_HINT[tab]; return h?`<div class="tabhint">${h}</div>`:''; }
   function trackbar(){ let out='<span class="grplbl">TWR</span>'; let g='TOWER';
     out+=POS.filter(p=>p.g==='TOWER').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" role="button" tabindex="0" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
@@ -6479,26 +6469,19 @@ function vectorAnswerHTML(query, hits){
     return `<details class="prec" data-station="${escTxt(S.station)}" data-pos="${id}"${open}><summary><span class="prec-lab">Position record</span><span>${escTxt(sum.headline)}</span>${sum.add?'<span>Add record</span>':''}</summary><div class="prec-body"><p class="prec-note">Official signoffs stay in the training process. This note does not grant a qualification. Study percent is separate and does not set this status.</p><p class="prec-note">Dates cannot be in the future. A qualified date must be on or after the started date.</p>${lines}${note}<p id="prec-err-${id}" class="prec-err" role="alert"></p><label for="prec-st-${id}">Status<select id="prec-st-${id}">${[['none','No record'],['training','In training'],['qualified','Recorded qualified']].map(([v,l])=>`<option value="${v}"${st===v?' selected':''}>${l}</option>`).join('')}</select></label><label for="prec-sd-${id}">Started date<input id="prec-sd-${id}" type="date" value="${escTxt(started)}"></label><label for="prec-qd-${id}">Qualified date<input id="prec-qd-${id}" type="date" value="${escTxt(qualified)}"></label><button type="button" class="btn" data-action="precsave" data-pos="${id}">Save record</button></div></details>`;
   }
   function homeView(){
-    /* v0.8.13 home-slim: one-line station bar + first six positions as big tap tiles (POS order). No field stats / TACAN / VIDS on Home. */
-    const tile=(p,i)=>{
+    /* v0.8.38 home-terminal: tile grid from 5106a90 / 01a98f4. Position records stay under each tile. */
+    const tile=p=>{
       const P=posProgress(p.k);
       const pending=!syllabusFor(p.k).list.length;
-      const rail=p.g==='TOWER'?'twr':'rdr';
-      const state=P.pct>0?'Study':'Not started';
-      const num=String(i+1).padStart(2,'0');
-      return `<div class="home-row" data-station="${escTxt(S.station)}" data-pos="${escTxt(p.k)}"><div class="pcard ptile ${rail} ${S.pos===p.k?'on':''}" data-action="poslearn" data-p="${p.k}" tabindex="0" role="button">
-        <span class="pidx">${num}</span><span class="ptg">${p.g==='TOWER'?'Tower':'Radar'}</span><span class="pname"><span class="pn">${p.n}</span><span class="pstate">${state}</span>${pending?'<span class="psub">ACAD pending</span>':''}</span><span class="pcpct">${P.pct}%</span></div>${posRecHTML(p)}</div>`;
+      return `<div class="home-row" data-station="${escTxt(S.station)}" data-pos="${escTxt(p.k)}"><div class="pcard ptile ${S.pos===p.k?'on':''}" data-action="poslearn" data-p="${p.k}" tabindex="0" role="button">
+        <span class="ptg">${p.g==='TOWER'?'TWR':'RDR'}</span><span class="pcpct">${P.pct}%</span><div class="pn">${p.n}</div>${pending?'<div class="psub">ACAD pending</div>':''}</div>${posRecHTML(p)}</div>`;
     };
     const first6=POS.slice(0,6), rest=POS.slice(6);
-    const go=(go,tone,icon,label)=>`<button type="button" class="go-${tone}" data-action="today" data-go="${go}"><span class="go-ic" aria-hidden="true">${icon}</span><span class="go-lb">${label}</span></button>`;
-    const shortcuts=`<div class="home-go" role="group" aria-label="Shortcuts">${go('positions','study',I.book,'Study')}${go('reference','ref',I.file,'References')}${go('crew','crew',I.users,'Crew')}${go('device','device',I.layers,'Device')}</div>`;
-    const quiz=`<h2 class="sec home-sec">KNFG Quizlets</h2>
+    const quiz=`<div class="grp">KNFG Quizlets</div>
       ${homeQuizHTML()}`;
-    return `<header class="home-id"><p class="home-title">Training</p><div class="stnbar">MCAS Camp Pendleton (KNFG)</div></header>
-      ${shortcuts}
-      <h2 class="sec home-sec">Positions</h2>
-      <div class="pos6" id="posgrid">${first6.map((p,i)=>tile(p,i)).join('')}</div>
-      ${rest.length?`<div class="pos6">${rest.map((p,i)=>tile(p,i+first6.length)).join('')}</div>`:''}
+    return `<div class="stnbar">MCAS Camp Pendleton (KNFG)</div>
+      <div class="pos6" id="posgrid">${first6.map(tile).join('')}</div>
+      ${rest.length?`<div class="pos6">${rest.map(tile).join('')}</div>`:''}
       ${quiz}`; }
 
   function askView(){
@@ -7498,7 +7481,12 @@ function vectorAnswerHTML(query, hits){
     return {n:payload.records.length, missed:photosMissing.length>0, photosMissing:photosMissing, photosComplete:photosMissing.length===0};
   }
   function crewMsgHTML(){ return S.crewMsg?`<div class="crw-msg" role="status">${escTxt(S.crewMsg)}</div>`:''; }
-  function crewAidHTML(){ return `<div class="crw-aid" role="note">${escTxt(CREW_AID)} This tool does not issue runway, airfield, or control instructions.</div>`; }
+  function crewAidHTML(){ return `<p class="crw-aid" role="note">Training aid on this device only. Not a live notice or an official source.</p>`; }
+  function pubCurrencyHTML(){
+    const rows=PUBS.map(p=>`<li><b>${escTxt(p.lab)}</b><span>${escTxt(p.editionLab||'In this copy')}</span></li>`).join('');
+    const flip=`<li><b>FLIP / TPP SW-3</b><span>Cycle ${escTxt(FLIP_CYCLE)} · Oct 1–29, 2026</span></li>`;
+    return `<ul class="crw-pubs">${rows}${flip}</ul>`;
+  }
   function crewRolesHTML(open){
     return `<details class="crw-roles"${open?' open':''}><summary>Planned access model / roles</summary>
       <p>Not in effect. No login. There is no access code. This page does not make anyone owner or admin. No cloud account service is connected.</p>
@@ -7573,9 +7561,11 @@ function vectorAnswerHTML(query, hits){
     const id=crewCanon(S.crewId)||'1';
     const rows=crewCurrentRows();
     const nLook=rows.filter(crewNeedsLook).length;
-    return `<div class="crw" data-crw="board"><h2 class="sec">Crew notices</h2>${crewMsgHTML()}${crewAidHTML()}
+    return `<div class="crw" data-crw="board"><h2 class="sec">Training office</h2>${crewMsgHTML()}${crewAidHTML()}
+      <section class="crw-block"><h3>Access codes</h3><p class="crw-soon"><span class="pill warn">Coming soon</span> This version does not issue a code or change who can open the app.</p><p class="crw-fine"><button type="button" class="crw-quiet" data-action="crwoffice" data-open="1">Planned roles</button></p></section>
+      <section class="crw-block"><h3>Publications</h3><p class="crw-fine">Editions loaded in this copy. This does not download a newer official edition.</p>${pubCurrencyHTML()}<button type="button" class="btn sec" data-action="tab" data-t="reference">Open Reference</button></section>
+      <details class="crw-records"><summary>Crew records</summary>
       <div class="crw-seg"><button type="button" class="${id==='1'?'on':''}" data-action="crwcrew" data-c="1">Crew 1</button><button type="button" class="${id==='2'?'on':''}" data-action="crwcrew" data-c="2">Crew 2</button></div>
-      <button type="button" class="btn sec crw-wide" data-action="crwoffice">Training office</button>
       <p class="crw-k">Add a training record for Crew ${id}</p>
       <div class="crw-form">
         <label>Shift<select id="crw-shift" class="crw-in">${crewShiftOpts('')}</select></label>
@@ -7585,11 +7575,11 @@ function vectorAnswerHTML(query, hits){
       <label class="crw-cam">Take photo<input type="file" accept="image/*" capture="environment" data-action="crwfile" hidden></label>
       <label class="crw-cam alt">Import image<input type="file" accept="image/*" data-action="crwfile" hidden></label>
       <button type="button" class="btn sec crw-wide" data-action="crwnophoto">Review without a photo</button>
-      <p class="crw-fine">Text and photos stay in this browser. They are not uploaded. A saved photo is kept in IndexedDB on this device. The text reader, the first time, may download its own software. The photo is not sent with that.</p>
+      <p class="crw-fine">Photos stay on this device and are not uploaded.</p>
       <div class="crw-listhead"><span>Crew ${id} on this browser</span><span>${rows.length} saved · ${nLook} need a look</span></div>
       ${rows.length?rows.map(crewItemHTML).join(''):'<div class="crw-empty">No saved notice for this crew yet.</div>'}
       ${crewToolsHTML(rows)}${crewAskHTML()}${crewDemoHTML(id)}
-      <p class="crw-fine">No login on this device. <button type="button" class="crw-quiet" data-action="crwoffice" data-open="1">Planned access model</button> Pubs stay in <button type="button" class="crw-quiet" data-action="tab" data-t="reference">Reference</button>.</p>
+      </details>
     </div>`;
   }
   function crewFiltHTML(){
@@ -7602,7 +7592,7 @@ function vectorAnswerHTML(query, hits){
     const rows=crewCurrentRows();
     const ca=list.filter(r=>r.crew==='1'), cb=list.filter(r=>r.crew==='2');
     return `<div class="crw" data-crw="office"><h2 class="sec">Training office</h2>${crewMsgHTML()}${crewAidHTML()}
-      <p class="crw-fine">Local training history on this browser. Not a live notice feed and not an official source. <button type="button" class="crw-quiet" data-action="crwboard">Crew workspace</button></p>
+      <p class="crw-fine">Local history on this browser. <button type="button" class="crw-quiet" data-action="crwboard">Back</button></p>
       <div class="crw-office-rows">
         <button type="button" data-action="crwcrew" data-c="1"><b>Crew 1</b><span>${ca.length} saved · ${ca.filter(crewNeedsLook).length} need a look</span></button>
         <button type="button" data-action="crwcrew" data-c="2"><b>Crew 2</b><span>${cb.length} saved · ${cb.filter(crewNeedsLook).length} need a look</span></button>
@@ -7614,7 +7604,7 @@ function vectorAnswerHTML(query, hits){
       <label class="crw-tool">Restore backup<input type="file" accept="application/json,.json" data-action="crwrestore" hidden></label>
       ${crewDemoHTML(crewCanon(S.crewFilt)?S.crewFilt:'all')}
       ${crewAskHTML()}${crewRolesHTML(!!S.crewRolesOpen)}
-      <p class="crw-fine">${escTxt(CREW_AID)} ${escTxt('Saved in this browser only. Clearing site data removes notices and photos. Nothing is sent to a server.')}</p>
+      <p class="crw-fine">Saved on this browser only. Nothing is sent.</p>
     </div>`;
   }
   function crewReviewHTML(){
