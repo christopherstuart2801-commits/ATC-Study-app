@@ -927,10 +927,28 @@
   #vatc .log-posline{ flex-direction:column; }
   #vatc .log-posline span{ text-align:left; }
 }
+#vatc .lq-block{ margin:12px 0 0; }
+#vatc .lq-block h3{ font-family:var(--fd); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--green); margin:0 0 8px; }
+#vatc .lq-table{ width:100%; border-collapse:collapse; font-size:12px; margin:0 0 8px; }
+#vatc .lq-table th, #vatc .lq-table td{ border:1px solid var(--line); padding:6px; text-align:left; vertical-align:top; }
+#vatc .lq-table th{ font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+#vatc .lq-table input, #vatc .lq-lines input{ width:100%; box-sizing:border-box; min-height:36px; font-family:var(--fm); font-size:16px; color:var(--text); background:#102019; border:1px solid var(--line); border-radius:6px; padding:6px; }
+#vatc .lq-num{ width:5.5rem; }
+#vatc .lq-pct{ font-family:var(--fd); letter-spacing:.06em; margin:0 0 8px; }
+#vatc .lq-pct b{ color:var(--green); }
+#vatc .lq-lines{ display:grid; gap:8px; margin:0 0 10px; }
+#vatc .lq-lines label{ display:block; font-size:11px; letter-spacing:.04em; color:var(--muted); }
+#vatc .lq-q{ margin:0; padding:0 0 0 1.2em; }
+#vatc .lq-q li{ margin:0 0 8px; font-size:13px; line-height:1.4; }
+#vatc .lq-note{ font-size:12px; color:var(--muted); margin:0 0 8px; }
+#vatc .lq-foot{ display:none; }
 @media print{
-  #vatc .stickhead, #vatc .status, #vatc .log-form, #vatc .log-tools, #vatc .tabs, #vatc .log-open, #vatc::after, #vatc .grid-bg{ display:none !important; }
-  #vatc, #vatc .scrollmain{ max-height:none; overflow:visible; background:#fff; color:#111; box-shadow:none; border:none; }
-  #vatc .log-print, #vatc .log-tot, #vatc .log-row{ color:#111; }
+  #vatc .stickhead, #vatc .status, #vatc .log-form, #vatc .log-tools, #vatc .tabs, #vatc .log-open, #vatc::after, #vatc .grid-bg, #vatc .seg, #vatc .learn-sticky, #vatc .lq-noprint{ display:none !important; }
+  #vatc, #vatc .scrollmain, #vatc .lesson, #vatc .body{ max-height:none; overflow:visible; background:#fff; color:#111; box-shadow:none; border-color:#bbb; }
+  #vatc .log-print, #vatc .log-tot, #vatc .log-row, #vatc .lq-block, #vatc .lq-q, #vatc .rfc-item, #vatc .rfc-sec{ color:#111; }
+  #vatc .lq-table th, #vatc .lq-table td{ border-color:#333; }
+  #vatc .lq-table input, #vatc .lq-lines input{ background:#fff; color:#111; border-color:#333; }
+  #vatc .lq-foot{ display:block; text-align:center; font-size:11px; letter-spacing:.08em; margin:18px 0 0; color:#111; }
 }
 </style>
 
@@ -938,13 +956,14 @@
 
 <script src="offline/position-records.js"></script>
 <script src="offline/student-log.js"></script>
+<script src="offline/local-lq.js"></script>
 <script src="offline/backup.js"></script>
 <script src="offline/head-guide.js"></script>
 <script src="offline/client.js"></script>
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.40'; /* home-quiet */
+  const APP_VER='0.8.41'; /* tower-lq */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -4918,6 +4937,7 @@ function vectorAnswerHTML(query, hits){
     const mid=Math.ceil(citeRefs.length/2);
     const item=r=>{
       if(isHdr(r)) return `<div class="rfc-sec" id="aa-${escTxt(r[0]).replace(/[^A-Za-z0-9_-]/g,'')}">${escTxt(r[0])}<span class="muted" style="letter-spacing:0;text-transform:none;margin-left:8px;font-size:10px">${escTxt(r[1]||'')}</span></div>`;
+      if(r[2]==='listed') return `<div class="rfc-item" role="status"><span class="rfc-pg">${escTxt(r[0])}</span> <span class="rfc-pt">${escTxt(r[1])}</span></div>`;
       if(r[2]==='blocked') return `<div class="rfc-item tower-blocked" role="status"><span class="pill warn">BLOCKED / PUB NEEDED</span> <span class="rfc-pg">${escTxt(r[0])}</span> <span class="rfc-pt">${escTxt(r[1])}<br>${escTxt((towerCite(r[0])||{}).blocked||'Source publication needed.')}</span></div>`;
       const k=acadRefKey(T,r[0]); const on=!!S.rfcChk[k];
       return `<div class="rfc-item ${on?'on':''}" data-action="rfcref" data-cite="${r[0]}" data-title="${escTxt(r[1]||'').replace(/"/g,'&quot;')}" data-k="${k}"><button type="button" class="rfc-check ${on?'on':''}" data-action="acadcheck" data-k="${k}" title="Check off">${on?'✓':''}</button> <span class="rfc-pg">${r[0]}</span> <span class="rfc-pt">${r[1]}</span></div>`;
@@ -4933,13 +4953,14 @@ function vectorAnswerHTML(query, hits){
       if(out.length) showRefs=out;
     }
     const col=arr=>arr.map(item).join('');
-    const trackedRefs=citeRefs.filter(r=>r[2]!=='blocked');
+    const trackedRefs=citeRefs.filter(r=>r[2]!=='blocked'&&r[2]!=='listed');
     const done=trackedRefs.filter(r=>S.rfcChk[acadRefKey(T,r[0])]).length;
     const tk='topic:'+S.pos+':'+T.n; const ton=!!S.rfcChk[tk];
     const aaChips=hdrs.length?`<div class="aa-nav">${hdrs.map(h=>`<button type="button" class="chip aa-chip ${aaFocus===h[0]?'on':''}" data-action="aafocus" data-aa="${escTxt(h[0]).replace(/"/g,'&quot;')}">${escTxt(h[0].replace(/^ACAD-/,''))}</button>`).join('')}${aaFocus?`<button type="button" class="chip aa-chip" data-action="aafocus" data-aa="">ALL</button>`:''}</div>`:'';
     const refOpts=citeRefs.map(r=>{
       const sel=(S.learnBlockedNote&&String(S.learnBlockedNote).indexOf(r[0])===0)?'':'';
       if(r[2]==='blocked') return `<option disabled>BLOCKED / PUB NEEDED · ${escTxt(r[0])}</option>`;
+      if(r[2]==='listed') return '';
       return `<option value="${escTxt(r[0]).replace(/"/g,'&quot;')}" data-title="${escTxt(r[1]||'').replace(/"/g,'&quot;')}">${escTxt(r[0])} · ${escTxt(r[1]||'')}</option>`;
     }).join('');
     const refDd=`<label class="cite-dd-wrap"><span class="muted">REFS</span><select class="cite-dd" data-action="citesel" data-n="${T.n}" aria-label="All references"><option value="">Jump to reference…</option>${refOpts}</select></label>`;
@@ -4951,7 +4972,7 @@ function vectorAnswerHTML(query, hits){
         ${S.learnBlockedNote?`<div class="pill warn" style="margin:0 0 8px">${escTxt(S.learnBlockedNote)}</div>`:''}
         <div class="rfc-grid rfc-grid-dense">${(showRefs.some(isHdr)||aaFocus)?`<div class="rfc-grid-span">${col(showRefs)}</div>`:`<div>${col(citeRefs.slice(0,mid))}</div><div>${col(citeRefs.slice(mid))}</div>`}</div>
         ${!T.towerPaper&&T.n===4?`<details class="pos-acads fps-acad" open><summary>Strip learning · ACAD-0522 · open 6-1-11 / TBL 6-3 first</summary>${facmanStripBlock()}</details>`:''}
-        ${T.towerPaper&&!T.test.length?'<div class="explain">No sourced LQs yet. Source publication needed; rubric headings are not answers.</div>':`<div class="navrow"><span></span><button class="btn" data-action="rfctest" data-n="${T.n}">TEST ${T.n} ${I.arrow}</button></div>`}
+        ${T.localLq?localLqHTML(T):(T.towerPaper&&!T.test.length?'<div class="explain">No sourced LQs yet. Source publication needed; rubric headings are not answers.</div>':`<div class="navrow"><span></span><button class="btn" data-action="rfctest" data-n="${T.n}">TEST ${T.n} ${I.arrow}</button></div>`)}
       </div>`;
   }
 
@@ -4959,7 +4980,9 @@ function vectorAnswerHTML(query, hits){
     const pack=syllabusFor(S.pos); const RFC=pack.list;
     const n=S.rfcTopic||1; const T=RFC.find(t=>t.n===n)||RFC[0];
     if(T.towerPaper&&!T.test.length) return '<div class="explain">No sourced LQs yet. PUB NEEDED: NAVAIR weather. The supplied visibility rubric is not answer text.</div>';
-    const qs=T.test, i=Math.min(S.rfcQi, qs.length-1), item=qs[i];
+    const qs=T.test||[];
+    if(T.localLq||!qs.length) return '<div class="explain">No answer key on this lesson. The prompts are on the lesson card.</div>';
+    const i=Math.min(S.rfcQi, qs.length-1), item=qs[i];
     const pct=Math.round(i/qs.length*100);
     const after=S.rfcReveal?`<div class="explain reveal"><div class="grn" style="margin-bottom:8px">${item.a}</div>
       <div><span class="citation">${I.ext} ${item.src.doc} · ${item.src.pg} · ${item.src.pa}</span></div>
@@ -5017,7 +5040,7 @@ function vectorAnswerHTML(query, hits){
     if(m){
       const n=+m[1], T=(syllabusFor(S.pos).list||[]).find(t=>t.n===n);
       if(T){
-        const refs=(T.refs||[]).filter(r=>!(r&&(r[2]==='hdr'||r[2]==='blocked')));
+        const refs=(T.refs||[]).filter(r=>!(r&&(r[2]==='hdr'||r[2]==='blocked'||r[2]==='listed')));
         const done=refs.filter(r=>S.rfcChk[acadRefKey(T,r[0])]).length;
         document.querySelectorAll('#vatc .rfc-prog[data-topic="'+n+'"]').forEach(sp=>{ sp.textContent=done+'/'+refs.length+(T.towerPaper&&T.refs.some(r=>r[2]==='blocked')?' · '+T.refs.filter(r=>r[2]==='blocked').length+' blocked':''); });
       }
@@ -6439,6 +6462,78 @@ function vectorAnswerHTML(query, hits){
   });
   function acadRefKey(T,cite){ return (T.towerPaper?'tower-paper:':'')+T.n+':'+cite; }
   /* TOWER_PAPER:END */
+  const LOCAL_LQ=(globalThis.VATC_LOCAL_LQ)||[];
+  if(LOCAL_LQ.length) SYLLABUS.lcl=LOCAL_LQ;
+  const LQ_KEY='vatc.localLq.v1';
+  function lqLoad(){
+    try{ const o=JSON.parse(localStorage.getItem(LQ_KEY)||''); if(o&&o.sheets&&typeof o.sheets==='object') return o; }catch(e){}
+    return {v:1, sheets:{}};
+  }
+  function lqSave(o){ try{ localStorage.setItem(LQ_KEY, JSON.stringify(o)); }catch(e){} }
+  function lqOf(n){ const o=lqLoad(); const k=String(n); if(!o.sheets[k]||typeof o.sheets[k]!=='object') o.sheets[k]={}; return {o:o, sh:o.sheets[k]}; }
+  function lqPercent(root){
+    let possible=0, got=0;
+    root.querySelectorAll('[data-lq="earned"]').forEach(inp=>{
+      const p=Number(inp.getAttribute('data-pts'));
+      if(!isFinite(p)) return;
+      possible+=p;
+      const v=String(inp.value||'').trim();
+      if(!v) return;
+      const n=Number(v);
+      if(isFinite(n)) got+=n;
+    });
+    if(!possible) return '0%';
+    const pct=Math.round((got/possible)*1000)/10;
+    return (pct%1?pct.toFixed(1):String(pct))+'%';
+  }
+  function lqSignHTML(n, part, title, sh){
+    const bag=(sh.signs&&sh.signs[part])||{};
+    const row=(who,f,lab,type)=>`<label>${lab}<input ${type==='date'?'type="date"':'type="text"'} maxlength="80" data-lq="sign" data-n="${n}" data-part="${part}" data-f="${f}" value="${escTxt(bag[f]||'')}"></label>`;
+    return `<div class="lq-block"><h3>${escTxt(title)}</h3><div class="lq-lines">${row('student','student','Student Rank/Last/First/MI')}${row('student','ssig','Signature')}${row('student','sdate','Date','date')}${row('ppi','ppi','PPI Rank/Last/First/MI')}${row('ppi','psig','Signature')}${row('ppi','pdate','Date','date')}</div></div>`;
+  }
+  function localLqHTML(T){
+    const got=lqOf(T.n), sh=got.sh;
+    let body='';
+    if(T.perf) body+=`<p class="log-lead">${escTxt(T.perf)}</p>`;
+    if(T.sim){
+      const earned=sh.earned||{};
+      const rows=T.sim.items.map((it,i)=>`<tr><td>${escTxt(it[0])}</td><td>${escTxt(String(it[1]))}</td><td><input class="lq-num" inputmode="decimal" aria-label="Earned total for ${escTxt(it[0])}" data-lq="earned" data-n="${T.n}" data-i="${i}" data-pts="${it[1]}" value="${escTxt(earned[i]||earned[String(i)]||'')}"></td></tr>`).join('');
+      body+=`<div class="lq-block lq-sheet"><h3>${escTxt(T.sim.title)}</h3><table class="lq-table"><thead><tr><th>Item</th><th>Possible</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table><p class="lq-pct">TOTAL PERCENTAGE <b data-lq-pct>${lqPercentFromStore(T)}</b></p><div class="lq-lines"><label>OJTI initials<input maxlength="8" data-lq="ojti" data-n="${T.n}" value="${escTxt(sh.ojti||'')}"></label><label>Proctored By<input maxlength="80" data-lq="proctor" data-n="${T.n}" value="${escTxt(sh.proctor||'')}"></label><label>Score<input maxlength="20" data-lq="score" data-n="${T.n}" value="${escTxt(sh.score||'')}"></label><label>Date<input type="date" data-lq="when" data-n="${T.n}" value="${escTxt(sh.when||'')}"></label></div></div>`;
+    }
+    if(T.checks){
+      const checks=sh.checks||{};
+      const rows=T.checks.map((label,i)=>{
+        const row=checks[i]||checks[String(i)]||{};
+        return `<tr><td>${escTxt(label)}</td><td><input maxlength="8" aria-label="OJTI initials for ${escTxt(label)}" data-lq="check" data-n="${T.n}" data-i="${i}" data-f="ojti" value="${escTxt(row.ojti||'')}"></td><td><input type="date" aria-label="Date for ${escTxt(label)}" data-lq="check" data-n="${T.n}" data-i="${i}" data-f="date" value="${escTxt(row.date||'')}"></td></tr>`;
+      }).join('');
+      body+=`<div class="lq-block"><h3>Requirement</h3><table class="lq-table"><thead><tr><th>Item</th><th>OJTI Int.</th><th>Date</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+    if(T.exercise){
+      const items=(T.exercise.prompts||[]).map(p=>`<li>${escTxt(p)}</li>`).join('');
+      body+=`<div class="lq-block"><h3>${escTxt(T.exercise.title)}</h3>${T.exercise.note?`<p class="lq-note">${escTxt(T.exercise.note)}</p>`:''}<ol class="lq-q">${items}</ol></div>`;
+    }
+    if(T.event) body+=lqSignHTML(T.n,'eval','Evaluation Complete',sh);
+    else {
+      body+=lqSignHTML(T.n,'review','Lesson Topic Review',sh);
+      if(T.sim) body+=lqSignHTML(T.n,'sim','Simulation',sh);
+      if(T.exercise) body+=lqSignHTML(T.n,'exercise','Exercise',sh);
+    }
+    body+=`<div class="lq-noprint"><button type="button" class="btn sec" data-action="lqprint">Printable view</button></div><p class="lq-foot">DISTRIBUTION: DoW COMMUNITY ONLY</p>`;
+    return body;
+  }
+  function lqPercentFromStore(T){
+    const sh=lqOf(T.n).sh, earned=sh.earned||{};
+    let possible=0, got=0;
+    (T.sim&&T.sim.items||[]).forEach((it,i)=>{
+      possible+=Number(it[1])||0;
+      const v=earned[i]!=null?earned[i]:earned[String(i)];
+      const n=Number(String(v==null?'':v).trim());
+      if(String(v==null?'':v).trim()&&isFinite(n)) got+=n;
+    });
+    if(!possible) return '0%';
+    const pct=Math.round((got/possible)*1000)/10;
+    return (pct%1?pct.toFixed(1):String(pct))+'%';
+  }
   function syllabusFor(k){
     const own=SYLLABUS[k]||[];
     return {list:own, demo:false, src:k};
@@ -6458,6 +6553,7 @@ function vectorAnswerHTML(query, hits){
         const topicOn=!!S.rfcChk['topic:'+k+':'+T.n];
         (T.refs||[]).forEach(r=>{
           if(T.towerPaper&&(r[2]==='hdr'||r[2]==='blocked')) return;
+        if(T.localLq&&(!r||r[2]==='hdr'||r[2]==='blocked'||r[2]==='listed')) return;
           learnTot++;
           if(topicOn || S.rfcChk[acadRefKey(T,r[0])]) learnDone++;
         });
@@ -7118,10 +7214,10 @@ function vectorAnswerHTML(query, hits){
     const sc=tstLoad();
     const meta=k=>{ const o=sc[k]; return o?`best <b>${o.best}%</b> · ${o.date.slice(5)}`:'not taken'; };
     const rows=list.map(T=>{ const L=tstLqs(T).length, P=tstCards(S.pos,T).length;
-      const lq=L?`<button type="button" class="tst-go" data-action="tstpick" data-n="${T.n}" data-k="lqs">LQS · ${L}<small>${meta(S.pos+':'+T.n+':lqs')}</small></button>`:`<span class="tst-none">No sourced LQs yet</span>`;
+      const lq=L?`<button type="button" class="tst-go" data-action="tstpick" data-n="${T.n}" data-k="lqs">LQS · ${L}<small>${meta(S.pos+':'+T.n+':lqs')}</small></button>`:(T.localLq?`<span class="tst-none">Prompts are on the lesson card. No answer key.</span>`:`<span class="tst-none">No sourced LQs yet</span>`);
       const pr=P?`<button type="button" class="tst-go sec" data-action="tstpick" data-n="${T.n}" data-k="prac">Practice · ${Math.min(20,P)}<small>${meta(S.pos+':'+T.n+':prac')}</small></button>`:'';
       return `<div class="tst-row"><div class="tst-h"><b class="tst-code">${escTxt(T.id)}</b><span class="tst-title">${escTxt(T.t||'')}</span></div><div class="tst-btns">${lq}${pr}</div></div>`; }).join('');
-    const intro=isTowerPaperPos(S.pos)?'Clearance Delivery / Flight Data · Tower packet. LQS = verified written-answer starter bank, not questions printed on the syllabus. Practice = source-cited cards from that ACAD.':"LQS = his packet's test questions in paper order · Practice = 20 source-cited cards from that ACAD.";
+    const intro=isTowerPaperPos(S.pos)?'Clearance Delivery / Flight Data · Tower packet. LQS = verified written-answer starter bank, not questions printed on the syllabus. Practice = source-cited cards from that ACAD.':(list.every(t=>t.localLq)?'Local Control lesson cards. Exercises are study prompts. This list has no answer key.':"LQS = his packet's test questions in paper order · Practice = 20 source-cited cards from that ACAD.");
     return `<div class="tst-intro">${intro}</div><div class="tst-list">${rows}</div>`;
   }
   function tstBody(){
@@ -8982,6 +9078,18 @@ function pdfPaneHTML(){
     if(a==='fcjump'){ if(ss&&ss.st&&S.fcMode!=='practice'&&el.dataset.id){ FCQ.sortJump(ss.st, el.dataset.id); } fcKeep({fcFlip:false}); fcEnsureCardVisible(true); return true; }
     return false;
   }
+  document.getElementById('vatc').addEventListener('input',function(e){
+    const el=e.target;
+    if(!el||!el.getAttribute||!el.getAttribute('data-lq')) return;
+    const n=el.getAttribute('data-n');
+    const pack=lqOf(n), sh=pack.sh, kind=el.getAttribute('data-lq');
+    if(kind==='earned'){ sh.earned=sh.earned||{}; sh.earned[el.getAttribute('data-i')]=el.value; }
+    else if(kind==='check'){ sh.checks=sh.checks||{}; const i=el.getAttribute('data-i'); sh.checks[i]=sh.checks[i]||{}; sh.checks[i][el.getAttribute('data-f')]=el.value; }
+    else if(kind==='sign'){ sh.signs=sh.signs||{}; const part=el.getAttribute('data-part'); sh.signs[part]=sh.signs[part]||{}; sh.signs[part][el.getAttribute('data-f')]=el.value; }
+    else sh[kind]=el.value;
+    pack.o.v=1; lqSave(pack.o);
+    if(kind==='earned'){ const sheet=el.closest('.lq-sheet'); const pct=sheet&&sheet.querySelector('[data-lq-pct]'); if(pct) pct.textContent=lqPercent(sheet); }
+  });
   document.getElementById('vatc').addEventListener('click',e=>{ const el=e.target.closest('[data-action]'); if(!el)return; const a=el.dataset.action;
     if(a.indexOf('crw')===0){ crewAction(a, el, e); return; }
     if(a==='openlog'){ set({screen:'log', logPos:el.dataset.p||'all', logMsg:''}); return; }
@@ -9016,7 +9124,7 @@ function pdfPaneHTML(){
       document.body.appendChild(ln); ln.click(); ln.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000);
       return;
     }
-    if(a==='logprint'){ try{ window.print(); }catch(e){} return; }
+    if(a==='logprint'||a==='lqprint'){ try{ window.print(); }catch(e){} return; }
     if(a==='precsave'){
       e.preventDefault();
       e.stopPropagation();

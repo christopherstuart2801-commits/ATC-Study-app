@@ -9,7 +9,8 @@ assert(html.includes('TOWER_PAPER:BEGIN — v0.8.36'));
 assert(html.includes('NO CONTROLLED DATA LOADED'));
 const el=()=>({innerHTML:'',value:'',style:{},classList:{add(){},remove(){},contains(){return false;}},addEventListener(){},focus(){},select(){},closest(){return null;}});
 const ctx={console,document:{getElementById:el,querySelector:el,querySelectorAll:()=>[],addEventListener(){}},localStorage:{getItem(){return null;},setItem(){},removeItem(){},length:0},setTimeout(){},clearTimeout(){},requestAnimationFrame(){},navigator:{},location:{},history:{}};
-ctx.window=ctx;vm.createContext(ctx);
+ctx.window=ctx; ctx.globalThis=ctx; vm.createContext(ctx);
+vm.runInContext(fs.readFileSync(path.join(root,'site/offline/local-lq.js'),'utf8'), ctx);
 let code=html.match(/<script>([\s\S]*)<\/script>\s*<\/body>/)[1];
 const exported='TOWER_PAPER,TOWER_CITES,TOWER_PAPER_CARDS,SYLLABUS,FC_POS,FC_UC,FC_SETS,S,syllabusFor,rfcLearn,citePubAndSec,pageForCite,fcCiteStr,tstBody,tstStart,tstCards,acadRefKey,acadTopicRefs,learnView';
 const end=/document\.getElementById\('vatc'\)\.addEventListener\('click'[\s\S]*render\(\);\s*\}\)\(\);/;
@@ -27,16 +28,20 @@ check('CD alone gets the Clearance Delivery / Flight Data tower packet; radar pa
  assert.equal(V.FC_UC.cd['uc-test'].filter(c=>c.id.startsWith('tower-paper-')).length,22);
  for(const pos of ['fin','rfd','arr']) assert(!V.syllabusFor(pos).list.some(t=>t.towerPaper));
 });
-check('GND and LCL keep the exact pre-change empty Learn/test state',()=>{
- for(const pos of ['gnd','lcl']){
-  assert.equal(V.syllabusFor(pos).list.length,0,pos+' syllabus');
-  assert(!V.syllabusFor(pos).list.some(t=>t.towerPaper));
-  V.S.pos=pos;V.S.rfcTopic=0;V.S.learnMode='acad';V.S.pub=null;const view=V.learnView();
-  assert.match(view,/No ACAD packet for this position yet\./);assert.doesNotMatch(view,/Tower packet|Shared Tower|tower-paper/);
-  V.S.tst=null;assert.equal(V.tstBody(),'<div class="explain">No ACAD packet for this position yet.</div>');
-  const deck=(V.FC_UC[pos]||{})['uc-test']||[];assert.equal(deck.length,0,pos+' FC_UC uc-test');
-  assert(!(V.FC_POS[pos]||[]).some(c=>String(c.id).startsWith('tower-paper-')),pos+' FC_POS');
- }
+check('GND stays empty; LCL lesson cards have prompts and no answer key',()=>{
+ assert.equal(V.syllabusFor('gnd').list.length,0,'gnd syllabus');
+ V.S.pos='gnd';V.S.rfcTopic=0;V.S.learnMode='acad';V.S.pub=null;
+ assert.match(V.learnView(),/No ACAD packet for this position yet\./);
+ V.S.tst=null;assert.equal(V.tstBody(),'<div class="explain">No ACAD packet for this position yet.</div>');
+ const lcl=V.syllabusFor('lcl').list;
+ assert.equal(lcl.length,7);
+ assert(lcl.every(t=>t.localLq&&!(t.test||[]).length));
+ assert(!(V.FC_POS.lcl||[]).some(c=>String(c.id).startsWith('tower-paper-')));
+ V.S.pos='lcl';V.S.rfcTopic=1;const card=V.rfcLearn();
+ assert.match(card,/Simulation 1 - TOWER ARRIVALS \/ DEPARTURES/);
+ assert.match(card,/TOTAL PERCENTAGE/);
+ assert.match(card,/DISTRIBUTION: DoW COMMUNITY ONLY/);
+ assert.doesNotMatch(card,/data-action="rfctest"/);
 });
 check('paper ACAD-0520/0521/0522/0523 refs are present with no radar-only Topic 1 extras',()=>{
  const all=V.TOWER_PAPER.flatMap(t=>t.ids);for(const code of ['ACAD-0520','ACAD-0521','ACAD-0522','ACAD-0523'])assert(all.includes(code));
