@@ -913,7 +913,10 @@
 #vatc .log-tot b{ color:var(--green); }
 #vatc .log-posline{ display:flex; justify-content:space-between; gap:8px; font-size:12px; line-height:1.35; margin:4px 0; }
 #vatc .log-posline span{ color:var(--muted); text-align:right; }
-#vatc .log-form{ display:grid; gap:8px; margin:0 0 12px; }
+#vatc .log-form{ display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; margin:0 0 12px; }
+#vatc .log-form label{ flex:1 1 140px; margin:0; }
+#vatc .log-form label.log-hours{ flex:0 1 96px; }
+#vatc .log-form .btn{ flex:0 0 auto; min-height:44px; }
 #vatc .log-form label{ display:block; font-size:12px; color:var(--muted); }
 #vatc .log-form input, #vatc .log-form select, #vatc .log-form textarea{ display:block; width:100%; margin-top:4px; min-height:44px; font-family:var(--fm); font-size:16px; color:var(--text); background:#102019; border:1px solid var(--line); border-radius:8px; padding:8px; }
 #vatc .log-form textarea{ min-height:72px; }
@@ -923,7 +926,7 @@
 #vatc .log-row .log-meta{ font-family:var(--fm); font-size:12px; color:var(--green); }
 #vatc .log-tools{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 12px; }
 #vatc .log-empty{ color:var(--muted); font-size:13px; line-height:1.4; border:1px dashed var(--line); border-radius:10px; padding:12px; }
-#vatc .log-err{ color:#ffb4b4; font-size:13px; min-height:0; }
+#vatc .log-err{ color:#ffb4b4; font-size:13px; min-height:0; flex:1 0 100%; }
 #vatc .log-err:empty{ display:none; }
 @media(max-width:640px){
   #vatc .log-ap{ grid-template-columns:1fr; }
@@ -966,7 +969,7 @@
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.43'; /* oswald */
+  const APP_VER='0.8.44'; /* simple-log */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -6600,88 +6603,48 @@ function vectorAnswerHTML(query, hits){
     const note=sum.note?`<p class="prec-note"><b>${escTxt(sum.note)}</b></p>`:'';
     return `<details class="prec" data-station="${escTxt(S.station)}" data-pos="${id}"${open}><summary aria-label="Add record for ${escTxt(p.n)}"><span aria-hidden="true">+</span></summary><div class="prec-body"><p class="prec-note">Official signoffs stay in the training process. This note does not grant a qualification. Study percent is separate and does not set this status.</p><p class="prec-note">Dates cannot be in the future. A qualified date must be on or after the started date.</p>${lines}${note}<p id="prec-err-${id}" class="prec-err" role="alert"></p><label for="prec-st-${id}">Status<select id="prec-st-${id}">${[['none','No record'],['training','In training'],['qualified','Recorded qualified']].map(([v,l])=>`<option value="${v}"${st===v?' selected':''}>${l}</option>`).join('')}</select></label><label for="prec-sd-${id}">Started date<input id="prec-sd-${id}" type="date" max="${escTxt(dayMax)}" value="${escTxt(started)}"></label><label for="prec-qd-${id}">Qualified date<input id="prec-qd-${id}" type="date" max="${escTxt(dayMax)}" value="${escTxt(qualified)}"></label><button type="button" class="btn" data-action="precsave" data-pos="${id}">Save record</button></div></details>`;
   }
-  function logApproachFields(){
-    const types=['','Precision','Nonprecision','Visual','Other'];
-    let html='';
-    for(let i=0;i<3;i++){
-      html+=`<div class="log-ap"><label>Approach ${i+1}<select id="log-at-${i}">${types.map(t=>`<option value="${t}">${t||'None'}</option>`).join('')}</select></label><label>Count<input id="log-ac-${i}" inputmode="numeric" maxlength="2"></label><label>Name if other<input id="log-al-${i}" maxlength="40" autocomplete="off"></label></div>`;
-    }
-    return html;
-  }
-  function logApproachSummary(map){
-    const keys=Object.keys(map||{});
-    if(!keys.length) return 'No approaches';
-    return keys.map(k=>k+' '+map[k]).join(' · ');
-  }
+  const LOG_POS=[['cd','Clearance'],['gnd','Ground'],['lcl','Local'],['rfd','Flight Data'],['fin','Final'],['arr','Arrival'],['oth','Other']];
+  function logPosName(k){ const row=LOG_POS.find(p=>p[0]===k); return row?row[1]:(PN[k]||k); }
   function logBody(){
     const api=globalThis.VATC_LOG;
     const store=api?api.load(localStorage):{entries:[]};
-    const pos=S.logPos&&S.logPos!=='all'?S.logPos:'';
-    const rows=api?api.recent(store.entries, pos, 30):[];
-    const allTot=api?api.totals(store.entries):{all:{hours:0,entries:0,approaches:{}}, byPosition:{}};
-    const tot=api?api.totals(pos?store.entries.filter(r=>r.position===pos):store.entries):allTot;
-    const who=loadTrainee()||{name:'', initials:''};
+    const rows=api?api.recent(store.entries, '', 200):[];
+    const tot=api?api.totals(store.entries):{all:{hours:0,entries:0}, byPosition:{}};
     const today=api?api.localToday():'';
-    const chips=['all'].concat(POS.map(p=>p.k)).map(k=>{
-      const on=(S.logPos||'all')===k;
-      const lab=k==='all'?'All':(PN[k]||k);
-      return `<button type="button" class="${on?'on':''}" data-action="logpos" data-p="${k}">${escTxt(lab)}</button>`;
+    const picked=LOG_POS.some(p=>p[0]===S.pos)?S.pos:'fin';
+    const by=LOG_POS.map(p=>{
+      const t=tot.byPosition[p[0]];
+      if(!t) return '';
+      return `<p class="log-posline"><b>${escTxt(p[1])}</b><span>${escTxt(String(t.hours))} h</span></p>`;
     }).join('');
-    const by=POS.map(p=>{
-      const t=allTot.byPosition[p.k];
-      const line=t?(t.hours+' h · '+t.entries+' '+(t.entries===1?'entry':'entries')+' · '+logApproachSummary(t.approaches)):'No entries yet';
-      return `<p class="log-posline"><b>${escTxt(p.n)}</b><span>${escTxt(line)}</span></p>`;
-    }).join('');
-    const study=pos?(()=>{ const P=posProgress(pos); return `<p class="log-lead">Study progress on ${escTxt(PN[pos]||pos)}: ${P.pct}%. ${escTxt(P.learnLabel)} ${P.learnDone}/${P.learnTot}. Cards ${P.fcDone}/${P.fcTot}. That percent is separate from hours.</p>`; })():'';
-    const list=rows.length?rows.map(r=>`<div class="log-row"><div class="log-meta">${escTxt(r.date)} · ${escTxt(PN[r.position]||r.position)} · ${escTxt(String(r.hours))} h${r.fromPaper?' · from paper':''}</div><div>${escTxt(r.activity||'No activity noted')}</div><div class="muted">${escTxt(api.approachText(r)||'No approaches')}</div>${r.paperRef?`<div class="muted">Paper ${escTxt(r.paperRef)}${r.paperDate?' · '+escTxt(r.paperDate):''}</div>`:''}<button type="button" class="btn sec" data-action="logdel" data-id="${escTxt(r.id)}">Remove</button></div>`).join(''):'<div class="log-empty">No entries yet. Add hours from a session, or copy a line from a paper sheet.</div>';
+    const list=rows.length?rows.map(r=>{
+      const note=r.note||r.activity||'';
+      return `<div class="log-row"><div class="log-meta">${escTxt(r.date)} · ${escTxt(logPosName(r.position))} · ${escTxt(String(r.hours))} h</div>${note?`<div>${escTxt(note)}</div>`:''}<button type="button" class="btn sec" data-action="logdel" data-id="${escTxt(r.id)}">Remove</button></div>`;
+    }).join(''):'<div class="log-empty">No entries yet.</div>';
     return `<h2 class="sec">Position log</h2>
       <p class="log-lead">On this device. Not an official form.</p>
       ${S.logMsg?`<p class="log-lead">${escTxt(S.logMsg)}</p>`:''}
-      <div class="log-chips" role="group" aria-label="Position">${chips}</div>
-      <div class="log-tot"><b>${escTxt(String(tot.all.hours))} h</b> · ${tot.all.entries} ${tot.all.entries===1?'entry':'entries'} · ${escTxt(logApproachSummary(tot.all.approaches))}${by}</div>
-      ${study}
-      <div class="log-tools"><button type="button" class="btn sec" data-action="logcsv">Export CSV</button><button type="button" class="btn sec" data-action="logprint">Printable view</button><button type="button" class="btn sec" data-action="logback">Back</button></div>
       <form class="log-form" data-log="entry" onsubmit="return false">
         <p id="log-err" class="log-err" role="alert"></p>
-        <label>Name<input id="log-name" maxlength="120" autocomplete="name" value="${escTxt(who.name)}"></label>
-        <label>Initials<input id="log-init" maxlength="8" autocapitalize="characters" value="${escTxt(who.initials)}"></label>
         <label>Date<input id="log-date" type="date" value="${escTxt(today)}"></label>
-        <label>Position<select id="log-pos">${POS.map(p=>`<option value="${p.k}"${(pos||S.pos)===p.k?' selected':''}>${escTxt(p.n)}</option>`).join('')}</select></label>
-        <label>Hours on position<input id="log-hours" inputmode="decimal" placeholder="0.00"></label>
-        <label>Activity<input id="log-activity" maxlength="240" placeholder="What was worked"></label>
-        ${logApproachFields()}
-        <label>Paper record reference<input id="log-paper" maxlength="80" placeholder="Where the paper sheet is kept"></label>
-        <label>Paper date<input id="log-pdate" type="date"></label>
-        <label class="log-check"><input id="log-from" type="checkbox"> Entered from a paper sheet</label>
-        <label>Note<textarea id="log-note" maxlength="500"></textarea></label>
-        <button type="button" class="btn" data-action="logsave">Save on this device</button>
+        <label>Position<select id="log-pos">${LOG_POS.map(p=>`<option value="${p[0]}"${picked===p[0]?' selected':''}>${escTxt(p[1])}</option>`).join('')}</select></label>
+        <label class="log-hours">Hours<input id="log-hours" inputmode="decimal" placeholder="0.00"></label>
+        <label>Note<input id="log-note" maxlength="500" autocomplete="off"></label>
+        <button type="button" class="btn" data-action="logsave">Add</button>
       </form>
-      <h2 class="sec">Recent</h2>
+      <div class="log-tot"><b>${escTxt(String(tot.all.hours))} h</b></div>
+      ${by}
+      <div class="log-tools"><button type="button" class="btn sec" data-action="logcsv">Export CSV</button><button type="button" class="btn sec" data-action="logprint">Printable view</button><button type="button" class="btn sec" data-action="logback">Back</button></div>
       <div class="log-print">${list}</div>`;
   }
   function logScreen(){ return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body">${logBody()}</div>${statusbar()}</div>`; }
   function logReadForm(){
-    const approaches=[];
-    for(let i=0;i<3;i++){
-      const sel=(document.getElementById('log-at-'+i)||{}).value||'';
-      const other=(document.getElementById('log-al-'+i)||{}).value||'';
-      const count=(document.getElementById('log-ac-'+i)||{}).value||'';
-      const type=sel==='Other'?other:sel;
-      if(!type && !String(count).trim()) continue;
-      approaches.push({type:type, count:count});
-    }
     return {
-      trainee:(document.getElementById('log-name')||{}).value||'',
-      initials:(document.getElementById('log-init')||{}).value||'',
       date:(document.getElementById('log-date')||{}).value||'',
       position:(document.getElementById('log-pos')||{}).value||'',
       hours:(document.getElementById('log-hours')||{}).value||'',
-      activity:(document.getElementById('log-activity')||{}).value||'',
-      approaches:approaches,
-      paperRef:(document.getElementById('log-paper')||{}).value||'',
-      paperDate:(document.getElementById('log-pdate')||{}).value||'',
-      fromPaper:!!((document.getElementById('log-from')||{}).checked),
       note:(document.getElementById('log-note')||{}).value||'',
+      approaches:[],
       station:S.station||'KNFG'
     };
   }
@@ -9105,7 +9068,7 @@ function pdfPaneHTML(){
       if(!api){ if(errEl) errEl.textContent='The log did not load. Nothing was saved.'; return; }
       const res=api.add(localStorage, logReadForm());
       if(!res.ok){ if(errEl) errEl.textContent=res.errors.join(' '); return; }
-      set({logMsg:'Saved on this device. Nothing was uploaded.', logPos:res.entry.position});
+      set({logMsg:'Saved on this device. Nothing was uploaded.'});
       return;
     }
     if(a==='logdel'){
