@@ -65,6 +65,9 @@ ok('recent can filter a position', log.recent(loaded.entries, 'cd', 10).length =
 const text = log.csv(loaded.entries);
 ok('csv header matches a paper line', text.startsWith('date,trainee,initials,station,position,hours,activity,approaches,paper_ref,paper_date,from_paper,note\n'));
 ok('csv quotes a paper ref that contains a comma', /"Binder 4, page 12"/.test(text) && /Precision 3; Visual 1/.test(text) && /from_paper/.test(text));
+const other = log.add(store, { position: 'oth', date: '2026-11-14', hours: 0.5, note: 'Desk' }, day);
+ok('other position saves with no approaches', other.ok && other.entry.position === 'oth' && other.entry.approaches.length === 0 && other.entry.note === 'Desk');
+ok('older approach rows stay stored', log.load(store).entries.some(e => (e.approaches || []).some(a => a.type === 'Precision' && a.count === 3)));
 
 store.setItem(log.KEY, '{');
 ok('corrupt storage loads empty', log.load(store).entries.length === 0);

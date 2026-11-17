@@ -77,14 +77,12 @@ try {
   await page.screenshot({ path: path.join(artifacts, 'tab_log_mobile.png') });
   await page.select('#log-pos', 'lcl');
   await page.$eval('#log-hours', el => { el.value = '2'; });
-  await page.$eval('#log-activity', el => { el.value = 'Pattern'; });
-  await page.select('#log-at-0', 'Visual');
-  await page.$eval('#log-ac-0', el => { el.value = '4'; });
-  await page.$eval('#log-paper', el => { el.value = 'Desk binder'; });
-  await page.click('#log-from');
+  await page.$eval('#log-note', el => { el.value = 'Pattern'; });
+  const approachFields = await page.evaluate(() => !!document.querySelector('#log-at-0, #log-activity, #log-paper'));
+  ok('personal log has no approach fields', !approachFields);
   await page.click('[data-action="logsave"]');
-  await page.waitForFunction(() => /2 h/.test(document.body.innerText) && /Visual 4/.test(document.body.innerText));
-  ok('log shows hours and approach totals', true);
+  await page.waitForFunction(() => /2 h/.test(document.body.innerText) && /Local/.test(document.body.innerText) && /Pattern/.test(document.body.innerText));
+  ok('log shows the added hours', true);
   await page.screenshot({ path: path.join(artifacts, 'tab_log_saved_mobile.png') });
 
   await page.waitForFunction(() => navigator.serviceWorker && navigator.serviceWorker.controller, { timeout: 25000 });

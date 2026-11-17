@@ -6,7 +6,7 @@
   'use strict';
 
   var KEY = 'vatc.studentLog.v1';
-  var POS = { cd: 1, gnd: 1, lcl: 1, rfd: 1, fin: 1, arr: 1 };
+  var POS = { cd: 1, gnd: 1, lcl: 1, rfd: 1, fin: 1, arr: 1, oth: 1 };
   var MAX = 2000;
 
   function pad(n) { return n < 10 ? '0' + n : String(n); }
