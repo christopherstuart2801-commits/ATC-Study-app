@@ -412,6 +412,8 @@
 #vatc .pcard.chip .pd, #vatc .pcard.chip .pt{ display:none; }
 #vatc .pdfbox{ border:1px solid var(--line); border-radius:8px; background:#0a1211; margin:0 0 12px; overflow:hidden; }
 #vatc .pdfbar{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:7px 9px; background:var(--panel2); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+#vatc .pdfbox.learn-cite .pdfbar{ position:static; border-bottom:0; border-top:1px solid var(--line); }
+#vatc .pdfbox.learn-cite .pdfsrcnote{ border-bottom:0; border-top:1px solid var(--line); }
 /* shell: never show cite excerpt chrome */
 #vatc .pdfcite,#vatc .studymark{ display:none !important; }
 #vatc .pdfcite{ padding:8px 12px; border-bottom:1px solid var(--line); background:rgba(57,240,160,.06); font-size:12px; line-height:1.45; color:var(--text); }
@@ -963,7 +965,7 @@
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.41'; /* tower-lq */
+  const APP_VER='0.8.42'; /* learn-pub */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -8478,8 +8480,7 @@ function pdfPaneHTML(){
     // Hidden find input so cite auto-Find + bindPdf still have a target on Learn opens
     const hiddenFind=learnCite?`<input id="pdffind" type="hidden" value="${escTxt(S.pubQ||'')}"><span class="muted" id="pdfhits" style="display:none"></span>`:'';
     const secBan=(S.pubSecBan && S.pubCiteLab===S.pubSecBan)?`<div class="secban"><span class="sj-k">SECTION</span> ${escTxt(S.pubSecBan)} <span class="muted">· p.${escTxt(String(S.pubPreferPage||S.pubPage||''))}</span></div>`:'';
-    return `<div class="pdfbox">${guess}${secBan}${citeStep}${tblBits}
-      <div class="pdfbar">
+    const bar=`<div class="pdfbar">
         <button type="button" class="btn-back" data-action="findback" title="${backTitle}">← BACK</button>
         <span class="pill ok">${escTxt(p.lab)}</span>
         <button class="btn-ghost" data-action="pdfprev">PREV PAGE</button>
@@ -8489,10 +8490,12 @@ function pdfPaneHTML(){
         <button type="button" class="btn-ghost pdfz" data-action="pdfzoomin" title="Zoom in" aria-label="Zoom in">+</button>
         ${findBits}${hiddenFind}
         <button class="btn-ghost" data-action="pdfclose">CLOSE</button>
-      </div>
-      <div id="pdfsrcnote" class="pdfsrcnote" role="status" aria-live="polite" hidden></div>
-      <div class="pdfstage"><div class="pdfsheet" id="pdfsheet"><canvas id="pdfcanvas"></canvas><div id="pdftext" class="pdftext"></div></div></div>
-    </div>`;
+      </div>`;
+    const note=`<div id="pdfsrcnote" class="pdfsrcnote" role="status" aria-live="polite" hidden></div>`;
+    const stage=`<div class="pdfstage"><div class="pdfsheet" id="pdfsheet"><canvas id="pdfcanvas"></canvas><div id="pdftext" class="pdftext"></div></div></div>`;
+    /* Learn cite: page sits under the card header. Viewer controls and the verify note follow the page. */
+    if(learnCite) return `<div class="pdfbox learn-cite">${guess}${secBan}${citeStep}${stage}${bar}${note}</div>`;
+    return `<div class="pdfbox">${guess}${secBan}${citeStep}${tblBits}${bar}${note}${stage}</div>`;
   }
   /* Full Reference shelf order for Ask PDF scan — every PUBS id, primary editions first. */
   function askScanPubOrder(){
