@@ -1,0 +1,774 @@
+{
+  "notice": "DEMO DATA ONLY. All names, usernames, passwords, access codes, and records are fake. This is not a real roster. No real personnel, EDIPI, or facility data.",
+  "demo": true,
+  "generated": "2026-11-17",
+  "purpose": "Prove create, save, push, and pull against the written user data model. Not for production login.",
+  "model": "See /workspace/vector/user-data-model.md",
+  "facility": [
+    {
+      "id": "NFG",
+      "name": "MCAS Camp Pendleton (demo)",
+      "crews": [
+        "Crew 1",
+        "Crew 2"
+      ],
+      "positions": [
+        {
+          "code": "cd",
+          "name": "Clearance / Flight Data",
+          "area": "Tower"
+        },
+        {
+          "code": "gnd",
+          "name": "Ground Control",
+          "area": "Tower"
+        },
+        {
+          "code": "lcl",
+          "name": "Local Control",
+          "area": "Tower"
+        },
+        {
+          "code": "rfd",
+          "name": "Radar Flight Data",
+          "area": "Radar"
+        },
+        {
+          "code": "fin",
+          "name": "Radar Final",
+          "area": "Radar"
+        },
+        {
+          "code": "arr",
+          "name": "Arrival",
+          "area": "Radar"
+        }
+      ],
+      "pubs": [
+        "FACMAN",
+        "AOM",
+        "LOAs"
+      ],
+      "tests": [
+        {
+          "id": "NFG TEST 0520",
+          "covers": [
+            "NFG ACAD 0520"
+          ]
+        },
+        {
+          "id": "NFG TEST 0521/0522",
+          "covers": [
+            "NFG ACAD 0521",
+            "NFG ACAD 0522"
+          ]
+        },
+        {
+          "id": "NFG TEST 0523/0538",
+          "covers": [
+            "NFG ACAD 0523",
+            "NFG ACAD 0538"
+          ]
+        },
+        {
+          "id": "NFG TEST 0525/0526",
+          "covers": [
+            "NFG ACAD 0525",
+            "NFG ACAD 0526"
+          ]
+        },
+        {
+          "id": "NFG TEST 0532",
+          "covers": [
+            "NFG ACAD 0532"
+          ]
+        },
+        {
+          "id": "NFG TEST 0533",
+          "covers": [
+            "NFG ACAD 0533"
+          ]
+        },
+        {
+          "id": "NFG TEST 0534",
+          "covers": [
+            "NFG ACAD 0534"
+          ]
+        },
+        {
+          "id": "NFG TEST 0536",
+          "covers": [
+            "NFG ACAD 0536"
+          ]
+        },
+        {
+          "id": "NFG TEST 0537",
+          "covers": [
+            "NFG ACAD 0537"
+          ]
+        },
+        {
+          "id": "NFG TEST 0539",
+          "covers": [
+            "NFG ACAD 0539"
+          ]
+        },
+        {
+          "id": "NFG TEST 0540/0535",
+          "covers": [
+            "NFG ACAD 0540",
+            "NFG ACAD 0535"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "NYL",
+      "name": "MCAS Yuma (demo stand-in for a second station)",
+      "crews": [
+        "Crew 1",
+        "Crew 2"
+      ],
+      "positions": [
+        {
+          "code": "cd",
+          "name": "Clearance / Flight Data",
+          "area": "Tower"
+        },
+        {
+          "code": "gnd",
+          "name": "Ground Control",
+          "area": "Tower"
+        },
+        {
+          "code": "lcl",
+          "name": "Local Control",
+          "area": "Tower"
+        },
+        {
+          "code": "rfd",
+          "name": "Radar Flight Data",
+          "area": "Radar"
+        },
+        {
+          "code": "fin",
+          "name": "Radar Final",
+          "area": "Radar"
+        },
+        {
+          "code": "arr",
+          "name": "Arrival",
+          "area": "Radar"
+        }
+      ],
+      "pubs": [
+        "FACMAN",
+        "AOM",
+        "LOAs"
+      ],
+      "tests": [
+        {
+          "id": "NYL TEST 0520",
+          "covers": [
+            "NYL ACAD 0520"
+          ]
+        },
+        {
+          "id": "NYL TEST 0521/0522",
+          "covers": [
+            "NYL ACAD 0521",
+            "NYL ACAD 0522"
+          ]
+        },
+        {
+          "id": "NYL TEST 0523/0538",
+          "covers": [
+            "NYL ACAD 0523",
+            "NYL ACAD 0538"
+          ]
+        },
+        {
+          "id": "NYL TEST 0525/0526",
+          "covers": [
+            "NYL ACAD 0525",
+            "NYL ACAD 0526"
+          ]
+        },
+        {
+          "id": "NYL TEST 0532",
+          "covers": [
+            "NYL ACAD 0532"
+          ]
+        },
+        {
+          "id": "NYL TEST 0533",
+          "covers": [
+            "NYL ACAD 0533"
+          ]
+        },
+        {
+          "id": "NYL TEST 0534",
+          "covers": [
+            "NYL ACAD 0534"
+          ]
+        },
+        {
+          "id": "NYL TEST 0536",
+          "covers": [
+            "NYL ACAD 0536"
+          ]
+        },
+        {
+          "id": "NYL TEST 0537",
+          "covers": [
+            "NYL ACAD 0537"
+          ]
+        },
+        {
+          "id": "NYL TEST 0539",
+          "covers": [
+            "NYL ACAD 0539"
+          ]
+        },
+        {
+          "id": "NYL TEST 0540/0535",
+          "covers": [
+            "NYL ACAD 0540",
+            "NYL ACAD 0535"
+          ]
+        }
+      ]
+    }
+  ],
+  "reference": [
+    {
+      "id": "JO 7110.65",
+      "title": "Air Traffic Control",
+      "scope": "universal"
+    },
+    {
+      "id": "NAVAIR 00-80T-114",
+      "title": "NATOPS Air Traffic Control Facilities Manual",
+      "scope": "universal"
+    }
+  ],
+  "user": [
+    {
+      "username": "demo.jblake",
+      "password": "demo123",
+      "name": "Jordan Blake",
+      "facility": "NFG",
+      "crew": "Crew 1",
+      "role": "student",
+      "accessCode": "NFG-DEMO-1001",
+      "positions": [
+        {
+          "code": "cd",
+          "status": "not started"
+        },
+        {
+          "code": "gnd",
+          "status": "qualified",
+          "trainingStartDate": "2026-03-01",
+          "qualifiedDate": "2026-06-12"
+        },
+        {
+          "code": "lcl",
+          "status": "in training",
+          "trainingStartDate": "2026-06-20"
+        },
+        {
+          "code": "rfd",
+          "status": "not started"
+        },
+        {
+          "code": "fin",
+          "status": "not started"
+        },
+        {
+          "code": "arr",
+          "status": "not started"
+        }
+      ],
+      "hoursLog": [
+        {
+          "date": "2026-11-12",
+          "position": "gnd",
+          "hours": 2.0,
+          "note": "Busy pattern after lunch"
+        },
+        {
+          "date": "2026-11-14",
+          "position": "lcl",
+          "hours": 1.5,
+          "note": "Training with OJTI"
+        }
+      ],
+      "lessonsDone": [
+        "NFG ACAD 0520",
+        "NFG ACAD 0521",
+        "NFG ACAD 0522",
+        "NFG LTG 1"
+      ],
+      "testsPassed": [
+        "NFG TEST 0520"
+      ]
+    },
+    {
+      "username": "demo.rchen",
+      "password": "demo123",
+      "name": "Riley Chen",
+      "facility": "NFG",
+      "crew": "Crew 1",
+      "role": "student",
+      "accessCode": "NFG-DEMO-1002",
+      "positions": [
+        {
+          "code": "cd",
+          "status": "in training",
+          "trainingStartDate": "2026-10-06"
+        },
+        {
+          "code": "gnd",
+          "status": "not started"
+        },
+        {
+          "code": "lcl",
+          "status": "not started"
+        },
+        {
+          "code": "rfd",
+          "status": "not started"
+        },
+        {
+          "code": "fin",
+          "status": "not started"
+        },
+        {
+          "code": "arr",
+          "status": "not started"
+        }
+      ],
+      "hoursLog": [
+        {
+          "date": "2026-11-13",
+          "position": "cd",
+          "hours": 2.0,
+          "note": "Strip board practice"
+        }
+      ],
+      "lessonsDone": [
+        "NFG ACAD 0520"
+      ],
+      "testsPassed": []
+    },
+    {
+      "username": "demo.spatel",
+      "password": "demo123",
+      "name": "Sam Patel",
+      "facility": "NFG",
+      "crew": "Crew 2",
+      "role": "student",
+      "accessCode": "NFG-DEMO-2001",
+      "positions": [
+        {
+          "code": "cd",
+          "status": "not started"
+        },
+        {
+          "code": "gnd",
+          "status": "not started"
+        },
+        {
+          "code": "lcl",
+          "status": "not started"
+        },
+        {
+          "code": "rfd",
+          "status": "in training",
+          "trainingStartDate": "2026-08-18"
+        },
+        {
+          "code": "fin",
+          "status": "not started"
+        },
+        {
+          "code": "arr",
+          "status": "not started"
+        }
+      ],
+      "hoursLog": [
+        {
+          "date": "2026-11-10",
+          "position": "rfd",
+          "hours": 3.0,
+          "note": "Inbound coordination"
+        },
+        {
+          "date": "2026-11-16",
+          "position": "rfd",
+          "hours": 2.5,
+          "note": ""
+        }
+      ],
+      "lessonsDone": [
+        "NFG ACAD 0520",
+        "NFG ACAD 0534",
+        "NFG ACAD 0532"
+      ],
+      "testsPassed": [
+        "NFG TEST 0520",
+        "NFG TEST 0534",
+        "NFG TEST 0532"
+      ]
+    },
+    {
+      "username": "demo.ahale",
+      "password": "demo123",
+      "name": "Avery Hale",
+      "facility": "NFG",
+      "crew": "Crew 2",
+      "role": "student",
+      "accessCode": "NFG-DEMO-2002",
+      "positions": [
+        {
+          "code": "cd",
+          "status": "not started"
+        },
+        {
+          "code": "gnd",
+          "status": "not started"
+        },
+        {
+          "code": "lcl",
+          "status": "not started"
+        },
+        {
+          "code": "rfd",
+          "status": "not started"
+        },
+        {
+          "code": "fin",
+          "status": "in training",
+          "trainingStartDate": "2026-08-03"
+        },
+        {
+          "code": "arr",
+          "status": "qualified",
+          "trainingStartDate": "2026-01-12",
+          "qualifiedDate": "2026-07-22"
+        }
+      ],
+      "hoursLog": [
+        {
+          "date": "2026-11-09",
+          "position": "arr",
+          "hours": 2.0,
+          "note": "Sequence practice"
+        },
+        {
+          "date": "2026-11-15",
+          "position": "fin",
+          "hours": 1.0,
+          "note": "Training period"
+        }
+      ],
+      "lessonsDone": [
+        "NFG ACAD 0536",
+        "NFG ACAD 0525",
+        "NFG ACAD 0526",
+        "NFG ACAD 0539",
+        "NFG ACAD 0537",
+        "NFG ACAD 0540",
+        "NFG ACAD 0535",
+        "NFG ACAD 0520",
+        "NFG ACAD 0534",
+        "NFG ACAD 0533"
+      ],
+      "testsPassed": [
+        "NFG TEST 0536",
+        "NFG TEST 0525/0526",
+        "NFG TEST 0539",
+        "NFG TEST 0537",
+        "NFG TEST 0540/0535",
+        "NFG TEST 0520",
+        "NFG TEST 0534",
+        "NFG TEST 0533"
+      ]
+    },
+    {
+      "username": "demo.mquinn",
+      "password": "demo123",
+      "name": "Morgan Quinn",
+      "facility": "NFG",
+      "crew": "Crew 1",
+      "role": "vector_crew_rep",
+      "accessCode": "NFG-DEMO-1010",
+      "positions": [
+        {
+          "code": "cd",
+          "status": "qualified",
+          "trainingStartDate": "2025-09-08",
+          "qualifiedDate": "2026-02-14"
+        },
+        {
+          "code": "gnd",
+          "status": "qualified",
+          "trainingStartDate": "2026-02-20",
+          "qualifiedDate": "2026-08-30"
+        },
+        {
+          "code": "lcl",
+          "status": "not started"
+        },
+        {
+          "code": "rfd",
+          "status": "not started"
+        },
+        {
+          "code": "fin",
+          "status": "not started"
+        },
+        {
+          "code": "arr",
+          "status": "not started"
+        }
+      ],
+      "hoursLog": [
+        {
+          "date": "2026-11-11",
+          "position": "gnd",
+          "hours": 4.0,
+          "note": "Full watch"
+        }
+      ],
+      "lessonsDone": [
+        "NFG ACAD 0520",
+        "NFG ACAD 0521",
+        "NFG ACAD 0522",
+        "NFG ACAD 0523",
+        "NFG ACAD 0538",
+        "NFG LTG 1",
+        "NFG LTG 2",
+        "NFG EQPT 2003"
+      ],
+      "testsPassed": [
+        "NFG TEST 0520",
+        "NFG TEST 0521/0522",
+        "NFG TEST 0523/0538"
+      ]
+    },
+    {
+      "username": "demo.tbrooks",
+      "password": "demo123",
+      "name": "Taylor Brooks",
+      "facility": "NFG",
+      "crew": "Crew 1",
+      "role": "training_chief",
+      "accessCode": "NFG-DEMO-ADMIN",
+      "positions": [
+        {
+          "code": "cd",
+          "status": "qualified",
+          "trainingStartDate": "2023-04-01",
+          "qualifiedDate": "2023-09-15"
+        },
+        {
+          "code": "gnd",
+          "status": "qualified",
+          "trainingStartDate": "2023-09-20",
+          "qualifiedDate": "2024-03-02"
+        },
+        {
+          "code": "lcl",
+          "status": "qualified",
+          "trainingStartDate": "2024-03-10",
+          "qualifiedDate": "2024-10-18"
+        },
+        {
+          "code": "rfd",
+          "status": "not started"
+        },
+        {
+          "code": "fin",
+          "status": "not started"
+        },
+        {
+          "code": "arr",
+          "status": "not started"
+        }
+      ],
+      "hoursLog": [
+        {
+          "date": "2026-11-08",
+          "position": "lcl",
+          "hours": 2.0,
+          "note": "Watch supervision"
+        }
+      ],
+      "lessonsDone": [
+        "NFG ACAD 0520",
+        "NFG ACAD 0521",
+        "NFG ACAD 0522",
+        "NFG ACAD 0523",
+        "NFG ACAD 0538"
+      ],
+      "testsPassed": [
+        "NFG TEST 0520",
+        "NFG TEST 0521/0522",
+        "NFG TEST 0523/0538"
+      ]
+    },
+    {
+      "username": "demo.cortiz",
+      "password": "demo123",
+      "name": "Casey Ortiz",
+      "facility": "NFG",
+      "crew": "Crew 2",
+      "role": "atcfo",
+      "accessCode": "NFG-DEMO-OWNER",
+      "positions": [
+        {
+          "code": "cd",
+          "status": "not started"
+        },
+        {
+          "code": "gnd",
+          "status": "not started"
+        },
+        {
+          "code": "lcl",
+          "status": "not started"
+        },
+        {
+          "code": "rfd",
+          "status": "not started"
+        },
+        {
+          "code": "fin",
+          "status": "not started"
+        },
+        {
+          "code": "arr",
+          "status": "not started"
+        }
+      ],
+      "hoursLog": [],
+      "lessonsDone": [],
+      "testsPassed": []
+    },
+    {
+      "username": "demo.knguyen",
+      "password": "demo123",
+      "name": "Kai Nguyen",
+      "facility": "NYL",
+      "crew": "Crew 2",
+      "role": "student",
+      "accessCode": "NYL-DEMO-2008",
+      "previousFacility": "NFG",
+      "transferNote": "Demo transfer: lessons and tests from NFG stay on the record (carry over). NYL items use NYL IDs and start unchecked until completed there.",
+      "positions": [
+        {
+          "code": "cd",
+          "status": "not started"
+        },
+        {
+          "code": "gnd",
+          "status": "qualified",
+          "trainingStartDate": "2026-02-02",
+          "qualifiedDate": "2026-07-19"
+        },
+        {
+          "code": "lcl",
+          "status": "in training",
+          "trainingStartDate": "2026-10-01"
+        },
+        {
+          "code": "rfd",
+          "status": "not started"
+        },
+        {
+          "code": "fin",
+          "status": "not started"
+        },
+        {
+          "code": "arr",
+          "status": "not started"
+        }
+      ],
+      "hoursLog": [
+        {
+          "date": "2026-07-08",
+          "position": "gnd",
+          "hours": 3.0,
+          "note": "Logged while at NFG (demo)"
+        },
+        {
+          "date": "2026-11-16",
+          "position": "lcl",
+          "hours": 1.5,
+          "note": "First week at NYL (demo)"
+        }
+      ],
+      "lessonsDone": [
+        "NFG ACAD 0520",
+        "NFG ACAD 0521",
+        "NFG ACAD 0522",
+        "NFG LTG 1",
+        "NFG LTG 2"
+      ],
+      "testsPassed": [
+        "NFG TEST 0520",
+        "NFG TEST 0521/0522"
+      ]
+    },
+    {
+      "username": "demo.lvasquez",
+      "password": "demo123",
+      "name": "Logan Vasquez",
+      "facility": "NYL",
+      "crew": "Crew 1",
+      "role": "student",
+      "accessCode": "NYL-DEMO-1003",
+      "positions": [
+        {
+          "code": "cd",
+          "status": "in training",
+          "trainingStartDate": "2026-09-14"
+        },
+        {
+          "code": "gnd",
+          "status": "not started"
+        },
+        {
+          "code": "lcl",
+          "status": "not started"
+        },
+        {
+          "code": "rfd",
+          "status": "not started"
+        },
+        {
+          "code": "fin",
+          "status": "not started"
+        },
+        {
+          "code": "arr",
+          "status": "not started"
+        }
+      ],
+      "hoursLog": [
+        {
+          "date": "2026-11-14",
+          "position": "cd",
+          "hours": 2.0,
+          "note": "Clearance practice"
+        }
+      ],
+      "lessonsDone": [
+        "NYL ACAD 0520"
+      ],
+      "testsPassed": []
+    }
+  ]
+}

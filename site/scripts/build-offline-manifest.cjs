@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = '0.8.44';
+const VERSION = '0.8.45';
 const SITE = path.join(__dirname, '..');
 
 const SHELL = [
@@ -25,6 +25,7 @@ const SHELL = [
   'data/para-index.json',
   'data/ref-span.json',
   'data/ask-aliases.json',
+  'data/mock-users.json',
   'vendor/pdfjs/pdf.min.js',
   'vendor/pdfjs/pdf.worker.min.js'
 ];

@@ -969,7 +969,7 @@
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.44'; /* simple-log */
+  const APP_VER='0.8.45'; /* demo-login */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -4923,7 +4923,7 @@ function vectorAnswerHTML(query, hits){
       const cards=RFC.map(t=>{
         const codes=(t.ids||[t.id]).map(id=>`<span class="rfc-acad">${id}</span>`).join(' ');
         const tk='topic:'+S.pos+':'+t.n;
-        const ton=!!S.rfcChk[tk];
+        const ton=profileOn()?topicLessonsOn(t):!!S.rfcChk[tk];
         const citeR=(t.refs||[]).filter(r=>!(r&&(r[2]==='hdr'||r[2]==='blocked')));
         const refDone=citeR.filter(r=>S.rfcChk[acadRefKey(t,r[0])]).length;
         const refTot=citeR.length;
@@ -4971,7 +4971,7 @@ function vectorAnswerHTML(query, hits){
     }).join('');
     const refDd=`<label class="cite-dd-wrap"><span class="muted">REFS</span><select class="cite-dd" data-action="citesel" data-n="${T.n}" aria-label="All references"><option value="">Jump to reference…</option>${refOpts}</select></label>`;
     /* Topic detail: AA chips + refs dropdown stay reachable; Topics button returns to list */
-    return `${demoBanner}<div class="lesson"><div class="lh"><div class="lt"><span class="rfc-n">${T.n}</span> <span class="rfc-acad">${T.id}</span><span class="muted rfc-prog" data-topic="${T.n}">${T.towerPaper?`${done}/${trackedRefs.length}${citeRefs.length>trackedRefs.length?` · ${citeRefs.length-trackedRefs.length} blocked`:""}`:`${done}/${citeRefs.length}`}</span>${mkDoneHTML(tk)}</div><button class="mc" data-action="rfclist">Topics</button></div>
+    return `${demoBanner}<div class="lesson"><div class="lh"><div class="lt"><span class="rfc-n">${T.n}</span> <span class="rfc-acad">${T.id}</span><span class="muted rfc-prog" data-topic="${T.n}">${T.towerPaper?`${done}/${trackedRefs.length}${citeRefs.length>trackedRefs.length?` · ${citeRefs.length-trackedRefs.length} blocked`:""}`:`${done}/${citeRefs.length}`}</span>${mkDoneHTML(tk)}${profileTestBox(T)}</div><button class="mc" data-action="rfclist">Topics</button></div>
         <div class="rfc-tt rfc-tt-slim">${T.full}</div>
         <div class="muted" style="font-size:10px;margin:0 0 8px;line-height:1.35">${T.req}</div>
         <div class="learn-sticky">${aaChips}${refDd}</div>
@@ -5032,7 +5032,11 @@ function vectorAnswerHTML(query, hits){
     S.rfcChk=d; saveRfcChk(d);
   }
   /* Reviewing checkbox (reader / topic / exercise) — same store as the list check-offs */
-  function mkDoneHTML(k){ const on=!!(S.rfcChk&&S.rfcChk[k]); return `<label class="mkdone"><input type="checkbox" data-action="mkdone" data-k="${escTxt(k)}"${on?' checked':''}> Mark complete</label>`; }
+  function mkDoneHTML(k){
+    let on=!!(S.rfcChk&&S.rfcChk[k]);
+    if(profileOn() && String(k||'').indexOf('topic:')===0){ const T=topicFromKey(k); on=!!(T&&topicLessonsOn(T)); }
+    return `<label class="mkdone"><input type="checkbox" data-action="mkdone" data-k="${escTxt(k)}"${on?' checked':''}> Mark complete</label>`;
+  }
   /* Update every check-off for key k in place (no re-render → no scroll jump) */
   function syncChk(k){
     const on=!!S.rfcChk[k];
@@ -5077,7 +5081,7 @@ function vectorAnswerHTML(query, hits){
   function saveFcStats(){ try{ localStorage.setItem(FC_STATS_KEY, JSON.stringify(S.fcStats||{})); }catch(_){} }
   const S={ screen:'app', station:'KNFG', pos:'fin', tab:'home', trainMode:'practice', learnMode:'acad',
     pIdx:0,pSel:null,pAns:false, qIdx:0,qSel:null,qAns:[],qDone:false,quizBest:0, fcIdx:0,fcFlip:false,fcDeck:'pos',fcGrp:'',fcOpen:{},fcOrder:null,fcMode:'cards',fcOnlyNot:false,fcStats:loadFcStats(),fcSess:null,fcLastId:null,fcSetsOpen:false,sqShow:'cs',sqType:'',sqTbl:'',
-    lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'', crewView:'board', crewId:'1', crewFilt:'all', crewDraft:null, crewReadId:'', crewSel:{}, crewAsk:null, crewMsg:'', crewRolesOpen:false, logPos:'all', logMsg:'' };
+    lessonsDone:loadLessonsDone(), simStats:{land:0,conf:0,lost:0,runs:0}, scnIdx:0,scnAns:false,scnSel:null,scnScore:0, source:null, refQ:'', askDoneQ:'', rfcTopic:0, rfcChk:loadRfcChk(), rfcQi:0, rfcReveal:false, lkFocus:false, posOpen:null, pub:null, pubPage:1, pubQ:'', pubGuessNote:'', pubCiteLab:'', pubCiteQuote:'', learnReturn:null, aaFocus:'', crewView:'board', crewId:'1', crewFilt:'all', crewDraft:null, crewReadId:'', crewSel:{}, crewAsk:null, crewMsg:'', crewRolesOpen:false, logPos:'all', logMsg:'', profileErr:'' };
   /* ===== v0.8.30 NAV: in-app + browser/phone back via history.pushState/popstate.
      Each history entry = snapshot of navigational S keys + UI (scroll, open <details>, search inputs). ===== */
   const NAV_KEYS=['screen','tab','learnMode','trainMode','pos','rfcTopic','pub','pubPage','pubQ','pubGuessNote','pubCiteLab','pubCiteQuote','pubPreferPage','pubCiteSec','pubSecBan','learnReturn','learnBlockedNote',
@@ -5284,7 +5288,7 @@ function vectorAnswerHTML(query, hits){
   }
   function topbar(){ return `<div class="top"><button type="button" class="navback" data-action="navback" aria-label="Back" title="Back"${(NAV.ready&&NAV.n>0)?'':' disabled'}>←</button><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':S.screen!=='app'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">${S.station==='KNKX'?'MCAS Miramar':'MCAS Camp Pendleton · Munn Field'}</div></div>`}
-    <button type="button" class="btn-ghost" data-action="guide" aria-label="Head Guide">GUIDE</button><button type="button" class="btn-ghost" data-action="stations" aria-label="Choose station">STATIONS</button></div></div>`; }
+    <button type="button" class="btn-ghost" data-action="profile" aria-label="Profile">PROFILE</button><button type="button" class="btn-ghost" data-action="stations" aria-label="Choose station">STATIONS</button></div></div>`; }
   function statusbar(){ const d=deviceSnap(); return `<div class="status"><span><span class="dot${d.online?'':' off'}" id="netdot"></span> <span id="netlab">${d.online?'ONLINE':'OFFLINE'}</span> · NO CONTROLLED DATA LOADED</span><span><button type="button" class="btn-ghost" data-action="device" aria-label="This device">DEVICE</button> v${APP_VER}</span></div>`; }
   let deviceOpenerSel='';
   function focusEl(el){ if(!el) return false; try{ el.focus({preventScroll:true}); }catch(e){ try{ el.focus(); }catch(_){} } return document.activeElement===el; }
@@ -6603,13 +6607,135 @@ function vectorAnswerHTML(query, hits){
     const note=sum.note?`<p class="prec-note"><b>${escTxt(sum.note)}</b></p>`:'';
     return `<details class="prec" data-station="${escTxt(S.station)}" data-pos="${id}"${open}><summary aria-label="Add record for ${escTxt(p.n)}"><span aria-hidden="true">+</span></summary><div class="prec-body"><p class="prec-note">Official signoffs stay in the training process. This note does not grant a qualification. Study percent is separate and does not set this status.</p><p class="prec-note">Dates cannot be in the future. A qualified date must be on or after the started date.</p>${lines}${note}<p id="prec-err-${id}" class="prec-err" role="alert"></p><label for="prec-st-${id}">Status<select id="prec-st-${id}">${[['none','No record'],['training','In training'],['qualified','Recorded qualified']].map(([v,l])=>`<option value="${v}"${st===v?' selected':''}>${l}</option>`).join('')}</select></label><label for="prec-sd-${id}">Started date<input id="prec-sd-${id}" type="date" max="${escTxt(dayMax)}" value="${escTxt(started)}"></label><label for="prec-qd-${id}">Qualified date<input id="prec-qd-${id}" type="date" max="${escTxt(dayMax)}" value="${escTxt(qualified)}"></label><button type="button" class="btn" data-action="precsave" data-pos="${id}">Save record</button></div></details>`;
   }
+  const PROF_SESS='vatc.demoSession.v1';
+  const PROF_OVER='vatc.demoOverlay.v1';
+  const PROF_ROLE={student:'Student', vector_crew_rep:'VECTOR crew rep', training_chief:'Training chief', atcfo:'ATCFO'};
+  let MOCK_USERS=null;
+  let MOCK_ERR='';
+  function profileSession(){
+    try{ const o=JSON.parse(localStorage.getItem(PROF_SESS)||''); if(o&&typeof o.username==='string'&&o.username) return o.username; }catch(e){}
+    return '';
+  }
+  function profileSetSession(name){
+    try{ if(name) localStorage.setItem(PROF_SESS, JSON.stringify({v:1, username:name})); else localStorage.removeItem(PROF_SESS); }catch(e){}
+  }
+  function profileOverAll(){
+    try{ const o=JSON.parse(localStorage.getItem(PROF_OVER)||''); if(o&&typeof o==='object'&&!Array.isArray(o)) return o; }catch(e){}
+    return {};
+  }
+  function profileBase(){
+    const name=profileSession();
+    if(!name||!MOCK_USERS) return null;
+    return (MOCK_USERS.user||[]).find(u=>u.username===name)||null;
+  }
+  function profileOn(){ return !!profileBase(); }
+  function profileUser(){
+    const base=profileBase();
+    if(!base) return null;
+    const over=(profileOverAll()[base.username])||{};
+    return {
+      username:base.username, name:base.name, facility:base.facility, crew:base.crew, role:base.role,
+      positions:base.positions||[],
+      lessonsDone:Array.isArray(over.lessonsDone)?over.lessonsDone.slice():(base.lessonsDone||[]).slice(),
+      testsPassed:Array.isArray(over.testsPassed)?over.testsPassed.slice():(base.testsPassed||[]).slice(),
+      hoursLog:Array.isArray(over.hoursLog)?over.hoursLog.map(h=>Object.assign({},h)):(base.hoursLog||[]).map(h=>Object.assign({},h))
+    };
+  }
+  function profileWrite(part, list){
+    const base=profileBase();
+    if(!base) return;
+    const all=profileOverAll();
+    const over=Object.assign({}, all[base.username]||{});
+    over[part]=list;
+    all[base.username]=over;
+    try{ localStorage.setItem(PROF_OVER, JSON.stringify(all)); }catch(e){}
+  }
+  function facilityOf(id){ return ((MOCK_USERS&&MOCK_USERS.facility)||[]).find(f=>f.id===id)||null; }
+  function lessonIds(T, fac){
+    const ids=(T&&T.ids&&T.ids.length)?T.ids:[T&&T.id];
+    return ids.filter(Boolean).map(id=>{
+      const s=String(id);
+      let m=s.match(/^ACAD-(\d+)$/); if(m) return fac+' ACAD '+m[1];
+      m=s.match(/^LTG (\d+)$/); if(m) return fac+' LTG '+m[1];
+      m=s.match(/^EQPT-(\d+)$/); if(m) return fac+' EQPT '+m[1];
+      m=s.match(/^COMM-(\d+)$/); if(m) return fac+' COMM '+m[1];
+      return fac+' '+s;
+    });
+  }
+  function topicFromKey(k){
+    const m=/^topic:([a-z0-9]+):(\d+)$/.exec(String(k||''));
+    if(!m) return null;
+    return (syllabusFor(m[1]).list||[]).find(t=>t.n===+m[2])||null;
+  }
+  function topicLessonsOn(T){
+    const u=profileUser();
+    if(!u||!T) return false;
+    const ids=lessonIds(T, u.facility);
+    return !!ids.length && ids.every(id=>u.lessonsDone.indexOf(id)>=0);
+  }
+  function testForTopic(T, fac){
+    const want=lessonIds(T, fac).filter(id=>/ ACAD /.test(id));
+    const tests=(facilityOf(fac)||{}).tests||[];
+    return tests.find(t=>(t.covers||[]).some(c=>want.indexOf(c)>=0))||null;
+  }
+  function profileTestBox(T){
+    if(!profileOn()||!T) return '';
+    const u=profileUser();
+    const test=testForTopic(T, u.facility);
+    if(!test) return '';
+    const on=u.testsPassed.indexOf(test.id)>=0;
+    return `<label class="mkdone"><input type="checkbox" data-action="profpass" data-test="${escTxt(test.id)}"${on?' checked':''}> ${escTxt(test.id)}</label>`;
+  }
+  function profileToggleLessons(T){
+    const u=profileUser();
+    if(!u) return;
+    const ids=lessonIds(T, u.facility);
+    const have=ids.length&&ids.every(id=>u.lessonsDone.indexOf(id)>=0);
+    const next=have?u.lessonsDone.filter(id=>ids.indexOf(id)<0):u.lessonsDone.concat(ids.filter(id=>u.lessonsDone.indexOf(id)<0));
+    profileWrite('lessonsDone', next);
+  }
+  function profileToggleTest(id){
+    const u=profileUser();
+    if(!u||!id) return;
+    const has=u.testsPassed.indexOf(id)>=0;
+    profileWrite('testsPassed', has?u.testsPassed.filter(x=>x!==id):u.testsPassed.concat([id]));
+  }
+  function derivedComplete(u){
+    const tests=(facilityOf(u.facility)||{}).tests||[];
+    const done={}, passed={};
+    u.lessonsDone.forEach(id=>{ done[id]=1; });
+    u.testsPassed.forEach(id=>{ passed[id]=1; });
+    const out=[];
+    tests.forEach(t=>{
+      if(!passed[t.id]) return;
+      (t.covers||[]).forEach(id=>{ if(done[id]&&out.indexOf(id)<0) out.push(id); });
+    });
+    return out;
+  }
+  function profileHours(){
+    const u=profileUser();
+    if(!u) return null;
+    return (u.hoursLog||[]).map((row,i)=>({
+      id:'p'+i, date:row.date, position:row.position, hours:Number(row.hours)||0, note:row.note||'',
+      activity:'', approaches:[], trainee:u.name||'', initials:'', station:u.facility||'NFG',
+      paperRef:'', paperDate:'', fromPaper:false
+    }));
+  }
+  function profileLogin(user, pass){
+    if(!MOCK_USERS) return MOCK_ERR||'The demo roster did not load.';
+    const row=(MOCK_USERS.user||[]).find(u=>u.username===String(user||'') && u.password===String(pass||''));
+    if(!row) return 'That username or password does not match.';
+    profileSetSession(row.username);
+    return '';
+  }
   const LOG_POS=[['cd','Clearance'],['gnd','Ground'],['lcl','Local'],['rfd','Flight Data'],['fin','Final'],['arr','Arrival'],['oth','Other']];
   function logPosName(k){ const row=LOG_POS.find(p=>p[0]===k); return row?row[1]:(PN[k]||k); }
   function logBody(){
     const api=globalThis.VATC_LOG;
-    const store=api?api.load(localStorage):{entries:[]};
-    const rows=api?api.recent(store.entries, '', 200):[];
-    const tot=api?api.totals(store.entries):{all:{hours:0,entries:0}, byPosition:{}};
+    const mine=profileHours();
+    const entries=mine||(api?api.load(localStorage).entries:[]);
+    const rows=api?api.recent(entries, '', 200):entries;
+    const tot=api?api.totals(entries):{all:{hours:0,entries:0}, byPosition:{}};
     const today=api?api.localToday():'';
     const picked=LOG_POS.some(p=>p[0]===S.pos)?S.pos:'fin';
     const by=LOG_POS.map(p=>{
@@ -6622,7 +6748,7 @@ function vectorAnswerHTML(query, hits){
       return `<div class="log-row"><div class="log-meta">${escTxt(r.date)} · ${escTxt(logPosName(r.position))} · ${escTxt(String(r.hours))} h</div>${note?`<div>${escTxt(note)}</div>`:''}<button type="button" class="btn sec" data-action="logdel" data-id="${escTxt(r.id)}">Remove</button></div>`;
     }).join(''):'<div class="log-empty">No entries yet.</div>';
     return `<h2 class="sec">Position log</h2>
-      <p class="log-lead">On this device. Not an official form.</p>
+      <p class="log-lead">${profileOn()?escTxt(profileUser().name)+' · saved on this device. Not an official form.':'On this device. Not an official form.'}</p>
       ${S.logMsg?`<p class="log-lead">${escTxt(S.logMsg)}</p>`:''}
       <form class="log-form" data-log="entry" onsubmit="return false">
         <p id="log-err" class="log-err" role="alert"></p>
@@ -6647,6 +6773,47 @@ function vectorAnswerHTML(query, hits){
       approaches:[],
       station:S.station||'KNFG'
     };
+  }
+  function profileScreen(){
+    const tag='<p><span class="pill warn">DEMO DATA</span></p>';
+    const who=profileUser();
+    let body;
+    if(!who){
+      body=`${tag}<h2 class="sec">Profile</h2>
+        <p class="log-lead">Demo sign-in on this device. A real server comes later. Wrong details are not saved.</p>
+        <form class="log-form" onsubmit="return false">
+          <p id="prof-err" class="log-err" role="alert">${escTxt(S.profileErr||MOCK_ERR||'')}</p>
+          <label>Username<input id="prof-user" autocomplete="username" maxlength="80"></label>
+          <label>Password<input id="prof-pass" type="password" autocomplete="current-password" maxlength="80"></label>
+          <button type="button" class="btn" data-action="proflogin">Log in</button>
+        </form>
+        <p class="log-lead">Demo login: demo.jblake / demo123</p>`;
+    } else {
+      const fac=facilityOf(who.facility);
+      const pos=(who.positions||[]).map(p=>{
+        const name=logPosName(p.code);
+        const line=p.status==='qualified'?(name+' · qualified'+(p.qualifiedDate?' '+p.qualifiedDate:'')):p.status==='in training'?(name+' · in training'+(p.trainingStartDate?' since '+p.trainingStartDate:'')):(name+' · not started');
+        return `<p class="log-posline"><b>${escTxt(name)}</b><span>${escTxt(line.replace(name+' · ',''))}</span></p>`;
+      }).join('');
+      const lessons=who.lessonsDone.length?who.lessonsDone.map(id=>`<li>${escTxt(id)}</li>`).join(''):'<li>None yet</li>';
+      const tests=who.testsPassed.length?who.testsPassed.map(id=>`<li>${escTxt(id)}</li>`).join(''):'<li>None yet</li>';
+      const done=derivedComplete(who);
+      const complete=done.length?done.map(id=>`<li>${escTxt(id)}</li>`).join(''):'<li>None yet</li>';
+      const hours=(who.hoursLog||[]).map(h=>`<p class="log-posline"><b>${escTxt(h.date)} · ${escTxt(logPosName(h.position))}</b><span>${escTxt(String(h.hours))} h${h.note?' · '+escTxt(h.note):''}</span></p>`).join('')||'<p class="log-lead">No hours yet.</p>';
+      const sum=(who.hoursLog||[]).reduce((n,h)=>n+(Number(h.hours)||0),0);
+      body=`${tag}<h2 class="sec">${escTxt(who.name)}</h2>
+        <p class="log-lead">${escTxt(who.username)} · ${escTxt((fac&&fac.name)||who.facility)} · ${escTxt(who.crew)} · ${escTxt(PROF_ROLE[who.role]||who.role)}</p>
+        <p class="log-lead">Signed in on this device until you log out. Changes stay in this browser. A real server comes later.</p>
+        <h2 class="sec">Positions</h2>${pos}
+        <h2 class="sec">Lessons done</h2><ul class="lq-q">${lessons}</ul>
+        <h2 class="sec">Tests passed</h2><ul class="lq-q">${tests}</ul>
+        <h2 class="sec">ACADs complete</h2>
+        <p class="log-lead">An ACAD is complete when its lesson is done and the test that covers it is passed. One test can cover two ACADs.</p>
+        <ul class="lq-q">${complete}</ul>
+        <h2 class="sec">Hours · ${escTxt(String(Math.round(sum*100)/100))} h</h2>${hours}
+        <div class="log-tools"><button type="button" class="btn" data-action="proflogout">Log out</button><button type="button" class="btn sec" data-action="openlog">Hours log</button></div>`;
+    }
+    return `<div class="stickhead">${topbar()}${who?tabs():''}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body">${body}</div>${statusbar()}</div>`;
   }
   function homeView(){
     /* v0.8.40 home-quiet: tiles keep the percent and ACAD pending. A plus opens the record form. */
@@ -7182,7 +7349,7 @@ function vectorAnswerHTML(query, hits){
     const rows=list.map(T=>{ const L=tstLqs(T).length, P=tstCards(S.pos,T).length;
       const lq=L?`<button type="button" class="tst-go" data-action="tstpick" data-n="${T.n}" data-k="lqs">LQS · ${L}<small>${meta(S.pos+':'+T.n+':lqs')}</small></button>`:(T.localLq?`<span class="tst-none">Prompts are on the lesson card. No answer key.</span>`:`<span class="tst-none">No sourced LQs yet</span>`);
       const pr=P?`<button type="button" class="tst-go sec" data-action="tstpick" data-n="${T.n}" data-k="prac">Practice · ${Math.min(20,P)}<small>${meta(S.pos+':'+T.n+':prac')}</small></button>`:'';
-      return `<div class="tst-row"><div class="tst-h"><b class="tst-code">${escTxt(T.id)}</b><span class="tst-title">${escTxt(T.t||'')}</span></div><div class="tst-btns">${lq}${pr}</div></div>`; }).join('');
+      return `<div class="tst-row"><div class="tst-h"><b class="tst-code">${escTxt(T.id)}</b><span class="tst-title">${escTxt(T.t||'')}</span></div><div class="tst-btns">${profileTestBox(T)}${lq}${pr}</div></div>`; }).join('');
     const intro=isTowerPaperPos(S.pos)?'Clearance Delivery / Flight Data · Tower packet. LQS = verified written-answer starter bank, not questions printed on the syllabus. Practice = source-cited cards from that ACAD.':(list.every(t=>t.localLq)?'Local Control lesson cards. Exercises are study prompts. This list has no answer key.':"LQS = his packet's test questions in paper order · Practice = 20 source-cited cards from that ACAD.");
     return `<div class="tst-intro">${intro}</div><div class="tst-list">${rows}</div>`;
   }
@@ -8962,8 +9129,8 @@ function pdfPaneHTML(){
   function viewKey(){ return [S.screen,S.tab,S.learnMode,S.trainMode,S.rfcTopic,S.pub,S.pos,S.fcDeck,S.aaFocus,S.rfcQi,S.qIdx,S.pIdx,S.scnIdx,S.qDone,S.crewView||'',S.crewReadId||'',(S.crewDraft&&S.crewDraft.token)||''].join('|'); }
   function render(){
     const paint=()=>{ if(globalThis.VATC_DEVICE&&VATC_DEVICE.paint) VATC_DEVICE.paint(); };
-    if(S.screen==='station'||S.screen==='guide'||S.screen==='feedback'||S.screen==='log'){
-      const special=S.screen==='station'?stationScreen():S.screen==='guide'?guideScreen():S.screen==='log'?logScreen():feedbackScreen();
+    if(S.screen==='station'||S.screen==='guide'||S.screen==='feedback'||S.screen==='log'||S.screen==='profile'){
+      const special=S.screen==='station'?stationScreen():S.screen==='guide'?guideScreen():S.screen==='log'?logScreen():S.screen==='profile'?profileScreen():feedbackScreen();
       root.innerHTML=shellWrap(special);
       lastViewKey=''; keepDeviceFocus(); paint(); return;
     }
@@ -8998,7 +9165,10 @@ function pdfPaneHTML(){
       openLearnCite(cite,{title});
       return;
     }
-    if(a==='mkdone'){ markRfcChk(el.dataset.k, !!el.checked); syncChk(el.dataset.k); return; }
+    if(a==='mkdone'){
+      if(profileOn() && String(el.dataset.k||'').indexOf('topic:')===0){ const T=topicFromKey(el.dataset.k); if(T){ profileToggleLessons(T); render(); return; } }
+      markRfcChk(el.dataset.k, !!el.checked); syncChk(el.dataset.k); return;
+    }
     if(a==='fconlynot'){ return fcKeep({fcOnlyNot:!!el.checked, fcIdx:0, fcFlip:false}); }
     if(a==='sqshow'||a==='sqtype'||a==='sqtbl'){
       const o={fcIdx:0, fcFlip:false, fcOrder:null, fcSess:null};
@@ -9062,11 +9232,35 @@ function pdfPaneHTML(){
     if(a==='openlog'){ set({screen:'log', logPos:el.dataset.p||'all', logMsg:''}); return; }
     if(a==='logback'){ set({screen:'app', tab:'home', logMsg:''}); return; }
     if(a==='logpos'){ set({logPos:el.dataset.p||'all', logMsg:''}); return; }
+    if(a==='profile'){ set({screen:'profile', profileErr:''}); return; }
+    if(a==='proflogin'){
+      const user=(document.getElementById('prof-user')||{}).value||'';
+      const pass=(document.getElementById('prof-pass')||{}).value||'';
+      const err=profileLogin(user, pass);
+      if(err){ S.profileErr=err; render(); return; }
+      set({screen:'profile', profileErr:''});
+      return;
+    }
+    if(a==='proflogout'){ profileSetSession(''); set({screen:'app', tab:'home', profileErr:''}); return; }
+    if(a==='profpass'){
+      profileToggleTest(el.dataset.test||'');
+      render();
+      return;
+    }
     if(a==='logsave'){
       const api=globalThis.VATC_LOG;
       const errEl=document.getElementById('log-err');
       if(!api){ if(errEl) errEl.textContent='The log did not load. Nothing was saved.'; return; }
-      const res=api.add(localStorage, logReadForm());
+      const raw=logReadForm();
+      if(profileOn()){
+        const checked=api.validateEntry(raw, api.localToday());
+        if(!checked.ok){ if(errEl) errEl.textContent=checked.errors.join(' '); return; }
+        const hours=(profileUser().hoursLog||[]).concat([{date:checked.clean.date, position:checked.clean.position, hours:checked.clean.hours, note:checked.clean.note}]);
+        profileWrite('hoursLog', hours);
+        set({logMsg:'Saved on this device. Nothing was uploaded.'});
+        return;
+      }
+      const res=api.add(localStorage, raw);
       if(!res.ok){ if(errEl) errEl.textContent=res.errors.join(' '); return; }
       set({logMsg:'Saved on this device. Nothing was uploaded.'});
       return;
@@ -9077,6 +9271,15 @@ function pdfPaneHTML(){
       let go=false;
       try{ go=window.confirm('Remove this log entry from this device?'); }catch(e){ go=false; }
       if(!go) return;
+      if(profileOn() && /^p\d+$/.test(el.dataset.id||'')){
+        const i=+el.dataset.id.slice(1);
+        const hours=(profileUser().hoursLog||[]).slice();
+        if(i<0||i>=hours.length){ set({logMsg:'Could not remove that entry. Nothing else was changed.'}); return; }
+        hours.splice(i,1);
+        profileWrite('hoursLog', hours);
+        set({logMsg:'Removed from this device.'});
+        return;
+      }
       const wrote=api.remove(localStorage, el.dataset.id);
       if(!wrote.ok){ set({logMsg:'Could not remove that entry. Nothing else was changed.'}); return; }
       set({logMsg:'Removed from this device.'});
@@ -9085,8 +9288,8 @@ function pdfPaneHTML(){
     if(a==='logcsv'){
       const api=globalThis.VATC_LOG;
       if(!api) return;
-      const store=api.load(localStorage);
-      const blob=new Blob([api.csv(store.entries)],{type:'text/csv'});
+      const entries=profileHours()||api.load(localStorage).entries;
+      const blob=new Blob([api.csv(entries)],{type:'text/csv'});
       const u=URL.createObjectURL(blob); const ln=document.createElement('a'); ln.href=u; ln.download='vector-atc-position-log.csv';
       document.body.appendChild(ln); ln.click(); ln.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000);
       return;
@@ -9228,7 +9431,10 @@ function pdfPaneHTML(){
     if(a==='rfctopic')return set({rfcTopic:+el.dataset.n,tab:'learn'});
     if(a==='rfclist')return set({rfcTopic:0,tab:'learn',aaFocus:''});
     if(a==='rfcref'){const cite=el.dataset.cite||''; openLearnCite(cite,{title:el.dataset.title||''}); return;}
-    if(a==='acadcheck'){ toggleRfcChk(el.dataset.k); syncChk(el.dataset.k); return; }
+    if(a==='acadcheck'){
+      if(profileOn() && String(el.dataset.k||'').indexOf('topic:')===0){ const T=topicFromKey(el.dataset.k); if(T){ profileToggleLessons(T); render(); return; } }
+      toggleRfcChk(el.dataset.k); syncChk(el.dataset.k); return;
+    }
     if(a==='rfctest'){ const n=+(el.dataset.n||S.rfcTopic||1); return set({rfcTopic:n,tab:'learn',learnMode:'test',tst:tstStart(S.pos,n,(tstLqs(tstTopic(S.pos,n)).length?'lqs':'prac')),tstNote:''}); }
     if(a==='rfcreveal')return set({rfcReveal:true});
     if(a==='rfcnext')return set({rfcQi:S.rfcQi+1,rfcReveal:false});
@@ -9330,6 +9536,13 @@ function pdfPaneHTML(){
     }
     else if(S.precOpen===key) S.precOpen='';
   }, true);
+  fetch('data/mock-users.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error('roster'); return r.json(); }).then(function(j){
+    MOCK_USERS=j;
+    if(profileSession()||S.screen==='profile') render();
+  }).catch(function(){
+    MOCK_ERR='The demo roster did not load.';
+    if(S.screen==='profile') render();
+  });
   render();
   navInit();
   render();
