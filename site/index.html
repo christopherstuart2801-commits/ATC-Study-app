@@ -18,14 +18,15 @@
 </head>
 <body style="margin:0;background:#07110e;">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 #vatc, #vatc *{ box-sizing:border-box; margin:0; padding:0; }
 #vatc{
   --bg:#070d0c; --panel:#0c1614; --panel2:#102019; --line:#1b2f29;
   --green:#39f0a0; --green2:#1f9c66; --green-dim:#0f3c2a;
   --amber:#ffb24d; --red:#ff6363; --sky:#5fd0ff; --text:#d6e7df; --muted:#7d9489;
-  /* v0.8.38 home-terminal. Local faces only — no network font. */
-  --fd:'Noto Sans Display','Arial Narrow','Liberation Sans',sans-serif;
-  --fm:'JetBrains Mono',ui-monospace,'Cascadia Mono',Menlo,monospace;
+  /* v0.8.36 type: Oswald for tabs, chips, and headings. JetBrains Mono for body text. */
+  --fd:'Oswald','Arial Narrow',sans-serif;
+  --fm:'JetBrains Mono',ui-monospace,Menlo,monospace;
   --sans:var(--fd);
   --font-head:var(--fd); --font-body:var(--fm); --font-mono:var(--fm);
   --fs-xs:10px; --fs-sm:11px; --fs-base:13px; --fs-md:14px; --fs-lg:16px; --fs-xl:20px; --fs-score:44px;
@@ -965,7 +966,7 @@
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.42'; /* learn-pub */
+  const APP_VER='0.8.43'; /* oswald */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
