@@ -106,6 +106,7 @@ self.addEventListener('install', function (event) {
       await caches.delete(SHELL);
       throw new Error(err);
     }
+    await self.skipWaiting();
   })());
 });
 
