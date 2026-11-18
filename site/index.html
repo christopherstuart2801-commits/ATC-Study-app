@@ -1000,7 +1000,7 @@
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.48'; /* demo-cstuart */
+  const APP_VER='0.8.49'; /* initials-login */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -6654,10 +6654,20 @@ function vectorAnswerHTML(query, hits){
     try{ const o=JSON.parse(localStorage.getItem(PROF_OVER)||''); if(o&&typeof o==='object'&&!Array.isArray(o)) return o; }catch(e){}
     return {};
   }
+  function profileNameKey(s){ return String(s||'').trim().toLowerCase(); }
+  function profileFindUser(name){
+    const key=profileNameKey(name);
+    if(!key||!MOCK_USERS) return null;
+    return (MOCK_USERS.user||[]).find(u=>profileNameKey(u.username)===key)||null;
+  }
+  async function profileHash(text){
+    const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(text||'')));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
   function profileBase(){
     const name=profileSession();
     if(!name||!MOCK_USERS) return null;
-    return (MOCK_USERS.user||[]).find(u=>u.username===name)||null;
+    return profileFindUser(name);
   }
   function profileOn(){ return !!profileBase(); }
   function profileUser(){
@@ -6752,10 +6762,15 @@ function vectorAnswerHTML(query, hits){
       paperRef:'', paperDate:'', fromPaper:false
     }));
   }
-  function profileLogin(user, pass){
+  async function profileLogin(user, pass){
     if(!MOCK_USERS) return MOCK_ERR||'The demo roster did not load.';
-    const row=(MOCK_USERS.user||[]).find(u=>u.username===String(user||'') && u.password===String(pass||''));
+    const row=profileFindUser(user);
     if(!row) return 'That username or password does not match.';
+    if(row.passwordHash){
+      let hex='';
+      try{ hex=await profileHash(pass); }catch(e){ return 'This browser could not check the password.'; }
+      if(hex!==String(row.passwordHash).toLowerCase()) return 'That username or password does not match.';
+    } else if(row.password!==String(pass||'')) return 'That username or password does not match.';
     profileSetSession(row.username);
     return '';
   }
@@ -6841,6 +6856,7 @@ function vectorAnswerHTML(query, hits){
           <label>Password<input id="prof-pass" type="password" autocomplete="current-password" maxlength="80"></label>
           <button type="button" class="btn" data-action="proflogin">Log in</button>
         </form>
+        <p class="log-lead">Username: your operating initials. Password: last 4 of EDIPI.</p>
         <p class="log-lead">Demo login: demo.jblake / demo123</p>`;
     } else {
       const tests=(facilityOf(who.facility)||{}).tests||[];
@@ -9299,9 +9315,10 @@ function pdfPaneHTML(){
     if(a==='proflogin'){
       const user=(document.getElementById('prof-user')||{}).value||'';
       const pass=(document.getElementById('prof-pass')||{}).value||'';
-      const err=profileLogin(user, pass);
-      if(err){ S.profileErr=err; render(); return; }
-      set({screen:'profile', profileErr:''});
+      profileLogin(user, pass).then(function(err){
+        if(err){ S.profileErr=err; render(); return; }
+        set({screen:'profile', profileErr:''});
+      });
       return;
     }
     if(a==='proflogout'){ profileSetSession(''); set({screen:'app', tab:'home', profileErr:''}); return; }

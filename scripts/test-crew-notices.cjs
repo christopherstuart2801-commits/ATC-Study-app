@@ -9,7 +9,7 @@ const html = fs.readFileSync(path.join(root, 'site/index.html'), 'utf8');
 assert.equal(html, fs.readFileSync(path.join(root, 'index.html'), 'utf8'), 'root/site mirror');
 assert(html.includes('TOWER_PAPER:BEGIN — v0.8.36'), 'tower packet signature kept');
 assert(html.includes('NO CONTROLLED DATA LOADED'));
-assert(html.includes("const APP_VER='0.8.48'"));
+assert(html.includes("const APP_VER='0.8.49'"));
 assert(html.includes("learn:'Your LQS ACADs with references and tests.'"));
 assert(html.includes("cards:'Study sets by position and ACAD.'"));
 assert(html.includes("reference:'7110.65, FACMAN, FLIP plates and more.'"));
