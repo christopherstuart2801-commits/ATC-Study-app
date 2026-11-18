@@ -34,7 +34,7 @@ const sandbox = { self: {} };
 vm.runInNewContext(fs.readFileSync(path.join(site, 'offline', 'manifest.js'), 'utf8'), sandbox);
 const manifest = sandbox.self.VATC_MANIFEST;
 
-ok('manifest version matches builder', manifest.version === VERSION && manifest.version === '0.8.48');
+ok('manifest version matches builder', manifest.version === VERSION && manifest.version === '0.8.49');
 ok('committed manifest matches enumeration', JSON.stringify(manifest) === JSON.stringify(built));
 ok('precache is an explicit list', Array.isArray(manifest.precache) && manifest.precache.every(p => typeof p === 'string' && !/[*?]/.test(p)));
 ok('lazy list is explicit pdfs only', manifest.lazy.length === 25 && manifest.lazy.every(p => p.startsWith('docs/') && p.endsWith('.pdf') && !/[*?]/.test(p)));
@@ -221,7 +221,12 @@ function envFor(fetchImpl, caches) {
 
   ok('page links the manifest and icons', /rel="manifest" href="manifest\.webmanifest"/.test(html) && /apple-touch-icon/.test(html) && /theme-color/.test(html));
   ok('page loads the guide and backup without a server', /src="offline\/head-guide\.js"/.test(html) && /src="offline\/backup\.js"/.test(html) && /src="offline\/client\.js"/.test(html));
-  ok('page version is 0.8.48 and progress stamp is unchanged', /const APP_VER='0\.8\.48'/.test(html) && /PROGRESS_VER='2026-10-21'/.test(html));
+  ok('page version is 0.8.49 and progress stamp is unchanged', /const APP_VER='0\.8\.49'/.test(html) && /PROGRESS_VER='2026-10-21'/.test(html));
+  const roster = JSON.parse(fs.readFileSync(path.join(site, 'data/mock-users.json'), 'utf8'));
+  const initials = (roster.user || []).find(u => u.username === 'cs');
+  ok('initials account stores a hash and not a password', initials && /^[a-f0-9]{64}$/.test(initials.passwordHash) && !Object.prototype.hasOwnProperty.call(initials, 'password'));
+  ok('other demo accounts keep a plaintext password', (roster.user || []).filter(u => u.username !== 'cs').every(u => typeof u.password === 'string' && u.password.length && !u.passwordHash));
+  ok('login hint names initials and keeps the demo account', /Username: your operating initials\. Password: last 4 of EDIPI\./.test(html) && /Demo login: demo\.jblake \/ demo123/.test(html) && /passwordHash/.test(html) && /subtle\.digest\('SHA-256'/.test(html));
   ok('guide and feedback routes are in the page', /data-action="guide"/.test(html) && /data-action="feedback"/.test(html) && /#guide/.test(html) && /#feedback/.test(html));
   ok('install guidance names Windows and iPhone without a store', /Add to Home Screen/.test(html) && /Install VECTOR ATC/.test(html) && /not an app-store download/.test(html) && /not a Department of Defense approval/.test(html));
   ok('import asks before replace', /Replace all study progress on this device with this backup/.test(html) && /Cancel leaves current progress unchanged/.test(html) && /VATC_BACKUP\.apply\(/.test(html));

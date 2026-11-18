@@ -791,8 +791,8 @@
       "testsPassed": []
     },
     {
-      "username": "demo.cstuart",
-      "password": "demo123",
+      "username": "cs",
+      "passwordHash": "bd5ce2fcf52fd92709e65388151d63cefc65b75f0bbc7dcc8d401764bdfae427",
       "name": "Cpl Stuart (Demo)",
       "facility": "NFG",
       "crew": "Crew 1",
