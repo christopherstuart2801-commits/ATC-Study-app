@@ -769,6 +769,26 @@
         "NYL ACAD 0520"
       ],
       "testsPassed": []
+    },
+    {
+      "username": "demo.harris",
+      "password": "demo123",
+      "name": "GySgt Harris (Demo)",
+      "facility": "NFG",
+      "crew": "Crew 1",
+      "role": "training_chief",
+      "accessCode": "NFG-DEMO-HARRIS",
+      "positions": [
+        {"code": "cd", "status": "not started"},
+        {"code": "gnd", "status": "not started"},
+        {"code": "lcl", "status": "not started"},
+        {"code": "rfd", "status": "not started"},
+        {"code": "fin", "status": "not started"},
+        {"code": "arr", "status": "not started"}
+      ],
+      "hoursLog": [],
+      "lessonsDone": [],
+      "testsPassed": []
     }
   ]
 }

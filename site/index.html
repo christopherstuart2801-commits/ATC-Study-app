@@ -1000,7 +1000,7 @@
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.46'; /* profile-rings */
+  const APP_VER='0.8.47'; /* demo-harris */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -6806,9 +6806,9 @@ function vectorAnswerHTML(query, hits){
     };
   }
   function profileInitials(name){
-    const parts=String(name||'').trim().split(/\s+/).filter(Boolean);
+    const parts=String(name||'').replace(/\([^)]*\)/g,'').trim().split(/\s+/).filter(p=>/[A-Za-z]/.test(p));
     if(!parts.length) return '·';
-    if(parts.length===1) return parts[0].slice(0,2).toUpperCase();
+    if(parts.length===1) return parts[0].replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase();
     return (parts[0][0]+parts[parts.length-1][0]).toUpperCase();
   }
   function profileDay(iso, withYear){
@@ -6867,7 +6867,8 @@ function vectorAnswerHTML(query, hits){
       }).join('');
       const hourRows=(who.hoursLog||[]).map(h=>`<div class="hours-row"><div class="left"><b>${escTxt(profileDay(h.date,false))} · ${escTxt(logPosName(h.position))}</b>${h.note?`<span>${escTxt(h.note)}</span>`:''}</div><div class="hrs">${escTxt(profileHrs(h.hours))}</div></div>`).join('')||'<p class="log-lead">No hours yet.</p>';
       const leg=(color,k,v,s)=>`<div class="leg"><div class="sw" style="background:${color}"></div><div class="k" style="color:${color}">${k}</div><div class="v" style="color:${color}">${v}</div><div class="s">${escTxt(s)}</div></div>`;
-      body=`<div class="idrow"><div class="avatar">${escTxt(profileInitials(who.name))}</div><div><h3>${escTxt(who.name)}</h3><div class="idmeta"><b>${escTxt(who.facility)}</b> · ${escTxt(who.crew)} · ${escTxt(PROF_ROLE[who.role]||who.role)}</div><div style="margin-top:6px"><span class="pill warn">DEMO DATA</span></div></div></div>
+      const admin=who.role==='training_chief'||who.role==='atcfo'||who.role==='admin';
+      body=`<div class="idrow"><div class="avatar">${escTxt(profileInitials(who.name))}</div><div><h3>${escTxt(who.name)}</h3><div class="idmeta"><b>${escTxt(who.facility)}</b> · ${escTxt(who.crew)} · ${escTxt(PROF_ROLE[who.role]||who.role)}</div><div style="margin-top:6px"><span class="pill warn">DEMO DATA</span>${admin?' <span class="pill ok">Admin</span>':''}</div></div></div>
         <div class="rings-card"><div class="rings"><svg viewBox="0 0 148 148">${ringArc(62,'#39f0a0',acadIds.length?complete.length/acadIds.length:0)}${ringArc(49,'#ffb24d',(who.positions||[]).length?quals.length/(who.positions||[]).length:0)}${ringArc(36,'#5fd0ff',tests.length?passed/tests.length:0)}</svg><div class="rings-center"><b>${escTxt(profileHrs(hours))}</b><span>Hours</span></div></div>
         <div class="legend">${leg('#39f0a0','Acads',complete.length+'/'+acadIds.length,'Complete')}${leg('#ffb24d','Quals',quals.length+'/'+(who.positions||[]).length,qualNames.join(', ')||'None')}${leg('#5fd0ff','Tests',passed+'/'+tests.length,'Passed')}</div></div>
         <h2 class="sec">Positions</h2><div class="pos-list">${posRows}</div>
