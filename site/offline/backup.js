@@ -23,7 +23,9 @@
     'vatc.mySets.v1': 'sets',
     'vatc.pkOpen.v1': 'boolmap',
     'vatc.positionRecords.v1': 'posrecs',
-    'vatc.studentLog.v1': 'stulog'
+    'vatc.studentLog.v1': 'stulog',
+    'vatc.localRole.v1': 'role',
+    'vatc.localCodes.v1': 'codes'
   };
 
   function isPlain(v) {
@@ -110,6 +112,18 @@
       var slog = root.VATC_LOG;
       if (!slog || !slog.validateStore) return walk(v, 0);
       return slog.validateStore(v);
+    }
+    if (kind === 'role') {
+      if (!isPlain(v)) return 'local role must be an object';
+      if (v.role !== 'admin' && v.role !== 'student') return 'local role must be student or admin';
+      if (v.code != null && typeof v.code !== 'string') return 'device code must be text';
+      if (v.code && v.code.length > 40) return 'device code is too long';
+      return '';
+    }
+    if (kind === 'codes') {
+      if (!isPlain(v) || !Array.isArray(v.codes)) return 'local codes must be a list';
+      if (v.codes.length > 200) return 'too many local codes';
+      return walk(v, 0);
     }
     if (kind === 'sets') {
       if (!Array.isArray(v)) return 'custom sets must be a list';

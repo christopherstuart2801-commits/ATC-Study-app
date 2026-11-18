@@ -5,7 +5,7 @@
   var GUIDE = {
     id: 'vector-head-guide',
     title: 'ATCFO onboarding',
-    version: '0.8.50',
+    version: '0.8.51',
     lead: 'For a facility training officer. Reading this does not sign you in and does not grant access.',
     sections: [
       {
@@ -24,7 +24,7 @@
         id: 'use',
         title: 'How to use the app',
         badge: 'NOW',
-        html: '<p>Home is the position list. Ask searches the loaded publications. Learn is the lesson cards and tests. Flashcards are the study sets. Reference is the publication shelf.</p><p>Profile is the sign-in. Students see those five study tabs. Admin is only for an admin-side demo role, and it opens the crew page.</p><p>Hours are a personal log on this device. Marks stay in this browser until a server exists.</p>'
+        html: '<p>Home is the position list. Ask searches the loaded publications. Learn is the lesson cards and tests. Flashcards are the study sets. Reference is the publication shelf.</p><p>Profile is the sign-in. Students see those five study tabs. Admin is only for an admin-side demo role, and it opens the crew page.</p><p>Hours are a personal log on this device. A workbook file can move those rows to a spreadsheet and back. That is not a live cloud sync. Marks stay in this browser until a server exists.</p>'
       },
       {
         id: 'feedback',
