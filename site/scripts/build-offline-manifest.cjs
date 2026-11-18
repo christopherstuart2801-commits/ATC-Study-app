@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = '0.8.50';
+const VERSION = '0.8.51';
 const SITE = path.join(__dirname, '..');
 
 const SHELL = [
@@ -12,6 +12,7 @@ const SHELL = [
   'manifest.webmanifest',
   'offline/core.js',
   'offline/position-records.js',
+  'offline/xlsx-lite.js',
   'offline/student-log.js',
   'offline/local-lq.js',
   'offline/backup.js',

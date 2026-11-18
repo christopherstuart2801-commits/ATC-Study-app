@@ -84,6 +84,7 @@
       paperDate: validDate(paperDate) ? paperDate : '',
       fromPaper: fromPaper,
       note: clip(rec.note, 500),
+      removed: !!rec.removed,
       savedAt: /^\d{4}-\d{2}-\d{2}T/.test(String(rec.savedAt || '')) ? String(rec.savedAt).slice(0, 40) : ''
     };
     return { ok: errors.length === 0, errors: errors, clean: clean };
@@ -145,11 +146,14 @@
     return { ok: true, errors: [], entry: entry };
   }
 
-  function remove(storage, id) {
+  function remove(storage, id, now) {
     var store = load(storage);
-    var next = store.entries.filter(function (row) { return row.id !== id; });
-    if (next.length === store.entries.length) return { ok: false };
-    return save(storage, { v: 1, entries: next });
+    var row = null;
+    for (var i = 0; i < store.entries.length; i++) if (store.entries[i].id === id) row = store.entries[i];
+    if (!row || row.removed) return { ok: false };
+    row.removed = true;
+    row.savedAt = (now ? new Date(now) : new Date()).toISOString();
+    return save(storage, store);
   }
 
   function addApproach(bucket, row) {
@@ -162,6 +166,7 @@
     var all = { hours: 0, entries: 0, approaches: {} };
     var by = {};
     (entries || []).forEach(function (row) {
+      if (row.removed) return;
       all.entries += 1;
       all.hours = roundHours(all.hours + row.hours);
       addApproach(all.approaches, row);
@@ -174,7 +179,7 @@
   }
 
   function recent(entries, position, limit) {
-    var rows = (entries || []).filter(function (row) { return !position || row.position === position; });
+    var rows = (entries || []).filter(function (row) { return !row.removed && (!position || row.position === position); });
     return rows.slice(0, limit || rows.length);
   }
 
@@ -192,6 +197,7 @@
     var head = ['date', 'trainee', 'initials', 'station', 'position', 'hours', 'activity', 'approaches', 'paper_ref', 'paper_date', 'from_paper', 'note'];
     var lines = [head.join(',')];
     (entries || []).forEach(function (row) {
+      if (row.removed) return;
       lines.push([
         row.date, row.trainee, row.initials, row.station, row.position, row.hours,
         row.activity, approachText(row), row.paperRef, row.paperDate, row.fromPaper ? 'yes' : 'no', row.note
@@ -200,8 +206,225 @@
     return lines.join('\n') + '\n';
   }
 
+  var COLS = ['id', 'trainee', 'initials', 'station', 'position', 'date', 'hours', 'activity', 'approaches', 'paper_ref', 'paper_date', 'from_paper', 'note', 'updated_at', 'removed'];
+  var ROLE_KEY = 'vatc.localRole.v1';
+  var CODES_KEY = 'vatc.localCodes.v1';
+
+  function active(entries) { return (entries || []).filter(function (row) { return !row.removed; }); }
+
+  function signature(entry) {
+    return JSON.stringify({
+      trainee: entry.trainee, initials: entry.initials, station: entry.station, position: entry.position,
+      date: entry.date, hours: entry.hours, activity: entry.activity, approaches: entry.approaches,
+      paperRef: entry.paperRef, paperDate: entry.paperDate, fromPaper: entry.fromPaper, note: entry.note,
+      removed: !!entry.removed
+    });
+  }
+
+  function parseApproaches(text) {
+    var errors = [];
+    var parts = String(text || '').split(';').map(function (s) { return s.trim(); }).filter(Boolean);
+    var list = parts.map(function (p) {
+      var m = /^(.*\D)\s+(\d+)$/.exec(p);
+      if (!m) return { type: p, count: 1 };
+      return { type: m[1].trim(), count: Number(m[2]) };
+    });
+    return { approaches: cleanApproaches(list, errors), errors: errors };
+  }
+
+  function sheetMatrix(entries) {
+    var rows = [COLS.slice()];
+    (entries || []).forEach(function (row) {
+      rows.push([
+        row.id, row.trainee, row.initials, row.station, row.position, row.date, String(row.hours),
+        row.activity, approachText(row), row.paperRef, row.paperDate, row.fromPaper ? 'yes' : 'no',
+        row.note, row.savedAt, row.removed ? 'yes' : 'no'
+      ]);
+    });
+    return rows;
+  }
+
+  function aboutRows() {
+    return [
+      ['VECTOR ATC position log'],
+      ['File exchange only. Not a live Microsoft 365 or OneDrive sync.'],
+      ['Not an official training form. Column names are generic.'],
+      ['updated_at is the last edit time. A newer time wins unless an admin chooses otherwise.'],
+      ['removed=yes hides the row when that edit is newer. A row left out of the sheet is kept in the app.']
+    ];
+  }
+
+  function rowsToEntries(matrix) {
+    if (!matrix || !matrix.length) return { entries: [], errors: ['The sheet is empty.'] };
+    var head = matrix[0].map(function (h) { return String(h || '').trim().toLowerCase(); });
+    var need = ['position', 'date', 'hours'];
+    for (var n = 0; n < need.length; n++) if (head.indexOf(need[n]) < 0) return { entries: [], errors: ['This sheet is not a position log. Expected columns include position, date, and hours.'] };
+    var idx = {};
+    head.forEach(function (h, i) { if (h) idx[h] = i; });
+    function cell(row, name) { var i = idx[name]; return i == null ? '' : row[i] == null ? '' : String(row[i]); }
+    var entries = [];
+    var errors = [];
+    for (var r = 1; r < matrix.length; r++) {
+      var row = matrix[r] || [];
+      if (!row.some(function (c) { return String(c || '').trim(); })) continue;
+      var parsed = parseApproaches(cell(row, 'approaches'));
+      var raw = {
+        id: cell(row, 'id').trim(),
+        trainee: cell(row, 'trainee'),
+        initials: cell(row, 'initials'),
+        station: cell(row, 'station') || 'KNFG',
+        position: cell(row, 'position'),
+        date: cell(row, 'date').slice(0, 10),
+        hours: cell(row, 'hours'),
+        activity: cell(row, 'activity'),
+        approaches: parsed.approaches,
+        paperRef: cell(row, 'paper_ref'),
+        paperDate: cell(row, 'paper_date').slice(0, 10),
+        fromPaper: /^(yes|true|1)$/i.test(cell(row, 'from_paper').trim()),
+        note: cell(row, 'note'),
+        removed: /^(yes|true|1)$/i.test(cell(row, 'removed').trim()),
+        savedAt: cell(row, 'updated_at').trim()
+      };
+      var checked = validateEntry(raw, '9999-12-31');
+      if (!checked.ok || parsed.errors.length) {
+        errors.push('Row ' + (r + 1) + ': ' + (parsed.errors.concat(checked.errors).join(' ')));
+        continue;
+      }
+      if (!checked.clean.id) checked.clean.id = '';
+      if (!checked.clean.savedAt) checked.clean.savedAt = '1970-01-01T00:00:00.000Z';
+      entries.push(checked.clean);
+    }
+    return { entries: entries, errors: errors };
+  }
+
+  function owns(entry, self) {
+    self = self || {};
+    var name = clip(self.name || self.trainee, 120).toLowerCase();
+    var ini = clip(self.initials, 8).toUpperCase();
+    var en = clip(entry.trainee, 120).toLowerCase();
+    var ei = clip(entry.initials, 8).toUpperCase();
+    if (!name && !ini) return !en && !ei;
+    if (name && en !== name) return false;
+    if (ini && ei && ei !== ini) return false;
+    return true;
+  }
+
+  function previewMerge(localEntries, sheetEntries) {
+    var local = {};
+    var sheet = {};
+    (localEntries || []).forEach(function (row) { if (row.id) local[row.id] = row; });
+    var news = [];
+    (sheetEntries || []).forEach(function (row) {
+      if (!row.id) news.push(row);
+      else sheet[row.id] = row;
+    });
+    var changes = [];
+    Object.keys(local).forEach(function (id) {
+      if (sheet[id]) return;
+      changes.push({ id: id, kind: 'app-only', winner: 'app', app: local[id], sheet: null });
+    });
+    Object.keys(sheet).forEach(function (id) {
+      var app = local[id];
+      var incoming = sheet[id];
+      if (!app) {
+        changes.push({ id: id, kind: incoming.removed ? 'ignore' : 'add', winner: 'sheet', app: null, sheet: incoming });
+        return;
+      }
+      if (signature(app) === signature(incoming)) {
+        changes.push({ id: id, kind: 'same', winner: 'app', app: app, sheet: incoming });
+        return;
+      }
+      var newer = (incoming.savedAt || '') > (app.savedAt || '') ? 'sheet' : 'app';
+      var tie = (incoming.savedAt || '') === (app.savedAt || '');
+      changes.push({ id: id, kind: tie ? 'conflict' : 'update', winner: tie ? 'app' : newer, app: app, sheet: incoming });
+    });
+    news.forEach(function (row, i) {
+      changes.push({ id: 'new:' + i, kind: 'add', winner: 'sheet', app: null, sheet: row });
+    });
+    return changes.filter(function (c) { return c.kind !== 'ignore' && c.kind !== 'same'; });
+  }
+
+  function applyMerge(localEntries, changes, picks, now) {
+    var local = {};
+    (localEntries || []).forEach(function (row) { if (row.id) local[row.id] = row; });
+    var stamp = (now ? new Date(now) : new Date()).toISOString();
+    changes.forEach(function (change) {
+      var choice = (picks && picks[change.id]) || change.winner;
+      if (change.kind === 'app-only' || choice === 'app') return;
+      var src = change.sheet;
+      if (!src) return;
+      var copy = JSON.parse(JSON.stringify(src));
+      if (!copy.id) copy.id = newId(now);
+      if (!copy.savedAt || copy.savedAt === '1970-01-01T00:00:00.000Z') copy.savedAt = stamp;
+      local[copy.id] = copy;
+    });
+    return Object.keys(local).map(function (id) { return local[id]; });
+  }
+
+  function loadRole(storage) {
+    try {
+      var data = JSON.parse(storage.getItem(ROLE_KEY) || '');
+      if (!data || (data.role !== 'admin' && data.role !== 'student')) return { v: 1, role: 'student', code: '' };
+      return { v: 1, role: data.role, code: String(data.code || '').slice(0, 40) };
+    } catch (e) { return { v: 1, role: 'student', code: '' }; }
+  }
+
+  function saveRole(storage, role) {
+    try {
+      storage.setItem(ROLE_KEY, JSON.stringify({ v: 1, role: role.role === 'admin' ? 'admin' : 'student', code: String(role.code || '').slice(0, 40) }));
+      return { ok: true };
+    } catch (e) { return { ok: false }; }
+  }
+
+  function becomeAdmin(storage, typed, newCode) {
+    var cur = loadRole(storage);
+    if (cur.code && String(typed || '') !== cur.code) return { ok: false, error: 'Device code does not match. Nothing was changed.' };
+    var code = cur.code || String(newCode || '');
+    if (code && code.length < 4) return { ok: false, error: 'Use at least 4 characters, or leave the device code empty.' };
+    return saveRole(storage, { role: 'admin', code: code });
+  }
+
+  function leaveAdmin(storage) {
+    var cur = loadRole(storage);
+    return saveRole(storage, { role: 'student', code: cur.code });
+  }
+
+  function loadCodes(storage) {
+    try {
+      var data = JSON.parse(storage.getItem(CODES_KEY) || '');
+      if (!data || !Array.isArray(data.codes)) return { v: 1, codes: [] };
+      return { v: 1, codes: data.codes.filter(function (c) { return c && c.id && c.label && c.code; }).slice(0, 200) };
+    } catch (e) { return { v: 1, codes: [] }; }
+  }
+
+  function saveCodes(storage, pack) {
+    try {
+      storage.setItem(CODES_KEY, JSON.stringify({ v: 1, codes: (pack.codes || []).slice(0, 200) }));
+      return { ok: true };
+    } catch (e) { return { ok: false }; }
+  }
+
+  function addCode(storage, label, now) {
+    var name = clip(label, 80);
+    if (!name) return { ok: false, error: 'Name who the code is for.' };
+    var pack = loadCodes(storage);
+    var code = Math.random().toString(36).slice(2, 6) + Math.random().toString(36).slice(2, 6);
+    pack.codes.unshift({ id: newId(now), label: name, code: code, created: (now ? new Date(now) : new Date()).toISOString() });
+    var wrote = saveCodes(storage, pack);
+    return wrote.ok ? { ok: true, code: code } : { ok: false, error: 'Could not save on this device.' };
+  }
+
+  function removeCode(storage, id) {
+    var pack = loadCodes(storage);
+    pack.codes = pack.codes.filter(function (c) { return c.id !== id; });
+    return saveCodes(storage, pack);
+  }
+
   root.VATC_LOG = {
     KEY: KEY,
+    ROLE_KEY: ROLE_KEY,
+    CODES_KEY: CODES_KEY,
+    COLS: COLS,
     localToday: localToday,
     validDate: validDate,
     validateEntry: validateEntry,
@@ -214,7 +437,21 @@
     totals: totals,
     recent: recent,
     csv: csv,
-    approachText: approachText
+    approachText: approachText,
+    active: active,
+    sheetMatrix: sheetMatrix,
+    aboutRows: aboutRows,
+    rowsToEntries: rowsToEntries,
+    owns: owns,
+    previewMerge: previewMerge,
+    applyMerge: applyMerge,
+    loadRole: loadRole,
+    saveRole: saveRole,
+    becomeAdmin: becomeAdmin,
+    leaveAdmin: leaveAdmin,
+    loadCodes: loadCodes,
+    addCode: addCode,
+    removeCode: removeCode
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.VATC_LOG;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

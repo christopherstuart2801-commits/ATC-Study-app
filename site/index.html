@@ -964,6 +964,10 @@
 #vatc .log-empty{ color:var(--muted); font-size:13px; line-height:1.4; border:1px dashed var(--line); border-radius:10px; padding:12px; }
 #vatc .log-err{ color:#ffb4b4; font-size:13px; min-height:0; flex:1 0 100%; }
 #vatc .log-err:empty{ display:none; }
+#vatc .log-preview{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin:0 0 12px; background:var(--panel); }
+#vatc .log-pick{ display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+#vatc .log-pick button.on{ color:#04150d; background:var(--green); border-color:var(--green); }
+#vatc details.log-tot > summary{ cursor:pointer; min-height:40px; color:var(--amber); font-family:var(--fd); letter-spacing:.08em; text-transform:uppercase; }
 @media(max-width:640px){
   #vatc .log-ap{ grid-template-columns:1fr; }
   #vatc .log-posline{ flex-direction:column; }
@@ -997,6 +1001,7 @@
 <div id="vatc"><a class="skip" href="#vatc-main">Skip to content</a><div class="grid-bg"></div><div class="wrap"><div id="app"></div></div></div>
 
 <script src="offline/position-records.js"></script>
+<script src="offline/xlsx-lite.js"></script>
 <script src="offline/student-log.js"></script>
 <script src="offline/local-lq.js"></script>
 <script src="offline/backup.js"></script>
@@ -1005,7 +1010,7 @@
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.50'; /* roster-fresh */
+  const APP_VER='0.8.51'; /* log-xlsx */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -6685,7 +6690,7 @@ function vectorAnswerHTML(query, hits){
       positions:base.positions||[],
       lessonsDone:Array.isArray(over.lessonsDone)?over.lessonsDone.slice():(base.lessonsDone||[]).slice(),
       testsPassed:Array.isArray(over.testsPassed)?over.testsPassed.slice():(base.testsPassed||[]).slice(),
-      hoursLog:Array.isArray(over.hoursLog)?over.hoursLog.map(h=>Object.assign({},h)):(base.hoursLog||[]).map(h=>Object.assign({},h))
+      hoursLog:Array.isArray(over.hoursLog)?over.hoursLog.map(h=>Object.assign({},h)):(base.hoursLog||[]).slice()
     };
   }
   function profileWrite(part, list){
@@ -6780,12 +6785,58 @@ function vectorAnswerHTML(query, hits){
     profileSetSession(row.username);
     return '';
   }
+  function logSelf(){ const who=loadTrainee()||{name:'', initials:''}; return {name:who.name, initials:who.initials}; }
+  function logIsAdmin(){ const api=globalThis.VATC_LOG; return !!(api && api.loadRole(localStorage).role==='admin'); }
+  function logSheetRows(){
+    const mine=profileHours();
+    if(mine) return mine;
+    const api=globalThis.VATC_LOG;
+    return api?api.load(localStorage).entries:[];
+  }
+  function logPreviewHTML(){
+    const p=S.logPreview;
+    if(!p) return '';
+    const rows=(p.changes||[]).map(change=>{
+      const pick=(S.logPicks&&S.logPicks[change.id])||change.winner;
+      const src=pick==='sheet'?change.sheet:change.app;
+      const who=src?(src.date||'')+' · '+(src.hours||0)+' h':'';
+      const picks=change.kind==='update'||change.kind==='conflict'?`<div class="log-pick"><button type="button" class="btn sec${pick==='app'?' on':''}" data-action="logpick" data-id="${escTxt(change.id)}" data-win="app">Keep app</button><button type="button" class="btn sec${pick==='sheet'?' on':''}" data-action="logpick" data-id="${escTxt(change.id)}" data-win="sheet">Use sheet</button></div>`:'';
+      const kind=change.kind==='add'?'New from the sheet':change.kind==='app-only'?'Only in the app, kept':change.kind==='conflict'?'Same time, pick one':'Newer edit selected';
+      return `<div class="log-row"><div class="log-meta">${escTxt(kind)}</div><div>${escTxt(who)}</div>${picks}</div>`;
+    }).join('');
+    const errs=(p.errors||[]).map(e=>`<p class="log-err">${escTxt(e)}</p>`).join('');
+    return `<div class="log-preview"><h2 class="sec">Workbook preview</h2><p class="log-lead">Nothing changes until you apply. This file stays on this device. It is not a live cloud sync.</p>${errs}${rows||'<p class="log-empty">No row changes.</p>'}<div class="log-tools"><button type="button" class="btn" data-action="logapply">Apply on this device</button><button type="button" class="btn sec" data-action="logcancel">Cancel</button></div></div>`;
+  }
+  function logExportRows(){ return logSheetRows(); }
+  async function logOnXlsx(el){
+    const api=globalThis.VATC_LOG;
+    const xlsx=globalThis.VATC_XLSX;
+    const f=el.files&&el.files[0];
+    try{ el.value=''; }catch(e){}
+    if(!f||!api||!xlsx){ set({logMsg:'The workbook tools did not load. Nothing was changed.'}); return; }
+    let sheets;
+    try{ sheets=await xlsx.readWorkbook(new Uint8Array(await f.arrayBuffer())); }
+    catch(err){ set({logMsg:'That file is not a position-log workbook. Nothing was changed.'}); return; }
+    const sheet=sheets.find(s=>/position log/i.test(s.name))||sheets[0];
+    const parsed=api.rowsToEntries(sheet.rows||[]);
+    if(!parsed.entries.length && parsed.errors.length){ set({logMsg:parsed.errors[0]}); return; }
+    const changes=api.previewMerge(logSheetRows(), parsed.entries);
+    const picks={};
+    changes.forEach(c=>{ picks[c.id]=c.winner; });
+    S.logPreview={changes:changes, errors:parsed.errors.slice()};
+    S.logPicks=picks;
+    set({logMsg:''});
+  }
+  function logDownload(bytes, name, type){
+    const blob=new Blob([bytes],{type:type});
+    const u=URL.createObjectURL(blob); const ln=document.createElement('a'); ln.href=u; ln.download=name;
+    document.body.appendChild(ln); ln.click(); ln.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000);
+  }
   const LOG_POS=[['cd','Clearance'],['gnd','Ground'],['lcl','Local'],['rfd','Flight Data'],['fin','Final'],['arr','Arrival'],['oth','Other']];
   function logPosName(k){ const row=LOG_POS.find(p=>p[0]===k); return row?row[1]:(PN[k]||k); }
   function logBody(){
     const api=globalThis.VATC_LOG;
-    const mine=profileHours();
-    const entries=mine||(api?api.load(localStorage).entries:[]);
+    const entries=logSheetRows();
     const rows=api?api.recent(entries, '', 200):entries;
     const tot=api?api.totals(entries):{all:{hours:0,entries:0}, byPosition:{}};
     const today=api?api.localToday():'';
@@ -6800,8 +6851,9 @@ function vectorAnswerHTML(query, hits){
       return `<div class="log-row"><div class="log-meta">${escTxt(r.date)} · ${escTxt(logPosName(r.position))} · ${escTxt(String(r.hours))} h</div>${note?`<div>${escTxt(note)}</div>`:''}<button type="button" class="btn sec" data-action="logdel" data-id="${escTxt(r.id)}">Remove</button></div>`;
     }).join(''):'<div class="log-empty">No entries yet.</div>';
     return `<h2 class="sec">Position log</h2>
-      <p class="log-lead">${profileOn()?escTxt(profileUser().name)+' · saved on this device. Not an official form.':'On this device. Not an official form.'}</p>
+      <p class="log-lead">${profileOn()?escTxt(profileUser().name)+' · saved on this device. Not an official form.':'On this device. Not an official form. A workbook file can move these rows to a spreadsheet and back. That is not a live cloud sync.'}</p>
       ${S.logMsg?`<p class="log-lead">${escTxt(S.logMsg)}</p>`:''}
+      ${logPreviewHTML()}
       <form class="log-form" data-log="entry" onsubmit="return false">
         <p id="log-err" class="log-err" role="alert"></p>
         <label>Date<input id="log-date" type="date" value="${escTxt(today)}"></label>
@@ -6812,10 +6864,9 @@ function vectorAnswerHTML(query, hits){
       </form>
       <div class="log-tot"><b>${escTxt(String(tot.all.hours))} h</b></div>
       ${by}
-      <div class="log-tools"><button type="button" class="btn sec" data-action="logcsv">Export CSV</button><button type="button" class="btn sec" data-action="logprint">Printable view</button><button type="button" class="btn sec" data-action="logback">Back</button></div>
-      <div class="log-print">${list}</div>`;
+      ${list}
+      <div class="log-tools"><button type="button" class="btn sec" data-action="logcsv">Export CSV</button><button type="button" class="btn sec" data-action="logxlsxout">Export workbook</button><label class="btn sec">Import workbook<input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" data-action="logxlsxin" hidden></label><button type="button" class="btn sec" data-action="logprint">Printable view</button><button type="button" class="btn sec" data-action="logback">Back</button></div>`;
   }
-  function logScreen(){ return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body">${logBody()}</div>${statusbar()}</div>`; }
   function logReadForm(){
     return {
       date:(document.getElementById('log-date')||{}).value||'',
@@ -6900,6 +6951,7 @@ function vectorAnswerHTML(query, hits){
     }
     return `<div class="stickhead">${topbar()}${who?tabs():''}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body">${body}</div>${statusbar()}</div>`;
   }
+
   function homeView(){
     /* v0.8.40 home-quiet: tiles keep the percent and ACAD pending. A plus opens the record form. */
     const tile=p=>{
@@ -9258,6 +9310,7 @@ function pdfPaneHTML(){
     if(a==='crwrestore'){ crewOnRestore(el); return; }
     if(a==='crwack'||a==='crwfield'){ crewOnField(a, el); return; }
     if(a==='importbackup'){ importBackupFile(el); return; }
+    if(a==='logxlsxin'){ logOnXlsx(el); return; }
     if(a==='myimport'||a==='myimpjson'){ myFile(a, el); return; }
     if(a==='citesel'){
       const cite=String(el.value||'').trim();
@@ -9373,6 +9426,8 @@ function pdfPaneHTML(){
     if(a==='logdel'){
       const api=globalThis.VATC_LOG;
       if(!api) return;
+      const row=(api.load(localStorage).entries||[]).find(e=>e.id===el.dataset.id);
+      if(row && !logIsAdmin() && !api.owns(row, logSelf())){ set({logMsg:'That row is not yours. Nothing was changed.'}); return; }
       let go=false;
       try{ go=window.confirm('Remove this log entry from this device?'); }catch(e){ go=false; }
       if(!go) return;
@@ -9388,6 +9443,64 @@ function pdfPaneHTML(){
       const wrote=api.remove(localStorage, el.dataset.id);
       if(!wrote.ok){ set({logMsg:'Could not remove that entry. Nothing else was changed.'}); return; }
       set({logMsg:'Removed from this device.'});
+      return;
+    }
+    if(a==='loggate'){ set({logGate:'ask', logMsg:''}); return; }
+    if(a==='logadmin'){
+      const api=globalThis.VATC_LOG;
+      const errEl=document.getElementById('log-gate-err');
+      if(!document.getElementById('log-ack')||!document.getElementById('log-ack').checked){ if(errEl) errEl.textContent='Check the box first. Nothing was changed.'; return; }
+      const typed=(document.getElementById('log-code')||{}).value||'';
+      const newer=(document.getElementById('log-newcode')||{}).value||'';
+      const res=api.becomeAdmin(localStorage, typed, newer);
+      if(!res.ok){ if(errEl) errEl.textContent=res.error; return; }
+      set({logGate:'', logMsg:'Local admin is on for this device. It is not sign-in.'});
+      return;
+    }
+    if(a==='logstudent'){ globalThis.VATC_LOG.leaveAdmin(localStorage); set({logGate:'', logMsg:'Student view. You see only your rows.'}); return; }
+    if(a==='logpick'){
+      S.logPicks=S.logPicks||{};
+      S.logPicks[el.dataset.id]=el.dataset.win;
+      const box=el.parentElement;
+      if(box) box.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b===el));
+      return;
+    }
+    if(a==='logcancel'){ S.logPreview=null; S.logPicks=null; set({logMsg:''}); return; }
+    if(a==='logapply'){
+      const api=globalThis.VATC_LOG;
+      if(!api||!S.logPreview) return;
+      const entries=api.applyMerge(logSheetRows(), S.logPreview.changes, S.logPicks||{});
+      let wrote={ok:false};
+      if(profileOn()){
+        profileWrite('hoursLog', entries.filter(e=>!e.removed).map(e=>({date:e.date, position:e.position, hours:e.hours, note:e.note||''})));
+        wrote={ok:true};
+      } else wrote=api.save(localStorage, {v:1, entries:entries});
+      S.logPreview=null; S.logPicks=null;
+      set({logMsg:wrote.ok?'Workbook applied on this device. Nothing was uploaded.':'Could not save the workbook. Nothing was changed.'});
+      return;
+    }
+    if(a==='logxlsxout'){
+      const api=globalThis.VATC_LOG;
+      const xlsx=globalThis.VATC_XLSX;
+      if(!api||!xlsx){ set({logMsg:'The workbook tools did not load.'}); return; }
+      const bytes=xlsx.writeWorkbook([
+        {name:'Position log', rows:api.sheetMatrix(logExportRows())},
+        {name:'About', rows:api.aboutRows()}
+      ]);
+      logDownload(bytes, 'vector-atc-position-log.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      return;
+    }
+    if(a==='logcodeadd'){
+      const api=globalThis.VATC_LOG;
+      if(!logIsAdmin()) return;
+      const res=api.addCode(localStorage, (document.getElementById('log-codelabel')||{}).value||'');
+      set({logMsg:res.ok?'Local code saved on this device. It does not sign anyone in.':res.error});
+      return;
+    }
+    if(a==='logcoderem'){
+      if(!logIsAdmin()) return;
+      globalThis.VATC_LOG.removeCode(localStorage, el.dataset.id);
+      set({logMsg:'Local code removed from this device.'});
       return;
     }
     if(a==='logcsv'){
