@@ -86,9 +86,9 @@ try {
   await page.goto(base + '#guide', { waitUntil: 'domcontentloaded', timeout: 60000 });
   await page.waitForSelector('[data-guide="vector-head"]', { timeout: 20000 });
   const guideText = await page.$eval('[data-guide="vector-head"]', el => el.innerText);
-  if (!/VECTOR HEAD GUIDE/.test(guideText)) fail('guide title missing'); else pass('hash #guide opens the Head Guide with no login');
-  if (!/Rosters — not enabled/.test(guideText) || !/does not include that updater/.test(guideText) || !/does not accept a chief code/.test(guideText)) fail('guide labels missing: ' + guideText.slice(0, 400));
-  else pass('guide labels later office work, planned updater, and chief code as not active');
+  if (!/ATCFO ONBOARDING/.test(guideText)) fail('guide title missing'); else pass('hash #guide opens onboarding with no login');
+  if (!/demo labels/.test(guideText) || !/does not download a newer official edition/.test(guideText)) fail('onboarding copy missing: ' + guideText.slice(0, 400));
+  else pass('onboarding covers demo codes and loaded publications');
   const manifest = await page.evaluate(async () => {
     const link = document.querySelector('link[rel="manifest"]');
     const res = await fetch(link.href);

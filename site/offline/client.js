@@ -14,7 +14,7 @@
     storage: null
   };
   var deferred = null;
-  var wantsReload = false;
+  var hadController = !!(root.navigator && root.navigator.serviceWorker && root.navigator.serviceWorker.controller);
   var started = false;
   var onChange = function () {};
 
@@ -131,10 +131,11 @@
 
   function acceptUpdate() {
     var sw = root.navigator.serviceWorker;
-    wantsReload = true;
+    hadController = true;
     sw.getRegistration().then(function (reg) {
       if (reg && reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-    }).catch(function () {});
+      else root.location.reload();
+    }).catch(function () { root.location.reload(); });
   }
 
   function watchRegistration(reg) {
@@ -190,7 +191,8 @@
       }
     });
     root.navigator.serviceWorker.addEventListener('controllerchange', function () {
-      if (wantsReload) { root.location.reload(); return; }
+      if (hadController) { root.location.reload(); return; }
+      hadController = true;
       state.sw = 'ready';
       refreshStatus();
       kickRefs();

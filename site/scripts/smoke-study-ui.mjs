@@ -125,11 +125,12 @@ try {
     focused: document.activeElement && document.activeElement.getAttribute('data-t'),
     selected: document.activeElement && document.activeElement.getAttribute('aria-selected')
   }));
-  ok('ArrowRight moves from Reference to Crew', crewTab.on === 'crew' && crewTab.focused === 'crew' && crewTab.selected === 'true');
+  ok('ArrowRight from Reference wraps to Home when Admin is hidden', crewTab.on === 'home' && crewTab.focused === 'home' && crewTab.selected === 'true');
   await desk.page.keyboard.press('Home');
   ok('Home key returns to the first tab', await desk.page.evaluate(() => document.activeElement && document.activeElement.getAttribute('data-t') === 'home' && document.querySelector('.tab.on').getAttribute('data-t') === 'home'));
   await desk.page.keyboard.press('End');
-  ok('End key selects Crew', await desk.page.evaluate(() => document.activeElement && document.activeElement.getAttribute('data-t') === 'crew'));
+  ok('End key selects Reference', await desk.page.evaluate(() => document.activeElement && document.activeElement.getAttribute('data-t') === 'reference'));
+  ok('signed-out nav has no Admin tab', await desk.page.evaluate(() => !document.querySelector('.tab[data-t="admin"]') && !document.querySelector('.tab[data-t="crew"]')));
   await desk.page.click('.tab[data-t="home"]');
 
   await desk.page.click('.tab[data-t="learn"]');
@@ -137,11 +138,7 @@ try {
   ok('Learn explainer unchanged', true);
   await desk.page.screenshot({ path: path.join(artifacts, 'study-learn-desktop.png') });
 
-  await desk.page.click('.tab[data-t="crew"]');
-  await desk.page.waitForSelector('[data-crw="board"]');
-  const crew = await desk.page.evaluate(() => document.querySelector('[data-crw="board"]').textContent);
-  ok('crew leads with codes and editions, records stay available', /training office/i.test(crew) && /access codes/i.test(crew) && /coming soon/i.test(crew) && /does not issue a code/i.test(crew) && /july 2026/i.test(crew) && /training aid on this device only/i.test(crew) && /take photo/i.test(crew) && /not uploaded/i.test(crew));
-  await desk.page.screenshot({ path: path.join(artifacts, 'study-crew-desktop.png') });
+  ok('signed-out Learn is still the study tabs', await desk.page.evaluate(() => !document.querySelector('.tab[data-t="admin"]')));
 
   const beforeScroll = await desk.page.evaluate(() => {
     const sm = document.querySelector('.scrollmain');
@@ -162,7 +159,7 @@ try {
       scroll: document.querySelector('.scrollmain').scrollTop
     };
   });
-  ok('device dialog is labeled and keeps install, guide, and backup', device.role === 'dialog' && device.modal === 'true' && /THIS DEVICE/.test(device.text) && /EXPORT BACKUP/.test(device.text) && /HEAD GUIDE/.test(device.text) && /Nothing is uploaded/.test(device.text) && /Add to Home Screen/.test(device.text) && /not a Department of Defense approval/.test(device.text));
+  ok('device dialog is labeled and keeps install, guide, and backup', device.role === 'dialog' && device.modal === 'true' && /THIS DEVICE/.test(device.text) && /EXPORT BACKUP/.test(device.text) && /ONBOARDING/.test(device.text) && /Nothing is uploaded/.test(device.text) && /Add to Home Screen/.test(device.text) && /not a Department of Defense approval/.test(device.text));
   ok('opening device focuses the first control and keeps the page scroll', device.inside && device.active === 'retryrefs' && device.active === device.first && device.scroll === beforeScroll);
   await desk.page.keyboard.down('Shift');
   await desk.page.keyboard.press('Tab');
@@ -190,7 +187,7 @@ try {
     panel: document.getElementById('vatc-main') && document.getElementById('vatc-main').getAttribute('role'),
     dialog: !!document.querySelector('.modal.device')
   }));
-  ok('Head Guide from the dialog focuses the guide heading', !guideFocus.dialog && guideFocus.tag === 'H2' && /VECTOR HEAD GUIDE/i.test(guideFocus.text || '') && guideFocus.panel !== 'tabpanel');
+  ok('Head Guide from the dialog focuses the guide heading', !guideFocus.dialog && guideFocus.tag === 'H2' && /ATCFO ONBOARDING/i.test(guideFocus.text || '') && guideFocus.panel !== 'tabpanel');
   await desk.page.click('[data-action="device"]');
   await desk.page.waitForSelector('.modal.device');
   await desk.page.evaluate(() => document.querySelector('[data-action="feedback"]').click());
@@ -222,19 +219,7 @@ try {
   ok('mobile Escape returns to Device', await phone.page.evaluate(() => !document.querySelector('.modal.device') && document.activeElement && document.activeElement.getAttribute('data-action') === 'device'));
   await phone.page.focus('.tab[data-t="home"]');
   await phone.page.keyboard.press('ArrowLeft');
-  ok('mobile ArrowLeft from Home wraps to Crew', await phone.page.evaluate(() => document.activeElement && document.activeElement.getAttribute('data-t') === 'crew'));
-
-  await phone.page.evaluate(() => document.querySelector('.tab[data-t="crew"]').scrollIntoView({ inline: 'nearest', block: 'nearest' }));
-  await phone.page.click('.tab[data-t="crew"]');
-  await phone.page.waitForSelector('[data-crw="board"]');
-  const crewFit = await phone.page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1);
-  ok('mobile crew does not widen the page', crewFit);
-  const phoneCrew = await phone.page.evaluate(() => document.body.innerText);
-  ok('mobile crew leads with the training office', /access codes/i.test(phoneCrew) && /coming soon/i.test(phoneCrew) && /july 2026/i.test(phoneCrew));
-  await phone.page.screenshot({ path: path.join(artifacts, 'study-crew-mobile.png') });
-  await phone.page.click('details.crw-records > summary');
-  const phoneRecords = await phone.page.evaluate(() => document.body.innerText);
-  ok('mobile crew records show both crews', /crew 1/i.test(phoneRecords) && /crew 2/i.test(phoneRecords) && /take photo/i.test(phoneRecords));
+  ok('mobile ArrowLeft from Home wraps to Reference', await phone.page.evaluate(() => document.activeElement && document.activeElement.getAttribute('data-t') === 'reference'));
 
   await phone.page.click('.tab[data-t="cards"]');
   ok('Flashcards explainer unchanged', (await phone.page.$eval('.tabhint', el => el.textContent)) === 'Study sets by position and ACAD.');

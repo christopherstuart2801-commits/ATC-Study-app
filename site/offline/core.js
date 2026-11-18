@@ -43,11 +43,13 @@
     var method = String(req.method || 'GET').toUpperCase();
     if (method !== 'GET') return 'ignore';
     if (headerGet(req.headers, 'x-vatc-net') === '1') return 'passthrough';
-    if (req.cache === 'reload' || req.cache === 'no-store') return 'passthrough';
     var loc = locate(scope, req.url || '');
     if (loc.where !== 'in') return loc.where;
     var rel = loc.rel;
     var lower = rel.toLowerCase();
+    /* Demo roster changes between versions. Online, always take the network copy and refresh the cache. Offline, the saved copy is the fallback. */
+    if (lower === 'data/mock-users.json') return 'roster';
+    if (req.cache === 'reload' || req.cache === 'no-store') return 'passthrough';
     if (lower === 'sw.js' || lower.indexOf('sw.js?') === 0) return 'passthrough';
     if (/^api\//.test(lower) || lower.indexOf('/api/') >= 0 || lower.indexOf('supabase') >= 0) return 'passthrough';
     if (lower.indexOf('__vatc/') === 0) return 'passthrough';
@@ -152,6 +154,23 @@
 
   function statusRel() { return '__vatc/ref-status.json'; }
 
+  async function fetchRoster(env, info) {
+    var loc = locate(env.scope, info.url);
+    var href = loc.href;
+    try {
+      var res = await env.fetch(href, { cache: 'reload', headers: { 'X-VATC-Net': '1' } });
+      if (isCacheable(res)) {
+        var cache = await env.caches.open(env.shellCache);
+        await cache.put(href, res.clone());
+        return res;
+      }
+    } catch (e) { /* offline or a failed revalidation: use the saved roster */ }
+    var opened = await env.caches.open(env.shellCache);
+    var hit = await opened.match(href);
+    if (hit) return hit;
+    return textResponse(503, 'The demo roster is not saved on this device, and the network is unavailable.');
+  }
+
   async function fetchShell(env) {
     var url = canonical(env.scope, 'index.html');
     try {
@@ -214,6 +233,7 @@
     var kind = classify(env.scope, env.manifest, info);
     if (kind === 'ignore' || kind === 'passthrough') return null;
     if (kind === 'navigate') return fetchShell(env);
+    if (kind === 'roster') return fetchRoster(env, info);
     var loc = locate(env.scope, info.url);
     if (kind === 'precache') return fetchAsset(env, env.shellCache, loc.href, request, info);
     if (kind === 'lazy') return fetchLazy(env, request, info);

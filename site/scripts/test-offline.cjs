@@ -34,7 +34,7 @@ const sandbox = { self: {} };
 vm.runInNewContext(fs.readFileSync(path.join(site, 'offline', 'manifest.js'), 'utf8'), sandbox);
 const manifest = sandbox.self.VATC_MANIFEST;
 
-ok('manifest version matches builder', manifest.version === VERSION && manifest.version === '0.8.49');
+ok('manifest version matches builder', manifest.version === VERSION && manifest.version === '0.8.50');
 ok('committed manifest matches enumeration', JSON.stringify(manifest) === JSON.stringify(built));
 ok('precache is an explicit list', Array.isArray(manifest.precache) && manifest.precache.every(p => typeof p === 'string' && !/[*?]/.test(p)));
 ok('lazy list is explicit pdfs only', manifest.lazy.length === 25 && manifest.lazy.every(p => p.startsWith('docs/') && p.endsWith('.pdf') && !/[*?]/.test(p)));
@@ -73,6 +73,8 @@ ok('api is not cached', offline.classify(scope, manifest, req(scope + 'api/progr
 ok('supabase path is not cached', offline.classify(scope, manifest, req(scope + 'supabase/auth')) === 'passthrough');
 ok('reload bypasses the cache', offline.classify(scope, manifest, req(scope + 'index.html', { cache: 'reload' })) === 'passthrough');
 ok('network header bypasses the cache', offline.classify(scope, manifest, req(scope + 'index.html', { headers: { get: (n) => n === 'x-vatc-net' ? '1' : null } })) === 'passthrough');
+ok('demo roster is network-first', offline.classify(scope, manifest, req(scope + 'data/mock-users.json')) === 'roster');
+ok('demo roster stays network-first when the page skips the HTTP cache', offline.classify(scope, manifest, req(scope + 'data/mock-users.json', { cache: 'no-store' })) === 'roster');
 ok('canonical url keeps the project prefix', offline.canonical(scope, 'docs/JO-7110.65BB.pdf') === scope + 'docs/JO-7110.65BB.pdf');
 
 function memCaches() {
@@ -105,6 +107,22 @@ function envFor(fetchImpl, caches) {
   const offlineEnv = envFor(async () => { throw new Error('offline'); }, caches);
   const nav = await offline.handleFetch(offlineEnv, { url: scope, method: 'GET' }, req(scope, { mode: 'navigate', destination: 'document' }));
   ok('offline reload serves the shell', nav && nav.status === 200 && (await nav.text()).includes('VECTOR ATC'));
+
+  const rosterUrl = scope + 'data/mock-users.json';
+  const rosterCache = await caches.open(offline.cacheNames(manifest.version).shell);
+  await rosterCache.put(rosterUrl, new Response('{"user":[{"username":"demo.old"}]}', { status: 200, headers: { 'Content-Type': 'application/json' } }));
+  let rosterNet = 0;
+  const rosterEnv = envFor(async () => {
+    rosterNet++;
+    return new Response('{"user":[{"username":"demo.cstuart"}]}', { status: 200, headers: { 'Content-Type': 'application/json' } });
+  }, caches);
+  const freshRoster = await offline.handleFetch(rosterEnv, { url: rosterUrl, method: 'GET' }, req(rosterUrl, { cache: 'no-store' }));
+  const freshText = await freshRoster.text();
+  const savedRoster = await rosterCache.match(rosterUrl);
+  ok('online roster replaces the cached copy', rosterNet === 1 && freshRoster.status === 200 && /demo\.cstuart/.test(freshText) && savedRoster && /demo\.cstuart/.test(await savedRoster.text()));
+  const staleEnv = envFor(async () => { throw new Error('offline'); }, caches);
+  const staleRoster = await offline.handleFetch(staleEnv, { url: rosterUrl, method: 'GET' }, req(rosterUrl));
+  ok('offline roster falls back to the saved copy', staleRoster.status === 200 && /demo\.cstuart/.test(await staleRoster.text()));
 
   const pdfUrl = scope + 'docs/flip/KNFG-AIRPORT-DIAGRAM.pdf';
   const missed = await offline.handleFetch(offlineEnv, { url: pdfUrl, method: 'GET' }, req(pdfUrl));
@@ -147,9 +165,11 @@ function envFor(fetchImpl, caches) {
   const drop = offline.cachesToDelete(['vatc-shell-0.8.36', 'vatc-refs-0.8.36', names.shell, names.refs, 'other-cache'], [names.shell, names.refs]);
   ok('version upgrade deletes only old VECTOR caches', drop.length === 2 && drop.includes('vatc-shell-0.8.36') && drop.includes('vatc-refs-0.8.36') && !drop.includes('other-cache'));
 
-  ok('service worker does not touch storage or skip waiting on install', !/localStorage\s*\.|indexedDB\s*\.|caches\.addAll|supabase/i.test(sw) && sw.indexOf('skipWaiting') === sw.lastIndexOf('skipWaiting') && /SKIP_WAITING/.test(sw.slice(0, sw.indexOf('skipWaiting'))));
+  ok('service worker does not touch storage', !/localStorage\s*\.|indexedDB\s*\.|caches\.addAll|supabase/i.test(sw));
+  ok('a finished install skips waiting and activate claims clients', /shellInstallError\(result\)/.test(sw) && /await self\.skipWaiting\(\)/.test(sw) && /clients\.claim\(\)/.test(sw) && /SKIP_WAITING/.test(sw));
   ok('service worker imports the enumerated manifest', /importScripts\('offline\/core\.js', 'offline\/manifest\.js'\)/.test(sw));
   ok('client update does not clear storage', !/localStorage\.clear|removeItem\('vatc/.test(client) && /Progress on this device stays/.test(client));
+  ok('a replaced service worker reloads the open page', /controllerchange/.test(client) && /hadController/.test(client) && /location\.reload\(\)/.test(client));
   ok('client registers the worker and install prompt', /serviceWorker\.register\('sw\.js'\)/.test(client) && /beforeinstallprompt/.test(client));
 
   function memStorage(initial) {
@@ -206,14 +226,12 @@ function envFor(fetchImpl, caches) {
   const emptyApply = emptyParsed.ok ? backup.apply(cleared, emptyParsed.backup, { progressVer: '2026-10-21' }) : emptyParsed;
   ok('replace drops keys the backup does not contain', emptyApply.ok && cleared.getItem('vatc.fcStats') == null && JSON.parse(cleared.getItem('vatc.pkOpen.v1')).quick === true);
 
-  ok('head guide is for a successor and needs no login', /no login/i.test(guide.lead) && guide.sections.some(s => s.id === 'chief' && s.badge === 'LATER'));
-  const office = guide.sections.find(s => s.id === 'office');
-  ok('office rosters, progress, tests, and reviews are labeled later', office && office.badge === 'LATER' && /Rosters — not enabled/.test(office.html) && /Office view of progress — not enabled/.test(office.html) && /Tests the office assigns or reviews — not enabled/.test(office.html) && /Reviews — not enabled/.test(office.html) && /On-device practice tests/.test(office.html));
+  ok('onboarding is for a training officer and does not sign anyone in', /does not sign you in/i.test(guide.lead) && guide.sections.some(s => s.id === 'crews' && /demo labels/.test(s.html)));
   const pubs = guide.sections.find(s => s.id === 'pubs');
-  ok('publication updater is planned and not claimed', pubs && pubs.badge === 'PLANNED' && /does not include that updater/.test(pubs.html) && /official-publication updater is planned/.test(pubs.html));
-  ok('offline study and device backup are labeled now', guide.sections.find(s => s.id === 'offline').badge === 'NOW' && guide.sections.find(s => s.id === 'backup').badge === 'NOW' && /not cloud sync/.test(guide.sections.find(s => s.id === 'backup').html));
-  const chief = guide.sections.find(s => s.id === 'chief').html;
-  ok('chief code is outside the app and does not elevate', /one-time code issued outside this app/.test(chief) && /does not accept a chief code/.test(chief) && /cannot elevate access/.test(chief) && !/CHIEF_CODE|activationCode|adminPassword/.test(JSON.stringify(guide)));
+  ok('onboarding does not claim a publication updater', pubs && pubs.badge === 'NOW' && /does not download a newer official edition/.test(pubs.html));
+  const use = guide.sections.find(s => s.id === 'use');
+  ok('onboarding names the study tabs and admin', use && /Students see those five study tabs/.test(use.html) && /Admin is only for an admin-side demo role/.test(use.html));
+  ok('onboarding stores no chief code', !/CHIEF_CODE|activationCode|adminPassword/.test(JSON.stringify(guide)));
   ok('guide has no network and no secret', !/fetch\(|XMLHttpRequest|supabase|mailto:/i.test(JSON.stringify(guide) + guide.feedbackDraft));
   const draft = guide.feedbackDraft('Radio check', { version: '0.8.37', online: false, sw: 'ready', shellReady: true, refs: { cached: 2, total: 25, failed: [] } });
   ok('feedback draft says it was not sent', /did not send it/.test(draft) && /Radio check/.test(draft) && /none on this version/.test(draft));
@@ -221,12 +239,13 @@ function envFor(fetchImpl, caches) {
 
   ok('page links the manifest and icons', /rel="manifest" href="manifest\.webmanifest"/.test(html) && /apple-touch-icon/.test(html) && /theme-color/.test(html));
   ok('page loads the guide and backup without a server', /src="offline\/head-guide\.js"/.test(html) && /src="offline\/backup\.js"/.test(html) && /src="offline\/client\.js"/.test(html));
-  ok('page version is 0.8.49 and progress stamp is unchanged', /const APP_VER='0\.8\.49'/.test(html) && /PROGRESS_VER='2026-10-21'/.test(html));
+  ok('page version is 0.8.50 and progress stamp is unchanged', /const APP_VER='0\.8\.50'/.test(html) && /PROGRESS_VER='2026-10-21'/.test(html));
   const roster = JSON.parse(fs.readFileSync(path.join(site, 'data/mock-users.json'), 'utf8'));
   const initials = (roster.user || []).find(u => u.username === 'cs');
   ok('initials account stores a hash and not a password', initials && /^[a-f0-9]{64}$/.test(initials.passwordHash) && !Object.prototype.hasOwnProperty.call(initials, 'password'));
   ok('other demo accounts keep a plaintext password', (roster.user || []).filter(u => u.username !== 'cs').every(u => typeof u.password === 'string' && u.password.length && !u.passwordHash));
   ok('login hint names initials and keeps the demo account', /Username: your operating initials\. Password: last 4 of EDIPI\./.test(html) && /Demo login: demo\.jblake \/ demo123/.test(html) && /passwordHash/.test(html) && /subtle\.digest\('SHA-256'/.test(html));
+  ok('username match trims and ignores case', /function profileNameKey/.test(html) && /trim\(\)\.toLowerCase\(\)/.test(html) && /profileFindUser\(user\)/.test(html));
   ok('guide and feedback routes are in the page', /data-action="guide"/.test(html) && /data-action="feedback"/.test(html) && /#guide/.test(html) && /#feedback/.test(html));
   ok('install guidance names Windows and iPhone without a store', /Add to Home Screen/.test(html) && /Install VECTOR ATC/.test(html) && /not an app-store download/.test(html) && /not a Department of Defense approval/.test(html));
   ok('import asks before replace', /Replace all study progress on this device with this backup/.test(html) && /Cancel leaves current progress unchanged/.test(html) && /VATC_BACKUP\.apply\(/.test(html));

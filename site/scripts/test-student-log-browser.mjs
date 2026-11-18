@@ -58,8 +58,7 @@ try {
     ['ask', 'ask', 'tab_ask_mobile.png'],
     ['learn', 'learn', 'tab_learn_mobile.png'],
     ['cards', 'cards', 'tab_flashcards_mobile.png'],
-    ['reference', 'reference', 'tab_reference_mobile.png'],
-    ['crew', 'crew', 'tab_crew_mobile.png']
+    ['reference', 'reference', 'tab_reference_mobile.png']
   ];
   for (const [name, tab, file] of shots) {
     if (tab) {
