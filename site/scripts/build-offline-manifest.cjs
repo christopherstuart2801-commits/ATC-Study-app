@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = '0.8.46';
+const VERSION = '0.8.47';
 const SITE = path.join(__dirname, '..');
 
 const SHELL = [
