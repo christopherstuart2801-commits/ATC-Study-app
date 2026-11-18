@@ -64,6 +64,37 @@
 #vatc h2.sec svg{ width:15px; height:15px; flex:none; }
 #vatc .pill{ font-size:9px; letter-spacing:.14em; padding:3px 8px; border-radius:20px; border:1px solid var(--line); color:var(--muted); text-transform:uppercase; }
 #vatc .pill.warn{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.06);} #vatc .pill.ok{ color:var(--green); border-color:var(--green-dim);}
+#vatc .pill.train{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.12); }
+#vatc .pill.dim{ color:#4d635a; border-color:#1b2f29; }
+#vatc .idrow{ display:flex; gap:12px; align-items:center; margin:0 0 14px; }
+#vatc .avatar{ width:46px; height:46px; border-radius:12px; flex:none; display:flex; align-items:center; justify-content:center; background:#102019; border:1px solid var(--green2); color:var(--green); font-family:var(--fd); font-weight:700; letter-spacing:.06em; }
+#vatc .idrow h3{ font-family:var(--fd); font-size:18px; letter-spacing:.08em; margin:0 0 2px; text-transform:uppercase; }
+#vatc .idmeta{ font-size:12px; color:var(--muted); }
+#vatc .idmeta b{ color:var(--text); font-weight:600; }
+#vatc .rings-card{ display:flex; align-items:center; gap:14px; padding:16px 14px; margin:0 0 8px; background:linear-gradient(135deg,#0f1e19,#0a1412); border:1px solid var(--line); border-radius:14px; position:relative; overflow:hidden; }
+#vatc .rings-card::after{ content:''; position:absolute; right:-36px; top:-36px; width:160px; height:160px; border-radius:50%; background:radial-gradient(circle,rgba(57,240,160,.10),transparent 70%); }
+#vatc .rings{ position:relative; width:148px; height:148px; flex:none; z-index:1; }
+#vatc .rings svg{ width:148px; height:148px; display:block; }
+#vatc .rings-center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; }
+#vatc .rings-center b{ font-family:var(--fd); font-size:28px; color:var(--text); letter-spacing:.02em; line-height:1; font-weight:700; }
+#vatc .rings-center span{ font-family:var(--fd); font-size:9px; letter-spacing:.18em; color:var(--muted); text-transform:uppercase; margin-top:3px; }
+#vatc .legend{ flex:1; display:flex; flex-direction:column; gap:10px; z-index:1; min-width:0; }
+#vatc .leg{ display:grid; grid-template-columns:8px 1fr auto; gap:8px; align-items:baseline; }
+#vatc .leg .sw{ width:8px; height:8px; border-radius:50%; margin-top:4px; }
+#vatc .leg .k{ font-family:var(--fd); font-size:10px; letter-spacing:.14em; text-transform:uppercase; }
+#vatc .leg .v{ font-family:var(--fd); font-size:18px; font-weight:700; letter-spacing:.02em; line-height:1; }
+#vatc .leg .s{ grid-column:2; font-size:10px; color:var(--muted); margin-top:-4px; }
+#vatc .pos-list{ display:flex; flex-direction:column; }
+#vatc .pos-row{ display:flex; align-items:center; gap:10px; padding:9px 0; border-top:1px solid var(--line); }
+#vatc .pos-row:first-child{ border-top:0; padding-top:0; }
+#vatc .pos-row .code{ font-family:var(--fd); font-size:13px; letter-spacing:.1em; width:36px; }
+#vatc .pos-row .name{ flex:1; font-size:11px; color:var(--muted); min-width:0; }
+#vatc .pos-row .when{ font-size:10px; color:var(--muted); text-align:right; }
+#vatc .hours-row{ display:flex; justify-content:space-between; gap:8px; padding:9px 0; border-top:1px solid var(--line); font-size:12px; }
+#vatc .hours-row:first-of-type{ border-top:0; padding-top:0; }
+#vatc .hours-row .left b{ display:block; font-weight:500; color:var(--text); }
+#vatc .hours-row .left span{ color:var(--muted); font-size:10px; }
+#vatc .hours-row .hrs{ color:var(--green); font-family:var(--fd); font-size:16px; font-weight:700; }
 #vatc .pill.sample{ color:var(--amber); border-color:#5a431d; background:rgba(255,178,77,.08); }
 
 /* tabs — mint blocks. Home matches v0.8.36 (5106a90): active tab filled mint. */
@@ -969,7 +1000,7 @@
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.45'; /* demo-login */
+  const APP_VER='0.8.46'; /* profile-rings */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -5289,7 +5320,7 @@ function vectorAnswerHTML(query, hits){
   function topbar(){ return `<div class="top"><button type="button" class="navback" data-action="navback" aria-label="Back" title="Back"${(NAV.ready&&NAV.n>0)?'':' disabled'}>←</button><div class="brand"><div class="logo">${I.radar}</div><div><h1>VECTOR ATC</h1><div class="sub">MARINE AIR TRAFFIC CONTROL</div></div></div>
     <div class="stnchip">${S.tab==='home'?'':S.screen!=='app'?'':`<div style="text-align:right"><div>${S.station} · ${PN[S.pos]}</div><div style="font-size:9px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">${S.station==='KNKX'?'MCAS Miramar':'MCAS Camp Pendleton · Munn Field'}</div></div>`}
     <button type="button" class="btn-ghost" data-action="profile" aria-label="Profile">PROFILE</button><button type="button" class="btn-ghost" data-action="stations" aria-label="Choose station">STATIONS</button></div></div>`; }
-  function statusbar(){ const d=deviceSnap(); return `<div class="status"><span><span class="dot${d.online?'':' off'}" id="netdot"></span> <span id="netlab">${d.online?'ONLINE':'OFFLINE'}</span> · NO CONTROLLED DATA LOADED</span><span><button type="button" class="btn-ghost" data-action="device" aria-label="This device">DEVICE</button> v${APP_VER}</span></div>`; }
+  function statusbar(){ const d=deviceSnap(); const tag=(S.screen==='profile'&&profileOn())?'DEMO DATA':'NO CONTROLLED DATA LOADED'; return `<div class="status"><span><span class="dot${d.online?'':' off'}" id="netdot"></span> <span id="netlab">${d.online?'ONLINE':'OFFLINE'}</span> · ${tag}</span><span><button type="button" class="btn-ghost" data-action="device" aria-label="This device">DEVICE</button> v${APP_VER}</span></div>`; }
   let deviceOpenerSel='';
   function focusEl(el){ if(!el) return false; try{ el.focus({preventScroll:true}); }catch(e){ try{ el.focus(); }catch(_){} } return document.activeElement===el; }
   function deviceFocusables(){
@@ -6774,12 +6805,35 @@ function vectorAnswerHTML(query, hits){
       station:S.station||'KNFG'
     };
   }
+  function profileInitials(name){
+    const parts=String(name||'').trim().split(/\s+/).filter(Boolean);
+    if(!parts.length) return '·';
+    if(parts.length===1) return parts[0].slice(0,2).toUpperCase();
+    return (parts[0][0]+parts[parts.length-1][0]).toUpperCase();
+  }
+  function profileDay(iso, withYear){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(iso||'')) return '';
+    const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const mon=months[(+iso.slice(5,7))-1]||'';
+    const day=String(+iso.slice(8,10));
+    return withYear?day+' '+mon+' '+iso.slice(2,4):day+' '+mon;
+  }
+  function profileHrs(n){
+    const x=Math.round((Number(n)||0)*100)/100;
+    return x.toFixed(1);
+  }
+  function ringArc(r, color, frac){
+    const c=2*Math.PI*r;
+    const f=isFinite(frac)?Math.max(0,Math.min(1,frac)):0;
+    const dash=(f*c).toFixed(2);
+    const gap=Math.max(0,c-f*c).toFixed(2);
+    return `<circle cx="74" cy="74" r="${r}" fill="none" stroke="${color}" stroke-width="9" stroke-opacity=".22"/><circle cx="74" cy="74" r="${r}" fill="none" stroke="${color}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${dash} ${gap}" transform="rotate(-90 74 74)"/>`;
+  }
   function profileScreen(){
-    const tag='<p><span class="pill warn">DEMO DATA</span></p>';
     const who=profileUser();
     let body;
     if(!who){
-      body=`${tag}<h2 class="sec">Profile</h2>
+      body=`<p><span class="pill warn">DEMO DATA</span></p><h2 class="sec">Profile</h2>
         <p class="log-lead">Demo sign-in on this device. A real server comes later. Wrong details are not saved.</p>
         <form class="log-form" onsubmit="return false">
           <p id="prof-err" class="log-err" role="alert">${escTxt(S.profileErr||MOCK_ERR||'')}</p>
@@ -6789,29 +6843,37 @@ function vectorAnswerHTML(query, hits){
         </form>
         <p class="log-lead">Demo login: demo.jblake / demo123</p>`;
     } else {
-      const fac=facilityOf(who.facility);
-      const pos=(who.positions||[]).map(p=>{
-        const name=logPosName(p.code);
-        const line=p.status==='qualified'?(name+' · qualified'+(p.qualifiedDate?' '+p.qualifiedDate:'')):p.status==='in training'?(name+' · in training'+(p.trainingStartDate?' since '+p.trainingStartDate:'')):(name+' · not started');
-        return `<p class="log-posline"><b>${escTxt(name)}</b><span>${escTxt(line.replace(name+' · ',''))}</span></p>`;
+      const tests=(facilityOf(who.facility)||{}).tests||[];
+      const acadIds=[];
+      tests.forEach(t=>{(t.covers||[]).forEach(id=>{ if(acadIds.indexOf(id)<0) acadIds.push(id); });});
+      const complete=derivedComplete(who);
+      const passed=tests.filter(t=>who.testsPassed.indexOf(t.id)>=0).length;
+      const quals=(who.positions||[]).filter(p=>p.status==='qualified');
+      const qualNames=quals.map(p=>{ const named=((facilityOf(who.facility)||{}).positions||[]).find(x=>x.code===p.code); return named&&named.name||logPosName(p.code); });
+      const hours=(who.hoursLog||[]).reduce((n,h)=>n+(Number(h.hours)||0),0);
+      const posOrder={cd:0,gnd:1,lcl:2,rfd:3,fin:4,arr:5,oth:6};
+      const rank={qualified:0,'in training':1,'not started':2};
+      const positions=(who.positions||[]).slice().sort((a,b)=>((rank[a.status]??9)-(rank[b.status]??9))||((posOrder[a.code]??9)-(posOrder[b.code]??9)));
+      const posRows=positions.map(p=>{
+        const code=( {cd:'CD',gnd:'GND',lcl:'LCL',rfd:'RFD',fin:'FIN',arr:'ARR',oth:'OTH'} )[p.code]||String(p.code||'').toUpperCase();
+        const name=(facilityOf(who.facility)||{positions:[]}).positions.find(x=>x.code===p.code);
+        const label=name&&name.name||logPosName(p.code);
+        let pill='<span class="pill dim">Not started</span>';
+        let when='';
+        let tone=' style="color:#4d635a"';
+        if(p.status==='qualified'){ pill='<span class="pill ok">Qualified</span>'; when=profileDay(p.qualifiedDate,true); tone=' style="color:var(--green)"'; }
+        else if(p.status==='in training'){ pill='<span class="pill train">In training</span>'; when=p.trainingStartDate?'since '+profileDay(p.trainingStartDate,false):''; tone=' style="color:var(--amber)"'; }
+        return `<div class="pos-row"><div class="code"${tone}>${escTxt(code)}</div><div class="name">${escTxt(label)}</div>${pill}${when?`<div class="when">${escTxt(when)}</div>`:''}</div>`;
       }).join('');
-      const lessons=who.lessonsDone.length?who.lessonsDone.map(id=>`<li>${escTxt(id)}</li>`).join(''):'<li>None yet</li>';
-      const tests=who.testsPassed.length?who.testsPassed.map(id=>`<li>${escTxt(id)}</li>`).join(''):'<li>None yet</li>';
-      const done=derivedComplete(who);
-      const complete=done.length?done.map(id=>`<li>${escTxt(id)}</li>`).join(''):'<li>None yet</li>';
-      const hours=(who.hoursLog||[]).map(h=>`<p class="log-posline"><b>${escTxt(h.date)} · ${escTxt(logPosName(h.position))}</b><span>${escTxt(String(h.hours))} h${h.note?' · '+escTxt(h.note):''}</span></p>`).join('')||'<p class="log-lead">No hours yet.</p>';
-      const sum=(who.hoursLog||[]).reduce((n,h)=>n+(Number(h.hours)||0),0);
-      body=`${tag}<h2 class="sec">${escTxt(who.name)}</h2>
-        <p class="log-lead">${escTxt(who.username)} · ${escTxt((fac&&fac.name)||who.facility)} · ${escTxt(who.crew)} · ${escTxt(PROF_ROLE[who.role]||who.role)}</p>
-        <p class="log-lead">Signed in on this device until you log out. Changes stay in this browser. A real server comes later.</p>
-        <h2 class="sec">Positions</h2>${pos}
-        <h2 class="sec">Lessons done</h2><ul class="lq-q">${lessons}</ul>
-        <h2 class="sec">Tests passed</h2><ul class="lq-q">${tests}</ul>
-        <h2 class="sec">ACADs complete</h2>
-        <p class="log-lead">An ACAD is complete when its lesson is done and the test that covers it is passed. One test can cover two ACADs.</p>
-        <ul class="lq-q">${complete}</ul>
-        <h2 class="sec">Hours · ${escTxt(String(Math.round(sum*100)/100))} h</h2>${hours}
-        <div class="log-tools"><button type="button" class="btn" data-action="proflogout">Log out</button><button type="button" class="btn sec" data-action="openlog">Hours log</button></div>`;
+      const hourRows=(who.hoursLog||[]).map(h=>`<div class="hours-row"><div class="left"><b>${escTxt(profileDay(h.date,false))} · ${escTxt(logPosName(h.position))}</b>${h.note?`<span>${escTxt(h.note)}</span>`:''}</div><div class="hrs">${escTxt(profileHrs(h.hours))}</div></div>`).join('')||'<p class="log-lead">No hours yet.</p>';
+      const leg=(color,k,v,s)=>`<div class="leg"><div class="sw" style="background:${color}"></div><div class="k" style="color:${color}">${k}</div><div class="v" style="color:${color}">${v}</div><div class="s">${escTxt(s)}</div></div>`;
+      body=`<div class="idrow"><div class="avatar">${escTxt(profileInitials(who.name))}</div><div><h3>${escTxt(who.name)}</h3><div class="idmeta"><b>${escTxt(who.facility)}</b> · ${escTxt(who.crew)} · ${escTxt(PROF_ROLE[who.role]||who.role)}</div><div style="margin-top:6px"><span class="pill warn">DEMO DATA</span></div></div></div>
+        <div class="rings-card"><div class="rings"><svg viewBox="0 0 148 148">${ringArc(62,'#39f0a0',acadIds.length?complete.length/acadIds.length:0)}${ringArc(49,'#ffb24d',(who.positions||[]).length?quals.length/(who.positions||[]).length:0)}${ringArc(36,'#5fd0ff',tests.length?passed/tests.length:0)}</svg><div class="rings-center"><b>${escTxt(profileHrs(hours))}</b><span>Hours</span></div></div>
+        <div class="legend">${leg('#39f0a0','Acads',complete.length+'/'+acadIds.length,'Complete')}${leg('#ffb24d','Quals',quals.length+'/'+(who.positions||[]).length,qualNames.join(', ')||'None')}${leg('#5fd0ff','Tests',passed+'/'+tests.length,'Passed')}</div></div>
+        <h2 class="sec">Positions</h2><div class="pos-list">${posRows}</div>
+        <h2 class="sec">Hours log <span class="grn" style="letter-spacing:.08em">${escTxt(profileHrs(hours))} h</span></h2>${hourRows}
+        <div class="log-tools"><button type="button" class="btn sec" data-action="openlog">Add hours</button><button type="button" class="btn sec" data-action="proflogout">Log out</button></div>
+        <p class="log-lead">Saved on this device until you log out. A server comes later.</p>`;
     }
     return `<div class="stickhead">${topbar()}${who?tabs():''}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body">${body}</div>${statusbar()}</div>`;
   }

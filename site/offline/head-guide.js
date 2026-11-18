@@ -5,7 +5,7 @@
   var GUIDE = {
     id: 'vector-head-guide',
     title: 'VECTOR Head Guide',
-    version: '0.8.45',
+    version: '0.8.46',
     lead: 'For a successor or a training chief. Open it with no login. This guide does not grant access.',
     sections: [
       {
