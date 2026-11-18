@@ -789,6 +789,26 @@
       "hoursLog": [],
       "lessonsDone": [],
       "testsPassed": []
+    },
+    {
+      "username": "demo.cstuart",
+      "password": "demo123",
+      "name": "Cpl Stuart (Demo)",
+      "facility": "NFG",
+      "crew": "Crew 1",
+      "role": "training_chief",
+      "accessCode": "NFG-DEMO-STUART",
+      "positions": [
+        {"code": "cd", "status": "not started"},
+        {"code": "gnd", "status": "not started"},
+        {"code": "lcl", "status": "not started"},
+        {"code": "rfd", "status": "not started"},
+        {"code": "fin", "status": "not started"},
+        {"code": "arr", "status": "not started"}
+      ],
+      "hoursLog": [],
+      "lessonsDone": [],
+      "testsPassed": []
     }
   ]
 }
