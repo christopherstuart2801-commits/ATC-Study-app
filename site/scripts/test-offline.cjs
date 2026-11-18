@@ -206,14 +206,12 @@ function envFor(fetchImpl, caches) {
   const emptyApply = emptyParsed.ok ? backup.apply(cleared, emptyParsed.backup, { progressVer: '2026-10-21' }) : emptyParsed;
   ok('replace drops keys the backup does not contain', emptyApply.ok && cleared.getItem('vatc.fcStats') == null && JSON.parse(cleared.getItem('vatc.pkOpen.v1')).quick === true);
 
-  ok('head guide is for a successor and needs no login', /no login/i.test(guide.lead) && guide.sections.some(s => s.id === 'chief' && s.badge === 'LATER'));
-  const office = guide.sections.find(s => s.id === 'office');
-  ok('office rosters, progress, tests, and reviews are labeled later', office && office.badge === 'LATER' && /Rosters — not enabled/.test(office.html) && /Office view of progress — not enabled/.test(office.html) && /Tests the office assigns or reviews — not enabled/.test(office.html) && /Reviews — not enabled/.test(office.html) && /On-device practice tests/.test(office.html));
+  ok('onboarding is for a training officer and does not sign anyone in', /does not sign you in/i.test(guide.lead) && guide.sections.some(s => s.id === 'crews' && /demo labels/.test(s.html)));
   const pubs = guide.sections.find(s => s.id === 'pubs');
-  ok('publication updater is planned and not claimed', pubs && pubs.badge === 'PLANNED' && /does not include that updater/.test(pubs.html) && /official-publication updater is planned/.test(pubs.html));
-  ok('offline study and device backup are labeled now', guide.sections.find(s => s.id === 'offline').badge === 'NOW' && guide.sections.find(s => s.id === 'backup').badge === 'NOW' && /not cloud sync/.test(guide.sections.find(s => s.id === 'backup').html));
-  const chief = guide.sections.find(s => s.id === 'chief').html;
-  ok('chief code is outside the app and does not elevate', /one-time code issued outside this app/.test(chief) && /does not accept a chief code/.test(chief) && /cannot elevate access/.test(chief) && !/CHIEF_CODE|activationCode|adminPassword/.test(JSON.stringify(guide)));
+  ok('onboarding does not claim a publication updater', pubs && pubs.badge === 'NOW' && /does not download a newer official edition/.test(pubs.html));
+  const use = guide.sections.find(s => s.id === 'use');
+  ok('onboarding names the study tabs and admin', use && /Students see those five study tabs/.test(use.html) && /Admin is only for an admin-side demo role/.test(use.html));
+  ok('onboarding stores no chief code', !/CHIEF_CODE|activationCode|adminPassword/.test(JSON.stringify(guide)));
   ok('guide has no network and no secret', !/fetch\(|XMLHttpRequest|supabase|mailto:/i.test(JSON.stringify(guide) + guide.feedbackDraft));
   const draft = guide.feedbackDraft('Radio check', { version: '0.8.37', online: false, sw: 'ready', shellReady: true, refs: { cached: 2, total: 25, failed: [] } });
   ok('feedback draft says it was not sent', /did not send it/.test(draft) && /Radio check/.test(draft) && /none on this version/.test(draft));

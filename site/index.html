@@ -104,17 +104,17 @@
 #vatc .tab.on{ color:var(--green); border-color:rgba(57,240,160,.45); border-bottom-color:var(--green); background:rgba(57,240,160,.10); }
 #vatc .tab svg{ width:15px; height:15px; flex:none; }
 #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
-#vatc .tab[data-t="cards"], #vatc .tab[data-t="reference"], #vatc .tab[data-t="crew"]{
+#vatc .tab[data-t="cards"], #vatc .tab[data-t="reference"], #vatc .tab[data-t="crew"], #vatc .tab[data-t="admin"]{
   font-size:12px; font-weight:600; letter-spacing:.1em; color:#c5ddd3;
   border:1px solid rgba(57,240,160,.42); border-bottom:2px solid transparent;
   padding:12px 10px; min-height:44px; background:rgba(57,240,160,.06);
 }
 #vatc .tab[data-t="home"]:hover, #vatc .tab[data-t="ask"]:hover, #vatc .tab[data-t="learn"]:hover,
-#vatc .tab[data-t="cards"]:hover, #vatc .tab[data-t="reference"]:hover, #vatc .tab[data-t="crew"]:hover{
+#vatc .tab[data-t="cards"]:hover, #vatc .tab[data-t="reference"]:hover, #vatc .tab[data-t="crew"]:hover, #vatc .tab[data-t="admin"]:hover{
   color:var(--green); border-color:var(--green); background:rgba(57,240,160,.12);
 }
 #vatc .tab[data-t="home"].on, #vatc .tab[data-t="ask"].on, #vatc .tab[data-t="learn"].on,
-#vatc .tab[data-t="cards"].on, #vatc .tab[data-t="reference"].on, #vatc .tab[data-t="crew"].on{
+#vatc .tab[data-t="cards"].on, #vatc .tab[data-t="reference"].on, #vatc .tab[data-t="crew"].on, #vatc .tab[data-t="admin"].on{
   color:#04150d; background:var(--green); border-color:var(--green); border-bottom-color:var(--green);
 }
 /* trackbar */
@@ -833,7 +833,7 @@
 #vatc .fc-shuf{ position:absolute; right:0; top:50%; transform:translateY(-50%); width:28px; height:28px; display:flex; align-items:center; justify-content:center; padding:0; border-radius:8px; border:1px solid var(--line); background:transparent; color:var(--muted); font-size:15px; line-height:1; cursor:pointer; }
 #vatc .fc-shuf:hover, #vatc .fc-shuf:focus-visible{ color:var(--green); border-color:var(--green2); }
 #vatc .fc-note{ display:block; text-transform:none; letter-spacing:.02em; font-size:11px; line-height:1.4; padding:7px 10px; border-radius:8px; margin:0 0 8px; }
-/* mobile: full-bleed. Five study tabs fill the row, the same way as v0.8.36. Crew stays on the row and scrolls into view. */
+/* mobile: full-bleed. Five study tabs fill the row. An admin sees Admin on that same row. */
 @media(max-width:640px){
   #vatc{ border:none; border-radius:0; box-shadow:none; min-height:100vh; min-height:100dvh; max-width:none; }
   #vatc .top{ padding:10px 10px; gap:8px; min-width:0; }
@@ -845,12 +845,17 @@
   #vatc .tabs{ display:flex; gap:3px; padding:4px 4px 0; overflow-x:auto; background:#0a1211; border-bottom:1px solid var(--line); border-top:0; position:sticky; top:0; }
   #vatc .tab{ flex-direction:row; border-radius:8px 8px 0 0; min-height:42px; }
   #vatc .tab svg{ display:none; }
-  #vatc .tab[data-t="home"], #vatc .tab[data-t="ask"], #vatc .tab[data-t="learn"],
-  #vatc .tab[data-t="cards"], #vatc .tab[data-t="reference"]{
+  #vatc .tabs:not(:has([data-t="admin"])) .tab[data-t="home"],
+  #vatc .tabs:not(:has([data-t="admin"])) .tab[data-t="ask"],
+  #vatc .tabs:not(:has([data-t="admin"])) .tab[data-t="learn"],
+  #vatc .tabs:not(:has([data-t="admin"])) .tab[data-t="cards"],
+  #vatc .tabs:not(:has([data-t="admin"])) .tab[data-t="reference"]{
     flex:1 0 calc((100% - 18px) / 5); min-width:calc((100% - 18px) / 5);
     justify-content:center; font-size:10px; letter-spacing:.02em; padding:10px 1px;
   }
-  #vatc .tab[data-t="crew"]{ flex:0 0 auto; min-width:58px; justify-content:center; font-size:10px; padding:10px 8px; }
+  #vatc .tabs:has([data-t="admin"]) .tab{
+    flex:1 1 0; min-width:0; justify-content:center; font-size:8.5px; letter-spacing:0; padding:10px 1px;
+  }
   #vatc .trackbar{ padding:8px 12px; gap:5px; }
   #vatc .tk{ min-height:36px; font-size:12px; }
   #vatc .body{ padding:14px 12px 18px; }
@@ -1000,7 +1005,7 @@
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.49'; /* initials-login */
+  const APP_VER='0.8.49'; /* admin-nav */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -5264,15 +5269,15 @@ function vectorAnswerHTML(query, hits){
   }
   function devicePanelHTML(){
     const t=loadTrainee()||{name:'', initials:''};
-    return `<div class="overlay"><div class="modal device" role="dialog" aria-modal="true" aria-labelledby="devicetitle" tabindex="-1"><h3 id="devicetitle">THIS DEVICE</h3><p class="note">Study files on this browser. A backup stays on this device. Nothing is uploaded.</p><div id="vatc-devstatus">${deviceStatusHTML()}</div><div class="row"><button type="button" class="btn sec" data-action="retryrefs">RETRY SAVE</button><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><h4>PROFILE</h4><label for="trname">TRAINEE NAME</label><input id="trname" maxlength="120" autocomplete="name" value="${escTxt(t.name)}"><label for="trinit">INITIALS</label><input id="trinit" maxlength="3" autocapitalize="characters" value="${escTxt(t.initials)}"><div class="row"><button type="button" class="btn" data-action="saveprofile">SAVE PROFILE</button></div><h4>INSTALL</h4>${installHelpHTML()}<h4>BACKUP</h4><p class="note">Device backup, not cloud sync. Nothing is uploaded. Position records entered on this device are included.</p><div class="row"><button type="button" class="btn" data-action="exportbackup">EXPORT BACKUP</button><label class="btn sec">IMPORT BACKUP<input type="file" accept="application/json,.json" data-action="importbackup" hidden></label></div><div class="row"><button type="button" class="btn sec" data-action="deviceclose">CLOSE</button></div></div></div>`;
+    return `<div class="overlay"><div class="modal device" role="dialog" aria-modal="true" aria-labelledby="devicetitle" tabindex="-1"><h3 id="devicetitle">THIS DEVICE</h3><p class="note">Study files on this browser. A backup stays on this device. Nothing is uploaded.</p><div id="vatc-devstatus">${deviceStatusHTML()}</div><div class="row"><button type="button" class="btn sec" data-action="retryrefs">RETRY SAVE</button><button type="button" class="btn sec" data-action="guide">ONBOARDING</button></div><h4>PROFILE</h4><label for="trname">TRAINEE NAME</label><input id="trname" maxlength="120" autocomplete="name" value="${escTxt(t.name)}"><label for="trinit">INITIALS</label><input id="trinit" maxlength="3" autocapitalize="characters" value="${escTxt(t.initials)}"><div class="row"><button type="button" class="btn" data-action="saveprofile">SAVE PROFILE</button></div><h4>INSTALL</h4>${installHelpHTML()}<h4>BACKUP</h4><p class="note">Device backup, not cloud sync. Nothing is uploaded. Position records entered on this device are included.</p><div class="row"><button type="button" class="btn" data-action="exportbackup">EXPORT BACKUP</button><label class="btn sec">IMPORT BACKUP<input type="file" accept="application/json,.json" data-action="importbackup" hidden></label></div><div class="row"><button type="button" class="btn sec" data-action="deviceclose">CLOSE</button></div></div></div>`;
   }
   function guideScreen(){
     const G=globalThis.VATC_HEAD_GUIDE||{lead:'', sections:[]};
     const body=(G.sections||[]).map(s=>`<section class="hg-sec" id="hg-${escTxt(s.id)}"><div class="hg-h"><h2>${escTxt(s.title)}</h2><span class="pill ${s.badge==='NOW'?'ok':'warn'}">${escTxt(s.badge)}</span></div><div class="hg-b">${s.html||''}</div></section>`).join('');
-    return `<div class="stickhead">${topbar()}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body hg" data-guide="vector-head"><h2 class="sec">VECTOR HEAD GUIDE</h2><p class="hg-lead">${escTxt(G.lead||'')}</p>${body}<section class="hg-sec" id="hg-health"><div class="hg-h"><h2>Version and app health</h2><span class="pill ok">NOW</span></div><div id="vatc-health">${deviceStatusHTML()}</div><div class="row"><button type="button" class="btn sec" data-action="copyhealth">COPY HEALTH</button></div></section><div class="row"><button type="button" class="btn sec" data-action="guidehome">STUDY</button><button type="button" class="btn sec" data-action="device">DEVICE</button><button type="button" class="btn" data-action="feedback">REPORT FEEDBACK</button></div></div></div>`;
+    return `<div class="stickhead">${topbar()}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body hg" data-guide="vector-head"><h2 class="sec">ATCFO ONBOARDING</h2><p class="hg-lead">${escTxt(G.lead||'')}</p>${body}<section class="hg-sec" id="hg-health"><div class="hg-h"><h2>Version and app health</h2><span class="pill ok">NOW</span></div><div id="vatc-health">${deviceStatusHTML()}</div><div class="row"><button type="button" class="btn sec" data-action="copyhealth">COPY HEALTH</button></div></section><div class="row"><button type="button" class="btn sec" data-action="guidehome">STUDY</button><button type="button" class="btn sec" data-action="device">DEVICE</button><button type="button" class="btn" data-action="feedback">REPORT FEEDBACK</button></div></div></div>`;
   }
   function feedbackScreen(){
-    return `<div class="stickhead">${topbar()}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body fbbox" data-route="feedback"><h2 class="sec">REPORT FEEDBACK</h2><p class="hg-lead">Nothing on this page is sent. VECTOR ATC does not transmit feedback, email, or a report by itself. The route is #feedback.</p><label for="fbreport">NOTE</label><textarea id="fbreport" placeholder="What happened"></textarea><div class="row"><button type="button" class="btn" data-action="copyfeedback">COPY REPORT</button><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><p class="note">Paste the copy into your own message if you want to share it.</p></div></div>`;
+    return `<div class="stickhead">${topbar()}</div><div class="scrollmain" id="vatc-main" tabindex="-1"><div class="body fbbox" data-route="feedback"><h2 class="sec">REPORT FEEDBACK</h2><p class="hg-lead">Nothing on this page is sent. VECTOR ATC does not transmit feedback, email, or a report by itself. The route is #feedback.</p><label for="fbreport">NOTE</label><textarea id="fbreport" placeholder="What happened"></textarea><div class="row"><button type="button" class="btn" data-action="copyfeedback">COPY REPORT</button><button type="button" class="btn sec" data-action="guide">ONBOARDING</button></div><p class="note">Paste the copy into your own message if you want to share it.</p></div></div>`;
   }
   function shellWrap(html){ return html+(S.deviceOpen?devicePanelHTML():''); }
   async function copyText(text){
@@ -5361,12 +5366,13 @@ function vectorAnswerHTML(query, hits){
     else if(el && el.matches && el.matches('[data-action="device"]')) deviceOpenerSel='[data-action="device"]';
   }
   function openDevice(el){ markDeviceOpener(el); S.deviceOpen=true; render(); focusDevice(); }
-  function activeTabKey(){ let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; return tab||'home'; }
+  function activeTabKey(){ let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; if(tab==='crew'&&profileIsAdmin()) tab='admin'; return tab||'home'; }
   function studyPanelAttrs(){ const id=activeTabKey(); return `id="vatc-main" role="tabpanel" aria-labelledby="tab-${id}" tabindex="-1"`; }
 
   function tabs(){ const t=(k,ic,l)=>{let tab=activeTabKey(); const on=tab===k; return `<button type="button" role="tab" id="tab-${k}" aria-selected="${on?'true':'false'}" aria-controls="vatc-main" class="tab ${on?'on':''}" data-action="tab" data-t="${k}">${ic} ${l}</button>`;};
-    return `<div class="tabs" role="tablist" aria-orientation="horizontal" aria-label="Study">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}${t('crew',I.users,'Crew')}</div>${tabHint()}`; }
-  const TAB_HINT={ask:'Search every pub and get a cited answer.',learn:'Your LQS ACADs with references and tests.',cards:'Study sets by position and ACAD.',reference:'7110.65, FACMAN, FLIP plates and more.',crew:'Send access codes to the crew, and check that loaded publications are current.'};
+    const admin=profileIsAdmin()?t('admin',I.users,'Admin'):'';
+    return `<div class="tabs" role="tablist" aria-orientation="horizontal" aria-label="Study">${t('home',I.home,'Home')}${t('ask',I.ask,'Ask')}${t('learn',I.book,'Learn')}${t('cards',I.book,'Flashcards')}${t('reference',I.file,'Reference')}${admin}</div>${tabHint()}`; }
+  const TAB_HINT={ask:'Search every pub and get a cited answer.',learn:'Your LQS ACADs with references and tests.',cards:'Study sets by position and ACAD.',reference:'7110.65, FACMAN, FLIP plates and more.',admin:'Crew 1 and Crew 2, demo access codes, and the demo roster.',crew:'Crew 1 and Crew 2, demo access codes, and the demo roster.'};
   function tabHint(){ let tab=S.tab==='train'?'learn':S.tab; if(tab==='learn'&&S.learnMode==='cards') tab='cards'; const h=TAB_HINT[tab]; return h?`<div class="tabhint">${h}</div>`:''; }
   function trackbar(){ let out='<span class="grplbl">TWR</span>'; let g='TOWER';
     out+=POS.filter(p=>p.g==='TOWER').map(p=>`<span class="tk ${S.pos===p.k?'on':''}" role="button" tabindex="0" data-action="pos" data-p="${p.k}">${p.sn}</span>`).join('');
@@ -7984,6 +7990,23 @@ function vectorAnswerHTML(query, hits){
     if(thumbId) return `<img class="crw-photo" alt="Saved notice photo" hidden data-crw-thumb="${escTxt(thumbId)}"><p class="crw-fine crw-photomiss">Photo marked saved. If it does not appear, it is not in this browser storage.</p>`;
     return '<div class="crw-empty">No photo in this step.</div>';
   }
+  function profileIsAdmin(){
+    const u=profileUser();
+    return !!(u && (u.role==='training_chief'||u.role==='atcfo'||u.role==='admin'));
+  }
+  function adminCrewHTML(){
+    const id=crewCanon(S.crewId)||'1';
+    const users=((MOCK_USERS&&MOCK_USERS.user)||[]).filter(u=>u.facility==='NFG' && u.crew==='Crew '+id);
+    const codes=users.length?users.map(u=>`<p class="log-posline"><b>${escTxt(u.name)}</b><span>${escTxt(u.accessCode||'No code')}</span></p>`).join(''):'<p class="log-lead">No demo codes for this crew.</p>';
+    const roster=users.length?users.map(u=>`<p class="log-posline"><b>${escTxt(u.name)}</b><span>${escTxt(PROF_ROLE[u.role]||u.role)}</span></p>`).join(''):'<p class="log-lead">No one on this crew in the demo roster.</p>';
+    return `<div class="crw" data-crw="board"><h2 class="sec">Admin</h2>
+      <p><span class="pill warn">DEMO DATA</span></p>
+      <p class="log-lead">Crew 1 and Crew 2 for this station. These codes are demo labels. They do not sign anyone in.</p>
+      <div class="crw-seg"><button type="button" class="${id==='1'?'on':''}" data-action="crwcrew" data-c="1">Crew 1</button><button type="button" class="${id==='2'?'on':''}" data-action="crwcrew" data-c="2">Crew 2</button></div>
+      <section class="crw-block"><h3>Access codes</h3>${codes}</section>
+      <section class="crw-block"><h3>Roster</h3>${roster}</section>
+    </div>`;
+  }
   function crewBoardHTML(){
     const id=crewCanon(S.crewId)||'1';
     const rows=crewCurrentRows();
@@ -8233,7 +8256,7 @@ function vectorAnswerHTML(query, hits){
     if(a==='crwcrew'){
       const c=crewCanon(el.dataset.c)||'1';
       crewSetBlob(null);
-      set({tab:'crew', crewId:c, crewView:'board', crewDraft:null, crewAsk:null, crewMsg:''}); return;
+      set({tab:profileIsAdmin()?'admin':'crew', crewId:c, crewView:'board', crewDraft:null, crewAsk:null, crewMsg:''}); return;
     }
     if(a==='crwoffice'){ set({tab:'crew', crewView:'office', crewDraft:null, crewAsk:null, crewRolesOpen:el.dataset.open==='1'}); return; }
     if(a==='crwboard'){ crewSetBlob(null); set({crewView:'board', crewDraft:null, crewAsk:null, crewRolesOpen:false}); return; }
@@ -9172,7 +9195,7 @@ function pdfPaneHTML(){
     return lk+pubShelfHTML()+pdfPaneHTML()+`<details class="pos-acads" id="refdump"${hide}><summary>FIELD QUICK REF</summary><div class="refdump-inner">${quickRefHTML()}</div></details>`; }
 
   function stationScreen(){ const lock=(c,n)=>`<div class="stn lock"><div class="code">${c}</div><div class="nm">${n}</div><div class="lockrow">${I.lock} Content in validation — coming soon</div></div>`;
-    return `<div class="body reveal" id="vatc-main" tabindex="-1"><h2 class="sec">${I.target} SELECT STATION</h2><div class="navrow" style="margin:-4px 0 12px"><button type="button" class="btn sec" data-action="guide">HEAD GUIDE</button></div><div class="stationgrid">
+    return `<div class="body reveal" id="vatc-main" tabindex="-1"><h2 class="sec">${I.target} SELECT STATION</h2><div class="navrow" style="margin:-4px 0 12px"><button type="button" class="btn sec" data-action="guide">ONBOARDING</button></div><div class="stationgrid">
       <div class="stn open" data-action="pick" data-s="KNFG"><span class="pill ok" style="position:absolute;top:14px;right:14px">UNLOCKED</span><div class="code">KNFG</div><div class="nm">MCAS Camp Pendleton · Munn Field</div><div class="lockrow" style="color:var(--green)">${I.chk} 6 positions · live</div></div>
       <div class="stn open" data-action="pick" data-s="KNKX"><span class="pill" style="position:absolute;top:14px;right:14px">SHELL</span><div class="code">KNKX</div><div class="nm">MCAS Miramar</div><div class="lockrow">${I.lock} Content coming soon</div></div>${lock('KNYL','MCAS Yuma')}${lock('KNKT','MCAS Cherry Point')}${lock('KNCA','MCAS New River')}${lock('KNBC','MCAS Beaufort')}</div></div>`; }
 
@@ -9184,10 +9207,12 @@ function pdfPaneHTML(){
     return `${S.tab==='home'?'<div class="stnbar">MCAS Miramar (KNKX)</div>':''}<div class="card" style="padding:22px;text-align:center;margin-top:12px" data-shell="KNKX"><div class="code" style="font-family:var(--fm);letter-spacing:.2em;color:var(--green)">KNKX · ${escTxt(lab.toUpperCase())}</div><div style="font-size:18px;margin:10px 0 6px">Coming soon</div><div class="muted" style="font-size:12px">No ACADs, flashcards, tests or references loaded for MCAS Miramar yet. Content is added once the station's LQS and FACMAN are provided and validated.</div></div>`; }
   function appScreen(){ let inner='';
     if(S.tab==='sim'||S.tab==='cards') S.tab=(S.tab==='cards'?'learn':'home'); /* SIM tab removed v0.8.29 */
+    if(!profileIsAdmin() && (S.tab==='admin'||S.tab==='crew')) S.tab='home';
     if(S.station==='KNKX'){ return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain" ${studyPanelAttrs()}>${S.tab==='home'?'':trackbar()}<div class="body">${shellView()}</div>${statusbar()}</div>`; }
     if(S.tab==='home')inner=homeView(); else if(S.tab==='ask')inner=askView(); else if(S.tab==='learn'||S.tab==='train')inner=learnView();
-    else if(S.tab==='reference')inner=refView(); else if(S.tab==='crew')inner=crewView();
-    const track=(S.tab==='home'||S.tab==='crew')?'':trackbar();
+    else if(S.tab==='reference')inner=refView();
+    else if(S.tab==='admin'||S.tab==='crew') inner=profileIsAdmin()?adminCrewHTML():homeView();
+    const track=(S.tab==='home'||S.tab==='crew'||S.tab==='admin')?'':trackbar();
     return `<div class="stickhead">${topbar()}${tabs()}</div><div class="scrollmain" ${studyPanelAttrs()}>${track}<div class="body">${inner}</div>${statusbar()}</div>`+(S.source!=null?modal():''); }
 
   function doAsk(){
@@ -9402,7 +9427,7 @@ function pdfPaneHTML(){
       const go=el.dataset.go;
       if(go==='positions'){ const g=document.getElementById('posgrid'); if(g){ g.scrollIntoView({block:'nearest'}); const b=g.querySelector('[data-action="poslearn"]'); if(b) focusEl(b); } return; }
       if(go==='ask'||go==='reference'){ const tab=go==='ask'?'ask':'reference'; set({screen:'app', tab:tab, lkFocus:tab==='ask'}); const t=document.querySelector('#vatc .tab[data-t="'+tab+'"]'); if(t) focusEl(t); return; }
-      if(go==='crew'){ set({screen:'app', tab:'crew', crewView:'board'}); const t=document.querySelector('#vatc .tab[data-t="crew"]'); if(t) focusEl(t); return; }
+      if(go==='crew'){ if(!profileIsAdmin()) return; set({screen:'app', tab:'admin', crewView:'board'}); const t=document.querySelector('#vatc .tab[data-t="admin"]'); if(t) focusEl(t); return; }
       if(go==='device'){ openDevice(el); return; }
       return;
     }

@@ -1,54 +1,36 @@
-/* VECTOR Head Guide copy. Truthful labels only. No accounts, no activation code, no network. */
+/* ATCFO onboarding. Short and plain. This page does not sign anyone in. */
 (function (root) {
   'use strict';
 
   var GUIDE = {
     id: 'vector-head-guide',
-    title: 'VECTOR Head Guide',
+    title: 'ATCFO onboarding',
     version: '0.8.49',
-    lead: 'For a successor or a training chief. Open it with no login. This guide does not grant access.',
+    lead: 'For a facility training officer. Reading this does not sign you in and does not grant access.',
     sections: [
       {
-        id: 'version',
-        title: 'What this version is',
+        id: 'crews',
+        title: 'Crews and codes',
         badge: 'NOW',
-        html: '<p>VECTOR ATC is an on-device study aid for the public material already loaded in this app. No account is required.</p><p>Installing it adds an icon on this device. It is not an app-store download, and it is not a Department of Defense approval or endorsement.</p><p>The guide route is <b>#guide</b>. The feedback route is <b>#feedback</b>. Both open inside this app.</p>'
-      },
-      {
-        id: 'office',
-        title: 'Training office',
-        badge: 'LATER',
-        html: '<p>Later phases are planned so this app can help the training office. They are not enabled in this version:</p><ul><li>Rosters — not enabled</li><li>Office view of progress — not enabled. Marks a trainee makes stay on that device.</li><li>Tests the office assigns or reviews — not enabled. On-device practice tests in Learn work now.</li><li>Reviews — not enabled</li></ul><p>When those phases are enabled, the office would work from rosters, progress, tests, and reviews here. This version has no shared office account and no admin tools.</p>'
+        html: '<p>Sign in with a demo admin account. Open Admin. Choose Crew 1 or Crew 2.</p><p>Access codes on that page are demo labels from the bundled roster. They do not sign anyone in and they do not change who can open the app.</p><p>The roster lists the demo names on that crew. It is not a live personnel file.</p>'
       },
       {
         id: 'pubs',
-        title: 'Staying current',
-        badge: 'PLANNED',
-        html: '<p>Reference opens the public publications bundled with this version. An official-publication updater is planned so a later version can take official updates.</p><p>This version does not include that updater. It does not download a new edition on its own. A file saved on this device is not automatically the current official edition.</p><p>When maintainers publish a new app version on this site, the app can ask you to reload. That prompt is an app update you choose. It is not the publication updater, and it does not erase study progress.</p>'
-      },
-      {
-        id: 'offline',
-        title: 'Offline study',
+        title: 'Publications',
         badge: 'NOW',
-        html: '<p>Open the site once while online. This device then saves the app shell, this guide, and the public study banks already in the app (questions, lessons, flashcards, and the local search data).</p><p>Publication PDFs are saved from a fixed list of files that ship with this version. Device shows how many were saved and the name of any that failed. A failed file is not replaced with another page. Reload while offline to use what was saved.</p><p>Windows Chrome or Edge: use the Install button when it appears, the install icon in the address bar, or the menu → Apps → Install VECTOR ATC. iPhone: in Safari, tap Share, then Add to Home Screen.</p><p>Fonts from the internet and the optional photo text reader are not saved. Nothing from another website is cached. Restricted material, credentials, and private accounts are not part of this version.</p>'
+        html: '<p>Reference opens the publications already in this copy: JO 7110.65, the facility manual, and the plates that shipped with it.</p><p>This version does not download a newer official edition. A file on this device is not automatically the current official publication.</p>'
       },
       {
-        id: 'backup',
-        title: 'Device backup',
+        id: 'use',
+        title: 'How to use the app',
         badge: 'NOW',
-        html: '<p>Device → Export backup downloads one JSON file of this device\'s study profile: trainee name and initials, study marks, checks, lessons, flashcard progress, tests, custom sets, open pocket keys, position records, the position log, and any other vatc.* values stored here.</p><p>The position log is hours, approaches, and an optional paper-sheet note for the person using this device. It is not an office view of other trainees and it is not an official form.</p><p>If this device has crew training notices, that file also carries their text and photos. A missing photo stops the export instead of leaving them out. Those notices are a training aid. They are not an official notice source.</p><p>Import reads a file only after you choose it, checks it, and asks you to confirm before it replaces progress on this device. If the file is not valid, or the write fails, current progress is left as it was.</p><p>This is a device backup you keep, not cloud sync. Nothing is uploaded.</p>'
-      },
-      {
-        id: 'chief',
-        title: 'Training chief',
-        badge: 'LATER',
-        html: '<p>A later accounts phase is planned to activate a training-chief role with a one-time code issued outside this app, and to transfer that role to a successor later.</p><p>This version does not create accounts, does not accept a chief code, and does not change anyone\'s permissions. This guide cannot elevate access. No activation code is stored in the app.</p>'
+        html: '<p>Home is the position list. Ask searches the loaded publications. Learn is the lesson cards and tests. Flashcards are the study sets. Reference is the publication shelf.</p><p>Profile is the sign-in. Students see those five study tabs. Admin is only for an admin-side demo role, and it opens the crew page.</p><p>Hours are a personal log on this device. Marks stay in this browser until a server exists.</p>'
       },
       {
         id: 'feedback',
         title: 'Report feedback',
         badge: 'NOW',
-        html: '<p>Report feedback opens a page on this device. It builds a note you can copy. Opening it does not send email and does not contact a server.</p>'
+        html: '<p>Report feedback builds a note you can copy. Opening it does not send email and does not contact a server.</p>'
       }
     ]
   };
