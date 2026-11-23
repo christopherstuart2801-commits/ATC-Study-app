@@ -5,7 +5,7 @@
   var GUIDE = {
     id: 'vector-head-guide',
     title: 'ATCFO onboarding',
-    version: '0.8.51',
+    version: '0.8.52',
     lead: 'For a facility training officer. Reading this does not sign you in and does not grant access.',
     sections: [
       {
