@@ -1010,7 +1010,7 @@
 <script>
 (function(){
   const root=document.getElementById('app');
-  const APP_VER='0.8.51'; /* log-xlsx */
+  const APP_VER='0.8.52'; /* ask-title */
   const I={
     radar:'<svg viewBox="0 0 24 24" fill="none" stroke="#39f0a0" stroke-width="1.6"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M12 12 19 5"/><circle cx="12" cy="12" r="1.6" fill="#39f0a0"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
@@ -4626,6 +4626,8 @@
   function vectorPickHit(hits){
     if(!hits || !hits.length) return null;
     const top=hits[0];
+    /* A paragraph whose heading matches the question stays the lead. A nearby facility paragraph should not replace it. */
+    if(top.titleMatch) return top;
     const pos=(typeof S!=='undefined' && S.pos)||'';
     const localPos=/^(rfd|fin|arr)$/i.test(pos);
     const local=hits.filter(h=>h.band==='LOCAL' && h.book);
@@ -7009,10 +7011,25 @@ function vectorAnswerHTML(query, hits){
       const id=h.id||((h.book&&('b:'+h.book.cite))||(h.e&&('e:'+h.e.origin+'|'+h.e.q))||'x');
       if(seen.has(id)) return; seen.add(id); hits.push(h);
     };
-    (exp.prefer||[]).forEach((p,i)=>{
-      booksForPrefer(p).forEach(b=>push({kind:'book', book:b, s:10000-i*10, band:'LOCAL', id:'b:'+b.cite}));
-    });
     const tok=exp.expanded.toLowerCase().split(/[^a-z0-9.]+/).filter(t=>t.length>1 || /\d/.test(t));
+    const qtok=raw.toLowerCase().split(/[^a-z0-9.]+/).filter(t=>t.length>1 || /\d/.test(t));
+    const skipAsk={'what':1,'when':1,'where':1,'which':1,'how':1,'does':1,'are':1,'the':1,'for':1,'with':1,'from':1,'that':1,'this':1,'your':1,'can':1,'use':1,'using':1,'first':1,'action':1,'phraseology':1,'example':1};
+    const titleHitsFor=b=>{
+      const title=((b&&(b.title||b.pa))||'').toLowerCase();
+      const titleWords=title.split(/[^a-z0-9]+/).filter(Boolean);
+      let n=0;
+      qtok.forEach(t=>{
+        if(t.length<5 || skipAsk[t]) return;
+        if(titleWords.some(w=>w===t || (t.length>=6 && w.indexOf(t)===0))) n++;
+      });
+      return n;
+    };
+    (exp.prefer||[]).forEach((p,i)=>{
+      booksForPrefer(p).forEach(b=>{
+        const titleHits=titleHitsFor(b);
+        push({kind:'book', book:b, s:10000-i*10+(titleHits>=2?12000:0), band:'LOCAL', titleMatch:titleHits>=2?titleHits:0, id:'b:'+b.cite});
+      });
+    });
     const rawL=raw.toLowerCase();
     const seenCite=new Set(hits.filter(h=>h.book).map(h=>h.book.cite));
     Object.keys(BOOK).forEach(k=>{
@@ -7030,10 +7047,12 @@ function vectorAnswerHTML(query, hits){
         else if(/PCG|glossary/i.test((b.doc||'')+' '+(b.kind||'')+' '+(b.cite||'')+' '+(b.pg||''))) band='PCG';
         else if(/\bAIM\b/i.test(b.doc||'')) band='AIM';
         // Exact paragraph / PCG term title boosts (test-bank shapes)
-        const title=(b.title||b.pa||'').toLowerCase();
-        if(rawL && title && (title===rawL || title.indexOf(rawL)>=0)) s+=25;
-        if(/^\d{1,2}-\d{1,2}(?:-\d{1,3}[a-z]?)?$/i.test(raw) && pg===rawL) s+=40;
-        push({kind:'book', book:b, s:s, band, id:'b:'+b.cite});
+      const title=(b.title||b.pa||'').toLowerCase();
+      if(rawL && title && (title===rawL || title.indexOf(rawL)>=0)) s+=25;
+      const titleHits=titleHitsFor(b);
+      if(titleHits>=2) s+=12000;
+      if(/^\d{1,2}-\d{1,2}(?:-\d{1,3}[a-z]?)?$/i.test(raw) && pg===rawL) s+=40;
+      push({kind:'book', book:b, s:s, band, titleMatch:titleHits>=2?titleHits:0, id:'b:'+b.cite});
       }
     });
     siftLookup(raw).forEach(h=>{
